@@ -26,7 +26,7 @@ Phase 7 Report, release  WP-20 → WP-21                                        
 
 | ☐ | WP | Phase | Goal | Model | Tokens | 👤 | $ | Needs | Unblocks |
 |---|---|---|---|---|---|---|---|---|---|
-| ☐ | **WP-00** Bootstrap | 0 | Project folder, git + private GitHub, secret scan, continuity mechanism installed and tested | default | 80k | 👤 approve installs, `gh` login | – | – | all |
+| ☑ | **WP-00** Bootstrap | 0 | Project folder, git + private GitHub, secret scan, continuity mechanism installed and tested | default | 80k | 👤 approve installs, `gh` login | – | – | all |
 | ☐ | **WP-01** Data access + redaction | 1 | Safe loader for the session/message schema; redaction; structure-only data card of the sample | default | 120k | – | – | 00 | 02, 06, 08 |
 | ☐ | **WP-02** Prompts, rules, splits | 1 | S1 prompt builder (user text + 2 turns), Persian normalization, language tag, exclusions incl. huge prompts, hard-rule detectors, S2 session splitter | default | 200k | – | – | 01 | 03, 07, 08, 15 |
 | ☐ | **WP-03** Embedder choice | 1 | Benchmark 2–3 local multilingual embedders on the sample (latency, Persian paraphrase sanity, cluster readability); decide | default | 150k | 👤 approve choice | – | 02 | 05-real, 08, 15 |

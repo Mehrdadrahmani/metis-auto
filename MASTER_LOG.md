@@ -6,7 +6,7 @@ open questions, budget ledger and the dated log. Log entries older than 2 weeks 
 
 ## 1. Current status (summary; STATUS.md is authoritative)
 
-- 2026-10-20: planning finished (planner session 1). No code yet. Next: **WP-00** (bootstrap).
+- 2026-10-20: planning finished (planner session 1). WP-00 done (bootstrap). Next: **WP-01**.
 - Full dataset: not arrived ("coming soon, large"). Fallback dates: 2026-11-01 / 2026-11-08.
 - Spent: **$0.00** of $60.00.
 
@@ -57,6 +57,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-038 | 2026-10-20 | Fallback dates: 2026-11-01 reduced plan; 2026-11-08 sample-only demo | P | PLAN P4 |
 | D-039 | 2026-10-20 | Python environment managed with **uv**; virtual environment named **`metis-rahnema`** (`.venv/` with that prompt name); packages only via `uv add`, run via `uv run` | A | owner |
 | D-040 | 2026-10-20 | **Every clustering and routing step as in the UniRoute paper:** UniRoute always ships; Eq. 12 (α = 0); nearest-centroid assignment; K ∈ {3…N_val/50}; K by normalized area under the deferral curve; no instruction traits (DEV-7, DEV-1 withdrawn) | A | owner |
+| D-041 | 2026-10-20 | Continuity mechanism installed and tested (status line, SessionStart/UserPromptSubmit/PreCompact/PostCompact hooks, `/start`, `/handoff`); uv env pinned to uv-managed Python (`python-preference = only-managed`, owner chose this over Anaconda); secret-scan regex adjusted: `sk-` only at a word start (false hit on "risk-management"), bare `sk-ant-` dropped (covered by `sk-` rule), doc example `sk-TESTTESTTESTTEST` allow-listed in `.githooks/secret-allowlist` | A | owner, WP-00 |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -72,6 +73,7 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
 | Q-020 | K selection: report cards from graded train prompts (paper; ~$14, breaks fixed rule 6) or split-validation on val (spec, $0) | owner | WP-05 |
 | Q-021 | Text embedded for clustering: user message only (paper) or + 2 previous turns (spec) | owner | WP-02 |
+| Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-019 | Approve DEV-4, DEV-5, DEV-6 | owner | WP-06 (DEV-5), WP-11 (DEV-4), WP-05 (DEV-6) |
 
 ## 4. Budget ledger
@@ -84,6 +86,18 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-20 · WP-00 session (Opus)
+- Tools present, nothing installed: git 2.54.0, gh 2.100.0 (logged in as Mehrdadrahmani), jq 1.6,
+  uv 0.13.1; uv downloaded CPython 3.12.15 for `.venv/` (`metis-rahnema`).
+- Created skeleton (PLAN §10), `.gitignore`, `.githooks/pre-commit` (tested: fake key blocked, forced
+  `data/` file blocked, docs clean), copied plan files + `ref/`, copied sample data unopened to
+  `data/raw/sample.json` (ignored), `pyproject.toml` + `uv.lock`, `tests/test_import.py` (1 passed).
+- Continuity mechanism written, approved by the owner, enabled; tested in a second session: STATUS
+  injected at start, status line wrote `context_pct`, `/compact` produced `precompact-*.md`,
+  `compact-*.md`, `needs-handoff`. D-041.
+- GitHub: private repo `Mehrdadrahmani/metis-auto`; first commit 18833d8 pushed. Secret scanning not
+  available (Q-022). Cost $0.
 
 ### 2026-10-20 · Planner session 1 (Opus)
 - Read the kit (brief, spec, proposal, docs, paper notes and key paper sections, diagrams); inspected
