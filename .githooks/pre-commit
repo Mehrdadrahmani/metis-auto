@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Secret scan (WP-00). Blocks staged files under data/, cache/, runs/, .env files,
+# and staged content that looks like an API key. Exact strings listed in
+# .githooks/secret-allowlist (documentation examples) are ignored.
+set -euo pipefail
+export LC_ALL=C   # byte-wise matching; binary files (PDFs) must not break tr/grep
+PATTERN='(^|[^A-Za-z0-9])sk-[A-Za-z0-9_-]{10,}|AIza[0-9A-Za-z_-]{20,}|ghp_[A-Za-z0-9]{20,}|Bearer[[:space:]]+[A-Za-z0-9._-]{10,}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'
+ALLOW="$(git rev-parse --show-toplevel)/.githooks/secret-allowlist"
+fail=0
+while IFS= read -r -d '' f; do
+  case "$f" in
+    data/*|cache/*|runs/*|.env|*.env|*/.env)
+      echo "pre-commit: BLOCKED forbidden path: $f" >&2; fail=1; continue ;;
+  esac
+  content="$(git show ":$f" 2>/dev/null | tr -d '\000' || true)"
+  if [ -f "$ALLOW" ]; then
+    while IFS= read -r a; do [ -n "$a" ] && content="${content//"$a"/}"; done < "$ALLOW"
+  fi
+  if printf '%s' "$content" | /usr/bin/grep -aqE "$PATTERN"; then
+    echo "pre-commit: BLOCKED possible secret in: $f (value not shown)" >&2; fail=1
+  fi
+done < <(git diff --cached --name-only -z --diff-filter=ACMR)
+[ "$fail" -eq 0 ] || { echo "pre-commit: commit refused. Unstage or redact the file(s) above." >&2; exit 1; }

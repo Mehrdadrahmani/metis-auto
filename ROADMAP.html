@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metis-Auto Roadmap</title>
+<style>
+:root{
+  --bg:#fbfaf7;--card:#ffffff;--ink:#1f2328;--muted:#5d6670;--line:#e3e0d8;
+  --blue:#dae8fc;--blue-b:#6c8ebf;--orange:#ffe6cc;--orange-b:#d79b00;--green:#d5e8d4;--green-b:#82b366;
+  --yellow:#fff2cc;--yellow-b:#d6b656;--grey:#f5f5f5;--grey-b:#999;--accent:#3b5b8c;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181c;--card:#1f2228;--ink:#e8e6e1;--muted:#a3a9b1;--line:#30343b;
+    --blue:#1f2e44;--blue-b:#6c8ebf;--orange:#3d2c14;--orange-b:#d79b00;--green:#1f3320;--green-b:#82b366;
+    --yellow:#3a3218;--yellow-b:#d6b656;--grey:#26292e;--grey-b:#777;--accent:#8fb0e0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181c;--card:#1f2228;--ink:#e8e6e1;--muted:#a3a9b1;--line:#30343b;
+  --blue:#1f2e44;--blue-b:#6c8ebf;--orange:#3d2c14;--orange-b:#d79b00;--green:#1f3320;--green-b:#82b366;
+  --yellow:#3a3218;--yellow-b:#d6b656;--grey:#26292e;--grey-b:#777;--accent:#8fb0e0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:30px;margin:0 0 4px}
+h2{font-size:22px;margin:40px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:0 0 6px}
+p{margin:6px 0}
+.sub{color:var(--muted);margin-bottom:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi b{display:block;font-size:22px}
+.kpi span{color:var(--muted);font-size:13px}
+.story{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.story ol{margin:6px 0 0 18px;padding:0}
+.story li{margin:6px 0}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.flow span{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:14px}
+.flow i{color:var(--muted);font-style:normal}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin:8px 0 4px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px;border:1px solid}
+.week{margin-top:22px}
+.week-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.week-head .when{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:10px}
+.wp{border:1px solid;border-radius:12px;padding:12px 14px;background:var(--card);position:relative}
+.wp .tag{font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--muted)}
+.wp h3{margin-top:2px}
+.wp .you{margin-top:8px;font-size:14px}
+.wp .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font-size:12px;border-radius:10px;padding:1px 8px;border:1px solid var(--line);color:var(--muted)}
+.free{background:var(--blue);border-color:var(--blue-b)}
+.paid{background:var(--orange);border-color:var(--orange-b)}
+.online{background:var(--green);border-color:var(--green-b)}
+.gate{background:var(--yellow);border-color:var(--yellow-b)}
+.human{background:var(--grey);border-color:var(--grey-b)}
+.gatebar{border:1px solid var(--yellow-b);background:var(--yellow);border-radius:12px;padding:10px 14px;margin-top:10px;font-size:15px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tablewrap{overflow-x:auto}
+.num{white-space:nowrap}
+.open{border-left:4px solid var(--yellow-b)}
+code{background:var(--grey);padding:1px 5px;border-radius:5px;font-size:14px}
+.footer{color:var(--muted);font-size:13px;margin-top:40px}
+</style>
+</head>
+<body>
+<main>
+
+<h1>Metis-Auto: the roadmap</h1>
+<p class="sub">Plain-language view of the whole project · plan date 2026-10-20 · deadline about 4 weeks (assumed 2026-11-17).
+Detailed files: <code>PLAN.md</code>, <code>ROADMAP.md</code>, <code>work/WP-xx-*.md</code>.</p>
+
+<div class="kpis">
+  <div class="kpi"><b>22</b><span>work packages (≈ one Claude session each)</span></div>
+  <div class="kpi"><b>~4 weeks</b><span>from today to the report</span></div>
+  <div class="kpi"><b>$25–35</b><span>expected API cost · hard cap $60</span></div>
+  <div class="kpi"><b>~4–5 h</b><span>your own time (mostly 100 labels)</span></div>
+  <div class="kpi"><b>3 gates</b><span>points where you must approve</span></div>
+</div>
+
+<h2>The idea in one minute</h2>
+<div class="story">
+<p>Chatbots pay very different prices for different AI models (a strong one costs 20–30× a cheap one), but most user
+messages are easy. We build a <b>middleman</b> that looks at each message and sends it to the <b>cheapest model that is
+good enough</b> for that kind of message, following the <b>UniRoute</b> paper (Google, ICLR 2026) step by step.</p>
+<ol>
+  <li><b>Sort messages into types</b> (free): thousands of real user messages are grouped into K clusters.</li>
+  <li><b>Report cards</b> (paid once): 4 models answer 400 graded messages; an AI grader, checked against your labels,
+      marks each answer pass/fail; each model's failure rate per cluster is its report card (paper Eq. 12).</li>
+  <li><b>Route</b>: new message → nearest cluster → the model with the lowest <i>failure rate + λ × price</i>.</li>
+  <li><b>Safety around it</b>: backup model if one is down, step up to a stronger model if an answer is broken, a cache
+      for repeated questions, logs and a dashboard.</li>
+  <li><b>Prove it</b>: 300 messages are locked away from the start and opened once at the end.</li>
+</ol>
+</div>
+
+<div class="flow">
+  <span>Prepare code</span><i>→</i><span>Real data in</span><i>→</i><span>Small pilot + your labels</span><i>→</i>
+  <span>Report cards &amp; router</span><i>→</i><span>Gateway</span><i>→</i><span>Final test</span><i>→</i><span>Report</span>
+</div>
+
+<h2>The phases</h2>
+<p class="sub">8 phases, done in order. Phase 5 (the gateway) runs alongside phases 2–4. Each phase ends with a clear result; the gates are where you approve. Total: about 4 weeks.</p>
+<div class="legend">
+  <span><span class="sw free"></span>free / offline</span>
+  <span><span class="sw paid"></span>costs money (asks you first)</span>
+  <span><span class="sw online"></span>gateway (online part)</span>
+  <span><span class="sw gate"></span>gate: your approval</span>
+  <span><span class="sw human"></span>your own work</span>
+</div>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 0 · Setup</h3><span class="when">~½ day · $0 · starts now</span></div>
+  <p><b>Goal:</b> a project folder where every session can continue from files alone.</p>
+  <div class="grid">
+    <div class="wp free"><div class="tag">WP-00</div><h3>Project folder</h3>
+      <p>Create <code>metis-auto/</code>, git on your laptop + private GitHub, uv environment <code>metis-rahnema</code>,
+      the secret check, and the <code>/start</code> / <code>/handoff</code> session commands.</p>
+      <p class="you"><b>You:</b> approve the scripts and the GitHub repo; test one new session (5 min).</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 1 · Build and test everything for free (before the data)</h3><span class="when">~5 days · $0</span></div>
+  <p><b>Goal:</b> when the data arrives, the paid part is "press run", not "write code under pressure".</p>
+  <div class="grid">
+    <div class="wp free"><div class="tag">WP-01</div><h3>Safe data reader</h3>
+      <p>Reads the chats and hides the live API keys inside them before anything else touches the text.</p></div>
+    <div class="wp free"><div class="tag">WP-02</div><h3>Messages, rules, splits</h3>
+      <p>Turn chats into routable messages; detect menu clicks, images and huge system prompts; split by chat into
+      train / validation / test.</p></div>
+    <div class="wp free"><div class="tag">WP-03</div><h3>Pick the text-to-numbers model</h3>
+      <p>Compare 2–3 local multilingual embedders for speed and Persian quality.</p>
+      <p class="you"><b>You:</b> look at sample groups in a local page (10 min), approve the choice.</p></div>
+    <div class="wp free"><div class="tag">WP-04</div><h3>Calling models safely</h3>
+      <p>Saves every answer (never pays twice), enforces the $60 cap, resumes after crashes; checks Metis AI is reachable.</p>
+      <p class="you"><b>You:</b> put the Metis AI key in <code>.env</code>.</p></div>
+    <div class="wp free"><div class="tag">WP-05</div><h3>UniRoute, exactly as the paper</h3>
+      <p>K-means, nearest centre, report cards (Eq. 12), routing rule (Eq. 8/11), area under the deferral curve, QNC,
+      the paper's comparison routers; tested on made-up data where the right answer is known.</p></div>
+    <div class="wp free"><div class="tag">WP-06</div><h3>Answering, grading, labeling page</h3>
+      <p>Code for the models to answer like production and for the AI grader to score; the page you will label on.</p>
+      <p class="you"><b>You:</b> try the labeling page on 5 items (10 min).</p></div>
+    <div class="wp free"><div class="tag">WP-07</div><h3>Dry run</h3>
+      <p>The whole pipeline end to end on the sample with free fake answers, to prove the code works.</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 2 · Real data in</h3><span class="when">1–2 days · $0 · starts when the data arrives</span></div>
+  <p><b>Goal:</b> real clusters, a locked test set, and the real budget.</p>
+  <div class="grid">
+    <div class="wp free"><div class="tag">WP-08</div><h3>Clean, split, cluster</h3>
+      <p>Group thousands of training messages into K = 3…8 clusters; lock the test set; compute the real budget.</p>
+      <p class="you"><b>You:</b> give the clusters short names (15 min).</p></div>
+    <div class="wp gate"><div class="tag">GATE 1</div><h3>Budget approval</h3>
+      <p>You approve the real per-step budget (under $60) before any money is spent.</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 3 · Small pilot</h3><span class="when">~3 days · ~$6</span></div>
+  <p><b>Goal:</b> a grader we can trust, before the main spending.</p>
+  <div class="grid">
+    <div class="wp paid"><div class="tag">WP-09 · ~$6</div><h3>Small trial</h3>
+      <p>The 4 models answer 100 messages; the grader scores them two ways (alone, and vs the strong model).</p></div>
+    <div class="wp human"><div class="tag">WP-10</div><h3>You grade 100 answers</h3>
+      <p>"Would a demanding user accept this?" and "which of two is better?" Model names hidden. ~3 hours, plus 20
+      re-checks a few days later.</p></div>
+    <div class="wp free"><div class="tag">WP-11</div><h3>Which grading method?</h3>
+      <p>Keep the method that agrees with you most and can tell models apart; check for biases.</p></div>
+    <div class="wp gate"><div class="tag">GATE 2</div><h3>Is the grader trustworthy?</h3>
+      <p>It must agree with you on at least 75% (and κ ≥ 0.40).</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 4 · Main build (the router)</h3><span class="when">4–5 days · ~$17–27</span></div>
+  <p><b>Goal:</b> report cards, K and λ, and a frozen router.</p>
+  <div class="grid">
+    <div class="wp paid"><div class="tag">WP-12 · ~$7</div><h3>All answers</h3>
+      <p>All 4 models answer 400 validation + 300 test messages, once, saved forever.</p></div>
+    <div class="wp paid"><div class="tag">WP-13 · ~$10–20</div><h3>All grades</h3>
+      <p>The grader scores every answer with the chosen method.</p></div>
+    <div class="wp free"><div class="tag">WP-14</div><h3>Report cards, K, λ</h3>
+      <p>Report cards per cluster; K by the largest area under the deferral curve; λ; comparison with the paper's simpler
+      routers; "add a new model" demo.</p></div>
+    <div class="wp gate"><div class="tag">GATE 3</div><h3>Freeze</h3>
+      <p>Router and test plan saved with a git tag <i>before</i> the locked test set is opened.</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 5 · The gateway (runs alongside phases 2–4)</h3><span class="when">5–6 days spread out · $0–1</span></div>
+  <p><b>Goal:</b> the middleman the course asks for, around the router.</p>
+  <div class="grid">
+    <div class="wp online"><div class="tag">WP-15</div><h3>The middleman server</h3>
+      <p>OpenAI-style API: hard rules → router → call the model → backup model on failure → logs.</p></div>
+    <div class="wp online"><div class="tag">WP-16</div><h3>Checks + step-up</h3>
+      <p>Free checks (empty, cut off, wrong language, bad JSON) → retry → stronger model.</p></div>
+    <div class="wp online"><div class="tag">WP-17 · ≤ $1</div><h3>Semantic cache</h3>
+      <p>Reuse a saved answer for the same question in the same chatbot, only when safe.</p>
+      <p class="you"><b>You:</b> choose how the cache threshold is set (your postponed decision).</p></div>
+    <div class="wp online"><div class="tag">WP-18</div><h3>Replay + dashboard</h3>
+      <p>Replay real messages through the gateway with the saved answers ($0); dashboard of money saved, speed, cache hits.</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 6 · Final test</h3><span class="when">~2 days · ~$1.5</span></div>
+  <p><b>Goal:</b> the one honest measurement on the locked test set.</p>
+  <div class="grid">
+    <div class="wp paid"><div class="tag">WP-19 · ~$1.5</div><h3>Open the locked test once</h3>
+      <p>Is the router at least 40% cheaper than always using the strong model, without a provable quality drop
+      (more than 5 points)? Plus a small live speed test.</p></div>
+  </div>
+</section>
+
+<section class="week">
+  <div class="week-head"><h3>Phase 7 · Report and release</h3><span class="when">~3 days · $0</span></div>
+  <p><b>Goal:</b> the course deliverable, reproducible and clean.</p>
+  <div class="grid">
+    <div class="wp free"><div class="tag">WP-20</div><h3>Report + presentation</h3>
+      <p>Results with error bars, figures, limitations, slides outline.</p>
+      <p class="you"><b>You:</b> review the drafts.</p></div>
+    <div class="wp free"><div class="tag">WP-21</div><h3>Prove it reproduces</h3>
+      <p>Rerun everything from the saved answers at $0, final secret check, version 1.0.</p></div>
+  </div>
+</section>
+
+<div class="gatebar"><b>If the data is late:</b> by Nov 1 → smaller plan (val 300 / test 200). By Nov 8 → demo on the sample only, clearly labeled.</div>
+
+
+<h2>Clustering and routing: exactly as the paper</h2>
+<div class="tablewrap"><table>
+<tr><th>Step</th><th>What we do (paper reference)</th></tr>
+<tr><td>Text representation</td><td>The user's message, embedded with a frozen general-purpose text embedder, run locally (§5.1). Never the chatbot's system prompt.</td></tr>
+<tr><td>Clustering</td><td>K-means on the large <b>unlabeled training</b> messages; K ∈ {3 … N_val/50} = {3…8} (App. G.2).</td></tr>
+<tr><td>Assignment</td><td>Each message goes to its <b>nearest cluster centre</b> (§5.1).</td></tr>
+<tr><td>Report card Ψ</td><td>Each model's <b>plain failure rate</b> in each cluster on the validation set (Eq. 12).</td></tr>
+<tr><td>Routing rule</td><td>Pick the model with the lowest <i>Ψ<sub>k</sub>(model) + λ · cost(model)</i> (Eq. 8 / 11).</td></tr>
+<tr><td>Choosing K</td><td>The K with the largest <b>normalized area under the deferral curve</b> (quality vs cost as λ varies) on validation (App. G.2).</td></tr>
+<tr><td>Choosing λ</td><td>Sweep λ; pick the point for a quality target or a cost budget (App. E).</td></tr>
+<tr><td>Comparisons</td><td>Always-best, always-cheapest, ZeroRouter / Pareto-random, K-NN (paper baselines); reported, UniRoute ships.</td></tr>
+<tr><td>New model</td><td>Answer the same 400 validation messages → one new report-card row, no retraining (the paper's main claim; shown as a demo).</td></tr>
+</table></div>
+
+<h2>Decisions still open</h2>
+<div class="tablewrap"><table>
+<tr><th>ID</th><th>Question</th><th>Options</th><th>Needed by</th></tr>
+<tr class="open"><td>Q-020</td><td>Report cards used <i>while choosing K</i></td><td>Paper: grade ~500 training messages (~$14, breaks "train stays ungraded") · Our version: split the validation set in halves ($0, recommended)</td><td>WP-05</td></tr>
+<tr class="open"><td>Q-021</td><td>Text used for clustering</td><td>Paper: user message only · Spec: message + 2 previous turns (helps short follow-ups)</td><td>WP-02</td></tr>
+<tr class="open"><td>Q-017</td><td>Can your network reach Metis AI while Claude Code runs (VPN)?</td><td>Yes → normal · No → you start paid scripts yourself, or a backup provider</td><td>WP-04</td></tr>
+<tr class="open"><td>$1 test</td><td>Allow one ~$1 real test on 20 sample messages before the full data?</td><td>Keep rule (no) · Allow (recommended: checks Metis AI, prices, grader early)</td><td>WP-04</td></tr>
+<tr class="open"><td>DEV-4/5/6</td><td>Small spec changes</td><td>κ ≥ 0.40 in the gate · grader sees chatbot instructions · 20 validation splits</td><td>WP-05/06/11</td></tr>
+<tr class="open"><td>Cache</td><td>How to set the cache threshold</td><td>AI grader labels (~$1) · fixed strict threshold · exact match only</td><td>WP-17</td></tr>
+<tr class="open"><td>Q-006 / Q-007b</td><td>Meaning of <code>default</code> model; exact deadline and format</td><td>Ask the course team</td><td>WP-08 / now</td></tr>
+</table></div>
+
+<h2>Money</h2>
+<div class="tablewrap"><table>
+<tr><th>Step</th><th class="num">Cost</th><th>When</th></tr>
+<tr><td>Phases 0–2 (setup, building, real data)</td><td class="num">$0</td><td>now → data arrival</td></tr>
+<tr><td>Pilot (WP-09)</td><td class="num">~$6</td><td>after Gate 1</td></tr>
+<tr><td>All answers (WP-12)</td><td class="num">~$7</td><td>after Gate 2</td></tr>
+<tr><td>All grades (WP-13)</td><td class="num">~$10–20</td><td>after Gate 2</td></tr>
+<tr><td>Cache labels (WP-17, if chosen)</td><td class="num">≤ $1</td><td>phase 5</td></tr>
+<tr><td>Live speed test (WP-19)</td><td class="num">~$1.5</td><td>phase 6</td></tr>
+<tr><td><b>Total</b></td><td class="num"><b>~$25–35</b></td><td>hard cap $60, every paid step asks you first</td></tr>
+</table></div>
+
+<h2>How a work session goes</h2>
+<div class="story">
+<ol>
+  <li>Open a terminal: <code>cd ~/Downloads/RahnemaCollege2026/metis-auto &amp;&amp; claude</code> (default model, Opus 5.5).</li>
+  <li>Type <code>/start</code>: Claude reads the status, tells you in a few lines what it will do, and waits for your OK.</li>
+  <li>It works on one work package and stops at every approval point.</li>
+  <li>At the end (or when the context is 60% full) it runs <code>/handoff</code>: updates the status, log and plan,
+      commits to git and pushes to GitHub.</li>
+</ol>
+</div>
+
+<p class="footer">Source of truth for details: PLAN.md (decisions, budget, statistics, risks), ROADMAP.md (work-package table),
+work/WP-xx-*.md (instructions). This page is a summary; if they differ, the detailed files win.</p>
+</main>
+</body>
+</html>

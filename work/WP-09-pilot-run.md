@@ -1,0 +1,57 @@
+# WP-09: Pilot run (first paid stage, ~$6)
+
+> **Paste prompt (fallback):** "Read STATUS.md, AGENTS.md and work/WP-09-pilot-run.md; follow the session
+> protocol."
+
+| Phase | Model | Size | Needs owner | Cost | Depends on | Unblocks |
+|---|---|---|---|---|---|---|
+| 3 | default (Opus 5.5) | ~120k | **"go"** with the estimate | ~$6 (approved amount from Gate 1) | Gate 1 | WP-10 |
+
+## Context
+The slim pilot (PLAN M8, DEV-3): the 4 candidates answer the 100 pilot val prompts; the judge grades
+every answer **both** ways (pointwise 400 calls; pairwise vs claude-sonnet-4-6 in both orders, 600
+calls). All of it is cached and reused by the main build (pilot ⊂ val). Then the labeling sheet for
+the owner is built.
+
+## Read (only these)
+- `work/reports/WP-08-report.md` (sizes, budget approvals), `results/cost_estimate_v1.md`.
+- `ref/UNIROUTE_PIPELINE.md` §P (procedure only), `PLAN.md` §1.1 M8–M11, P3.
+
+## Steps
+1. Show the estimate for this stage (`scripts/estimate_costs.py --stage pilot`) and the approved
+   amount. ⏸ **STOP:** owner says "go".
+2. S6 on `pilot_val` (100 prompts × 4 models = 400 calls), order: deepseek-v4-flash, gpt-4o-mini,
+   gemini-2.5-flash, claude-sonnet-4-6. After the first 20 calls of each model: check failure rate,
+   cost per call vs estimate, finish_reason=length share, reasoning tokens (should be ~0). Any anomaly
+   (failures > 5%, cost/call > 2× estimate, length cut > 10%) → ⏸ stop and report.
+3. S7-PT: 400 pointwise judgments. Check parse-failure rate (< 2%) after the first 40.
+4. S7-PW: 300 pairs × 2 orders = 600 judgments (anchor = sonnet).
+5. Noise sample: re-judge 20 pointwise + 20 pairwise items with a different cache salt (true repeat)
+   → test–retest agreement.
+6. Build the labeling HTML (`labeling/build.py`) for the 100 `cal` items (each pilot prompt paired
+   with one non-anchor model, round-robin) + a separate 20-item re-label file to be done ≥ 2 days later.
+   Put them in `runs/labeling/` (git-ignored). Tell the owner the path and the guideline.
+7. Ledger: record real spend per model and per judge type in MASTER_LOG §Budget.
+
+## Outputs
+- Cached answers and judgments (SQLite), `runs/pilot/*` tables, `results/pilot_run_stats.md`
+  (counts, failures, parse failures, $ per stage, tokens per call; no text),
+  `runs/labeling/cal_*.html`.
+
+## Acceptance checks
+- [ ] 400 answers, 400 pointwise, 600 pairwise judgments (minus logged failures).
+- [ ] Spend ≤ approved amount; ledger updated.
+- [ ] Labeling files ready; owner informed.
+
+## If blocked
+- Metis AI errors/rate limits → lower concurrency to 2, resume (cache). A model unavailable for > 1 h
+  → ⏸ ask the owner (wait / substitute).
+- Spend approaching the approval before finishing → stop; ask for a top-up with numbers.
+
+## End of session
+- `work/reports/WP-09-report.md`. STATUS: waiting on owner (WP-10 labeling, ~3 h), next session WP-11
+  after labels are in. Update cost assumptions (real tokens/call) in `results/cost_estimate_v2.md`
+  and, if they differ > 25% from the memo, tell the owner before WP-12.
+
+## If the context is getting full
+Runs resume from the cache: stop at a checkpoint, `/handoff` with "next: WP-09 step n", stop.

@@ -1,0 +1,31 @@
+[project]
+name = "metis"
+version = "0.1.0"
+description = "Metis-Auto v2: UniRoute-style LLM router and gateway (Rahnema College 2026)"
+authors = [{ name = "Mehrdad Rahmani", email = "mehrdad.rahmani100@gmail.com" }]
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/metis"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+]
+
+[tool.uv]
+python-preference = "only-managed"   # never use Anaconda/system Python (owner choice, WP-00)

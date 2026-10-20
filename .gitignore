@@ -1,0 +1,12 @@
+data/
+cache/
+runs/
+.env
+*.env
+.claude/state/
+.DS_Store
+__pycache__/
+.venv/
+*.sqlite
+.pytest_cache/
+.ruff_cache/
