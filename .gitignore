@@ -1,6 +1,6 @@
-data/
-cache/
-runs/
+/data/
+/cache/
+/runs/
 .env
 *.env
 .claude/state/

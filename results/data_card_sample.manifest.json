@@ -1,0 +1,15 @@
+{
+  "stage": "data_card",
+  "input": "data/raw/sample.json",
+  "input_sha256": "e0f56a2f2340b2ac70bf273e05ee2e9b56126cd3874c0c58659f46b4983549e1",
+  "config_hash": null,
+  "seed": null,
+  "counts": {
+    "categories": 4,
+    "sessions": 100,
+    "messages": 907
+  },
+  "rescan_hits": 0,
+  "duration_s": 3.0,
+  "cost_usd": 0.0
+}

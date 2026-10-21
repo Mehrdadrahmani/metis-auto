@@ -27,6 +27,9 @@ and pleasant to use now.
 3. `src/metis/llm/messages.py`: build the request: `system` = redacted chatbot instructions;
    if `rag_context`: one extra system block "Retrieved context:\n…" (same format for all models);
    then the `history` turns; then the user message. Instructions > 20k chars never reach here (M7).
+   **Every part is redacted** with `metis.data.redact.redact_message` (history, user message and
+   RAG text too, not only instructions): WP-01 found key hits in user/bot `content` (4) and in
+   attachment URLs (13), D-043. The judge prompt (step 4) also uses only redacted text.
 4. **Judge templates** `src/metis/judge/templates/{pointwise,pairwise}.txt` = spec A2/A1 plus:
    sections `[CHATBOT INSTRUCTIONS]` (truncated to 6,000 tokens with a "(truncated)" note) and
    `[RETRIEVED CONTEXT]` (or "none"); an added criterion after instruction following: "Follows the
