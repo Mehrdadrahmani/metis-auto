@@ -19,7 +19,8 @@ machine. Access is through **Metis AI** (owner's choice), assumed OpenAI-compati
 
 ## Steps
 1. Propose; ⏸ wait for OK.
-2. Deps: `litellm`, `httpx`, `tenacity` (if LiteLLM retries are not enough), `python-dotenv`.
+2. Deps: `litellm`, `httpx`, `tenacity` (if LiteLLM retries are not enough), `python-dotenv`,
+   `mlflow` (D-044).
 3. `.env` (git-ignored): `METIS_API_KEY=…`, `METIS_BASE_URL=…`. ⏸ **STOP:** ask the owner to create
    it (never print it; read it only via `os.environ`).
 4. `src/metis/llm/client.py`: `complete(model_id, messages, gen_params) -> Response` via LiteLLM
@@ -43,6 +44,15 @@ machine. Access is through **Metis AI** (owner's choice), assumed OpenAI-compati
    call exceeds **2×** the estimate, prints progress (counts and $ only, never content).
 8. **Mock mode:** `METIS_MOCK=1` → deterministic fake responses (length drawn from a seeded
    distribution matching ~174 output tokens) and fake usage, so WP-06/07/15 can run for $0.
+8b. **MLflow tracing (D-044)** `src/metis/obs/tracking.py`: local only, tracking URI
+   `sqlite:///mlflow/mlflow.db`, artifacts in `mlflow/artifacts/` (git-ignored `/mlflow/`); UI via
+   `uv run mlflow ui --host 127.0.0.1` (never `0.0.0.0`, never a remote/cloud server). Switch off
+   MLflow usage telemetry (check the current env var name in the installed version's docs and set it
+   in `tracking.py` before import). `mlflow.litellm.autolog()` (or manual spans) in `client.py` **after**
+   the redaction guard, so traces contain only redacted text. Each `run_batch` = one MLflow run
+   (params: stage, config ids, seed; metrics: calls, cache hits, failures, cost). `METIS_TRACING=0`
+   turns it off. The agent never opens the UI or reads trace content; checks are counts only (e.g.
+   key-pattern scan of the MLflow db = 0 hits).
 9. **Reachability first:** `curl -sS -m 15 -o /dev/null -w '%{http_code}' https://api.metisai.ir` from the
    session's shell. On 2026-10-20 the planner got a TLS reset from metisai.ir (probably a network/VPN
    split, PLAN R17). If unreachable: ask the owner whether to (a) run paid scripts from a terminal
@@ -57,7 +67,7 @@ machine. Access is through **Metis AI** (owner's choice), assumed OpenAI-compati
    (alternative model or a second provider such as OpenRouter for that model).
 10. Update `configs/models.yaml` with provider model names, context windows, prices + `price_date`
     and `price_source`.
-11. Tests: cache hit/miss, key stability, guard refusals (cap and stage), resume after a simulated
+11. Tests (incl. a mock run with a planted fake key → MLflow store has 0 key hits): cache hit/miss, key stability, guard refusals (cap and stage), resume after a simulated
     crash at item 37, outgoing guard blocks a fake key, mock mode end-to-end.
 
 ## Outputs

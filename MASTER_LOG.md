@@ -60,6 +60,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-041 | 2026-10-20 | Continuity mechanism installed and tested (status line, SessionStart/UserPromptSubmit/PreCompact/PostCompact hooks, `/start`, `/handoff`); uv env pinned to uv-managed Python (`python-preference = only-managed`, owner chose this over Anaconda); secret-scan regex adjusted: `sk-` only at a word start (false hit on "risk-management"), bare `sk-ant-` dropped (covered by `sk-` rule), doc example `sk-TESTTESTTESTTEST` allow-listed in `.githooks/secret-allowlist` | A | owner, WP-00 |
 | D-042 | 2026-10-21 | Redaction (`metis.data.redact`): AGENTS §4 patterns + Slack, AWS, extra GitHub token kinds, signed-URL params (`sig`, `x-amz-*`), names like `X_API_KEY`/`DB_PASSWORD`, `credential` (token/secret = ≥ 16 key chars), `long_token` (quoted ≥ 32, letters+digits, not UUID) and `opaque_value` (≥ 24 letters+digits after `:`/`=`, added after a residual scan found 9 such values in instructions); idempotent; replaces with `[REDACTED:<kind>]` | P | WP-01 |
 | D-043 | 2026-10-21 | WP-06 updated: every outgoing text (history, user message, RAG, instructions, judge prompts) goes through `redact_message`, because WP-01 found key hits in `content` (4) and attachment URLs (13), not only in instructions | P | WP-01 |
+| D-044 | 2026-10-21 | **MLflow** (local only, SQLite store, UI on 127.0.0.1, telemetry off) for tracing LLM/judge/gateway calls and comparing router-selection runs; chosen over Phoenix (weaker run comparison), Langfuse/Opik (Docker-heavy) and cloud tools (data would leave the machine). Traces hold redacted text only; the agent never reads them. WP-04 (8b), WP-14, WP-15 (5), WP-18 (5) updated; WP-18 dashboard stays for aggregates | A | owner |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -88,6 +89,11 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-21 · WP-01 follow-up (Opus)
+- Owner asked for a UI to see results; compared Phoenix, MLflow, Langfuse, Opik, cloud tools; owner
+  chose MLflow (D-044). Plan text updated in WP-04/14/15/18 and ROADMAP; `/mlflow/` git-ignored.
+  Nothing installed yet (WP-04). Cost $0.
 
 ### 2026-10-21 · WP-01 session (Opus)
 - Wrote `src/metis/data/{schema,load,redact,inspect}.py`, `scripts/data_card.py`,

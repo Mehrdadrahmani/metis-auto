@@ -36,7 +36,9 @@ we don't claim a second aggregator unless one is configured (E3).
 5. `gateway/traces.py`: SQLite `traces` table (one row per request: ids, chatbot, lang, cluster k*,
    all scores, chosen model, fallbacks tried, escalations, cache hit, tokens in/out, cost, latency per
    stage and total, artifact version, status). No message text stored by default (flag for local
-   debugging only, off).
+   debugging only, off). The SQLite table stays the source for metrics; in addition each request is
+   an MLflow trace (D-044) with one span per pipeline stage (rules, cache, router, call, checks,
+   failover), span attributes = the same ids and numbers (no text unless the debug flag is on).
 6. Config `configs/gateway.yaml`: artifact path, λ, mode, timeouts, breaker params, model list,
    `mock: true|false`.
 7. **Mock provider** (`gateway/mock_provider.py`): configurable latency distribution per model (later:

@@ -25,6 +25,7 @@ Updated: 2026-10-21 · by session WP-01
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-044 MLflow (local) for traces + router run comparison; added to WP-04/14/15/18
 - D-043 WP-06: all outgoing text redacted (keys also found in `content` and attachment URLs)
 - D-042 redaction pattern set incl. `opaque_value`; D-041 continuity mechanism
 

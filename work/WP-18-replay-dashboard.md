@@ -36,6 +36,8 @@ the replay runs on **validation** traffic only (development); WP-19 runs it once
    build): KPI tiles (cost/1k queries, % saved vs premium, quality vs premium with CI, p50/p90 latency,
    cache hit rate, tokens saved), routing share by cluster, cost–quality curve with the operating
    point, recent traces table (ids and numbers only). Brief Action 3 "value created" view.
+   Single requests and router-selection runs are browsed in the local MLflow UI (D-044); the
+   dashboard is for the aggregate results.
 6. Tests: replay determinism (same seed → same traces), fault schedule, metric formulas on a tiny
    hand-computed example.
 

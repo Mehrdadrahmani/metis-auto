@@ -44,6 +44,11 @@ paper** (PLAN M1, M14; DEV-7): UniRoute ships; the baselines are reported for co
 10. **⛔ Gate 3:** commit, `git tag pre-test`, push the tag. From now on, any change to the artifact
     or protocol must be logged as a deviation in WP-19.
 
+MLflow (D-044): log every K (step 2–3), baseline (4), λ choice (6) and the holdout demo (7) as an
+MLflow run in experiment `router-selection` (params: method, K, α, λ, config ids; metrics: area,
+QNC, quality, cost; plots as artifacts), so the owner can compare them in the UI. Validation only:
+nothing from the test set is logged before `pre-test`.
+
 ## Outputs
 - `results/{fingerprints,select_k,ladder_val,representation_test,holdout_demo}.md` + figures,
   `artifacts/router_v1/`, `results/eval_protocol.md`, tag `pre-test`.
