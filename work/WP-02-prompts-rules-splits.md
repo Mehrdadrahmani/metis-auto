@@ -30,8 +30,7 @@ categories only balance splits and reports (never routing).
    - `prompt_id` = hash(session_id, message index); `session_id`, `category`, `timestamp`;
    - `text` = redacted original user text; `text_norm`; `embed_input` = the **current user message
      only** (normalized, redacted; no previous turns: D-045 / DEV-8, owner decision, as in the
-     paper), truncated to **512 tokens** keeping the start (approximate tokens with the embedder
-     tokenizer later; chars/3 for now). No `context_turns` column: the judge also sees only the
+     paper), **the whole message, not truncated** (D-047; owner: "we want the exact message"). No `context_turns` column: the judge also sees only the
      current message (D-046 / DEV-9);
    - generation context: `system_prompt_id` (hash of redacted instructions), `history` (all previous
      turns, keep the last 10 turns and ≤ 6,000 tokens), `rag_context` (from the reply's `rag.context`);

@@ -22,5 +22,6 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);
   generation sees the full history (M6).
+- D-047 the whole user message is embedded (no truncation); only light Persian normalization.
 - D-046 / DEV-9 judge also sees only the current message (spec had 2 previous turns) → limitation:
   short follow-ups are harder to judge; check in the pilot (WP-11) whether follow-ups disagree more.

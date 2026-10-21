@@ -10,7 +10,10 @@
 ## Context
 One frozen multilingual embedder is used offline (clustering, K-NN) and online (router, cache). It
 must handle Persian, be fast on the owner's Apple Silicon Mac (16 GB+), and give readable clusters.
-Latency budget: embedding ≤ 60 ms p95 for one message of ≤ 512 tokens (PLAN E5).
+Latency budget: embedding ≤ 60 ms p95 for one message of ≤ 512 tokens (PLAN E5). The whole message
+is embedded, never cut by us (D-047): prefer an embedder whose max input covers the longest user
+messages (sample max ≈ 13.8k chars ≈ 4.6k tokens; bge-m3 reads 8,192); report how many messages
+exceed each candidate's limit and the latency of long inputs.
 
 ## Read (only these)
 - `ref/UNIROUTE_PIPELINE.md` §4 S4. `PLAN.md` §1.2 E5. `work/reports/WP-02-report.md` (token stats).
@@ -54,8 +57,8 @@ Latency budget: embedding ≤ 60 ms p95 for one message of ≤ 512 tokens (PLAN 
 
 ## If blocked
 - Download blocked or too slow → use the e5-base model only, log it.
-- None meets the latency budget → choose the fastest with acceptable AUC; truncate `embed_input` to
-  256 tokens; log the trade-off.
+- None meets the latency budget → choose the fastest with acceptable AUC and ⏸ ask the owner
+  before any truncation (D-047); log the trade-off.
 
 ## End of session
 - `work/reports/WP-03-report.md` (decision table). Log decision D-xxx "embedder = …".
