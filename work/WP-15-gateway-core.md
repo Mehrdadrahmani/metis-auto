@@ -27,7 +27,7 @@ we don't claim a second aggregator unless one is configured (E3).
    `metadata` field or headers `X-Metis-Chatbot`, `X-Metis-Session`. Non-streaming first.
 3. **Pipeline per request** (each stage timed): G1 rules (`metis.data.rules`: widget click → return a
    workflow marker, image → vision-capable models only, context fit, breaker state → available set
-   A) → G2 normalize + embed (the same code as offline S1/S4; one vector reused) → G3 cache hook (a
+   A) → G2 normalize + embed the current user message only (D-045; the same code as offline S1/S4; one vector reused) → G3 cache hook (a
    no-op until WP-17) → G4 route (`router.route` with the artifact; λ from config) → G5 call with
    failover → G6 checks hook (no-op until WP-16) → G7 trace.
 4. `gateway/failover.py`: on error/timeout → next-lowest s(h), preferring a different upstream

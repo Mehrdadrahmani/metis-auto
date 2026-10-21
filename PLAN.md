@@ -24,7 +24,7 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 | M2 | **The minimum credible result** is: routed system vs always-best (claude-sonnet-4-6) on the locked test set, cost saved with a pre-registered quality non-inferiority margin and paired CIs (§8). UniRoute vs ZeroRouter/K-NN is the secondary result. | must | It answers the brief's question ("cheaper without losing quality") whatever the ranking of routers. |
 | M3 | **4 candidates:** deepseek-v4-flash, gpt-4o-mini, gemini-2.5-flash, claude-sonnet-4-6 (strong; premium baseline; anchor if pairwise). | must (owner) | The most-used production models. |
 | M4 | **"Unseen model" test becomes a demo:** hide gemini-2.5-flash while choosing K and λ, then add it with its fingerprint only and show where it gets routed. Reported as an illustration, not as evidence. | should | With 4 models a real held-out evaluation (spec S3.4, ~1/3 of models) has 1 model; no statistics possible. Honest framing. |
-| M5 | **Clustering input = the user's text only, embedded with a frozen general-purpose text embedder** (paper §5.1), never the system prompt. **Open decision Q-021:** the user message alone (paper) or with up to 2 previous turns (spec S1, [ours]). The instruction-traits test was **removed** (not in the paper; DEV-1 withdrawn). | must | System prompts are ~100× longer than user messages and would turn clusters into "one cluster per chatbot". The paper embeds the prompt itself. |
+| M5 | **Clustering input = the user's text only, embedded with a frozen general-purpose text embedder** (paper §5.1), never the system prompt. **Decided (Q-021, D-045):** the **current user message only** (paper), no previous turns. **[DEV-8]** vs spec S1 (T = 2), owner decision | must | System prompts are ~100× longer than user messages and would turn clusters into "one cluster per chatbot". The paper embeds the prompt itself. |
 | M6 | **Generation keeps each chatbot's own system prompt, retrieved context and real history** (as production). `gen_config` = sampling parameters only (temperature, max tokens). **[DEV-2]** (spec S6 says one shared system prompt) | must (owner) | Grading answers produced without the chatbot's instructions would measure the wrong thing. |
 | M7 | **Turns whose system prompt > 20,000 characters are excluded from val/test** (expected ~8% of turns; exact share reported). Online they are routed by the hard context rule. | must (owner) | A few prompts of 60k+ tokens would take a large part of the budget and bias costs. |
 | M8 | **Label method by a slim pilot** (owner-approved **[DEV-3]**): 100 pilot val prompts, 4 models, both pointwise and pairwise judging; the owner labels 100 items; choose the method by human agreement (criterion B) **and** separability (D); ties → pointwise. Spec criteria A and C are computed but not decisive (too few prompts to be meaningful). | must | The spec's full pilot (2×2 cross-evaluation on 150 test prompts) is underpowered; this saves ~1 week and ~$10 of the 4. |
@@ -403,10 +403,11 @@ metis-auto/
 | WP-14 | Read the evaluation protocol before the freeze | wait |
 | WP-17 | **Cache threshold method** (deferred decision) | AI-grader labels (≤ $1) |
 | WP-19 | **Gate 3** is automatic (tag exists); "go" for the live latency run (~$1.5) | wait |
-| Any time | Deviations DEV-2…DEV-7 (§1); open decisions Q-020, Q-021; deadline or data-date changes | — |
+| Any time | Deviations DEV-2…DEV-8 (§1); open decision Q-020; deadline or data-date changes | — |
 
 Deviations: ~~DEV-1~~ (withdrawn: no instruction traits) · **DEV-2**
 per-chatbot system prompt in generation (agreed) · **DEV-3** slim pilot (agreed) · **DEV-4** balanced
 accuracy + κ in the gate · **DEV-5** judge prompt extended with instructions/context · **DEV-6**
 R = 20 split-validation repeats (only if Q-020 keeps split-validation) · **DEV-7** paper-faithful
-clustering/routing: α = 0, nearest centroid, no n_min drop (owner-requested, agreed).
+clustering/routing: α = 0, nearest centroid, no n_min drop (owner-requested, agreed) · **DEV-8**
+embedding input = current user message only, no context turns (owner decision, agreed).

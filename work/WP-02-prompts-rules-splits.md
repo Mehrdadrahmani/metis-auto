@@ -28,9 +28,10 @@ categories only balance splits and reports (never routing).
 4. `src/metis/data/prompts.py` → table `prompts` (parquet in `runs/s1/`), one row per user message
    followed by a bot reply:
    - `prompt_id` = hash(session_id, message index); `session_id`, `category`, `timestamp`;
-   - `text` = redacted original user text; `text_norm`; `context_turns` = up to **T = 2** previous
-     turns (role-tagged, redacted), and `embed_input` = `context_turns` + user text, truncated from the
-     left to **512 tokens** (approximate tokens with the embedder tokenizer later; chars/3 for now);
+   - `text` = redacted original user text; `text_norm`; `embed_input` = the **current user message
+     only** (normalized, redacted; no previous turns: D-045 / DEV-8, owner decision, as in the
+     paper), truncated to **512 tokens** keeping the start (approximate tokens with the embedder
+     tokenizer later; chars/3 for now);
    - generation context: `system_prompt_id` (hash of redacted instructions), `history` (all previous
      turns, keep the last 10 turns and ≤ 6,000 tokens), `rag_context` (from the reply's `rag.context`);
    - production reply: `prod_model`, `prod_provider`, `prod_answer` (redacted; for the similarity
