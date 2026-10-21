@@ -1,13 +1,12 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-10-21 · by session WP-01
+Updated: 2026-10-21 · by session WP-01/WP-02
 
 ## Now
-- Current WP: **WP-02 Prompts, rules, splits** (in progress, step 2)
-- Last step done: WP-01 finished: `src/metis/data/{schema,load,redact,inspect}.py`,
-  `scripts/data_card.py`, 48 tests pass; `results/data_card_sample.md` matches all expected counts;
-  redaction re-scan 0 (report: `work/reports/WP-01-report.md`)
-- **Exact next step:** `/start` → read `work/WP-02-prompts-rules-splits.md` → WP-02 step 1
-  (propose, wait for OK). Q-021 answered: embed the current user message only (D-045).
+- Current WP: **WP-03 Embedder + Qdrant** (not started)
+- Last step done: WP-02 finished: S1 prompts table, hard rules, S2 splitter, configs, 90 tests
+  pass; sample dry run → `results/s1_s2_sample_counts.md` (report: `work/reports/WP-02-report.md`)
+- **Exact next step:** `/start` → read `work/WP-03-embedder-choice.md` → WP-03 step 1 (propose,
+  wait for OK; mentions the model download, Jina v5-text-small ≈ 1.4 GB + nano)
 - Model: default (Opus 5.5)
 
 ## Waiting on the owner
@@ -24,11 +23,9 @@ Updated: 2026-10-21 · by session WP-01
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
-- D-048 Jina v5-text-small + Qdrant local; D-047 embed the whole message; D-046 judge current msg only
-- D-045 embedding input = current user message only (Q-021, DEV-8)
-- D-044 MLflow (local) for traces + router run comparison; added to WP-04/14/15/18
-- D-043 WP-06: all outgoing text redacted (keys also found in `content` and attachment URLs)
-- D-042 redaction pattern set incl. `opaque_value`; D-041 continuity mechanism
+- D-048 Jina v5-text-small (local, clustering adapter; nano fallback) + Qdrant local mode
+- D-047 embed the whole message; D-046 / DEV-9 judge sees the current message only
+- D-045 / DEV-8 embedding input = current user message only; D-044 local MLflow
 
 ## Next WPs that can start
-- WP-02 now; WP-04 and WP-05 in parallel (depend only on WP-00); WP-06 after WP-04
+- WP-03 now; WP-04 and WP-05 in parallel (depend only on WP-00); WP-06 after WP-04

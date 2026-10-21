@@ -18,6 +18,18 @@ file, the WP reports and `MASTER_LOG.md §2`.
   Shows why every outgoing text is redacted (D-042, D-043).
 - Privacy by design: the agent never reads content; only counts, hashes and masked shapes (E13).
 
+## WP-02 Prompts, rules, splits
+- Sample: 434 prompt rows → 375 with a real LLM reply → 343 usable for val/test, 371 for train.
+- Exclusions (waterfall): workflow 32, no model 27, image 3, junk 2, exact duplicates 27.
+- System prompts > 20k chars occur only in workflow turns (29 rows); 0 of 375 LLM replies → the
+  M7 exclusion costs nothing on the sample.
+- Widget clicks: 14 of 19 messages after a choice widget are exact clicks, all handled by
+  workflow steps (supports the hard-rule design of the gateway).
+- Mostly Persian: fa 321 / en 15 / mixed 7 among usable prompts.
+- Input size ≈ 1,675 tokens per message (chars/3), matching the budget assumption (1,640).
+- Split by session, stratified by category, ≤ 3 prompts per session, recent pool; reproducible
+  (hashes); test ids sealed in a separate file.
+
 ## Decisions to explain in the method chapter
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);

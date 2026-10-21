@@ -93,6 +93,15 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-10-21 · WP-02 session (Opus)
+- Wrote `src/metis/data/{normalize,lang,rules,prompts,split}.py`, `src/metis/config.py`,
+  `configs/{models,pipeline}.yaml`, scripts `s1_ingest.py`, `s2_split.py`, `s1_s2_counts.py`,
+  tests (90 pass). Deps added: pandas, pyarrow, pyyaml.
+- Sample: 434 prompt rows, 375 LLM replies, 343 eligible val/test, 371 train; huge prompts only
+  in workflow turns (0 of 375 LLM replies); widget clicks 14/19 exact; est_tokens_in mean 1,675.
+  Dry-run split 60/40/20 reproducible; test ids sealed. `results/s1_s2_sample_counts.md`.
+- Owner decisions this session: D-045, D-046 (DEV-9), D-047, D-048. No content read. Cost $0.
+
 ### 2026-10-21 · WP-01 follow-up (Opus)
 - Consistency pass for the report: WP-02 keeps `context_turns` for the judge only (spec A1/A2); START_HERE, ROADMAP.html, PLAN (E10, phase 7, tree), ROADMAP WP-20 row, WP-20 updated (DEV-8, MLflow screenshots, redraw diagrams 02/05). New running file `report/NOTES.md`; `/handoff` step 5b adds report notes each session.
 - Owner answered Q-021: embed the current user message only (D-045, DEV-8); WP-02/WP-15/PLAN/ROADMAP updated.

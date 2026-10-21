@@ -1,0 +1,255 @@
+{
+  "stage": "s2_split",
+  "seed": 20261020,
+  "sizes_requested": {
+    "val": 60,
+    "test": 40,
+    "pilot": 20
+  },
+  "sessions_total": 99,
+  "pool_sessions": 99,
+  "pool_capacity": 205,
+  "pool_oldest_created_at": "2026-01-14T19:30:34",
+  "val_sessions": 29,
+  "test_sessions": 16,
+  "shortfall": {
+    "val": {
+      "developer_pegahdev": 0,
+      "general_athena": 0,
+      "operator_gapify": 0,
+      "other_other": 0
+    },
+    "test": {
+      "developer_pegahdev": 0,
+      "general_athena": 0,
+      "operator_gapify": 0,
+      "other_other": 0
+    }
+  },
+  "config_ids": {
+    "pipeline": "49ec93224327"
+  },
+  "counts_by_split": {
+    "train": 190,
+    "val": 60,
+    "test": 40,
+    "none": 144
+  },
+  "pilot": 20,
+  "cal_per_model": {
+    "deepseek-v4-flash": 7,
+    "gemini-2.5-flash": 6,
+    "gpt-4o-mini": 7
+  },
+  "counts_split_category_lang": [
+    {
+      "split": "none",
+      "category": "developer_pegahdev",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "none",
+      "category": "developer_pegahdev",
+      "lang": "fa",
+      "n": 19
+    },
+    {
+      "split": "none",
+      "category": "developer_pegahdev",
+      "lang": "mixed",
+      "n": 1
+    },
+    {
+      "split": "none",
+      "category": "general_athena",
+      "lang": "fa",
+      "n": 29
+    },
+    {
+      "split": "none",
+      "category": "general_athena",
+      "lang": "mixed",
+      "n": 1
+    },
+    {
+      "split": "none",
+      "category": "operator_gapify",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "none",
+      "category": "operator_gapify",
+      "lang": "fa",
+      "n": 38
+    },
+    {
+      "split": "none",
+      "category": "other_other",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "none",
+      "category": "other_other",
+      "lang": "fa",
+      "n": 51
+    },
+    {
+      "split": "none",
+      "category": "other_other",
+      "lang": "other",
+      "n": 2
+    },
+    {
+      "split": "test",
+      "category": "developer_pegahdev",
+      "lang": "en",
+      "n": 2
+    },
+    {
+      "split": "test",
+      "category": "developer_pegahdev",
+      "lang": "fa",
+      "n": 6
+    },
+    {
+      "split": "test",
+      "category": "developer_pegahdev",
+      "lang": "mixed",
+      "n": 2
+    },
+    {
+      "split": "test",
+      "category": "general_athena",
+      "lang": "fa",
+      "n": 11
+    },
+    {
+      "split": "test",
+      "category": "operator_gapify",
+      "lang": "fa",
+      "n": 8
+    },
+    {
+      "split": "test",
+      "category": "other_other",
+      "lang": "fa",
+      "n": 11
+    },
+    {
+      "split": "train",
+      "category": "developer_pegahdev",
+      "lang": "en",
+      "n": 9
+    },
+    {
+      "split": "train",
+      "category": "developer_pegahdev",
+      "lang": "fa",
+      "n": 31
+    },
+    {
+      "split": "train",
+      "category": "developer_pegahdev",
+      "lang": "mixed",
+      "n": 2
+    },
+    {
+      "split": "train",
+      "category": "general_athena",
+      "lang": "en",
+      "n": 6
+    },
+    {
+      "split": "train",
+      "category": "general_athena",
+      "lang": "fa",
+      "n": 58
+    },
+    {
+      "split": "train",
+      "category": "general_athena",
+      "lang": "mixed",
+      "n": 2
+    },
+    {
+      "split": "train",
+      "category": "operator_gapify",
+      "lang": "en",
+      "n": 2
+    },
+    {
+      "split": "train",
+      "category": "operator_gapify",
+      "lang": "fa",
+      "n": 20
+    },
+    {
+      "split": "train",
+      "category": "other_other",
+      "lang": "fa",
+      "n": 59
+    },
+    {
+      "split": "train",
+      "category": "other_other",
+      "lang": "mixed",
+      "n": 1
+    },
+    {
+      "split": "val",
+      "category": "developer_pegahdev",
+      "lang": "fa",
+      "n": 15
+    },
+    {
+      "split": "val",
+      "category": "general_athena",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "val",
+      "category": "general_athena",
+      "lang": "fa",
+      "n": 15
+    },
+    {
+      "split": "val",
+      "category": "operator_gapify",
+      "lang": "fa",
+      "n": 13
+    },
+    {
+      "split": "val",
+      "category": "other_other",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "val",
+      "category": "other_other",
+      "lang": "fa",
+      "n": 14
+    },
+    {
+      "split": "val",
+      "category": "other_other",
+      "lang": "mixed",
+      "n": 1
+    }
+  ],
+  "sha256": {
+    "train": "a5993ee5254f1a626996a0d004e0dacafaee1a32e554eff9d30a4159d0414c74",
+    "val": "f95effa1434e4c02268e9a2307f6c67c48094f0ce041547686cd72fd5d0ce26e",
+    "test": "c9ef9639e4b330ad5c274d4707e9ca23d7ee308f96279d759c02208fff15afb1",
+    "pilot": "6681a0c333b91e4df3348dd9e6553361bcf243a2577290b90c36edc708db8d7a",
+    "cal": "e3313de0a03d6ab32efba38b70af02794c9ac95deb666172f7ed3acbb55d6b20"
+  },
+  "sizes_section": "sample_dry_run",
+  "input": "runs/s1/prompts.parquet",
+  "duration_s": 2.3,
+  "cost_usd": 0.0
+}

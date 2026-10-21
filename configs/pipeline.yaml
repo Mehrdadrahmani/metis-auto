@@ -1,0 +1,20 @@
+# S1/S2 settings (WP-02). Sizes from PLAN (val 400 / test 300 / pilot 100 / cal 100).
+seed: 20261020
+s1:
+  huge_prompt_chars: 20000          # M7: excluded from labeled sets
+  min_text_chars: 2
+  history_max_turns: 10             # generation context: last 10 messages ...
+  history_max_tokens: 6000          # ... and at most this many estimated tokens
+  chars_per_token: 3                # rough estimate until the embedder/LLM tokenizers are known
+  embed_truncate: false             # D-047: the whole message is embedded
+s2:
+  n_val: 400
+  n_test: 300
+  n_pilot: 100                      # subset of val
+  recent_pool_factor: 3             # recent pool holds ~3x the needed labeled prompts
+  max_per_session: 3                # eligible prompts per session in val/test
+  cal_models: [deepseek-v4-flash, gpt-4o-mini, gemini-2.5-flash]   # round-robin, non-anchor
+sample_dry_run:                     # step 8: scaled sizes for the 100-session sample
+  n_val: 60
+  n_test: 40
+  n_pilot: 20

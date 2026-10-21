@@ -25,6 +25,9 @@ nobody looks at test prompts or test labels until WP-19.
    range, categories, models, providers, widgets, attachments, RAG, redaction hits.
 3. S1 on the full data → exclusion table per reason; eligible prompts; share of huge-prompt turns
    (if > 15%: ⏸ ask the owner: raise the threshold or truncate; PLAN §6).
+   Report the share **among LLM replies** separately (on the sample all huge prompts were workflow
+   turns, 0 of 375 LLM replies; WP-02 report). Check the recent pool capacity ≥ 3 × 700 and how many
+   eligible prompts the 3-per-session cap leaves unused (81 on the sample).
 4. Decide sizes from PLAN §6: eligible ≥ 3,000 → val 400 / test 300; 1,500–3,000 → same sizes, K ≤ 6;
    < 1,500 → reduced plan (val 300 / test 200, K ≤ 6). Log the decision.
 5. S2 split (seed 20261020) → `results/split_manifest.json` (counts per split × category × language;
