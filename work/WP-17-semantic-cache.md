@@ -27,7 +27,10 @@ Pairs come from the **train** split only (never test).
       measured.
    3. **Exact match only:** $0, safest; weak on the brief's "semantic" requirement.
    Record the decision (D-xxx).
-2. `gateway/cache.py`: in-memory store per namespace (numpy matrix of normalized vectors + metadata),
+2. `gateway/cache.py`: Qdrant collection per namespace (D-048; local mode, payload = ids, hashes and
+   numbers; the cached answer itself is stored locally next to it, never in git; lookup ≤ 5 ms p95,
+   else in-memory numpy fallback) + metadata. Test whether Jina's `text-matching` adapter separates
+   paraphrases better than `clustering` (costs a second embedding per request: measure latency),
    persistence to SQLite; `lookup(namespace, vec, text_norm)` → exact first, then max cosine ≥ θ;
    `store()` only if the answer passed checks and the message is cacheable.
 3. `gateway/cache_policy.py`: `is_cacheable(msg, session)`: first turn or no reference words to

@@ -34,7 +34,7 @@ K ∈ {3…8} (+ K = 1 comparison), Eq. 12 with α = 0, nearest-centroid assignm
 6. `router/select_k.py` (S9, R = 20) and `router/select_lambda.py` (S10: grid {0} ∪ 60 log-spaced in
    [1e-3, 1e2]; quality mode and budget mode). Experiment mode: `dev`/`holdout` roles.
 7. `eval/baselines.py`: always-best, always-cheapest, **ZeroRouter** (convex hull of (ĉ, val loss),
-   randomized mixing per spec S11), **K-NN** (k tuned by split-validation, candidate k ∈ {5, 10, 20,
+   randomized mixing per spec S11), **K-NN** (via `metis.embed.store` Qdrant exact search, D-048; k tuned by split-validation, candidate k ∈ {5, 10, 20,
    40, 80} capped by N_val/3), **logistic** per model on embeddings (C tuned by 5-fold CV on val;
    nice). All expose the same `predict_loss(x, h)` / routing interface.
 8. `eval/stats.py`: paired bootstrap (10,000, seeded) for differences of quality, cost and area;

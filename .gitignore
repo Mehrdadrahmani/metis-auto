@@ -2,6 +2,7 @@
 /cache/
 /runs/
 /mlflow/
+/qdrant/
 mlruns/
 .env
 *.env

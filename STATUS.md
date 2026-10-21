@@ -2,7 +2,7 @@
 Updated: 2026-10-21 · by session WP-01
 
 ## Now
-- Current WP: **WP-02 Prompts, rules, splits** (not started)
+- Current WP: **WP-02 Prompts, rules, splits** (in progress, step 2)
 - Last step done: WP-01 finished: `src/metis/data/{schema,load,redact,inspect}.py`,
   `scripts/data_card.py`, 48 tests pass; `results/data_card_sample.md` matches all expected counts;
   redaction re-scan 0 (report: `work/reports/WP-01-report.md`)
@@ -24,6 +24,7 @@ Updated: 2026-10-21 · by session WP-01
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-048 Jina v5-text-small + Qdrant local; D-047 embed the whole message; D-046 judge current msg only
 - D-045 embedding input = current user message only (Q-021, DEV-8)
 - D-044 MLflow (local) for traces + router run comparison; added to WP-04/14/15/18
 - D-043 WP-06: all outgoing text redacted (keys also found in `content` and attachment URLs)

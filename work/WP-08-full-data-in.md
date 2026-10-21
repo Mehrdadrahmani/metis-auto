@@ -32,8 +32,9 @@ nobody looks at test prompts or test labels until WP-19.
    table with standardized differences. **Seal the test set:** test ids go only to
    `runs/s2/test_ids.sealed` (git-ignored) + their hash in the manifest; later code may only *use* it
    through `scripts/eval_test.py` (WP-19).
-6. S4: embed train + val + test (`embed_input`) with the chosen embedder → `runs/s4/`. Near-duplicate
-   removal inside train (cosine > 0.95, keep one); report counts.
+6. S4: embed train + val + test (`embed_input`) with jina-embeddings-v5-text-small (`clustering`
+   adapter, D-048) → `runs/s4/` + Qdrant collection (payload ids/numbers only). Near-duplicate
+   removal inside train via Qdrant search (cosine > 0.95, keep one); report counts.
 7. S5: K-means on train for K ∈ {3…8} (+ K = 1); assign val and test to the nearest centroid; report
    cluster sizes (train/val/test) per K (paper-faithful: no K is dropped; small clusters flagged).
 8. Cluster naming: write `runs/s5/clusters_K<k>.html` (10 random redacted **train** prompts per

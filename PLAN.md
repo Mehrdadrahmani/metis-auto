@@ -75,7 +75,8 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 | Candidates | deepseek-v4-flash · gpt-4o-mini · gemini-2.5-flash · claude-sonnet-4-6 (anchor/premium) |
 | Judge | GPT-5.x class via Metis AI (confirm in WP-04) |
 | Splits | by session; val **400**, test **300** (locked), cal 100 items ⊂ val, pilot val 100 ⊂ val; train = all remaining eligible prompts (unlabeled); val/test drawn from the most recent period, stratified by the 4 categories |
-| Embedder | chosen in WP-03 (BGE-M3 or multilingual-E5 class), local |
+| Embedder | **jina-embeddings-v5-text-small** (`clustering` adapter), local; nano as latency fallback (D-048) |
+| Vector store | **Qdrant**, local mode (`qdrant/`, git-ignored): K-NN baseline, near-duplicates, semantic cache (D-048) |
 | K | {3…8} (+ K = 1 comparison); Eq. 12 (α = 0); nearest centroid; area under the deferral curve; K-selection data per Q-020 |
 | λ | {0} ∪ 60 log-spaced in [1e-3, 1e2]; quality mode (target set on val) and budget mode both reported |
 | Budget | hard cap **$60**; expected ~$25 (pointwise) / ~$35 (pairwise) (§7) |
@@ -364,7 +365,7 @@ metis-auto/
 │                         pipeline.yaml (K, α, λ grid, seeds), budget.yaml, gateway.yaml
 ├── src/metis/
 │   ├── data/             load.py, redact.py, normalize.py, prompts.py (S1), split.py (S2), rules.py
-│   ├── embed/            embedder.py (S4)
+│   ├── embed/            embedder.py (S4), store.py (Qdrant)
 │   ├── llm/              client.py (LiteLLM → Metis AI), callcache.py, budget.py, runner.py (resumable)
 │   ├── judge/            templates/, pointwise.py, pairwise.py, parse.py, calibration.py
 │   ├── router/           kmeans.py (S5), fingerprints.py + bt.py (S8), select_k.py (S9),
@@ -376,6 +377,7 @@ metis-auto/
 ├── scripts/              one CLI per stage: s1_ingest … s12_package, pilot_*, eval_test
 ├── tests/                unit tests + synthetic-data tests + fault injection
 ├── dashboard/            static HTML or Streamlit app over traces/results
+├── qdrant/               git-ignored local Qdrant store (vectors + ids, no text)
 ├── mlflow/               git-ignored local MLflow store (traces, runs; redacted text only)
 ├── artifacts/            router_v1/ (frozen router: centroids, Ψ, ĉ, λ, configs, hashes; no text)
 ├── results/              committed aggregates only (tables, figures; no prompt/answer text)
@@ -393,7 +395,7 @@ metis-auto/
 | When | Decision | Default if no answer |
 |---|---|---|
 | WP-00 | Approve installs (hooks, skills, jq, gh), GitHub repo creation | wait |
-| WP-03 | Embedder choice | the measured winner |
+| WP-03 | Embedder check | Jina v5-small OK (latency, Persian, clusters) or nano |
 | WP-04 | Metis AI key in `.env`; confirm judge model id | wait |
 | WP-08 | Name the clusters from a local sample file (~15 min) | wait |
 | WP-08 | **Gate 1:** budget memo; huge-prompt threshold if > 15% excluded | wait |

@@ -1,4 +1,4 @@
-# WP-03: Choose the embedder (S4)
+# WP-03: Set up and check the embedder (S4) + vector store
 
 > **Paste prompt (fallback):** "Read STATUS.md, AGENTS.md and work/WP-03-embedder-choice.md; follow the
 > session protocol."
@@ -12,8 +12,15 @@ One frozen multilingual embedder is used offline (clustering, K-NN) and online (
 must handle Persian, be fast on the owner's Apple Silicon Mac (16 GB+), and give readable clusters.
 Latency budget: embedding ≤ 60 ms p95 for one message of ≤ 512 tokens (PLAN E5). The whole message
 is embedded, never cut by us (D-047): prefer an embedder whose max input covers the longest user
-messages (sample max ≈ 13.8k chars ≈ 4.6k tokens; bge-m3 reads 8,192); report how many messages
-exceed each candidate's limit and the latency of long inputs.
+messages (sample max ≈ 13.8k chars ≈ 4.6k tokens); report how many messages exceed the limit and
+the latency of long inputs.
+
+**Owner decision D-048:** embedder = **jinaai/jina-embeddings-v5-text-small** (Feb 2026; 677M,
+32K tokens, 1024-dim, LoRA adapter **`clustering`** used for routing; local, CC BY-NC 4.0 = fine for
+the course, state in the report); fallback **jina-embeddings-v5-text-nano** (239M) only if small
+misses the latency budget. Vector store = **Qdrant in local mode** (`qdrant-client`, path `qdrant/`,
+git-ignored; no Docker). This WP no longer picks among several models: it sets them up and checks
+them; if Jina fails the Persian check, ⏸ ask the owner (reference: bge-m3).
 
 ## Read (only these)
 - `ref/UNIROUTE_PIPELINE.md` §4 S4. `PLAN.md` §1.2 E5. `work/reports/WP-02-report.md` (token stats).
@@ -24,8 +31,13 @@ exceed each candidate's limit and the latency of long inputs.
 3. `src/metis/embed/embedder.py`: `Embedder(name, device, max_tokens, prefix)` with `encode(list[str])
    -> np.ndarray` (L2-normalized float32), batch size param, records `embedder_id` = name + revision
    hash + preprocessing config hash.
-4. Candidates: **BAAI/bge-m3** (dense output only), **intfloat/multilingual-e5-base** (prefix
-   `"query: "`), **intfloat/multilingual-e5-large** (prefix `"query: "`). Pin model revisions.
+4. Models: **jina-embeddings-v5-text-small** (task adapter `clustering`; check the model card for
+   the exact loading code, `trust_remote_code` and task/prompt names) and **v5-text-nano** (latency
+   fallback). Pin revisions. Confirm Persian is covered (model card / tokenizer) and record it.
+4b. `src/metis/embed/store.py`: Qdrant local (`QdrantClient(path="qdrant/")`), one collection per
+   `embedder_id` (cosine, 1024-dim); point id = `prompt_id` hash; **payload = ids and numbers only**
+   (split, category, lang, cluster), never text. Helpers: `upsert`, `search(vec, k, filter)`,
+   `exact=True` option (K-NN baseline must equal brute force). Tests vs numpy brute force.
 5. Benchmarks, written to `results/embedder_benchmark.md`:
    - **Latency:** single-message p50/p95 over 200 calls (inputs of 30, 200, 512 tokens; synthetic Persian
      text), on CPU and on MPS; throughput (prompts/s) for batch 64; RAM use; load time.
@@ -39,8 +51,8 @@ exceed each candidate's limit and the latency of long inputs.
      8 random redacted prompts per cluster for the owner.
      ⏸ **STOP:** ask the owner to open the files (~10 min) and say for each model whether the clusters
      "make sense" (yes / partly / no). Claude never reads the prompt texts.
-6. Decide with a simple score: must meet the latency budget on the owner's Mac; then the best Persian
-   AUC; cluster readability as a tie-breaker. Write the decision and its reasons.
+6. Confirm: small meets the latency budget on the owner's Mac (else nano), Persian AUC acceptable
+   (≥ 0.85 as a guide), clusters "make sense". Write the results.
    ⏸ **STOP:** owner approves.
 7. Freeze the choice in `configs/pipeline.yaml` (`embedder.name`, revision, device, `max_tokens`,
    prefix, batch size).

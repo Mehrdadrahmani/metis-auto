@@ -27,7 +27,7 @@ we don't claim a second aggregator unless one is configured (E3).
    `metadata` field or headers `X-Metis-Chatbot`, `X-Metis-Session`. Non-streaming first.
 3. **Pipeline per request** (each stage timed): G1 rules (`metis.data.rules`: widget click → return a
    workflow marker, image → vision-capable models only, context fit, breaker state → available set
-   A) → G2 normalize + embed the current user message only (D-045; the same code as offline S1/S4; one vector reused) → G3 cache hook (a
+   A) → G2 normalize + embed the current user message only (D-045; Jina v5-small `clustering` adapter, D-048; the same code as offline S1/S4; one vector reused) → G3 cache hook (a
    no-op until WP-17) → G4 route (`router.route` with the artifact; λ from config) → G5 call with
    failover → G6 checks hook (no-op until WP-16) → G7 trace.
 4. `gateway/failover.py`: on error/timeout → next-lowest s(h), preferring a different upstream
@@ -64,7 +64,9 @@ we don't claim a second aggregator unless one is configured (E3).
 
 ## End of session
 - `work/reports/WP-15-report.md` (endpoints, how to run, latency numbers). If the overhead budget is
-  missed, note the slow stage and propose a fix (smaller embedder input, batching) for the owner.
+  missed, note the slow stage and propose a fix (nano embedder, batching) for the owner.
+- Qdrant local mode allows one process per folder: if the gateway and an offline job need it at the
+  same time, use a separate folder/copy, or ⏸ ask the owner about a Qdrant Docker server.
 
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-15 step n" (or WP-15b), stop.
