@@ -31,7 +31,9 @@ categories only balance splits and reports (never routing).
    - `text` = redacted original user text; `text_norm`; `embed_input` = the **current user message
      only** (normalized, redacted; no previous turns: D-045 / DEV-8, owner decision, as in the
      paper), truncated to **512 tokens** keeping the start (approximate tokens with the embedder
-     tokenizer later; chars/3 for now);
+     tokenizer later; chars/3 for now); `context_turns` = up to **T = 2** previous turns
+     (role-tagged, redacted) **for the judge templates only** (spec A1/A2 `{context_turns}`), never
+     embedded;
    - generation context: `system_prompt_id` (hash of redacted instructions), `history` (all previous
      turns, keep the last 10 turns and ≤ 6,000 tokens), `rag_context` (from the reply's `rag.context`);
    - production reply: `prod_model`, `prod_provider`, `prod_answer` (redacted; for the similarity

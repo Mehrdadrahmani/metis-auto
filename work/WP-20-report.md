@@ -15,11 +15,11 @@ reviewer: method, deviations from the spec and why, results with CIs, what didn'
 
 ## Read (only these)
 - `work/reports/WP-08…WP-19-report.md` (summaries), `results/final/*` (tables), `results/eval_protocol.md`,
-  `PLAN.md` §1 (decisions, DEV list), `ref/proposal/proposal.md` (structure and wording to reuse).
+  `PLAN.md` §1 (decisions, DEV list), `report/NOTES.md` (running notes from every WP), `MASTER_LOG.md §2` (decision register), `ref/proposal/proposal.md` (structure and wording to reuse).
 
 ## Steps
 1. ⏸ Confirm format and length with the owner; propose the outline (≤ 12 lines).
-2. Outline: 1 Problem (brief) · 2 Data (data card, splits) · 3 Method (UniRoute as in the paper + deviations DEV-2…7)
+2. Outline: 1 Problem (brief) · 2 Data (data card, splits, secrets found and redacted) · 3 Method (UniRoute as in the paper + deviations DEV-2…8)
    · 4 Labels (pilot, gate, biases) · 5 Router results (primary verdict first, then ladder, Ψ table,
    holdout demo) · 6 Gateway (rules, cache, failover, checks; replay + live latency) · 7 Economics
    (cost per 1k queries, savings; optional pricing model: fixed vs dynamic subscription from the
@@ -28,7 +28,9 @@ reviewer: method, deviations from the spec and why, results with CIs, what didn'
 3. Figures: draw.io (pastel style of PLANNING-REQUEST §4: blue free/offline, orange paid, green
    online, grey maintenance, yellow totals/gates; dashed grey groups; thin black arrows; no titles
    inside images) for architecture/pipeline; matplotlib for curves (consistent palette). Export
-   PNG + PDF.
+   PNG + PDF. `ref/diagrams/02-offline-build` and `05-uniroute` still show "+ 2 turns" as the
+   embedding input: redraw with the current message only (D-045). Screenshots of the local MLflow UI
+   (taken by the owner; check that no message text is visible) for the observability section.
 4. Draft; then a **separate fresh session** reviews: every claim backed by a number in
    `results/final/`, CI present, deviations honest, no prompt/answer text anywhere.
 5. Presentation outline (10–12 slides) + a 3-minute demo script (dashboard + one gateway request).

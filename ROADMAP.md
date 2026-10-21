@@ -46,7 +46,7 @@ Phase 7 Report, release  WP-20 → WP-21                                        
 | ☐ | **WP-17** Semantic cache | 5 | **Decision point first** (threshold method), then exact + meaning cache with safety rules | default | 150k | 👤 decide method | ≤ $1 | 15 (+08 for real pairs) | 18 |
 | ☐ | **WP-18** Replay + dashboard | 5 | Replay simulator on stored answers + measured latencies; metrics; dashboard | default | 200k | – | – | 14, 16, 17 | 19 |
 | ☐ | **WP-19** Final evaluation | 6 | Open the test set once; protocol analyses; ladder + production; replay; small live latency run | default | 250k | 👤 "go" for live run | **~$1.5** | G3, 18 | 20 |
-| ☐ | **WP-20** Report + presentation | 7 | Report with CIs and limitations, draw.io figures, dashboard screenshots, optional pricing model | default | 200k | 👤 review | – | 19 | 21 |
+| ☐ | **WP-20** Report + presentation | 7 | Report with CIs and limitations, draw.io figures, dashboard + MLflow screenshots, optional pricing model | default | 200k | 👤 review | – | 19 | 21 |
 | ☐ | **WP-21** Reproducibility + release | 7 | Fresh clone rerun from caches ($0), secret scan, README, tag `v1.0` | default | 100k | – | – | 20 | – |
 
 Paid total (pointwise path) ≈ **$25**, pairwise ≈ **$35**, cap **$60** (`PLAN.md §7`).

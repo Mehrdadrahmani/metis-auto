@@ -58,7 +58,6 @@ At the end, **`/handoff`** saves everything (status, log, git, GitHub).
 
 - Do you use a VPN with Claude Code? (Metis AI wasn't reachable from here.)
 - Choosing K: our way (halves of validation, $0) or exactly the paper (~$14 more)?
-- Clustering text: user message only (paper) or with 2 previous turns?
 - Allow one ~$1 real test on 20 sample messages before the full data arrives?
 - Backup of the data and saved answers: where (external drive, iCloud, Google Drive)?
 - Exact deadline date, and what the `default` model in the data means (ask the course team).

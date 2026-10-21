@@ -139,7 +139,7 @@ good enough</b> for that kind of message, following the <b>UniRoute</b> paper (G
       <p>Compare 2–3 local multilingual embedders for speed and Persian quality.</p>
       <p class="you"><b>You:</b> look at sample groups in a local page (10 min), approve the choice.</p></div>
     <div class="wp free"><div class="tag">WP-04</div><h3>Calling models safely</h3>
-      <p>Saves every answer (never pays twice), enforces the $60 cap, resumes after crashes; checks Metis AI is reachable.</p>
+      <p>Saves every answer (never pays twice), enforces the $60 cap, resumes after crashes; checks Metis AI is reachable; every call visible in a local MLflow screen.</p>
       <p class="you"><b>You:</b> put the Metis AI key in <code>.env</code>.</p></div>
     <div class="wp free"><div class="tag">WP-05</div><h3>UniRoute, exactly as the paper</h3>
       <p>K-means, nearest centre, report cards (Eq. 12), routing rule (Eq. 8/11), area under the deferral curve, QNC,
@@ -201,7 +201,7 @@ good enough</b> for that kind of message, following the <b>UniRoute</b> paper (G
   <p><b>Goal:</b> the middleman the course asks for, around the router.</p>
   <div class="grid">
     <div class="wp online"><div class="tag">WP-15</div><h3>The middleman server</h3>
-      <p>OpenAI-style API: hard rules → router → call the model → backup model on failure → logs.</p></div>
+      <p>OpenAI-style API: hard rules → router → call the model → backup model on failure → logs (also in MLflow).</p></div>
     <div class="wp online"><div class="tag">WP-16</div><h3>Checks + step-up</h3>
       <p>Free checks (empty, cut off, wrong language, bad JSON) → retry → stronger model.</p></div>
     <div class="wp online"><div class="tag">WP-17 · ≤ $1</div><h3>Semantic cache</h3>
@@ -255,7 +255,7 @@ good enough</b> for that kind of message, following the <b>UniRoute</b> paper (G
 <div class="tablewrap"><table>
 <tr><th>ID</th><th>Question</th><th>Options</th><th>Needed by</th></tr>
 <tr class="open"><td>Q-020</td><td>Report cards used <i>while choosing K</i></td><td>Paper: grade ~500 training messages (~$14, breaks "train stays ungraded") · Our version: split the validation set in halves ($0, recommended)</td><td>WP-05</td></tr>
-<tr class="open"><td>Q-021</td><td>Text used for clustering</td><td>Paper: user message only · Spec: message + 2 previous turns (helps short follow-ups)</td><td>WP-02</td></tr>
+<tr><td>Q-021 ✓</td><td>Text used for clustering</td><td><b>Decided (D-045):</b> the current user message only, as in the paper</td><td>WP-02</td></tr>
 <tr class="open"><td>Q-017</td><td>Can your network reach Metis AI while Claude Code runs (VPN)?</td><td>Yes → normal · No → you start paid scripts yourself, or a backup provider</td><td>WP-04</td></tr>
 <tr class="open"><td>$1 test</td><td>Allow one ~$1 real test on 20 sample messages before the full data?</td><td>Keep rule (no) · Allow (recommended: checks Metis AI, prices, grader early)</td><td>WP-04</td></tr>
 <tr class="open"><td>DEV-4/5/6</td><td>Small spec changes</td><td>κ ≥ 0.40 in the gate · grader sees chatbot instructions · 20 validation splits</td><td>WP-05/06/11</td></tr>

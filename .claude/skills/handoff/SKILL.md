@@ -16,6 +16,8 @@ disable-model-invocation: false
    New decisions → `§Decisions` with an ID. Spending → `§Budget`.
 5. **Adapt the plan:** if a result triggers a row of `PLAN.md §6`, edit the affected
    `work/WP-*.md` files now and log "D-xxx: WP-yy updated because …".
+5b. Add report-worthy findings of this session (numbers, decisions, surprises, what didn't work)
+   to `report/NOTES.md` under the WP's heading (aggregates only, no content).
 6. If the WP is finished: write `work/reports/WP-xx-report.md`, tick it in `ROADMAP.md`, set the
    next WP in `STATUS.md`.
 7. `git add` code and docs only (never `data/`, `cache/`, `runs/`, `.env`); the pre-commit hook runs
