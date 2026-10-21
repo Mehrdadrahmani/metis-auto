@@ -140,6 +140,7 @@ run it on its own when the guard warns)
    New decisions → `§Decisions` with an ID. Spending → `§Budget`.
 5. **Adapt the plan:** if a result triggers a row of `PLAN.md §Results → changes`, edit the affected
    `work/WP-*.md` files now and log "D-xxx: WP-yy updated because …".
+5b. Add report-worthy findings to `report/NOTES.md` under the WP's heading (aggregates only).
 6. If the WP is finished: write `work/reports/WP-xx-report.md`, tick it in `ROADMAP.md`, set the
    next WP in `STATUS.md`.
 7. Run the secret scan, then `git add` (code, docs; never `data/`, `runs/`, `.env`) and commit
