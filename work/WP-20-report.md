@@ -19,7 +19,7 @@ reviewer: method, deviations from the spec and why, results with CIs, what didn'
 
 ## Steps
 1. ⏸ Confirm format and length with the owner; propose the outline (≤ 12 lines).
-2. Outline: 1 Problem (brief) · 2 Data (data card, splits, secrets found and redacted) · 3 Method (UniRoute as in the paper + deviations DEV-2…8)
+2. Outline: 1 Problem (brief) · 2 Data (data card, splits, secrets found and redacted) · 3 Method (UniRoute as in the paper + deviations DEV-2…9)
    · 4 Labels (pilot, gate, biases) · 5 Router results (primary verdict first, then ladder, Ψ table,
    holdout demo) · 6 Gateway (rules, cache, failover, checks; replay + live latency) · 7 Economics
    (cost per 1k queries, savings; optional pricing model: fixed vs dynamic subscription from the

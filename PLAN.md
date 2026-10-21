@@ -404,11 +404,13 @@ metis-auto/
 | WP-14 | Read the evaluation protocol before the freeze | wait |
 | WP-17 | **Cache threshold method** (deferred decision) | AI-grader labels (≤ $1) |
 | WP-19 | **Gate 3** is automatic (tag exists); "go" for the live latency run (~$1.5) | wait |
-| Any time | Deviations DEV-2…DEV-8 (§1); open decision Q-020; deadline or data-date changes | — |
+| Any time | Deviations DEV-2…DEV-9 (§1); open decision Q-020; deadline or data-date changes | — |
 
 Deviations: ~~DEV-1~~ (withdrawn: no instruction traits) · **DEV-2**
 per-chatbot system prompt in generation (agreed) · **DEV-3** slim pilot (agreed) · **DEV-4** balanced
 accuracy + κ in the gate · **DEV-5** judge prompt extended with instructions/context · **DEV-6**
 R = 20 split-validation repeats (only if Q-020 keeps split-validation) · **DEV-7** paper-faithful
 clustering/routing: α = 0, nearest centroid, no n_min drop (owner-requested, agreed) · **DEV-8**
-embedding input = current user message only, no context turns (owner decision, agreed).
+embedding input = current user message only, no context turns (owner decision, agreed) · **DEV-9**
+judge input = current user message only (spec A1/A2 `{context_turns}` dropped; generation keeps the
+history, M6; owner decision, agreed).
