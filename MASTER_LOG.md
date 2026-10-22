@@ -65,6 +65,8 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-046 | 2026-10-21 | Judge input = **current user message only** (+ chatbot instructions and RAG context, DEV-5); spec A1/A2 `{context_turns}` dropped → **DEV-9**. Generation keeps the real history (M6). Risk: weaker judging of short follow-ups ("yes, the second one"); report as a limitation. WP-02, WP-06, PLAN §11, WP-20 updated | A | owner |
 | D-047 | 2026-10-21 | Embedding input = the **whole** current user message (no 512-token cut); light normalization only (ي→ی, ك→ک, digits, spaces). WP-03 prefers a long-input embedder (e.g. bge-m3, 8,192 tokens) and reports messages over the limit; any truncation needs the owner | A | owner |
 | D-048 | 2026-10-21 | Embedder = **jina-embeddings-v5-text-small** (local, `clustering` adapter; nano fallback for latency; CC BY-NC 4.0 noted for the report); vector store = **Qdrant local mode** (K-NN baseline, near-duplicates, semantic cache, gateway lookups; payload ids/numbers only). Nearest-centroid routing unchanged (paper). Light normalization kept (owner OK). WP-03/05/08/15/17, PLAN, ROADMAP updated | A | owner |
+| D-049 | 2026-10-22 | Jina v5 clustering input = model prompt **"Document: "** + message (model-card and standalone `-clustering` model default `default_prompt_name = document`); passed explicitly as `prompt_name` and part of `embedder_id` | P | WP-03 |
+| D-050 | 2026-10-22 | Embedder weights stored in `models/<short>_<rev12>/` (git-ignored), fetched by `scripts/fetch_model.py` (curl, resumable; HF xet download stalled and a network drop lost 1 GB), loaded by local path; revisions pinned (small `dd76d535f544`, nano `8a7f00aac812`). Folder names must be Python identifiers (remote code import). Token-budget batching (`max_batch_tokens` 8,192) after an 11 GB out-of-memory kill | P | WP-03 |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -92,6 +94,17 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-22 · WP-03 session part 1 (Opus)
+- Steps 2–4b done: deps (sentence-transformers 6.2, torch 2.14, qdrant-client 1.19, peft, scikit-learn,
+  psutil); `src/metis/embed/{embedder,store}.py`; `tests/test_embed.py` (9 tests; 99 total pass);
+  `scripts/fetch_model.py`, `scripts/s4_embed_bench.py`, `scripts/data/persian_pairs.yaml` (40
+  synthetic pairs written by the agent). D-049, D-050.
+- Model facts: small = Qwen3-0.6B-Base (119 languages, Persian expected), 1024-dim, 32K tokens; nano =
+  EuroBERT-210M (Persian likely not covered). Smoke test small: Persian paraphrase cos 0.91 vs
+  unrelated 0.54; CPU load 7 s (warm).
+- Step 5 not valid yet: run 1 killed at 11 GB (fixed); run 2 stopped: battery + Low Power Mode
+  (M1 Pro 16 GB), throttled CPU p95 193/373/644 ms (30/200/512 tok). Rerun plugged in. Cost $0.
 
 ### 2026-10-21 · WP-02 session (Opus)
 - Wrote `src/metis/data/{normalize,lang,rules,prompts,split}.py`, `src/metis/config.py`,

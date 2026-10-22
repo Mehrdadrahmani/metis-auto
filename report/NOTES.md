@@ -30,10 +30,19 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Split by session, stratified by category, ≤ 3 prompts per session, recent pool; reproducible
   (hashes); test ids sealed in a separate file.
 
+## WP-03 Embedder + Qdrant (part 1)
+- Jina v5-text-small (Qwen3-0.6B base, 1024-dim, 32K tokens) runs locally; clustering LoRA adapter +
+  "Document: " prompt as the model card. Nano (EuroBERT-210M) likely lacks Persian.
+- Qdrant local mode does brute-force search: exact K-NN == numpy (tested).
+- Practical issues: HF download stalls (switched to resumable curl); batch of long messages needs
+  > 11 GB RAM → token-budget batching; Low Power Mode on battery makes latency numbers invalid
+  (measure plugged in).
+
 ## Decisions to explain in the method chapter
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);
   generation sees the full history (M6).
+- D-049 clustering input = "Document: " + message (model-card default).
 - D-048 Jina v5-text-small (local, clustering adapter) + Qdrant local; license CC BY-NC 4.0
   (non-commercial: fine for the course, a limitation for production use); Persian coverage checked in WP-03.
 - D-047 the whole user message is embedded (no truncation); only light Persian normalization.
