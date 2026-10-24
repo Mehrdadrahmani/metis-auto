@@ -39,7 +39,8 @@ nobody looks at test prompts or test labels until WP-19.
    **train only** (never test): latency with `merge_adapter: true`, token stats, K-means readability;
    write `runs/s4/cluster_samples_<model>.html` from train prompts. ⏸ **STOP:** owner opens both
    pages (sample verdict was "partly", too small to judge) and picks small or nano (nano meets the
-   60 ms budget, small ≈ 220 ms at 512 tokens; Persian pair AUC: nano ≥ small). Set
+   60 ms budget, small ≈ 220 ms at 512 tokens; Persian pair AUC: nano ≥ small; WP-03b public Persian
+   clustering: small ≈ nano within 0.015 NMI, nano 2.5× faster → clustering alone favours nano). Set
    `configs/pipeline.yaml` `s4.choice`; log D-xxx. Then embed train + val + test (`embed_input`) with
    the chosen model (`clustering` adapter, merged) → `runs/s4/` + Qdrant collection (payload
    ids/numbers only). Near-duplicate

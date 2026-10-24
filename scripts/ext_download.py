@@ -23,6 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 import pyarrow.parquet as pq
+from huggingface_hub import get_token
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "external"
@@ -34,10 +35,19 @@ def log(msg: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", file=sys.stderr, flush=True)
 
 
+def hf_request(url: str, **kw) -> urllib.request.Request:
+    """Request carrying the HF token (gated sets) for huggingface.co hosts only; never sent on redirects."""
+    req = urllib.request.Request(url, **kw)
+    tok = get_token()  # HF_TOKEN env var or `hf auth login`; never printed
+    if tok and (urllib.parse.urlparse(url).hostname or "").endswith("huggingface.co"):
+        req.add_unredirected_header("Authorization", f"Bearer {tok}")
+    return req
+
+
 def get_json(url: str, tries: int = 12) -> dict:
     for i in range(tries):
         try:
-            with urllib.request.urlopen(url, timeout=90) as r:
+            with urllib.request.urlopen(hf_request(url), timeout=90) as r:
                 d = json.load(r)
             if "error" not in d:
                 return d
@@ -56,8 +66,12 @@ def parquet(ds: str, config: str, split: str, columns: list[str]) -> pd.DataFram
         dest = OUT / "raw" / ds.replace("/", "__") / config / split / f["filename"]
         dest.parent.mkdir(parents=True, exist_ok=True)
         if not dest.exists() or dest.stat().st_size != f["size"]:
+            tok = get_token()  # header via stdin, so it is not visible in the process list
             subprocess.run(
-                ["curl", "-sSL", "--retry", "5", "-C", "-", "-o", str(dest), f["url"]], check=True
+                ["curl", "-sSL", "--retry", "5", "-C", "-", "-H", "@-", "-o", str(dest), f["url"]],
+                input=f"Authorization: Bearer {tok}\n" if tok else "",
+                text=True,
+                check=True,
             )
         parts.append(pd.read_parquet(dest, columns=columns))
     return pd.concat(parts, ignore_index=True)
@@ -67,7 +81,7 @@ class HTTPRange(io.RawIOBase):
     """Seekable read-only file over HTTP range requests (pyarrow reads only the parts it needs)."""
 
     def __init__(self, url: str) -> None:
-        with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=90) as r:
+        with urllib.request.urlopen(hf_request(url, method="HEAD"), timeout=90) as r:
             self.url, self.size = (
                 r.url,
                 int(r.headers["Content-Length"]),
@@ -217,6 +231,11 @@ def build(name: str) -> tuple[pd.DataFrame, dict]:
         df = df.sample(n=3000, random_state=SEED)
         return pd.DataFrame({"ext_id": df.index.astype(str), "text": df.question, "label": "medicine (med QA)",
                              "fine": None}), {"dataset": "aictsharif/persian-med-qa (3,000 sampled)", "licence": "apache-2.0"}  # fmt: skip
+    if name == "khayyam":  # gated: needs `hf auth login` with access granted by the authors
+        df = parquet("raia-center/khayyam-challenge", "default", "train",
+                     ["ID", "Question Body", "Course Title", "final_category_fa"])  # fmt: skip
+        return pd.DataFrame({"ext_id": df.ID.astype(str), "text": df["Question Body"], "label": df.final_category_fa,
+                             "fine": df["Course Title"]}), {"dataset": "raia-center/khayyam-challenge (gated)", "licence": "cc-by-nc-nd-4.0 (academic only)"}  # fmt: skip
     if name == "arena":
         a = filtered(
             "lmarena-ai/arena-human-preference-140k", "fa", ["id", "conversation_a"], arena140
@@ -248,7 +267,7 @@ def build(name: str) -> tuple[pd.DataFrame, dict]:
 
 
 SOURCES = ["global_mmlu", "include", "persian_arc", "parsinlu_mc", "persian_bbh", "percor",
-           "legal_qa", "med_qa", "lmsys_fa", "arena", "wildchat"]  # fmt: skip
+           "legal_qa", "med_qa", "khayyam", "lmsys_fa", "arena", "wildchat"]  # fmt: skip
 
 
 def main() -> None:

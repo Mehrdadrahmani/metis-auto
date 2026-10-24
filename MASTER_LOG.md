@@ -69,6 +69,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-050 | 2026-10-22 | Embedder weights stored in `models/<short>_<rev12>/` (git-ignored), fetched by `scripts/fetch_model.py` (curl, resumable; HF xet download stalled and a network drop lost 1 GB), loaded by local path; revisions pinned (small `dd76d535f544`, nano `8a7f00aac812`). Folder names must be Python identifiers (remote code import). Token-budget batching (`max_batch_tokens` 8,192) after an 11 GB out-of-memory kill | P | WP-03 |
 | D-051 | 2026-10-24 | **graphify** (uv tool `graphifyy[pdf]` 0.9.95, project-scoped) = knowledge graph of the whole project (code by local AST, docs/PDFs by the session's own subagents; no external API, no Gemini key). Outputs `graphify-out/` (graph.json, graph.html, GRAPH_REPORT.md committed; cache ignored). `.graphifyignore` excludes data/, cache/, runs/, models/, qdrant/, mlflow/, .env, sealed files. Git hooks (post-commit/checkout/merge/rewrite in `.githooks/`) rebuild the code graph; `/handoff` step 2b refreshes docs when needed; CLAUDE.md tells agents to query the graph before grepping | A | owner |
 | D-052 | 2026-10-24 | Embedder: keep **both** jina v5 small and nano as candidates; choose in **WP-08** on real train data (owner). Sample benchmark (`results/embedder_benchmark.md`): only nano meets 60 ms p95 at 512 tok (59 ms, adapter merged; small ≈ 220 ms); Persian pair AUC weak with `clustering` (small 0.61, nano 0.66), better with `text-matching` (0.76 / 0.85) → semantic cache uses `text-matching` (`s4.cache_task`). `merge_adapter` added (same vectors, ~2× faster). Owner's cluster verdict on the sample: "partly" (too small to judge). WP-08 step 6 updated | A | owner |
+| D-053 | 2026-10-25 | WP-03b follows the **paper's embedding + K-means protocol** with Jina instead of Gecko (owner): random split train 60 % / val 400 / test, 10 repeats; K-means on train only; nearest-centroid assignment; K grid 3..N_val/50 (+ larger K for reference). K choice by deferral area impossible at $0 → label NMI + Khayyam human-difficulty gap (Prop. 2 proxy). Embedding cache keyed by text hash. HF login (`hf auth login`, token in the user's HF cache, never in the repo) for gated Khayyam (access granted) | A | owner |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -85,6 +86,7 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-020 | K selection: report cards from graded train prompts (paper; ~$14, breaks fixed rule 6) or split-validation on val (spec, $0) | owner | WP-05 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-023 | Test the router on public Persian data like the paper (owner idea): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
+| Q-024 | Spec S5 says *every* val cluster ≥ 50 prompts; the paper only caps K ≤ N_val/50 (average 50). WP-03b: with val 400, K = 8 has ~5 of 8 clusters < 50, K ≥ 5 often ≥ 1 → strict rule leaves K = 3–4. Keep strict, or follow the paper + α-smoothing? (`results/persian_clustering.md` §4.5) | owner | WP-14 |
 | Q-019 | Approve DEV-4, DEV-5, DEV-6 | owner | WP-06 (DEV-5), WP-11 (DEV-4), WP-05 (DEV-6) |
 
 ## 4. Budget ledger
@@ -97,6 +99,19 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-25 · WP-03b session part 2 (Opus, overnight, owner asleep after OK)
+- HF access fixed: `scripts/ext_download.py` sends the HF token (from `hf auth login`) only to
+  huggingface.co hosts, never on redirects, curl header via stdin. Owner logged in; Khayyam source added
+  (20,805 items, 38 categories, 95 courses). Arena (2,160) and WildChat (3,913) downloads finished.
+- `scripts/s4_persian_cluster.py` rewritten to the paper protocol (D-053); new `scripts/s4_cluster_plots.py`
+  (K curves, difficulty gap, UMAP maps; interactive local maps in `runs/s4/`). Dev deps: matplotlib,
+  umap-learn, plotly.
+- Runs: small, nano, nano text-matching on 65,897 unique texts. Results `results/persian_clustering.md`:
+  paper picture holds (mix clusters well, one topic not, chat in between); small ≈ nano (±0.015 NMI), nano
+  2.5× faster; clusters cut the Khayyam human-error gap ~5–6 % (one topic ~0 %); val 400 limits K (gain peaks
+  K ≈ 8–16). New Q-024 (S5 cluster-size rule).
+- Tests 100 pass. Cost $0.
 
 ### 2026-10-24 · WP-03b session part 1 (Opus)
 - Owner explained the paper's data: benchmarks with pre-computed answers; asked for Persian data like

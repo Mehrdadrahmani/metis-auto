@@ -19,6 +19,10 @@ Real Persian chat prompts (Arena, WildChat, lmsys) show how chat traffic cluster
 - `results/embedder_benchmark.md` · `ref/docs/persian-datasets.md` · `scripts/s4_embed_bench.py` (reuse)
 
 ## Steps
+> **Updated 2026-10-25 (D-053):** steps 1–5 done with the paper protocol (train 60 % / val 400 / test,
+> 10 repeats, K = 3..8 + reference K, Khayyam human-difficulty proxy); figures by `scripts/s4_cluster_plots.py`.
+> Results `results/persian_clustering.md`. Waiting at the step-5 ⏸.
+
 1. `scripts/ext_download.py`: download public sets to `data/external/<name>/` (git-ignored) via the HF
    datasets-server parquet/filter API (plain HTTP, resumable). Record source, config, split, licence,
    row count, sha256 in `data/external/manifest.json` (+ a copy without paths in `results/`).

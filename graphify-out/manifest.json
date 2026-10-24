@@ -264,9 +264,9 @@
     "semantic_hash": "75a015f5657a512c1758ab303c9bf509"
   },
   "MASTER_LOG.md": {
-    "mtime": 1792844628.4733431,
-    "seen": 1792844668.9804091,
-    "ast_hash": "a8e044f2ef9715eab04212de2716b168",
+    "mtime": 1792850101.6534674,
+    "seen": 1792850114.071636,
+    "ast_hash": "15a5a07c9414e4420e0ade7c6b66b5bc",
     "semantic_hash": ""
   },
   "PLAN.md": {
@@ -288,9 +288,9 @@
     "semantic_hash": "ac7b2e31103f1f75e15695498bf5e0be"
   },
   "ROADMAP.md": {
-    "mtime": 1792844628.4742417,
-    "seen": 1792844668.980413,
-    "ast_hash": "1557fc473ba3a358c81f83d8522cfc79",
+    "mtime": 1792847857.5342715,
+    "seen": 1792850114.07164,
+    "ast_hash": "aed67fb8c521c47f45fe4adc05cefafb",
     "semantic_hash": ""
   },
   "START_HERE.md": {
@@ -300,9 +300,9 @@
     "semantic_hash": "f518c7a52d7cbb99a373161293d12a86"
   },
   "STATUS.md": {
-    "mtime": 1792844652.495988,
-    "seen": 1792844668.9804149,
-    "ast_hash": "9994c4acdad1cca7295b2fbf987314dd",
+    "mtime": 1792850101.6529856,
+    "seen": 1792850114.0716422,
+    "ast_hash": "6a57f07ab3d0695a10327c3aa48b99ae",
     "semantic_hash": ""
   },
   "ref/PLANNING-REQUEST.md": {
@@ -639,6 +639,36 @@
     "mtime": 1792844588.7680845,
     "seen": 1792844668.980466,
     "ast_hash": "7eb9d341d48b47152d37c338212f2afe",
+    "semantic_hash": ""
+  },
+  "results/persian_clustering_nano.json": {
+    "mtime": 1792849084.4292333,
+    "seen": 1792850114.071597,
+    "ast_hash": "b525f7c080fd76fd944ef7b67681cf2e",
+    "semantic_hash": ""
+  },
+  "results/persian_sources.json": {
+    "mtime": 1792848286.8068376,
+    "seen": 1792850114.071598,
+    "ast_hash": "ff21375992e8e3dd8fa5597e0b0b4402",
+    "semantic_hash": ""
+  },
+  "scripts/ext_download.py": {
+    "mtime": 1792849223.456207,
+    "seen": 1792850114.0716019,
+    "ast_hash": "9b4f6be016dfbbafa67baed26d3d7ff6",
+    "semantic_hash": ""
+  },
+  "scripts/s4_persian_cluster.py": {
+    "mtime": 1792848706.4940045,
+    "seen": 1792850114.071608,
+    "ast_hash": "0d538f982650ae36e8cd4eefd4fb98e4",
+    "semantic_hash": ""
+  },
+  "work/WP-03b-persian-clustering.md": {
+    "mtime": 1792847857.2565193,
+    "seen": 1792850114.071659,
+    "ast_hash": "a81e6a33bedad5c9aa3667afac8be403",
     "semantic_hash": ""
   }
 }

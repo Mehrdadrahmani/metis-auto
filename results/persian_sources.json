@@ -61,5 +61,26 @@
   "rows": 5431,
   "sha256": "1ee0e30833daab3a",
   "date": "2026-10-24"
+ },
+ "khayyam": {
+  "dataset": "raia-center/khayyam-challenge (gated)",
+  "licence": "cc-by-nc-nd-4.0 (academic only)",
+  "rows": 20805,
+  "sha256": "97a7a0eca799bcd9",
+  "date": "2026-10-25"
+ },
+ "arena": {
+  "dataset": "lmarena-ai/arena-human-preference-140k + 100k (Persian)",
+  "licence": "cc-by-4.0",
+  "rows": 2160,
+  "sha256": "a9435943c0989d40",
+  "date": "2026-10-25"
+ },
+ "wildchat": {
+  "dataset": "allenai/WildChat-1M (Persian)",
+  "licence": "odc-by",
+  "rows": 3913,
+  "sha256": "65ab3cd28a901f3f",
+  "date": "2026-10-25"
  }
 }

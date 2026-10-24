@@ -49,6 +49,17 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Embedder choice (small vs nano) deferred to WP-08 on real train data (D-052).
 - Possible extra experiment: public Persian benchmarks (Q-023, `ref/docs/persian-datasets.md`).
 
+## WP-03b Persian clustering test (paper protocol, Jina instead of Gecko)
+- Public data, $0: 9 benchmarks + Khayyam (gated, granted) + 10,651 Persian chat first messages.
+- Protocol = paper: train 60 % / val 400 / test, 10 repeats, K-means on train, K = 3..8 (+ reference K).
+- NMI at K = 8 (small / nano): mix vs source 0.35 / 0.35; Khayyam 38 categories 0.42 / 0.41; MMLU 57 subjects
+  0.41 / 0.39; one topic 0.10 / 0.11. Chat silhouette 0.15 (benchmarks 0.15–0.30). Measured, 95 % CI ≤ ±0.015.
+- Human-difficulty proxy for Prop. 2 (Khayyam examinee error as one "model"): clusters shrink the gap vs
+  K = 1 by 5.4 % ± 0.4 (nano, K = 8, Ψ from val 400); one topic ≈ 0 → EmbedLLM vs Headlines reproduced.
+- With Ψ from val 400 the gain peaks at K ≈ 8–16 then falls (noise); from train it keeps rising → why K ≤ N_val/50.
+- Surprise: text-matching adapter = worse topic clusters but slightly larger difficulty gain (7.7 %).
+- Figures: `results/figures/persian_*.png`.
+
 ## Decisions to explain in the method chapter
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);
