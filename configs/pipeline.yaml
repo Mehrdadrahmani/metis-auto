@@ -18,3 +18,23 @@ sample_dry_run:                     # step 8: scaled sizes for the 100-session s
   n_val: 60
   n_test: 40
   n_pilot: 20
+s4:                                 # embedder (WP-03, D-048, D-052): choice between candidates in WP-08
+  choice: pending                   # small | nano; decided in WP-08 on real data (owner, D-052)
+  candidates:
+    small:
+      name: jinaai/jina-embeddings-v5-text-small
+      revision: dd76d535f5447ca3897a9c893fb1e612ead98192
+      path: models/jina_v5_text_small_dd76d535f544
+    nano:
+      name: jinaai/jina-embeddings-v5-text-nano
+      revision: 8a7f00aac812071b69403df470f1038ec85f8925
+      path: models/jina_v5_text_nano_8a7f00aac812
+  task: clustering                  # routing (S4/S5, G2); same embedder offline and online
+  cache_task: text-matching         # semantic cache (WP-17): better paraphrase separation (AUC)
+  prompt_name: document             # D-049
+  merge_adapter: true               # same vectors, ~2x faster (results/embedder_benchmark.md)
+  device: mps                       # cpu gives identical vectors (max diff 3.5e-7)
+  dtype: float32                    # fp16 gains little
+  batch_size: 16
+  max_batch_tokens: 8192
+  max_tokens: 32768                 # whole message (D-047); sample max 2,562 tokens

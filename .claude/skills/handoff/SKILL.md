@@ -9,6 +9,9 @@ disable-model-invocation: false
 1. Finish or cleanly stop the current step. Never leave a half-edited file; let a running long job
    checkpoint first.
 2. Run the tests for the touched code (`uv run pytest …`); note pass/fail.
+2b. Knowledge graph: the git hooks rebuild the code part of `graphify-out/` on every commit (free,
+   no LLM). If docs (`*.md`, `work/`, `ref/`) changed a lot this session, run `/graphify . --update`
+   (re-reads only changed docs; uses session usage, no money) and include `graphify-out/` in the commit.
 3. Rewrite `STATUS.md` (template in `CONTINUITY.md §3.1`, ≤ 60 lines): done, not done,
    **exact next step** (file + function + WP step number), waiting-on-owner, blockers, money.
    Keep the line `- Current WP: **WP-xx …**` (the status line reads it).

@@ -1,20 +1,77 @@
 {
-  "statusLine": { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/statusline.sh" },
+  "statusLine": {
+    "type": "command",
+    "command": "${CLAUDE_PROJECT_DIR}/.claude/statusline.sh"
+  },
   "hooks": {
     "SessionStart": [
-      { "matcher": "startup|resume|clear|compact",
-        "hooks": [ { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh", "timeout": 10 } ] }
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
     ],
     "UserPromptSubmit": [
-      { "hooks": [ { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/context-guard.sh", "timeout": 5 } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/context-guard.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ],
     "PreCompact": [
-      { "matcher": "manual|auto",
-        "hooks": [ { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-compact.sh", "timeout": 20 } ] }
+      {
+        "matcher": "manual|auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-compact.sh",
+            "timeout": 20
+          }
+        ]
+      }
     ],
     "PostCompact": [
-      { "matcher": "manual|auto",
-        "hooks": [ { "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/post-compact.sh", "timeout": 20 } ] }
+      {
+        "matcher": "manual|auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/post-compact.sh",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard search",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard read",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

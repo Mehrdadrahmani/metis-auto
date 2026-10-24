@@ -234,9 +234,12 @@ def main() -> None:
     st = VectorStore(f"bench-{a.model}", vecs.shape[1], path=None)
     st.upsert(df["prompt_id"].tolist(), vecs, [{"lang": x} for x in df["lang"]])
     ok = 0
+    pos = {p: i for i, p in enumerate(df["prompt_id"])}
     for q in range(20):
-        want = df["prompt_id"].to_numpy()[np.argsort(-(vecs @ vecs[q]), kind="stable")[:10]]
-        ok += [p for p, _ in st.search(vecs[q], 10, exact=True)] == list(want)
+        s = vecs @ vecs[q]
+        got = [pos[p] for p, _ in st.search(vecs[q], 10, exact=True)]
+        # compare scores, not ids: exact duplicates in the sample tie and may swap places
+        ok += bool(np.allclose(s[got], -np.sort(-s)[:10], atol=1e-6))
     out["qdrant_equals_numpy"] = f"{ok}/20"
     st.close()
 

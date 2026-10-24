@@ -38,6 +38,17 @@ file, the WP reports and `MASTER_LOG.md §2`.
   > 11 GB RAM → token-budget batching; Low Power Mode on battery makes latency numbers invalid
   (measure plugged in).
 
+## WP-03 Embedder + Qdrant (part 2)
+- Latency (one message, MPS, p95, 512 tok): small 311 ms → 221 ms with the LoRA adapter merged; nano
+  95 ms → 59 ms (meets the 60 ms budget). Merging gives identical vectors (≤ 4.6e-7); fp16 ≈ no gain.
+  Measured on battery (Low Power Mode off), n = 200 calls (40 for merged rows).
+- Persian paraphrase vs same-topic pairs (n = 20 + 20, synthetic): AUC with the clustering adapter
+  0.61 (small) / 0.66 (nano); text-matching 0.76 / 0.85. Surprise: nano (EuroBERT base) ≥ small on
+  every adapter. The clustering adapter groups by topic by design → use text-matching for the cache.
+- Sample clusters (K = 4/6, silhouette 0.08–0.15) split mainly by length and language; owner: "partly".
+- Embedder choice (small vs nano) deferred to WP-08 on real train data (D-052).
+- Possible extra experiment: public Persian benchmarks (Q-023, `ref/docs/persian-datasets.md`).
+
 ## Decisions to explain in the method chapter
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);

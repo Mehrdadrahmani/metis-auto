@@ -1,6 +1,7 @@
 """Embedder wrapper (fake model) and Qdrant store (in-memory) tests."""
 
 import hashlib
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -121,3 +122,19 @@ def test_token_budget_batches_keep_order():
     ref = Embedder("org/fake-model", "abc123def4567890", model=FakeModel(), max_batch_tokens=None)
     assert np.array_equal(v, ref.encode(texts))
     assert all(len(s) * max(map(len, s)) <= 100 for s, _ in m.calls)
+
+
+NANO = Path(__file__).parents[1] / "models/jina_v5_text_nano_8a7f00aac812"
+
+
+@pytest.mark.skipif(not NANO.exists(), reason="local nano model not downloaded")
+def test_merged_adapter_gives_same_vectors():
+    texts = ["سلام، وقت بخیر", "سفارشم کی به دستم می‌رسه؟", "How do I sort a list in Python?"]
+    kw = {"name": "jinaai/jina-embeddings-v5-text-nano", "revision": "8a7f00aac812"}
+    kw["path"] = str(NANO)
+    plain = Embedder(**kw).encode(texts)
+    merged = Embedder(**kw, merge_adapter=True)
+    assert np.abs(merged.encode(texts) - plain).max() < 1e-5
+    assert merged.embedder_id != Embedder(**kw, model=FakeModel()).embedder_id
+    with pytest.raises(ValueError, match="merged"):
+        merged.model[0].model.set_adapter("retrieval")

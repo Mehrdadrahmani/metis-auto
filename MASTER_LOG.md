@@ -67,6 +67,8 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-048 | 2026-10-21 | Embedder = **jina-embeddings-v5-text-small** (local, `clustering` adapter; nano fallback for latency; CC BY-NC 4.0 noted for the report); vector store = **Qdrant local mode** (K-NN baseline, near-duplicates, semantic cache, gateway lookups; payload ids/numbers only). Nearest-centroid routing unchanged (paper). Light normalization kept (owner OK). WP-03/05/08/15/17, PLAN, ROADMAP updated | A | owner |
 | D-049 | 2026-10-22 | Jina v5 clustering input = model prompt **"Document: "** + message (model-card and standalone `-clustering` model default `default_prompt_name = document`); passed explicitly as `prompt_name` and part of `embedder_id` | P | WP-03 |
 | D-050 | 2026-10-22 | Embedder weights stored in `models/<short>_<rev12>/` (git-ignored), fetched by `scripts/fetch_model.py` (curl, resumable; HF xet download stalled and a network drop lost 1 GB), loaded by local path; revisions pinned (small `dd76d535f544`, nano `8a7f00aac812`). Folder names must be Python identifiers (remote code import). Token-budget batching (`max_batch_tokens` 8,192) after an 11 GB out-of-memory kill | P | WP-03 |
+| D-051 | 2026-10-24 | **graphify** (uv tool `graphifyy[pdf]` 0.9.95, project-scoped) = knowledge graph of the whole project (code by local AST, docs/PDFs by the session's own subagents; no external API, no Gemini key). Outputs `graphify-out/` (graph.json, graph.html, GRAPH_REPORT.md committed; cache ignored). `.graphifyignore` excludes data/, cache/, runs/, models/, qdrant/, mlflow/, .env, sealed files. Git hooks (post-commit/checkout/merge/rewrite in `.githooks/`) rebuild the code graph; `/handoff` step 2b refreshes docs when needed; CLAUDE.md tells agents to query the graph before grepping | A | owner |
+| D-052 | 2026-10-24 | Embedder: keep **both** jina v5 small and nano as candidates; choose in **WP-08** on real train data (owner). Sample benchmark (`results/embedder_benchmark.md`): only nano meets 60 ms p95 at 512 tok (59 ms, adapter merged; small ≈ 220 ms); Persian pair AUC weak with `clustering` (small 0.61, nano 0.66), better with `text-matching` (0.76 / 0.85) → semantic cache uses `text-matching` (`s4.cache_task`). `merge_adapter` added (same vectors, ~2× faster). Owner's cluster verdict on the sample: "partly" (too small to judge). WP-08 step 6 updated | A | owner |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -82,6 +84,7 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
 | Q-020 | K selection: report cards from graded train prompts (paper; ~$14, breaks fixed rule 6) or split-validation on val (spec, $0) | owner | WP-05 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
+| Q-023 | Test the router on public Persian data like the paper (owner idea): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
 | Q-019 | Approve DEV-4, DEV-5, DEV-6 | owner | WP-06 (DEV-5), WP-11 (DEV-4), WP-05 (DEV-6) |
 
 ## 4. Budget ledger
@@ -94,6 +97,25 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-24 · WP-03 session part 2 (Opus)
+- **graphify** added for the whole project (D-051): uv tool `graphifyy[pdf]` 0.9.95, project skill,
+  CLAUDE.md rules, PreToolUse hooks, git hooks (post-commit/checkout/merge/rewrite in `.githooks/`),
+  `.graphifyignore` (data/cache/runs/models/qdrant/mlflow/.env/sealed). Full build: 930 nodes, 1,764
+  edges, 75 communities; docs/PDFs read by 6 session subagents (~640k tokens of usage, $0); 170
+  dangling edges (doc→code name mismatches). `/handoff` step 2b added.
+- Step 5 benchmark run on battery (Low Power Mode off; owner said no charger needed): results in
+  `results/embedder_benchmark.md` + `_small.json` / `_nano.json`. MPS p95 at 512 tok: small 311 ms,
+  nano 95 ms. Found the Jina code switches LoRA adapters per call → `Embedder(merge_adapter=True)`
+  (same vectors ≤ 4.6e-7, small 221 ms, nano **59 ms**). fp16 adds little.
+- Persian pairs AUC with `clustering`: small 0.61, nano 0.66 (fails 0.85 guide); `text-matching`
+  0.76 / 0.85 → cache adapter. Clustering adapter puts same-topic pairs together by design.
+- Qdrant 17/20 → ties between duplicate messages; check now compares scores (20/20).
+- Owner: cluster pages "partly" (sample too small); keep small + nano, choose in WP-08 (D-052;
+  WP-08 step 6 updated; `configs/pipeline.yaml` `s4:` block with candidates, choice pending).
+- Owner idea: test on public Persian data like the paper → web search → `ref/docs/persian-datasets.md`,
+  Q-023 (persian-llm-eval has per-item scores for 17–20 models, MIT, $0).
+- Tests: 100 pass (new: merged adapter == unmerged). Cost $0.
 
 ### 2026-10-22 · WP-03 session part 1 (Opus)
 - Steps 2–4b done: deps (sentence-transformers 6.2, torch 2.14, qdrant-client 1.19, peft, scikit-learn,

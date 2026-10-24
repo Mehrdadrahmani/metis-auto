@@ -1,0 +1,15 @@
+# graphify: never index raw data, caches, runs, models, secrets (AGENTS.md §4)
+data/
+cache/
+runs/
+mlflow/
+mlruns/
+qdrant/
+models/
+.env
+*.env
+*.sealed*
+.githooks/secret-allowlist
+# PNG diagrams duplicate the PDFs next to them
+diagrams/*.png
+ref/diagrams/*.png

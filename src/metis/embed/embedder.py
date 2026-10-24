@@ -4,6 +4,9 @@
 `max_tokens` is set to the model limit, and `count_tokens` lets callers report inputs above it.
 `embedder_id` = name + pinned revision + hash of the preprocessing config, so vectors from different
 settings never mix (one Qdrant collection per id).
+`merge_adapter=True` merges the task LoRA adapter into the base weights once at load: same vectors
+(max |diff| < 1e-6), about 2x faster on MPS, because the Jina code otherwise switches adapters on
+every call (results/embedder_benchmark.md). The model is then fixed to that one task.
 """
 
 from __future__ import annotations
@@ -33,6 +36,7 @@ class Embedder:
     batch_size: int = 16
     max_batch_tokens: int | None = 8192  # batch size × longest input ≤ this (memory)
     path: str | None = None  # local copy (models/<short>_<rev12>/, scripts/fetch_model.py)
+    merge_adapter: bool = False  # merge `task` LoRA into the weights at load (speed, same vectors)
     model: _Model | None = field(default=None, repr=False)  # injected in tests
 
     def __post_init__(self) -> None:
@@ -52,8 +56,26 @@ class Embedder:
             model_kwargs={"dtype": getattr(torch, self.dtype)},
         )
         m.max_seq_length = self.max_tokens
+        if self.merge_adapter:
+            self._merge(m)
         m.eval()
         return m
+
+    def _merge(self, m: Any) -> None:
+        """Replace the multi-adapter PEFT model by its base with `task` merged in."""
+        if self.task is None:
+            raise ValueError("merge_adapter needs a task")
+        tr = m[0]
+        tr.model.set_adapter(self.task)
+        base = tr.model.merge_and_unload(adapter_names=[self.task])
+        task = self.task
+
+        def only_merged(name: str | list[str]) -> None:  # the Jina forward calls set_adapter(task)
+            if (name if isinstance(name, list) else [name]) != [task]:
+                raise ValueError(f"adapter {task!r} is merged; cannot switch to {name!r}")
+
+        base.set_adapter = only_merged
+        tr.model = base
 
     @property
     def preprocessing(self) -> dict[str, Any]:
@@ -64,7 +86,7 @@ class Embedder:
             "prompt_name": self.prompt_name,
             "dtype": self.dtype,
             "normalize": "l2",
-        }
+        } | ({"merge_adapter": True} if self.merge_adapter else {})  # unmerged ids unchanged
 
     @property
     def embedder_id(self) -> str:
