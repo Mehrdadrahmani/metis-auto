@@ -1,0 +1,65 @@
+{
+ "global_mmlu": {
+  "dataset": "CohereLabs/Global-MMLU:fa",
+  "licence": "apache-2.0",
+  "rows": 14042,
+  "sha256": "c0e50ebaf12a2d9b",
+  "date": "2026-10-24"
+ },
+ "include": {
+  "dataset": "CohereLabs/include-base-44:Persian",
+  "licence": "apache-2.0",
+  "rows": 548,
+  "sha256": "331f00231ef6180c",
+  "date": "2026-10-24"
+ },
+ "persian_arc": {
+  "dataset": "MatinaAI/persian_arc",
+  "licence": "cc-by-sa-4.0",
+  "rows": 7787,
+  "sha256": "7350e9ad2e54a4ae",
+  "date": "2026-10-24"
+ },
+ "parsinlu_mc": {
+  "dataset": "PartAI/ParsiNLU-multiple-choice",
+  "licence": "unknown (ParsiNLU: CC BY-NC-SA 4.0)",
+  "rows": 2460,
+  "sha256": "cdc3a51ca559a14a",
+  "date": "2026-10-24"
+ },
+ "persian_bbh": {
+  "dataset": "MatinaAI/persian_bbh",
+  "licence": "unknown",
+  "rows": 4511,
+  "sha256": "654e707c4b2d6a45",
+  "date": "2026-10-24"
+ },
+ "percor": {
+  "dataset": "MCINext/PerCoR:validation (4,000 sampled)",
+  "licence": "apache-2.0",
+  "rows": 4000,
+  "sha256": "79384cc9c569d469",
+  "date": "2026-10-24"
+ },
+ "legal_qa": {
+  "dataset": "PerSets/iran-legal-persian-qa (3,000 sampled)",
+  "licence": "cc",
+  "rows": 3000,
+  "sha256": "56198b998c1f7e92",
+  "date": "2026-10-24"
+ },
+ "med_qa": {
+  "dataset": "aictsharif/persian-med-qa (3,000 sampled)",
+  "licence": "apache-2.0",
+  "rows": 3000,
+  "sha256": "d5a039561b3caf8b",
+  "date": "2026-10-24"
+ },
+ "lmsys_fa": {
+  "dataset": "mshojaei77/Persian_lmsys_QA",
+  "licence": "mit",
+  "rows": 5431,
+  "sha256": "1ee0e30833daab3a",
+  "date": "2026-10-24"
+ }
+}

@@ -1,19 +1,29 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-10-24 · by session WP-03 (part 2)
+Updated: 2026-10-24 · by session WP-03b (part 1)
 
 ## Now
-- Current WP: **WP-05 Router core + evaluation** (not started; WP-03 done, embedder choice → WP-08)
-- WP-03 done: benchmark in `results/embedder_benchmark.md`, report `work/reports/WP-03-report.md`.
-  Only nano meets 60 ms p95 at 512 tok (59 ms, MPS, `merge_adapter=True`; small 221 ms). Persian
-  pair AUC weak with `clustering` (0.61 / 0.66); `text-matching` better (0.76 / 0.85) → cache
-  adapter. Owner keeps **both** models; choice in WP-08 step 6 on train data (D-052).
-  `configs/pipeline.yaml` `s4:` holds both candidates (`choice: pending`). 100 tests pass.
-- graphify added for the whole project (D-051): query `graphify query "<q>"` before grepping;
-  git hooks rebuild the code graph on commit. Docs part last rebuilt 2026-10-24 (before this
-  handoff's doc edits): run `/graphify . --update` when docs changed a lot.
-- **Exact next step:** `/start` WP-05 (`work/WP-05-router-core-eval.md` step 1: propose, ⏸ wait).
-  WP-05 is $0, synthetic data only. Q-020 is not needed for WP-05's code (both K-selection data
-  sources can be implemented); it is needed by WP-14.
+- Current WP: **WP-03b Persian clustering test** (in progress, step 1–4 of 6; then WP-05)
+- Owner asked (2026-10-24): test only S4 embedding + S5 K-means on public Persian data (no LLM calls,
+  $0). WP file `work/WP-03b-persian-clustering.md`; sources in `ref/docs/persian-datasets.md`.
+- Done: `scripts/ext_download.py` (HF parquet; chat sets via HTTP range reads of the `language`
+  column, because the datasets-server /filter API failed); 9 sources in `data/external/*.parquet`
+  (Global-MMLU fa 14,042; INCLUDE 548; Persian ARC 7,787; ParsiNLU MC 2,460; Persian BBH 4,511;
+  PerCoR 4,000; legal QA 3,000; med QA 3,000; lmsys fa 5,431). `scripts/s4_persian_cluster.py`
+  (T1 mix ≤ 4,000/source, T2 Global-MMLU, T3 chat; K-means on 60 %, NMI/ARI/purity on 40 %).
+  Nano run on benchmarks done (interim, chat incomplete): T1 NMI vs source 0.42 at K = 6;
+  T2 NMI vs 57 subjects 0.50 at K = 57. Embeddings cached in `data/external/emb/`.
+- Stopped cleanly for the owner's break (both jobs resume from cache):
+  small embedding 16/41 chunks; chat download: Arena-140k done (7 files), Arena-100k + WildChat not.
+- **Exact next step (WP-03b step 1–4):**
+  1. `uv run python scripts/ext_download.py --only arena,wildchat` (background; ~10–20 min)
+  2. `HF_HUB_OFFLINE=1 TRANSFORMERS_VERBOSITY=error uv run python scripts/s4_persian_cluster.py small`
+     (~25 min), then the same with `nano` (chat part only, ~2 min); both again after step 1 if
+     step 1 finished later (cache keeps old chunks).
+  3. Optional reference: `... nano --task text-matching`.
+  4. Write `results/persian_clustering.md` from `results/persian_clustering_{small,nano}.json`;
+     ⏸ owner opens `runs/s4/persian_clusters_{small,nano}.html` (WP-03b step 5).
+- Khayyam: owner asked the authors, access pending → add later (`ext_download.py` needs a
+  `khayyam` source + `HF_TOKEN`). FarsEval-PKBETS (`MatinaAI/pkbets`) and PEKA are gated too.
 - Model: default (Opus 5.5)
 
 ## Waiting on the owner

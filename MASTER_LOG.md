@@ -98,6 +98,19 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-10-24 · WP-03b session part 1 (Opus)
+- Owner explained the paper's data: benchmarks with pre-computed answers; asked for Persian data like
+  that, then clarified: **only embedding + clustering** now (no model calls, $0); model testing later.
+- Searched HF/GitHub/web: no large free Persian set with per-model answers (leaderboards publish only
+  totals; Khayyam has questions + answers only). Found labelled Persian benchmarks (Global-MMLU fa,
+  INCLUDE, Persian ARC, ParsiNLU, Persian BBH, PerCoR, legal/med QA) and real Persian chats (Arena
+  ~2,160, WildChat ~3,600, lmsys 5,431). Gated, requested by owner / to request: Khayyam (pending),
+  FarsEval-PKBETS, PEKA.
+- New `work/WP-03b-persian-clustering.md`, `scripts/ext_download.py`, `scripts/s4_persian_cluster.py`.
+  9 sources downloaded (45K items). Nano interim: benchmark-mix NMI 0.42 (K = 6), Global-MMLU subject
+  NMI 0.50 (K = 57). Small 16/41 chunks; chat download partial. Stopped for the owner's break.
+- Tests 100 pass. Cost $0.
+
 ### 2026-10-24 · WP-03 session part 2 (Opus)
 - **graphify** added for the whole project (D-051): uv tool `graphifyy[pdf]` 0.9.95, project skill,
   CLAUDE.md rules, PreToolUse hooks, git hooks (post-commit/checkout/merge/rewrite in `.githooks/`),
