@@ -1,0 +1,2625 @@
+{
+ "model": "nano",
+ "K": 8,
+ "seed": 20261020,
+ "split": "1 (test part)",
+ "sets": {
+  "mix": {
+   "source": {
+    "nmi": 0.3504369696053818,
+    "nmi_shuffled": 0.0012679331818681921,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 1356,
+      "top": {
+       "persian_arc": 0.549,
+       "khayyam": 0.243,
+       "global_mmlu": 0.112,
+       "percor": 0.046,
+       "parsinlu_mc": 0.027
+      }
+     },
+     {
+      "cluster": 1,
+      "n": 1259,
+      "top": {
+       "khayyam": 0.38,
+       "persian_bbh": 0.316,
+       "parsinlu_mc": 0.164,
+       "global_mmlu": 0.112,
+       "persian_arc": 0.018
+      }
+     },
+     {
+      "cluster": 2,
+      "n": 760,
+      "top": {
+       "percor": 0.549,
+       "global_mmlu": 0.174,
+       "parsinlu_mc": 0.079,
+       "legal_qa": 0.055,
+       "persian_arc": 0.046
+      }
+     },
+     {
+      "cluster": 3,
+      "n": 841,
+      "top": {
+       "persian_arc": 0.643,
+       "khayyam": 0.118,
+       "global_mmlu": 0.115,
+       "percor": 0.059,
+       "persian_bbh": 0.032
+      }
+     },
+     {
+      "cluster": 4,
+      "n": 1335,
+      "top": {
+       "legal_qa": 0.734,
+       "global_mmlu": 0.151,
+       "percor": 0.052,
+       "include": 0.034,
+       "parsinlu_mc": 0.013
+      }
+     },
+     {
+      "cluster": 5,
+      "n": 1746,
+      "top": {
+       "med_qa": 0.641,
+       "percor": 0.127,
+       "global_mmlu": 0.117,
+       "persian_arc": 0.046,
+       "khayyam": 0.027
+      }
+     },
+     {
+      "cluster": 6,
+      "n": 2749,
+      "top": {
+       "persian_bbh": 0.38,
+       "percor": 0.146,
+       "global_mmlu": 0.14,
+       "khayyam": 0.132,
+       "parsinlu_mc": 0.114
+      }
+     },
+     {
+      "cluster": 7,
+      "n": 1075,
+      "top": {
+       "percor": 0.273,
+       "parsinlu_mc": 0.26,
+       "global_mmlu": 0.204,
+       "khayyam": 0.195,
+       "include": 0.032
+      }
+     }
+    ],
+    "labels": {
+     "khayyam": {
+      "n": 1571,
+      "main_cluster": 1,
+      "share_in_main": 0.304
+     },
+     "global_mmlu": {
+      "n": 1532,
+      "main_cluster": 6,
+      "share_in_main": 0.251
+     },
+     "percor": {
+      "n": 1520,
+      "main_cluster": 2,
+      "share_in_main": 0.274
+     },
+     "persian_arc": {
+      "n": 1515,
+      "main_cluster": 0,
+      "share_in_main": 0.491
+     },
+     "persian_bbh": {
+      "n": 1512,
+      "main_cluster": 6,
+      "share_in_main": 0.691
+     },
+     "legal_qa": {
+      "n": 1176,
+      "main_cluster": 4,
+      "share_in_main": 0.833
+     },
+     "med_qa": {
+      "n": 1152,
+      "main_cluster": 5,
+      "share_in_main": 0.972
+     },
+     "parsinlu_mc": {
+      "n": 937,
+      "main_cluster": 6,
+      "share_in_main": 0.335
+     },
+     "include": {
+      "n": 206,
+      "main_cluster": 6,
+      "share_in_main": 0.345
+     }
+    }
+   },
+   "fine": {
+    "nmi": 0.3533693101865287,
+    "nmi_shuffled": 0.026232383454644494,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 1356,
+      "top": {
+       "ARC-Easy": 0.355,
+       "ARC-Challenge": 0.193,
+       "شیمی 3": 0.023,
+       "فیزیک 1  دهم ریاضی": 0.022,
+       "فیزیک 3 دوازدهم ریاضی": 0.021
+      }
+     },
+     {
+      "cluster": 1,
+      "n": 1259,
+      "top": {
+       "math_and_logic": 0.154,
+       "multistep_arithmetic_two": 0.066,
+       "temporal_sequences": 0.064,
+       "date_understanding": 0.059,
+       "هوش ریاضی و منطقی": 0.04
+      }
+     },
+     {
+      "cluster": 2,
+      "n": 760,
+      "top": {
+       "zoomit": 0.071,
+       "digiato": 0.068,
+       "(none)": 0.066,
+       "common_knowledge": 0.058,
+       "digikala_mag": 0.05
+      }
+     },
+     {
+      "cluster": 3,
+      "n": 841,
+      "top": {
+       "ARC-Easy": 0.435,
+       "ARC-Challenge": 0.208,
+       "high_school_biology": 0.031,
+       "زیست شناسی3": 0.027,
+       "object_counting": 0.026
+      }
+     },
+     {
+      "cluster": 4,
+      "n": 1335,
+      "top": {
+       "(none)": 0.736,
+       "professional_law": 0.109,
+       "Professional certification": 0.031,
+       "common_knowledge": 0.01,
+       "professional_accounting": 0.009
+      }
+     },
+     {
+      "cluster": 5,
+      "n": 1746,
+      "top": {
+       "(none)": 0.667,
+       "ARC-Easy": 0.033,
+       "professional_medicine": 0.023,
+       "namnak": 0.019,
+       "professional_psychology": 0.019
+      }
+     },
+     {
+      "cluster": 6,
+      "n": 2749,
+      "top": {
+       "literature": 0.083,
+       "moral_scenarios": 0.037,
+       "tracking_shuffled_objects_three_objects": 0.035,
+       "web_of_lies": 0.031,
+       "(none)": 0.031
+      }
+     },
+     {
+      "cluster": 7,
+      "n": 1075,
+      "top": {
+       "common_knowledge": 0.21,
+       "literature": 0.049,
+       "hawzah": 0.038,
+       "(none)": 0.03,
+       "high_school_us_history": 0.026
+      }
+     }
+    ],
+    "labels": {
+     "(none)": {
+      "n": 2328,
+      "main_cluster": 5,
+      "share_in_main": 0.5
+     },
+     "ARC-Easy": {
+      "n": 998,
+      "main_cluster": 0,
+      "share_in_main": 0.483
+     },
+     "ARC-Challenge": {
+      "n": 517,
+      "main_cluster": 0,
+      "share_in_main": 0.507
+     },
+     "common_knowledge": {
+      "n": 374,
+      "main_cluster": 7,
+      "share_in_main": 0.604
+     },
+     "literature": {
+      "n": 302,
+      "main_cluster": 6,
+      "share_in_main": 0.752
+     },
+     "math_and_logic": {
+      "n": 261,
+      "main_cluster": 1,
+      "share_in_main": 0.743
+     },
+     "professional_law": {
+      "n": 171,
+      "main_cluster": 4,
+      "share_in_main": 0.848
+     },
+     "moral_scenarios": {
+      "n": 101,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "tracking_shuffled_objects_three_objects": {
+      "n": 99,
+      "main_cluster": 6,
+      "share_in_main": 0.96
+     },
+     "tracking_shuffled_objects_seven_objects": {
+      "n": 93,
+      "main_cluster": 6,
+      "share_in_main": 0.903
+     },
+     "logical_deduction_five_objects": {
+      "n": 91,
+      "main_cluster": 6,
+      "share_in_main": 0.857
+     },
+     "tracking_shuffled_objects_five_objects": {
+      "n": 91,
+      "main_cluster": 6,
+      "share_in_main": 0.824
+     },
+     "formal_fallacies": {
+      "n": 87,
+      "main_cluster": 6,
+      "share_in_main": 0.793
+     },
+     "web_of_lies": {
+      "n": 86,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "disambiguation_qa": {
+      "n": 84,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "multistep_arithmetic_two": {
+      "n": 83,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "object_counting": {
+      "n": 82,
+      "main_cluster": 6,
+      "share_in_main": 0.573
+     },
+     "miscellaneous": {
+      "n": 82,
+      "main_cluster": 6,
+      "share_in_main": 0.451
+     },
+     "digiato": {
+      "n": 80,
+      "main_cluster": 2,
+      "share_in_main": 0.65
+     },
+     "temporal_sequences": {
+      "n": 80,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "digikala_mag": {
+      "n": 80,
+      "main_cluster": 2,
+      "share_in_main": 0.475
+     },
+     "sports_understanding": {
+      "n": 79,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "dyck_languages": {
+      "n": 78,
+      "main_cluster": 6,
+      "share_in_main": 0.885
+     },
+     "navigate": {
+      "n": 78,
+      "main_cluster": 6,
+      "share_in_main": 0.859
+     },
+     "logical_deduction_seven_objects": {
+      "n": 77,
+      "main_cluster": 6,
+      "share_in_main": 0.649
+     },
+     "date_understanding": {
+      "n": 74,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "logical_deduction_three_objects": {
+      "n": 73,
+      "main_cluster": 6,
+      "share_in_main": 0.918
+     },
+     "professional_psychology": {
+      "n": 73,
+      "main_cluster": 5,
+      "share_in_main": 0.452
+     },
+     "zoomit": {
+      "n": 72,
+      "main_cluster": 2,
+      "share_in_main": 0.75
+     },
+     "namnak": {
+      "n": 69,
+      "main_cluster": 5,
+      "share_in_main": 0.493
+     },
+     "causal_judgement": {
+      "n": 67,
+      "main_cluster": 6,
+      "share_in_main": 0.642
+     },
+     "هوش ریاضی و منطقی": {
+      "n": 61,
+      "main_cluster": 1,
+      "share_in_main": 0.82
+     },
+     "virgool_4": {
+      "n": 61,
+      "main_cluster": 2,
+      "share_in_main": 0.377
+     },
+     "snarks": {
+      "n": 61,
+      "main_cluster": 6,
+      "share_in_main": 0.852
+     },
+     "high_school_psychology": {
+      "n": 58,
+      "main_cluster": 6,
+      "share_in_main": 0.483
+     },
+     "hawzah": {
+      "n": 57,
+      "main_cluster": 7,
+      "share_in_main": 0.719
+     },
+     "Professional certification": {
+      "n": 54,
+      "main_cluster": 4,
+      "share_in_main": 0.778
+     },
+     "beytoote": {
+      "n": 51,
+      "main_cluster": 6,
+      "share_in_main": 0.314
+     },
+     "ninisite_article": {
+      "n": 50,
+      "main_cluster": 5,
+      "share_in_main": 0.48
+     },
+     "penguins_in_a_table": {
+      "n": 49,
+      "main_cluster": 1,
+      "share_in_main": 0.98
+     },
+     "varzesh3": {
+      "n": 48,
+      "main_cluster": 6,
+      "share_in_main": 0.896
+     },
+     "virgool_1": {
+      "n": 48,
+      "main_cluster": 2,
+      "share_in_main": 0.417
+     },
+     "hamshahrionline": {
+      "n": 47,
+      "main_cluster": 7,
+      "share_in_main": 0.298
+     },
+     "Driving License": {
+      "n": 47,
+      "main_cluster": 2,
+      "share_in_main": 0.383
+     },
+     "virgool_3": {
+      "n": 46,
+      "main_cluster": 2,
+      "share_in_main": 0.37
+     },
+     "virgool_2": {
+      "n": 46,
+      "main_cluster": 2,
+      "share_in_main": 0.391
+     },
+     "alibaba": {
+      "n": 46,
+      "main_cluster": 7,
+      "share_in_main": 0.37
+     },
+     "tasnim": {
+      "n": 45,
+      "main_cluster": 7,
+      "share_in_main": 0.556
+     },
+     "donyaeeqtesad": {
+      "n": 44,
+      "main_cluster": 2,
+      "share_in_main": 0.455
+     },
+     "asriran": {
+      "n": 42,
+      "main_cluster": 7,
+      "share_in_main": 0.381
+     },
+     "professional_medicine": {
+      "n": 42,
+      "main_cluster": 5,
+      "share_in_main": 0.976
+     },
+     "hamgardi": {
+      "n": 41,
+      "main_cluster": 7,
+      "share_in_main": 0.415
+     },
+     "ecoiran": {
+      "n": 40,
+      "main_cluster": 2,
+      "share_in_main": 0.575
+     },
+     "newmiind": {
+      "n": 40,
+      "main_cluster": 5,
+      "share_in_main": 0.425
+     },
+     "tabnak": {
+      "n": 40,
+      "main_cluster": 2,
+      "share_in_main": 0.275
+     },
+     "high_school_biology": {
+      "n": 39,
+      "main_cluster": 3,
+      "share_in_main": 0.667
+     },
+     "elementary_mathematics": {
+      "n": 39,
+      "main_cluster": 1,
+      "share_in_main": 0.795
+     },
+     "mehrnews": {
+      "n": 37,
+      "main_cluster": 2,
+      "share_in_main": 0.324
+     },
+     "زبان و ادبیات فارسی 3": {
+      "n": 37,
+      "main_cluster": 6,
+      "share_in_main": 0.865
+     },
+     "isna": {
+      "n": 37,
+      "main_cluster": 7,
+      "share_in_main": 0.297
+     },
+     "nutrition": {
+      "n": 36,
+      "main_cluster": 5,
+      "share_in_main": 0.611
+     },
+     "moral_disputes": {
+      "n": 35,
+      "main_cluster": 7,
+      "share_in_main": 0.371
+     },
+     "زمین شناسی يازدهم ": {
+      "n": 35,
+      "main_cluster": 0,
+      "share_in_main": 0.686
+     },
+     "doctoreto": {
+      "n": 35,
+      "main_cluster": 5,
+      "share_in_main": 0.857
+     },
+     "فیزیک 1  دهم ریاضی": {
+      "n": 34,
+      "main_cluster": 0,
+      "share_in_main": 0.882
+     },
+     "high_school_macroeconomics": {
+      "n": 34,
+      "main_cluster": 2,
+      "share_in_main": 0.706
+     },
+     "زیست 2 يازدهم": {
+      "n": 34,
+      "main_cluster": 3,
+      "share_in_main": 0.5
+     },
+     "زیست شناسی3": {
+      "n": 34,
+      "main_cluster": 3,
+      "share_in_main": 0.676
+     },
+     "شیمی 3": {
+      "n": 33,
+      "main_cluster": 0,
+      "share_in_main": 0.939
+     },
+     "high_school_us_history": {
+      "n": 32,
+      "main_cluster": 7,
+      "share_in_main": 0.875
+     },
+     "magerta": {
+      "n": 32,
+      "main_cluster": 6,
+      "share_in_main": 0.688
+     },
+     "فیزیک 3 دوازدهم ریاضی": {
+      "n": 31,
+      "main_cluster": 0,
+      "share_in_main": 0.903
+     },
+     "fidibo": {
+      "n": 31,
+      "main_cluster": 6,
+      "share_in_main": 0.677
+     },
+     "philosophy": {
+      "n": 30,
+      "main_cluster": 7,
+      "share_in_main": 0.567
+     },
+     "wiki_ahlolbait": {
+      "n": 30,
+      "main_cluster": 7,
+      "share_in_main": 0.833
+     },
+     "marketing": {
+      "n": 29,
+      "main_cluster": 2,
+      "share_in_main": 0.517
+     },
+     "taaghche": {
+      "n": 29,
+      "main_cluster": 6,
+      "share_in_main": 0.483
+     },
+     "prehistory": {
+      "n": 28,
+      "main_cluster": 7,
+      "share_in_main": 0.536
+     },
+     "هندسه3": {
+      "n": 28,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "ریاضیات گسسته": {
+      "n": 28,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "professional_accounting": {
+      "n": 28,
+      "main_cluster": 4,
+      "share_in_main": 0.429
+     },
+     "شیمی 2 يازدهم": {
+      "n": 28,
+      "main_cluster": 0,
+      "share_in_main": 0.929
+     },
+     "high_school_geography": {
+      "n": 27,
+      "main_cluster": 7,
+      "share_in_main": 0.481
+     },
+     "clinical_knowledge": {
+      "n": 27,
+      "main_cluster": 5,
+      "share_in_main": 0.741
+     },
+     "conceptual_physics": {
+      "n": 27,
+      "main_cluster": 0,
+      "share_in_main": 0.889
+     },
+     "sarzamindownload": {
+      "n": 26,
+      "main_cluster": 2,
+      "share_in_main": 0.692
+     },
+     "ریاضی 2 يازدهم تجربي": {
+      "n": 26,
+      "main_cluster": 1,
+      "share_in_main": 0.962
+     },
+     "روانشناسی يازدهم انسانى": {
+      "n": 26,
+      "main_cluster": 6,
+      "share_in_main": 0.769
+     },
+     "high_school_chemistry": {
+      "n": 26,
+      "main_cluster": 0,
+      "share_in_main": 0.923
+     },
+     "Sociology": {
+      "n": 26,
+      "main_cluster": 7,
+      "share_in_main": 0.538
+     },
+     "حسابان2": {
+      "n": 26,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "علوم تجربی هفتم": {
+      "n": 26,
+      "main_cluster": 0,
+      "share_in_main": 0.538
+     },
+     "high_school_mathematics": {
+      "n": 26,
+      "main_cluster": 1,
+      "share_in_main": 0.885
+     },
+     "high_school_world_history": {
+      "n": 25,
+      "main_cluster": 7,
+      "share_in_main": 0.84
+     },
+     "bigbangpage": {
+      "n": 25,
+      "main_cluster": 0,
+      "share_in_main": 0.52
+     },
+     "khabaronline": {
+      "n": 25,
+      "main_cluster": 7,
+      "share_in_main": 0.44
+     },
+     "high_school_microeconomics": {
+      "n": 24,
+      "main_cluster": 2,
+      "share_in_main": 0.5
+     },
+     "high_school_statistics": {
+      "n": 24,
+      "main_cluster": 1,
+      "share_in_main": 0.417
+     },
+     "علوم و فنون ادبی 2 يازدهم": {
+      "n": 23,
+      "main_cluster": 6,
+      "share_in_main": 0.739
+     },
+     "آمار و احتمال يازدهم ریاضی": {
+      "n": 23,
+      "main_cluster": 1,
+      "share_in_main": 0.826
+     },
+     "security_studies": {
+      "n": 22,
+      "main_cluster": 7,
+      "share_in_main": 0.5
+     },
+     "ریاضی هشتم": {
+      "n": 22,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "ریاضی و آمار 1 دهم انسانی": {
+      "n": 22,
+      "main_cluster": 1,
+      "share_in_main": 0.909
+     },
+     "علوم وفنون ادبی3": {
+      "n": 22,
+      "main_cluster": 6,
+      "share_in_main": 0.591
+     },
+     "ریاضی نهم": {
+      "n": 22,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "ریاضی و آمار 2 يازدهم انسانى": {
+      "n": 21,
+      "main_cluster": 1,
+      "share_in_main": 0.905
+     },
+     "فارسی هفتم": {
+      "n": 21,
+      "main_cluster": 6,
+      "share_in_main": 0.714
+     },
+     "شیمی 1 دهم": {
+      "n": 21,
+      "main_cluster": 0,
+      "share_in_main": 0.952
+     },
+     "yjc": {
+      "n": 21,
+      "main_cluster": 6,
+      "share_in_main": 0.333
+     },
+     "khodro45": {
+      "n": 21,
+      "main_cluster": 2,
+      "share_in_main": 0.952
+     },
+     "علوم نهم": {
+      "n": 21,
+      "main_cluster": 0,
+      "share_in_main": 0.667
+     },
+     "motamem": {
+      "n": 20,
+      "main_cluster": 6,
+      "share_in_main": 0.75
+     },
+     "ریاضی 3": {
+      "n": 20,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "هندسه 1  دهم ریاضی": {
+      "n": 20,
+      "main_cluster": 1,
+      "share_in_main": 0.85
+     },
+     "logical_fallacies": {
+      "n": 20,
+      "main_cluster": 6,
+      "share_in_main": 0.8
+     },
+     "Literature": {
+      "n": 20,
+      "main_cluster": 6,
+      "share_in_main": 0.85
+     },
+     "anatomy": {
+      "n": 20,
+      "main_cluster": 5,
+      "share_in_main": 0.8
+     },
+     "public_relations": {
+      "n": 20,
+      "main_cluster": 6,
+      "share_in_main": 0.35
+     },
+     "ریاضی سوم دبستان": {
+      "n": 19,
+      "main_cluster": 1,
+      "share_in_main": 0.895
+     },
+     "high_school_government_and_politics": {
+      "n": 19,
+      "main_cluster": 7,
+      "share_in_main": 0.632
+     },
+     "sociology": {
+      "n": 19,
+      "main_cluster": 7,
+      "share_in_main": 0.368
+     },
+     "high_school_european_history": {
+      "n": 19,
+      "main_cluster": 7,
+      "share_in_main": 0.789
+     },
+     "سرعت و دقت": {
+      "n": 19,
+      "main_cluster": 1,
+      "share_in_main": 0.474
+     },
+     "world_religions": {
+      "n": 19,
+      "main_cluster": 7,
+      "share_in_main": 0.632
+     },
+     "wikipedia": {
+      "n": 19,
+      "main_cluster": 7,
+      "share_in_main": 0.368
+     },
+     "جامعه شناسی 3": {
+      "n": 19,
+      "main_cluster": 7,
+      "share_in_main": 0.684
+     },
+     "علوم تجربی ششم دبستان": {
+      "n": 18,
+      "main_cluster": 0,
+      "share_in_main": 0.556
+     },
+     "فیزیک 2 يازدهم تجربي": {
+      "n": 18,
+      "main_cluster": 0,
+      "share_in_main": 1.0
+     },
+     "ریاضی هفتم": {
+      "n": 18,
+      "main_cluster": 1,
+      "share_in_main": 0.833
+     },
+     "فلسفه يازدهم": {
+      "n": 18,
+      "main_cluster": 7,
+      "share_in_main": 0.778
+     },
+     "high_school_physics": {
+      "n": 17,
+      "main_cluster": 0,
+      "share_in_main": 0.941
+     },
+     "فیزیک 2 يازدهم رياضي": {
+      "n": 17,
+      "main_cluster": 0,
+      "share_in_main": 0.941
+     },
+     "فیزیک 1  دهم تجربی": {
+      "n": 17,
+      "main_cluster": 0,
+      "share_in_main": 0.824
+     },
+     "زیست شناسی 1": {
+      "n": 17,
+      "main_cluster": 6,
+      "share_in_main": 0.412
+     },
+     "حسابان(1) يازدهم": {
+      "n": 17,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "ریاضی 1 دهم": {
+      "n": 17,
+      "main_cluster": 1,
+      "share_in_main": 0.882
+     },
+     "فارسی 2 يازدهم": {
+      "n": 17,
+      "main_cluster": 6,
+      "share_in_main": 0.941
+     },
+     "فارسی ششم دبستان": {
+      "n": 17,
+      "main_cluster": 6,
+      "share_in_main": 0.647
+     },
+     "فیزیک 3": {
+      "n": 17,
+      "main_cluster": 0,
+      "share_in_main": 0.588
+     },
+     "استعداد تحلیلی": {
+      "n": 17,
+      "main_cluster": 6,
+      "share_in_main": 0.471
+     },
+     "جامعه شناسی 1 دهم انسانی": {
+      "n": 16,
+      "main_cluster": 7,
+      "share_in_main": 0.812
+     },
+     "human_aging": {
+      "n": 16,
+      "main_cluster": 5,
+      "share_in_main": 0.5
+     },
+     "علوم تجربی دوم دبستان": {
+      "n": 16,
+      "main_cluster": 3,
+      "share_in_main": 0.312
+     },
+     "Geography": {
+      "n": 16,
+      "main_cluster": 6,
+      "share_in_main": 0.438
+     },
+     "علوم تجربی هشتم": {
+      "n": 16,
+      "main_cluster": 0,
+      "share_in_main": 0.562
+     },
+     "ریاضی پنجم دبستان": {
+      "n": 16,
+      "main_cluster": 1,
+      "share_in_main": 0.938
+     },
+     "مطالعات اجتماعی چهارم دبستان": {
+      "n": 16,
+      "main_cluster": 7,
+      "share_in_main": 0.438
+     },
+     "college_medicine": {
+      "n": 16,
+      "main_cluster": 3,
+      "share_in_main": 0.375
+     },
+     "international_law": {
+      "n": 16,
+      "main_cluster": 4,
+      "share_in_main": 0.5
+     },
+     "machine_learning": {
+      "n": 16,
+      "main_cluster": 1,
+      "share_in_main": 0.438
+     },
+     "فارسی سوم دبستان": {
+      "n": 15,
+      "main_cluster": 6,
+      "share_in_main": 0.8
+     },
+     "پیام آسمانی نهم": {
+      "n": 15,
+      "main_cluster": 7,
+      "share_in_main": 0.733
+     },
+     "college_physics": {
+      "n": 15,
+      "main_cluster": 0,
+      "share_in_main": 0.933
+     },
+     "parsiday": {
+      "n": 15,
+      "main_cluster": 5,
+      "share_in_main": 0.333
+     },
+     "علوم و فنون ادبی 1 دهم انسانی": {
+      "n": 15,
+      "main_cluster": 6,
+      "share_in_main": 0.867
+     },
+     "ریاضی وآمار3": {
+      "n": 15,
+      "main_cluster": 1,
+      "share_in_main": 0.933
+     },
+     "اقتصاد دهم انسانی": {
+      "n": 15,
+      "main_cluster": 2,
+      "share_in_main": 0.733
+     },
+     "econometrics": {
+      "n": 15,
+      "main_cluster": 1,
+      "share_in_main": 0.867
+     },
+     "formal_logic": {
+      "n": 15,
+      "main_cluster": 6,
+      "share_in_main": 0.533
+     },
+     "علوم تجربی سوم دبستان": {
+      "n": 14,
+      "main_cluster": 0,
+      "share_in_main": 0.643
+     },
+     "علوم تجربی پنجم دبستان": {
+      "n": 14,
+      "main_cluster": 0,
+      "share_in_main": 0.571
+     },
+     "منطق دهم انسانی ": {
+      "n": 14,
+      "main_cluster": 6,
+      "share_in_main": 0.643
+     },
+     "human_sexuality": {
+      "n": 14,
+      "main_cluster": 6,
+      "share_in_main": 0.571
+     },
+     "استعداد تحلیلی هفتم": {
+      "n": 14,
+      "main_cluster": 6,
+      "share_in_main": 0.643
+     },
+     "ریاضی ششم دبستان": {
+      "n": 14,
+      "main_cluster": 1,
+      "share_in_main": 0.786
+     },
+     "college_biology": {
+      "n": 14,
+      "main_cluster": 3,
+      "share_in_main": 0.714
+     },
+     "فارسی 1 دهم": {
+      "n": 14,
+      "main_cluster": 6,
+      "share_in_main": 0.786
+     },
+     "ریاضی دوم دبستان": {
+      "n": 14,
+      "main_cluster": 1,
+      "share_in_main": 0.857
+     },
+     "abstract_algebra": {
+      "n": 14,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "فارسی پنجم دبستان": {
+      "n": 14,
+      "main_cluster": 6,
+      "share_in_main": 0.929
+     },
+     "مطالعات اجتماعی هشتم": {
+      "n": 13,
+      "main_cluster": 7,
+      "share_in_main": 0.615
+     },
+     "us_foreign_policy": {
+      "n": 13,
+      "main_cluster": 7,
+      "share_in_main": 0.692
+     },
+     "ریاضی چهارم دبستان": {
+      "n": 13,
+      "main_cluster": 1,
+      "share_in_main": 0.923
+     },
+     "astronomy": {
+      "n": 13,
+      "main_cluster": 0,
+      "share_in_main": 0.769
+     },
+     "مطالعات اجتماعی ششم دبستان": {
+      "n": 12,
+      "main_cluster": 0,
+      "share_in_main": 0.333
+     },
+     "جامعه شناسی 2 يازدهم": {
+      "n": 12,
+      "main_cluster": 7,
+      "share_in_main": 0.917
+     },
+     "فارسی چهارم دبستان": {
+      "n": 12,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "virology": {
+      "n": 12,
+      "main_cluster": 5,
+      "share_in_main": 0.833
+     },
+     "electrical_engineering": {
+      "n": 12,
+      "main_cluster": 0,
+      "share_in_main": 0.5
+     },
+     "management": {
+      "n": 12,
+      "main_cluster": 6,
+      "share_in_main": 0.5
+     },
+     "مطالعات اجتماعی پنجم دبستان": {
+      "n": 12,
+      "main_cluster": 7,
+      "share_in_main": 0.333
+     },
+     "تاریخ 2 يازدهم انسانى": {
+      "n": 12,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "مطالعات اجتماعی سوم دبستان": {
+      "n": 12,
+      "main_cluster": 6,
+      "share_in_main": 0.5
+     },
+     "فارسی دوم دبستان": {
+      "n": 11,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "جغرافیا 2 يازدهم": {
+      "n": 11,
+      "main_cluster": 0,
+      "share_in_main": 0.364
+     },
+     "مطالعات اجتماعی نهم": {
+      "n": 11,
+      "main_cluster": 0,
+      "share_in_main": 0.364
+     },
+     "علوم تجربی چهارم دبستان": {
+      "n": 11,
+      "main_cluster": 0,
+      "share_in_main": 0.545
+     },
+     "college_computer_science": {
+      "n": 11,
+      "main_cluster": 1,
+      "share_in_main": 0.455
+     },
+     "هندسه 2 يازدهم": {
+      "n": 11,
+      "main_cluster": 1,
+      "share_in_main": 0.909
+     },
+     "تاریخ‌3": {
+      "n": 11,
+      "main_cluster": 7,
+      "share_in_main": 0.909
+     },
+     "فارسی هشتم": {
+      "n": 11,
+      "main_cluster": 6,
+      "share_in_main": 0.909
+     },
+     "هوش کلامی و ادبی": {
+      "n": 10,
+      "main_cluster": 6,
+      "share_in_main": 0.5
+     },
+     "global_facts": {
+      "n": 10,
+      "main_cluster": 2,
+      "share_in_main": 0.3
+     },
+     "college_chemistry": {
+      "n": 10,
+      "main_cluster": 0,
+      "share_in_main": 0.9
+     },
+     "computer_security": {
+      "n": 10,
+      "main_cluster": 2,
+      "share_in_main": 0.7
+     },
+     "business_ethics": {
+      "n": 9,
+      "main_cluster": 6,
+      "share_in_main": 0.333
+     },
+     "فلسفه 2": {
+      "n": 9,
+      "main_cluster": 7,
+      "share_in_main": 0.667
+     },
+     "jurisprudence": {
+      "n": 9,
+      "main_cluster": 7,
+      "share_in_main": 0.444
+     },
+     "جغرافیای ایران": {
+      "n": 8,
+      "main_cluster": 0,
+      "share_in_main": 0.375
+     },
+     "Language": {
+      "n": 8,
+      "main_cluster": 6,
+      "share_in_main": 0.875
+     },
+     "هدیه های اسمان چهارم دبستان": {
+      "n": 8,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "high_school_computer_science": {
+      "n": 8,
+      "main_cluster": 2,
+      "share_in_main": 0.625
+     },
+     "مطالعات اجتماعی هفتم": {
+      "n": 8,
+      "main_cluster": 3,
+      "share_in_main": 0.375
+     },
+     "هدیه های آسمان پنجم دبستان": {
+      "n": 8,
+      "main_cluster": 7,
+      "share_in_main": 0.75
+     },
+     "جغرافیای 3": {
+      "n": 8,
+      "main_cluster": 0,
+      "share_in_main": 0.5
+     },
+     "medical_genetics": {
+      "n": 7,
+      "main_cluster": 5,
+      "share_in_main": 0.429
+     },
+     "Logic": {
+      "n": 7,
+      "main_cluster": 6,
+      "share_in_main": 0.857
+     },
+     "فارسی نهم": {
+      "n": 7,
+      "main_cluster": 7,
+      "share_in_main": 0.429
+     },
+     "farsroid": {
+      "n": 7,
+      "main_cluster": 2,
+      "share_in_main": 0.571
+     },
+     "college_mathematics": {
+      "n": 7,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "تاریخ 1 ایران و جهان دهم انسانی": {
+      "n": 6,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "دین و زندگی 3": {
+      "n": 6,
+      "main_cluster": 7,
+      "share_in_main": 0.833
+     },
+     "هدیه های آسمان ششم دبستان": {
+      "n": 6,
+      "main_cluster": 7,
+      "share_in_main": 0.833
+     },
+     "Religious studies": {
+      "n": 6,
+      "main_cluster": 7,
+      "share_in_main": 0.5
+     },
+     "Economics": {
+      "n": 6,
+      "main_cluster": 2,
+      "share_in_main": 0.5
+     },
+     "voolak": {
+      "n": 6,
+      "main_cluster": 6,
+      "share_in_main": 0.5
+     },
+     "wikishia": {
+      "n": 5,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "پیام های آسمانی هشتم": {
+      "n": 5,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "Philosophy": {
+      "n": 4,
+      "main_cluster": 7,
+      "share_in_main": 0.75
+     },
+     "Psychology": {
+      "n": 4,
+      "main_cluster": 6,
+      "share_in_main": 0.5
+     },
+     "ninisite_discussion": {
+      "n": 3,
+      "main_cluster": 6,
+      "share_in_main": 0.667
+     },
+     "دین و زندگی  1 دهم": {
+      "n": 3,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "پیام های آسمان هفتم": {
+      "n": 3,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "هدیه های آسمان سوم دبستان": {
+      "n": 3,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "Math": {
+      "n": 3,
+      "main_cluster": 1,
+      "share_in_main": 1.0
+     },
+     "radiokodak_book": {
+      "n": 3,
+      "main_cluster": 5,
+      "share_in_main": 0.667
+     },
+     "History": {
+      "n": 2,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "دین و زندگی 2 يازدهم": {
+      "n": 2,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "دین و زندگی 3 دوازدهم انسانی": {
+      "n": 1,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "Performing arts": {
+      "n": 1,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "Physics": {
+      "n": 1,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     },
+     "Chemistry": {
+      "n": 1,
+      "main_cluster": 0,
+      "share_in_main": 1.0
+     },
+     "استعداد تحلیلی هشتم": {
+      "n": 1,
+      "main_cluster": 6,
+      "share_in_main": 1.0
+     }
+    }
+   },
+   "features": [
+    {
+     "cluster": 0,
+     "chars_p50": 102.0,
+     "latin_share": 0.019392085992016896,
+     "code": 0.0,
+     "math": 0.10324483775811209,
+     "question": 0.7713864306784661,
+     "lang_fa": 0.9911504424778761,
+     "lang_mixed_en": 0.008849557522123894
+    },
+    {
+     "cluster": 1,
+     "chars_p50": 126.0,
+     "latin_share": 0.08436527107068016,
+     "code": 0.0,
+     "math": 0.3796664019062748,
+     "question": 0.7807783955520254,
+     "lang_fa": 0.835583796664019,
+     "lang_mixed_en": 0.0976965845909452
+    },
+    {
+     "cluster": 2,
+     "chars_p50": 104.0,
+     "latin_share": 0.013376911625644791,
+     "code": 0.0013157894736842105,
+     "math": 0.003947368421052632,
+     "question": 0.3,
+     "lang_fa": 0.9986842105263158,
+     "lang_mixed_en": 0.0013157894736842105
+    },
+    {
+     "cluster": 3,
+     "chars_p50": 105.0,
+     "latin_share": 0.003409726993170957,
+     "code": 0.0,
+     "math": 0.0035671819262782403,
+     "question": 0.7550535077288941,
+     "lang_fa": 0.9988109393579072,
+     "lang_mixed_en": 0.0011890606420927466
+    },
+    {
+     "cluster": 4,
+     "chars_p50": 301.0,
+     "latin_share": 0.0007878593203101863,
+     "code": 0.0,
+     "math": 0.026217228464419477,
+     "question": 0.5925093632958801,
+     "lang_fa": 0.9992509363295881,
+     "lang_mixed_en": 0.000749063670411985
+    },
+    {
+     "cluster": 5,
+     "chars_p50": 52.0,
+     "latin_share": 0.0065118641546698134,
+     "code": 0.0,
+     "math": 0.012027491408934709,
+     "question": 0.8006872852233677,
+     "lang_fa": 0.995418098510882,
+     "lang_mixed_en": 0.004581901489117984
+    },
+    {
+     "cluster": 6,
+     "chars_p50": 131.0,
+     "latin_share": 0.010052563910893687,
+     "code": 0.0025463805020007274,
+     "math": 0.0014550745725718443,
+     "question": 0.5307384503455802,
+     "lang_fa": 0.9963623135685704,
+     "lang_mixed_en": 0.00327391778828665
+    },
+    {
+     "cluster": 7,
+     "chars_p50": 86.0,
+     "latin_share": 0.0019538635822208654,
+     "code": 0.0018604651162790699,
+     "math": 0.0065116279069767444,
+     "question": 0.5832558139534884,
+     "lang_fa": 0.9990697674418605,
+     "lang_mixed_en": 0.0009302325581395349
+    }
+   ],
+   "features_all": {
+    "chars_p50": 107.0,
+    "latin_share": 0.016878157240222083,
+    "code": 0.000899199712256092,
+    "math": 0.06213470011689596,
+    "question": 0.6444564337739412,
+    "lang_fa": 0.9783292869346282,
+    "lang_mixed_en": 0.014027515511195037
+   }
+  },
+  "khayyam": {
+   "label": {
+    "nmi": 0.4046523503909585,
+    "nmi_shuffled": 0.0052725770218595355,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 568,
+      "top": {
+       "روانشناسی دوره دوم متوسطه": 0.109,
+       "اقتصاد دوره دوم متوسطه": 0.099,
+       "زبان و ادبیات فارسی دوره دوم متوسطه": 0.097,
+       "مطالعات اجتماعی دوره دوم ابتدایی": 0.069,
+       "جغرافیا دوره دوم متوسطه": 0.069
+      },
+      "human_error": 0.543
+     },
+     {
+      "cluster": 1,
+      "n": 2368,
+      "top": {
+       "ریاضی دوره دوم متوسطه": 0.132,
+       "حسابان دوره دوم متوسطه": 0.12,
+       "ریاضی و آمار دوره دوم متوسطه": 0.109,
+       "ریاضی دوره اول متوسطه": 0.105,
+       "هندسه دوره دوم متوسطه": 0.101
+      },
+      "human_error": 0.707
+     },
+     {
+      "cluster": 2,
+      "n": 1607,
+      "top": {
+       "زبان و ادبیات فارسی دوره دوم متوسطه": 0.318,
+       "زبان و ادبیات فارسی دوره اول متوسطه": 0.105,
+       "زبان و ادبیات فارسی دوره دوم ابتدایی": 0.101,
+       "زبان و ادبیات فارسی دوره اول ابتدایی": 0.072,
+       "استعداد تحلیلی دوره اول متوسطه": 0.042
+      },
+      "human_error": 0.565
+     },
+     {
+      "cluster": 3,
+      "n": 618,
+      "top": {
+       "فلسفه دوره دوم متوسطه": 0.183,
+       "تعلیم و تربیت اسلامی دوره دوم ابتدایی": 0.113,
+       "زبان و ادبیات فارسی دوره دوم متوسطه": 0.104,
+       "تعلیم و تربیت اسلامی دوره اول متوسطه": 0.104,
+       "دین و زندگی دوره دوم متوسطه": 0.086
+      },
+      "human_error": 0.558
+     },
+     {
+      "cluster": 4,
+      "n": 671,
+      "top": {
+       "شیمی دوره دوم متوسطه": 0.526,
+       "علوم تجربی دوره اول متوسطه": 0.133,
+       "فیزیک دوره دوم متوسطه": 0.1,
+       "علوم تجربی دوره دوم ابتدایی": 0.08,
+       "زمین شناسی دوره دوم متوسطه": 0.049
+      },
+      "human_error": 0.661
+     },
+     {
+      "cluster": 5,
+      "n": 480,
+      "top": {
+       "تاریخ دوره دوم متوسطه": 0.383,
+       "جامعه شناسی دوره دوم متوسطه": 0.196,
+       "مطالعات اجتماعی دوره اول متوسطه": 0.14,
+       "مطالعات اجتماعی دوره دوم ابتدایی": 0.113,
+       "جغرافیا دوره دوم متوسطه": 0.092
+      },
+      "human_error": 0.579
+     },
+     {
+      "cluster": 6,
+      "n": 719,
+      "top": {
+       "زیست شناسی دوره دوم متوسطه": 0.356,
+       "علوم تجربی دوره دوم ابتدایی": 0.115,
+       "جغرافیا دوره دوم متوسطه": 0.097,
+       "علوم تجربی دوره اول ابتدایی": 0.092,
+       "علوم تجربی دوره اول متوسطه": 0.09
+      },
+      "human_error": 0.569
+     },
+     {
+      "cluster": 7,
+      "n": 800,
+      "top": {
+       "فیزیک دوره دوم متوسطه": 0.578,
+       "علوم تجربی دوره اول متوسطه": 0.08,
+       "علوم تجربی دوره دوم ابتدایی": 0.079,
+       "زمین شناسی دوره دوم متوسطه": 0.048,
+       "علوم تجربی دوره اول ابتدایی": 0.048
+      },
+      "human_error": 0.685
+     }
+    ],
+    "labels": {
+     "زبان و ادبیات فارسی دوره دوم متوسطه": {
+      "n": 645,
+      "main_cluster": 2,
+      "share_in_main": 0.792
+     },
+     "فیزیک دوره دوم متوسطه": {
+      "n": 555,
+      "main_cluster": 7,
+      "share_in_main": 0.832
+     },
+     "شیمی دوره دوم متوسطه": {
+      "n": 406,
+      "main_cluster": 4,
+      "share_in_main": 0.869
+     },
+     "زیست شناسی دوره دوم متوسطه": {
+      "n": 365,
+      "main_cluster": 6,
+      "share_in_main": 0.701
+     },
+     "ریاضی دوره دوم متوسطه": {
+      "n": 329,
+      "main_cluster": 1,
+      "share_in_main": 0.951
+     },
+     "هوش ریاضی و منطقی دوره دوم ابتدایی": {
+      "n": 288,
+      "main_cluster": 1,
+      "share_in_main": 0.785
+     },
+     "ریاضی و آمار دوره دوم متوسطه": {
+      "n": 287,
+      "main_cluster": 1,
+      "share_in_main": 0.899
+     },
+     "حسابان دوره دوم متوسطه": {
+      "n": 285,
+      "main_cluster": 1,
+      "share_in_main": 0.996
+     },
+     "ریاضی دوره دوم ابتدایی": {
+      "n": 280,
+      "main_cluster": 1,
+      "share_in_main": 0.846
+     },
+     "علوم تجربی دوره دوم ابتدایی": {
+      "n": 267,
+      "main_cluster": 6,
+      "share_in_main": 0.311
+     },
+     "ریاضی دوره اول متوسطه": {
+      "n": 265,
+      "main_cluster": 1,
+      "share_in_main": 0.94
+     },
+     "هندسه دوره دوم متوسطه": {
+      "n": 258,
+      "main_cluster": 1,
+      "share_in_main": 0.926
+     },
+     "علوم تجربی دوره اول متوسطه": {
+      "n": 257,
+      "main_cluster": 4,
+      "share_in_main": 0.346
+     },
+     "تاریخ دوره دوم متوسطه": {
+      "n": 228,
+      "main_cluster": 5,
+      "share_in_main": 0.807
+     },
+     "زبان و ادبیات فارسی دوره اول متوسطه": {
+      "n": 212,
+      "main_cluster": 2,
+      "share_in_main": 0.792
+     },
+     "جغرافیا دوره دوم متوسطه": {
+      "n": 196,
+      "main_cluster": 6,
+      "share_in_main": 0.357
+     },
+     "علوم تجربی دوره اول ابتدایی": {
+      "n": 194,
+      "main_cluster": 6,
+      "share_in_main": 0.34
+     },
+     "زبان و ادبیات فارسی دوره دوم ابتدایی": {
+      "n": 193,
+      "main_cluster": 2,
+      "share_in_main": 0.845
+     },
+     "ریاضی دوره اول ابتدایی": {
+      "n": 192,
+      "main_cluster": 1,
+      "share_in_main": 0.823
+     },
+     "جامعه شناسی دوره دوم متوسطه": {
+      "n": 184,
+      "main_cluster": 5,
+      "share_in_main": 0.511
+     },
+     "مطالعات اجتماعی دوره دوم ابتدایی": {
+      "n": 182,
+      "main_cluster": 5,
+      "share_in_main": 0.297
+     },
+     "مطالعات اجتماعی دوره اول متوسطه": {
+      "n": 180,
+      "main_cluster": 5,
+      "share_in_main": 0.372
+     },
+     "زمین شناسی دوره دوم متوسطه": {
+      "n": 157,
+      "main_cluster": 6,
+      "share_in_main": 0.35
+     },
+     "استعداد تحلیلی دوره اول متوسطه": {
+      "n": 156,
+      "main_cluster": 2,
+      "share_in_main": 0.436
+     },
+     "فلسفه دوره دوم متوسطه": {
+      "n": 153,
+      "main_cluster": 3,
+      "share_in_main": 0.739
+     },
+     "زبان و ادبیات فارسی دوره اول ابتدایی": {
+      "n": 134,
+      "main_cluster": 2,
+      "share_in_main": 0.866
+     },
+     "آمار و احتمال دوره دوم متوسطه": {
+      "n": 134,
+      "main_cluster": 1,
+      "share_in_main": 0.91
+     },
+     "ریاضیات گسسته دوره دوم متوسطه": {
+      "n": 128,
+      "main_cluster": 1,
+      "share_in_main": 0.945
+     },
+     "روانشناسی دوره دوم متوسطه": {
+      "n": 127,
+      "main_cluster": 0,
+      "share_in_main": 0.488
+     },
+     "سرعت و دقت دوره دوم ابتدایی": {
+      "n": 93,
+      "main_cluster": 1,
+      "share_in_main": 0.441
+     },
+     "تعلیم و تربیت اسلامی دوره دوم ابتدایی": {
+      "n": 84,
+      "main_cluster": 3,
+      "share_in_main": 0.833
+     },
+     "اقتصاد دوره دوم متوسطه": {
+      "n": 78,
+      "main_cluster": 0,
+      "share_in_main": 0.718
+     },
+     "منطق دوره دوم متوسطه": {
+      "n": 74,
+      "main_cluster": 2,
+      "share_in_main": 0.541
+     },
+     "تعلیم و تربیت اسلامی دوره اول متوسطه": {
+      "n": 72,
+      "main_cluster": 3,
+      "share_in_main": 0.889
+     },
+     "مطالعات اجتماعی دوره اول ابتدایی": {
+      "n": 62,
+      "main_cluster": 2,
+      "share_in_main": 0.419
+     },
+     "هوش کلامی و ادبی دوره دوم ابتدایی": {
+      "n": 59,
+      "main_cluster": 2,
+      "share_in_main": 0.797
+     },
+     "دین و زندگی دوره دوم متوسطه": {
+      "n": 55,
+      "main_cluster": 3,
+      "share_in_main": 0.964
+     },
+     "تعلیم و تربیت اسلامی دوره اول ابتدایی": {
+      "n": 17,
+      "main_cluster": 3,
+      "share_in_main": 1.0
+     }
+    }
+   },
+   "level": {
+    "nmi": 0.009067514277492672,
+    "nmi_shuffled": 0.0008391103033718044,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 568,
+      "top": {
+       "متوسط": 0.454,
+       "دشوار": 0.25,
+       "ساده": 0.187,
+       "نسبتا دشوار": 0.06,
+       "نسبتا ساده": 0.049
+      },
+      "human_error": 0.543
+     },
+     {
+      "cluster": 1,
+      "n": 2368,
+      "top": {
+       "متوسط": 0.477,
+       "دشوار": 0.295,
+       "ساده": 0.163,
+       "نسبتا دشوار": 0.039,
+       "نسبتا ساده": 0.026
+      },
+      "human_error": 0.707
+     },
+     {
+      "cluster": 2,
+      "n": 1607,
+      "top": {
+       "متوسط": 0.409,
+       "دشوار": 0.315,
+       "ساده": 0.175,
+       "نسبتا دشوار": 0.067,
+       "نسبتا ساده": 0.033
+      },
+      "human_error": 0.565
+     },
+     {
+      "cluster": 3,
+      "n": 618,
+      "top": {
+       "متوسط": 0.405,
+       "دشوار": 0.327,
+       "ساده": 0.159,
+       "نسبتا دشوار": 0.073,
+       "نسبتا ساده": 0.037
+      },
+      "human_error": 0.558
+     },
+     {
+      "cluster": 4,
+      "n": 671,
+      "top": {
+       "متوسط": 0.465,
+       "دشوار": 0.259,
+       "ساده": 0.124,
+       "نسبتا دشوار": 0.098,
+       "نسبتا ساده": 0.054
+      },
+      "human_error": 0.661
+     },
+     {
+      "cluster": 5,
+      "n": 480,
+      "top": {
+       "متوسط": 0.5,
+       "دشوار": 0.258,
+       "ساده": 0.131,
+       "نسبتا دشوار": 0.085,
+       "نسبتا ساده": 0.025
+      },
+      "human_error": 0.579
+     },
+     {
+      "cluster": 6,
+      "n": 719,
+      "top": {
+       "متوسط": 0.388,
+       "دشوار": 0.232,
+       "ساده": 0.153,
+       "نسبتا دشوار": 0.12,
+       "نسبتا ساده": 0.107
+      },
+      "human_error": 0.569
+     },
+     {
+      "cluster": 7,
+      "n": 800,
+      "top": {
+       "متوسط": 0.481,
+       "دشوار": 0.242,
+       "ساده": 0.121,
+       "نسبتا دشوار": 0.102,
+       "نسبتا ساده": 0.052
+      },
+      "human_error": 0.685
+     }
+    ],
+    "labels": {
+     "متوسط": {
+      "n": 3512,
+      "main_cluster": 1,
+      "share_in_main": 0.322
+     },
+     "دشوار": {
+      "n": 2208,
+      "main_cluster": 1,
+      "share_in_main": 0.316
+     },
+     "ساده": {
+      "n": 1223,
+      "main_cluster": 1,
+      "share_in_main": 0.315
+     },
+     "نسبتا دشوار": {
+      "n": 555,
+      "main_cluster": 2,
+      "share_in_main": 0.195
+     },
+     "نسبتا ساده": {
+      "n": 333,
+      "main_cluster": 6,
+      "share_in_main": 0.231
+     }
+    }
+   }
+  },
+  "mmlu": {
+   "fine": {
+    "nmi": 0.3924098235414115,
+    "nmi_shuffled": 0.014956352419326493,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 684,
+      "top": {
+       "high_school_macroeconomics": 0.19,
+       "professional_accounting": 0.155,
+       "high_school_microeconomics": 0.117,
+       "marketing": 0.094,
+       "miscellaneous": 0.044
+      }
+     },
+     {
+      "cluster": 1,
+      "n": 542,
+      "top": {
+       "conceptual_physics": 0.129,
+       "high_school_chemistry": 0.124,
+       "miscellaneous": 0.09,
+       "astronomy": 0.083,
+       "high_school_physics": 0.081
+      }
+     },
+     {
+      "cluster": 2,
+      "n": 806,
+      "top": {
+       "professional_medicine": 0.124,
+       "nutrition": 0.119,
+       "clinical_knowledge": 0.102,
+       "high_school_biology": 0.098,
+       "college_biology": 0.06
+      }
+     },
+     {
+      "cluster": 3,
+      "n": 573,
+      "top": {
+       "high_school_world_history": 0.131,
+       "high_school_us_history": 0.127,
+       "prehistory": 0.094,
+       "high_school_european_history": 0.077,
+       "miscellaneous": 0.068
+      }
+     },
+     {
+      "cluster": 4,
+      "n": 545,
+      "top": {
+       "elementary_mathematics": 0.209,
+       "high_school_mathematics": 0.149,
+       "high_school_statistics": 0.072,
+       "abstract_algebra": 0.07,
+       "college_mathematics": 0.068
+      }
+     },
+     {
+      "cluster": 5,
+      "n": 556,
+      "top": {
+       "professional_law": 0.853,
+       "international_law": 0.04,
+       "high_school_government_and_politics": 0.031,
+       "professional_psychology": 0.013,
+       "jurisprudence": 0.011
+      }
+     },
+     {
+      "cluster": 6,
+      "n": 639,
+      "top": {
+       "professional_psychology": 0.133,
+       "high_school_psychology": 0.13,
+       "miscellaneous": 0.083,
+       "philosophy": 0.072,
+       "sociology": 0.058
+      }
+     },
+     {
+      "cluster": 7,
+      "n": 802,
+      "top": {
+       "moral_scenarios": 0.415,
+       "philosophy": 0.08,
+       "miscellaneous": 0.072,
+       "moral_disputes": 0.064,
+       "professional_law": 0.062
+      }
+     }
+    ],
+    "labels": {
+     "professional_law": {
+      "n": 584,
+      "main_cluster": 5,
+      "share_in_main": 0.812
+     },
+     "moral_scenarios": {
+      "n": 333,
+      "main_cluster": 7,
+      "share_in_main": 1.0
+     },
+     "miscellaneous": {
+      "n": 281,
+      "main_cluster": 7,
+      "share_in_main": 0.206
+     },
+     "professional_psychology": {
+      "n": 232,
+      "main_cluster": 6,
+      "share_in_main": 0.366
+     },
+     "high_school_psychology": {
+      "n": 198,
+      "main_cluster": 6,
+      "share_in_main": 0.419
+     },
+     "high_school_macroeconomics": {
+      "n": 148,
+      "main_cluster": 0,
+      "share_in_main": 0.878
+     },
+     "elementary_mathematics": {
+      "n": 143,
+      "main_cluster": 4,
+      "share_in_main": 0.797
+     },
+     "philosophy": {
+      "n": 127,
+      "main_cluster": 7,
+      "share_in_main": 0.504
+     },
+     "moral_disputes": {
+      "n": 124,
+      "main_cluster": 7,
+      "share_in_main": 0.411
+     },
+     "prehistory": {
+      "n": 116,
+      "main_cluster": 3,
+      "share_in_main": 0.466
+     },
+     "professional_accounting": {
+      "n": 116,
+      "main_cluster": 0,
+      "share_in_main": 0.914
+     },
+     "nutrition": {
+      "n": 111,
+      "main_cluster": 2,
+      "share_in_main": 0.865
+     },
+     "high_school_biology": {
+      "n": 108,
+      "main_cluster": 2,
+      "share_in_main": 0.731
+     },
+     "clinical_knowledge": {
+      "n": 104,
+      "main_cluster": 2,
+      "share_in_main": 0.788
+     },
+     "professional_medicine": {
+      "n": 102,
+      "main_cluster": 2,
+      "share_in_main": 0.98
+     },
+     "high_school_microeconomics": {
+      "n": 99,
+      "main_cluster": 0,
+      "share_in_main": 0.808
+     },
+     "high_school_mathematics": {
+      "n": 94,
+      "main_cluster": 4,
+      "share_in_main": 0.862
+     },
+     "high_school_world_history": {
+      "n": 90,
+      "main_cluster": 3,
+      "share_in_main": 0.833
+     },
+     "security_studies": {
+      "n": 87,
+      "main_cluster": 3,
+      "share_in_main": 0.437
+     },
+     "human_aging": {
+      "n": 87,
+      "main_cluster": 2,
+      "share_in_main": 0.368
+     },
+     "sociology": {
+      "n": 85,
+      "main_cluster": 6,
+      "share_in_main": 0.435
+     },
+     "marketing": {
+      "n": 83,
+      "main_cluster": 0,
+      "share_in_main": 0.771
+     },
+     "high_school_us_history": {
+      "n": 83,
+      "main_cluster": 3,
+      "share_in_main": 0.88
+     },
+     "high_school_geography": {
+      "n": 79,
+      "main_cluster": 3,
+      "share_in_main": 0.405
+     },
+     "conceptual_physics": {
+      "n": 79,
+      "main_cluster": 1,
+      "share_in_main": 0.886
+     },
+     "high_school_chemistry": {
+      "n": 74,
+      "main_cluster": 1,
+      "share_in_main": 0.905
+     },
+     "high_school_statistics": {
+      "n": 71,
+      "main_cluster": 4,
+      "share_in_main": 0.549
+     },
+     "world_religions": {
+      "n": 68,
+      "main_cluster": 6,
+      "share_in_main": 0.471
+     },
+     "high_school_government_and_politics": {
+      "n": 68,
+      "main_cluster": 3,
+      "share_in_main": 0.544
+     },
+     "high_school_european_history": {
+      "n": 60,
+      "main_cluster": 3,
+      "share_in_main": 0.733
+     },
+     "college_biology": {
+      "n": 58,
+      "main_cluster": 2,
+      "share_in_main": 0.828
+     },
+     "logical_fallacies": {
+      "n": 55,
+      "main_cluster": 7,
+      "share_in_main": 0.436
+     },
+     "electrical_engineering": {
+      "n": 54,
+      "main_cluster": 1,
+      "share_in_main": 0.778
+     },
+     "virology": {
+      "n": 52,
+      "main_cluster": 2,
+      "share_in_main": 0.885
+     },
+     "astronomy": {
+      "n": 50,
+      "main_cluster": 1,
+      "share_in_main": 0.9
+     },
+     "anatomy": {
+      "n": 49,
+      "main_cluster": 2,
+      "share_in_main": 0.816
+     },
+     "human_sexuality": {
+      "n": 49,
+      "main_cluster": 2,
+      "share_in_main": 0.469
+     },
+     "high_school_physics": {
+      "n": 45,
+      "main_cluster": 1,
+      "share_in_main": 0.978
+     },
+     "international_law": {
+      "n": 44,
+      "main_cluster": 5,
+      "share_in_main": 0.5
+     },
+     "college_computer_science": {
+      "n": 44,
+      "main_cluster": 4,
+      "share_in_main": 0.773
+     },
+     "medical_genetics": {
+      "n": 42,
+      "main_cluster": 2,
+      "share_in_main": 0.857
+     },
+     "machine_learning": {
+      "n": 41,
+      "main_cluster": 4,
+      "share_in_main": 0.707
+     },
+     "global_facts": {
+      "n": 41,
+      "main_cluster": 3,
+      "share_in_main": 0.512
+     },
+     "abstract_algebra": {
+      "n": 38,
+      "main_cluster": 4,
+      "share_in_main": 1.0
+     },
+     "public_relations": {
+      "n": 38,
+      "main_cluster": 0,
+      "share_in_main": 0.5
+     },
+     "econometrics": {
+      "n": 38,
+      "main_cluster": 4,
+      "share_in_main": 0.658
+     },
+     "college_mathematics": {
+      "n": 37,
+      "main_cluster": 4,
+      "share_in_main": 1.0
+     },
+     "formal_logic": {
+      "n": 37,
+      "main_cluster": 4,
+      "share_in_main": 0.595
+     },
+     "college_chemistry": {
+      "n": 36,
+      "main_cluster": 1,
+      "share_in_main": 0.917
+     },
+     "jurisprudence": {
+      "n": 36,
+      "main_cluster": 3,
+      "share_in_main": 0.278
+     },
+     "business_ethics": {
+      "n": 35,
+      "main_cluster": 0,
+      "share_in_main": 0.571
+     },
+     "computer_security": {
+      "n": 34,
+      "main_cluster": 1,
+      "share_in_main": 0.353
+     },
+     "management": {
+      "n": 34,
+      "main_cluster": 0,
+      "share_in_main": 0.471
+     },
+     "college_medicine": {
+      "n": 34,
+      "main_cluster": 2,
+      "share_in_main": 0.529
+     },
+     "us_foreign_policy": {
+      "n": 33,
+      "main_cluster": 3,
+      "share_in_main": 0.818
+     },
+     "high_school_computer_science": {
+      "n": 31,
+      "main_cluster": 4,
+      "share_in_main": 0.742
+     },
+     "college_physics": {
+      "n": 28,
+      "main_cluster": 1,
+      "share_in_main": 0.964
+     }
+    }
+   },
+   "label": {
+    "nmi": 0.2997535944815333,
+    "nmi_shuffled": 0.001251275967180131,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 684,
+      "top": {
+       "Social Sciences": 0.474,
+       "Business": 0.301,
+       "Humanities": 0.082,
+       "STEM": 0.061,
+       "Other": 0.058
+      }
+     },
+     {
+      "cluster": 1,
+      "n": 542,
+      "top": {
+       "STEM": 0.721,
+       "Other": 0.092,
+       "Social Sciences": 0.076,
+       "Humanities": 0.068,
+       "Medical": 0.039
+      }
+     },
+     {
+      "cluster": 2,
+      "n": 806,
+      "top": {
+       "Medical": 0.509,
+       "STEM": 0.23,
+       "Social Sciences": 0.159,
+       "Humanities": 0.052,
+       "Other": 0.051
+      }
+     },
+     {
+      "cluster": 3,
+      "n": 573,
+      "top": {
+       "Humanities": 0.6,
+       "Social Sciences": 0.281,
+       "Other": 0.105,
+       "Business": 0.007,
+       "STEM": 0.005
+      }
+     },
+     {
+      "cluster": 4,
+      "n": 545,
+      "top": {
+       "STEM": 0.778,
+       "Social Sciences": 0.116,
+       "Humanities": 0.059,
+       "Other": 0.022,
+       "Business": 0.017
+      }
+     },
+     {
+      "cluster": 5,
+      "n": 556,
+      "top": {
+       "Humanities": 0.921,
+       "Social Sciences": 0.059,
+       "Business": 0.011,
+       "Medical": 0.007,
+       "Other": 0.002
+      }
+     },
+     {
+      "cluster": 6,
+      "n": 639,
+      "top": {
+       "Social Sciences": 0.423,
+       "Humanities": 0.261,
+       "STEM": 0.092,
+       "Medical": 0.089,
+       "Other": 0.088
+      }
+     },
+     {
+      "cluster": 7,
+      "n": 802,
+      "top": {
+       "Humanities": 0.707,
+       "Social Sciences": 0.167,
+       "Other": 0.077,
+       "Medical": 0.022,
+       "Business": 0.014
+      }
+     }
+    ],
+    "labels": {
+     "Humanities": {
+      "n": 1757,
+      "main_cluster": 7,
+      "share_in_main": 0.323
+     },
+     "Social Sciences": {
+      "n": 1154,
+      "main_cluster": 0,
+      "share_in_main": 0.281
+     },
+     "STEM": {
+      "n": 1114,
+      "main_cluster": 4,
+      "share_in_main": 0.381
+     },
+     "Medical": {
+      "n": 532,
+      "main_cluster": 2,
+      "share_in_main": 0.771
+     },
+     "Other": {
+      "n": 322,
+      "main_cluster": 7,
+      "share_in_main": 0.193
+     },
+     "Business": {
+      "n": 268,
+      "main_cluster": 0,
+      "share_in_main": 0.769
+     }
+    }
+   }
+  },
+  "chat": {
+   "source": {
+    "nmi": 0.07556546085565742,
+    "nmi_shuffled": 0.00146396130733323,
+    "clusters": [
+     {
+      "cluster": 0,
+      "n": 326,
+      "top": {
+       "lmsys_fa": 0.819,
+       "wildchat": 0.126,
+       "arena": 0.055
+      }
+     },
+     {
+      "cluster": 1,
+      "n": 989,
+      "top": {
+       "wildchat": 0.395,
+       "lmsys_fa": 0.329,
+       "arena": 0.276
+      }
+     },
+     {
+      "cluster": 2,
+      "n": 286,
+      "top": {
+       "lmsys_fa": 0.843,
+       "wildchat": 0.108,
+       "arena": 0.049
+      }
+     },
+     {
+      "cluster": 3,
+      "n": 468,
+      "top": {
+       "lmsys_fa": 0.69,
+       "wildchat": 0.177,
+       "arena": 0.132
+      }
+     },
+     {
+      "cluster": 4,
+      "n": 404,
+      "top": {
+       "lmsys_fa": 0.545,
+       "wildchat": 0.3,
+       "arena": 0.156
+      }
+     },
+     {
+      "cluster": 5,
+      "n": 360,
+      "top": {
+       "wildchat": 0.467,
+       "lmsys_fa": 0.278,
+       "arena": 0.256
+      }
+     },
+     {
+      "cluster": 6,
+      "n": 442,
+      "top": {
+       "lmsys_fa": 0.756,
+       "wildchat": 0.17,
+       "arena": 0.075
+      }
+     },
+     {
+      "cluster": 7,
+      "n": 586,
+      "top": {
+       "wildchat": 0.439,
+       "arena": 0.338,
+       "lmsys_fa": 0.224
+      }
+     }
+    ],
+    "labels": {
+     "lmsys_fa": {
+      "n": 1941,
+      "main_cluster": 6,
+      "share_in_main": 0.172
+     },
+     "wildchat": {
+      "n": 1167,
+      "main_cluster": 1,
+      "share_in_main": 0.335
+     },
+     "arena": {
+      "n": 753,
+      "main_cluster": 1,
+      "share_in_main": 0.363
+     }
+    }
+   },
+   "features": [
+    {
+     "cluster": 0,
+     "chars_p50": 58.0,
+     "latin_share": 0.02506110849398811,
+     "code": 0.0,
+     "math": 0.003067484662576687,
+     "question": 0.5858895705521472,
+     "lang_fa": 0.9662576687116564,
+     "lang_mixed_en": 0.03374233128834356
+    },
+    {
+     "cluster": 1,
+     "chars_p50": 48.0,
+     "latin_share": 0.04124674228817162,
+     "code": 0.0,
+     "math": 0.00910010111223458,
+     "question": 0.3832153690596562,
+     "lang_fa": 0.9413549039433772,
+     "lang_mixed_en": 0.057633973710819006
+    },
+    {
+     "cluster": 2,
+     "chars_p50": 55.0,
+     "latin_share": 0.01281849687072132,
+     "code": 0.0,
+     "math": 0.01048951048951049,
+     "question": 0.6573426573426573,
+     "lang_fa": 0.993006993006993,
+     "lang_mixed_en": 0.006993006993006993
+    },
+    {
+     "cluster": 3,
+     "chars_p50": 52.0,
+     "latin_share": 0.01945521736953525,
+     "code": 0.0,
+     "math": 0.014957264957264958,
+     "question": 0.5170940170940171,
+     "lang_fa": 0.9764957264957265,
+     "lang_mixed_en": 0.023504273504273504
+    },
+    {
+     "cluster": 4,
+     "chars_p50": 62.0,
+     "latin_share": 0.02794428720525524,
+     "code": 0.0024752475247524753,
+     "math": 0.017326732673267328,
+     "question": 0.4628712871287129,
+     "lang_fa": 0.9702970297029703,
+     "lang_mixed_en": 0.0297029702970297
+    },
+    {
+     "cluster": 5,
+     "chars_p50": 63.5,
+     "latin_share": 0.05057382062891075,
+     "code": 0.008333333333333333,
+     "math": 0.041666666666666664,
+     "question": 0.3972222222222222,
+     "lang_fa": 0.9444444444444444,
+     "lang_mixed_en": 0.05555555555555555
+    },
+    {
+     "cluster": 6,
+     "chars_p50": 50.0,
+     "latin_share": 0.02329243976077385,
+     "code": 0.0,
+     "math": 0.006787330316742082,
+     "question": 0.5882352941176471,
+     "lang_fa": 0.9683257918552036,
+     "lang_mixed_en": 0.02262443438914027
+    },
+    {
+     "cluster": 7,
+     "chars_p50": 71.5,
+     "latin_share": 0.09807766866902959,
+     "code": 0.017064846416382253,
+     "math": 0.04607508532423208,
+     "question": 0.3532423208191126,
+     "lang_fa": 0.89419795221843,
+     "lang_mixed_en": 0.10580204778156997
+    }
+   ],
+   "features_all": {
+    "chars_p50": 56.0,
+    "latin_share": 0.04118076171915437,
+    "code": 0.003626003626003626,
+    "math": 0.018648018648018648,
+    "question": 0.4654234654234654,
+    "lang_fa": 0.9507899507899508,
+    "lang_mixed_en": 0.047915047915047915
+   }
+  }
+ }
+}

@@ -1,0 +1,222 @@
+{
+ "model": "nano",
+ "K": 8,
+ "topics": {
+  "programming": "برنامه نویسی، کد، پایتون، خطای نرم افزار — programming, code, software bug",
+  "math": "ریاضی، معادله، حل مسئله، محاسبه — mathematics, equation, calculation",
+  "physics_chem": "فیزیک و شیمی، نیرو، انرژی، واکنش شیمیایی — physics and chemistry",
+  "biology_health": "زیست شناسی، پزشکی، بیماری، سلامت، دارو — biology, medicine, health",
+  "law": "حقوق، قانون، دادگاه، قرارداد، وکیل — law, court, contract",
+  "literature_poetry": "ادبیات فارسی، شعر، شاعر، دستور زبان — Persian literature, poetry, grammar",
+  "history_society": "تاریخ، جغرافیا، جامعه، سیاست — history, geography, society, politics",
+  "religion_philosophy": "دین، اسلام، قرآن، فلسفه، اخلاق — religion, Islam, philosophy, ethics",
+  "business_economy": "اقتصاد، کسب و کار، بازاریابی، پول، بورس — economy, business, marketing",
+  "writing_help": "نوشتن متن، مقاله، ایمیل، خلاصه، ترجمه — write a text, essay, email, summary, translation",
+  "tech_ai": "هوش مصنوعی، کامپیوتر، موبایل، اینترنت، فناوری — AI, computers, phones, technology",
+  "personal_life": "زندگی شخصی، روابط، احساسات، روانشناسی، مشاوره — personal life, relationships, psychology",
+  "chitchat": "سلام، احوالپرسی، شوخی، گفتگوی روزمره — hello, greetings, small talk"
+ },
+ "sets": {
+  "khayyam": {
+   "clusters": [
+    {
+     "cluster": 0,
+     "n": 568,
+     "topics": {
+      "chitchat": 0.364,
+      "business_economy": 0.229,
+      "programming": 0.141,
+      "personal_life": 0.102
+     }
+    },
+    {
+     "cluster": 1,
+     "n": 2368,
+     "topics": {
+      "math": 0.989,
+      "business_economy": 0.007,
+      "history_society": 0.002,
+      "programming": 0.001
+     }
+    },
+    {
+     "cluster": 2,
+     "n": 1607,
+     "topics": {
+      "chitchat": 0.678,
+      "literature_poetry": 0.24,
+      "writing_help": 0.016,
+      "history_society": 0.014
+     }
+    },
+    {
+     "cluster": 3,
+     "n": 618,
+     "topics": {
+      "religion_philosophy": 0.727,
+      "chitchat": 0.123,
+      "personal_life": 0.053,
+      "literature_poetry": 0.04
+     }
+    },
+    {
+     "cluster": 4,
+     "n": 671,
+     "topics": {
+      "physics_chem": 0.97,
+      "biology_health": 0.024,
+      "business_economy": 0.003,
+      "history_society": 0.001
+     }
+    },
+    {
+     "cluster": 5,
+     "n": 480,
+     "topics": {
+      "history_society": 0.881,
+      "literature_poetry": 0.044,
+      "business_economy": 0.031,
+      "religion_philosophy": 0.01
+     }
+    },
+    {
+     "cluster": 6,
+     "n": 719,
+     "topics": {
+      "biology_health": 0.57,
+      "history_society": 0.232,
+      "physics_chem": 0.092,
+      "chitchat": 0.075
+     }
+    },
+    {
+     "cluster": 7,
+     "n": 800,
+     "topics": {
+      "physics_chem": 0.875,
+      "math": 0.096,
+      "tech_ai": 0.013,
+      "history_society": 0.007
+     }
+    }
+   ],
+   "overall": {
+    "math": 0.316,
+    "physics_chem": 0.184,
+    "chitchat": 0.184,
+    "history_society": 0.085,
+    "religion_philosophy": 0.058,
+    "biology_health": 0.056,
+    "literature_poetry": 0.055,
+    "business_economy": 0.021,
+    "personal_life": 0.016,
+    "programming": 0.013,
+    "writing_help": 0.004,
+    "tech_ai": 0.004,
+    "law": 0.003
+   },
+   "sanity_n": 6574,
+   "sanity_agreement": 0.719,
+   "sanity_chance": 0.187
+  },
+  "chat": {
+   "clusters": [
+    {
+     "cluster": 0,
+     "n": 326,
+     "topics": {
+      "chitchat": 0.669,
+      "literature_poetry": 0.298,
+      "history_society": 0.015,
+      "programming": 0.009
+     }
+    },
+    {
+     "cluster": 1,
+     "n": 989,
+     "topics": {
+      "chitchat": 0.543,
+      "writing_help": 0.121,
+      "literature_poetry": 0.105,
+      "personal_life": 0.082
+     }
+    },
+    {
+     "cluster": 2,
+     "n": 286,
+     "topics": {
+      "chitchat": 0.755,
+      "math": 0.119,
+      "business_economy": 0.049,
+      "personal_life": 0.024
+     }
+    },
+    {
+     "cluster": 3,
+     "n": 468,
+     "topics": {
+      "biology_health": 0.459,
+      "chitchat": 0.419,
+      "physics_chem": 0.051,
+      "history_society": 0.026
+     }
+    },
+    {
+     "cluster": 4,
+     "n": 404,
+     "topics": {
+      "physics_chem": 0.433,
+      "chitchat": 0.25,
+      "tech_ai": 0.163,
+      "math": 0.082
+     }
+    },
+    {
+     "cluster": 5,
+     "n": 360,
+     "topics": {
+      "business_economy": 0.797,
+      "tech_ai": 0.044,
+      "chitchat": 0.042,
+      "law": 0.039
+     }
+    },
+    {
+     "cluster": 6,
+     "n": 442,
+     "topics": {
+      "history_society": 0.708,
+      "chitchat": 0.197,
+      "religion_philosophy": 0.043,
+      "literature_poetry": 0.011
+     }
+    },
+    {
+     "cluster": 7,
+     "n": 586,
+     "topics": {
+      "programming": 0.495,
+      "tech_ai": 0.401,
+      "chitchat": 0.051,
+      "writing_help": 0.026
+     }
+    }
+   ],
+   "overall": {
+    "chitchat": 0.363,
+    "history_society": 0.097,
+    "tech_ai": 0.084,
+    "business_economy": 0.084,
+    "programming": 0.079,
+    "biology_health": 0.061,
+    "literature_poetry": 0.055,
+    "physics_chem": 0.055,
+    "writing_help": 0.038,
+    "math": 0.033,
+    "personal_life": 0.026,
+    "religion_philosophy": 0.017,
+    "law": 0.008
+   }
+  }
+ }
+}

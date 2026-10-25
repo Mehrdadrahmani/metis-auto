@@ -139,14 +139,81 @@ small is slightly better on subject-rich sets; nano is better separated, better 
 much faster. The `text-matching` adapter gives worse topic clusters and lopsided sizes. Oddly, it gives a slightly larger
 difficulty gain; worth re-checking on real labels. The final embedder choice stays in WP-08 (D-052).
 
-## 8. Limits
+## 8. Are the clusters meaningful? (were prompts grouped correctly?)
+
+Checked without reading any prompt, in three ways (nano, K = 8, one split, test prompts;
+`scripts/s4_cluster_meaning.py`, `scripts/s4_chat_topics.py`; numbers in
+`results/persian_cluster_meaning.json`, `results/persian_cluster_topics.json`).
+
+**(a) Better than chance?** NMI of the clusters vs the known labels, and vs the same labels shuffled
+(chance level): Khayyam subjects 0.405 vs 0.005 · Global-MMLU subjects 0.392 vs 0.015 · mix sources 0.350 vs 0.001.
+So the clusters are far from random. Khayyam's *difficulty level* scores only 0.009: the clusters group by subject, not by difficulty.
+
+**(b) Khayyam: each cluster has a clear subject** (8 clusters for 38 categories, so related subjects
+must share). Share of a subject's questions that land in its main cluster:
+
+| Cluster | What it contains (known labels) | Subject loyalty | Human error |
+|---|---|---|---|
+| 1 math (n = 2,368) | all math courses, every grade: calculus 99.6 %, upper-secondary math 95 %, discrete math 95 %, geometry 93 %, statistics 91 %, primary math 82–85 %, math & logic puzzles 79 % | very high | **0.71** (hardest) |
+| 7 physics (800) | upper-secondary physics 58 % of the cluster; 83 % of all physics questions are here | high | 0.69 |
+| 4 chemistry (671) | chemistry 53 % of the cluster; 87 % of all chemistry questions | high | 0.66 |
+| 2 Persian literature (1,607) | literature at all 4 school levels (79–87 % each), verbal & analytical aptitude, logic | high | 0.57 |
+| 6 biology (719) | biology 36 % (70 % of all biology), primary/lower science, geology, geography | medium | 0.57 |
+| 5 history & society (480) | history 81 % of all history, sociology, social studies | medium | 0.58 |
+| 3 religion & philosophy (618) | religion 83–100 %, philosophy 74 % | high | 0.56 |
+| 0 humanities mix (568) | psychology, economics, some literature, social studies, geography | low (leftovers) | 0.54 |
+
+Weakest: general science and social studies of the lower grades (30–37 % in their main cluster). They mix
+physics, biology and geography, so splitting them is reasonable. **The clusters also differ in difficulty.**
+Examinees get math and physics wrong far more often (0.69–0.71) than humanities (0.54–0.58). That is the
+signal UniRoute uses for routing.
+
+**(c) Global-MMLU (57 English-named subjects, machine-translated):** 0 economics & accounting & marketing ·
+1 physics, chemistry, astronomy · 2 medicine, nutrition, biology · 3 history (world, US, European, prehistory) ·
+4 mathematics & statistics · 5 law (85 % professional law) · 6 psychology, philosophy, sociology ·
+7 moral scenarios (41 %) & ethics. Every cluster can be named. Medical (77 %) and business (77 %) questions land
+mostly in one cluster each. "Humanities" splits into history, law and ethics, which are really different subjects.
+
+**(d) mix (9 benchmarks):** legal QA (73 % of cluster 4), medical QA (64 % of cluster 5), Persian ARC science (clusters 0 and 3),
+PerCoR news/commonsense (cluster 2, its domains are news sites). Reasoning puzzles (BBH: arithmetic, dates, object tracking,
+logic) share clusters 1 and 6 with Khayyam math & logic. The clusters follow **what is asked**, not which dataset it came from.
+Global-MMLU spreads across all clusters, because it covers many subjects.
+
+**(e) Chat (no labels) → named by nearest topic.** We wrote 13 short topic descriptions (Persian + English)
+and embedded them with the same model; each prompt gets the closest topic. **Check on Khayyam first:** the topic agrees with the
+known subject for 72 % of questions (chance 19 %). So the method is usable, but rough.
+
+![cluster topics](figures/cluster_topics.png)
+
+| Chat cluster | Size | Main topics | Supporting counts |
+|---|---|---|---|
+| 7 coding & tech | 586 | programming 50 %, AI / tech 40 % | most Latin script (10 %), most code markers, 11 % English/mixed |
+| 5 business & money | 360 | business / economy 80 % | |
+| 6 history & society | 442 | history / politics 71 % | 76 % lmsys |
+| 3 health | 468 | health / medicine 46 % | |
+| 4 science | 404 | physics / chemistry 43 %, tech 16 %, math 8 % | |
+| 1 general, writing, personal | 989 | small talk 54 %, writing help 12 %, literature 10 %, personal 8 % | largest, all 3 sources |
+| 0 general / poetry | 326 | small talk 67 %, literature / poetry 30 % | 82 % lmsys |
+| 2 short general questions | 286 | small talk 76 %, math 12 % | 84 % lmsys, 66 % contain a question mark |
+
+"Small talk" also catches anything that fits no topic, so clusters 0–2 are really "general / mixed". 5 of 8 chat clusters have
+a clear topic. Clusters 0, 2 and 6 are mostly lmsys_fa (a translated set), so part of their grouping may be translation *style*,
+not topic.
+
+**Verdict.** On labelled data the clusters are **correct and nameable**: they gather questions of the same subject
+far above chance, and they separate easy and hard subjects. Errors are sensible (neighbouring subjects merge, e.g.
+all math; lower-grade "general science" splits). On chat, 5 of 8 clusters have a clear topic (coding/tech,
+business, history/society, health, science) and 3 are general. **Only a human reading can confirm the chat names**:
+please open `runs/s4/persian_clusters_nano.html` (8 random prompts per cluster) and check them.
+
+## 9. Limits
 
 - No per-model answers, so no deferral curve, no real K choice and no routing quality. NMI and the difficulty test are proxies.
 - Exam questions are not chat; the chat set is the closest stand-in for Metis traffic.
 - Global-MMLU is machine-translated; 111 (small) / 71 (nano) chat prompts were cut at 2,048 tokens for this test.
 - 10 repeats (paper: 400); 3 repeats for K > 8, so those intervals are wider.
 
-## 9. Next steps (proposals, need the owner's OK)
+## 10. Next steps (proposals, need the owner's OK)
 
 | Option | What | Cost |
 |---|---|---|
@@ -165,6 +232,8 @@ uv run python scripts/ext_download.py                     # 12 sources → data/
 uv run python scripts/s4_persian_cluster.py small         # and: nano; nano --task text-matching
 uv run python scripts/s4_cluster_plots.py                 # curves + maps (results/figures, runs/s4)
 uv run python scripts/s4_report_figs.py                   # data overview, comparison, composition
+uv run python scripts/s4_cluster_meaning.py               # label make-up per cluster
+uv run python scripts/s4_chat_topics.py && uv run python scripts/s4_chat_topics_fig.py  # topic names
 /opt/homebrew/bin/drawio -x -f png -s 2 -o report/persian_clustering/figures/pipeline.png \
   report/persian_clustering/figures/pipeline.drawio
 ```
