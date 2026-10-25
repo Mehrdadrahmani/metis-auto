@@ -16,7 +16,7 @@ Raw numbers: `results/persian_clustering_{small,nano,nano_text-matching}.json`. 
 | K grid | 3 … N_val/50 | **3–8**, plus 12–64 and K = #labels for reference |
 | Choose K | area under deferral curve (needs model correctness labels) | **not possible at $0**; replaced by label agreement and a human-difficulty test (§3) |
 
-Data (deduplicated, question text only): **mix** = 9 benchmarks, ≤ 4,000 each (28,802; EmbedLLM-like) ·
+Data (deduplicated, question text only; full description in `persian_data_card.md`): **mix** = 9 benchmarks, ≤ 4,000 each (28,802; EmbedLLM-like) ·
 **Khayyam** 20,577 (38 categories, 95 courses; gated, access granted) · **Global-MMLU fa** 13,867 (57 subjects) ·
 **one topic** = Khayyam's largest category, 1,672 (Headlines-like) · **chat** = first user message of
 Persian lmsys 5,401 + WildChat 3,222 + Arena 2,028 = 10,651 (no labels).
