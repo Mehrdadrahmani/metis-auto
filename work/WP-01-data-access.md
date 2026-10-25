@@ -39,14 +39,14 @@ in WP-08).
 6. Tests (`tests/test_redact.py`, `tests/test_load.py`): synthetic messages with each key kind;
    idempotence; no false positive on normal Persian text with numbers; loader on a tiny synthetic
    fixture (write it by hand, not from the real data).
-7. Run the data card on `data/raw/sample.json` → `results/data_card_sample.md` (aggregates only; safe
+7. Run the data card on `data/raw/sample.json` → `results/wp01_data/data_card_sample.md` (aggregates only; safe
    to commit). Expected numbers to verify: 100 sessions, 907 messages (465 user / 442 bot), 18 models,
    7 providers, 14 attachment messages, 29 widget messages, 71 RAG messages, 408 non-empty
    instructions (78 distinct), 33 instructions > 20k chars.
 
 ## Outputs
 - `src/metis/data/{schema,load,redact,inspect}.py`, `scripts/data_card.py`, tests,
-  `results/data_card_sample.md`.
+  `results/wp01_data/data_card_sample.md`.
 
 ## Acceptance checks
 - [ ] Tests green; every key kind redacted; zero hits remain after redaction on the sample

@@ -43,7 +43,7 @@ the replay runs on **validation** traffic only (development); WP-19 runs it once
 
 ## Outputs
 - `src/metis/sim/replay.py`, `src/metis/eval/report.py`, `dashboard/`, `results/replay_val.md`,
-  screenshots in `results/figures/`.
+  screenshots in `results/wp03b_persian/figures/`.
 
 ## Acceptance checks
 - [ ] Replay = offline numbers when extras are off; outage run has 0 failed requests.

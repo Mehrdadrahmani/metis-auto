@@ -6,7 +6,7 @@
 settings never mix (one Qdrant collection per id).
 `merge_adapter=True` merges the task LoRA adapter into the base weights once at load: same vectors
 (max |diff| < 1e-6), about 2x faster on MPS, because the Jina code otherwise switches adapters on
-every call (results/embedder_benchmark.md). The model is then fixed to that one task.
+every call (results/wp03_embedder/embedder_benchmark.md). The model is then fixed to that one task.
 """
 
 from __future__ import annotations

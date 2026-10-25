@@ -16,12 +16,12 @@ Real Persian chat prompts (Arena, WildChat, lmsys) show how chat traffic cluster
 (small vs nano). Candidate list: `ref/docs/persian-datasets.md`.
 
 ## Read (only these)
-- `results/embedder_benchmark.md` · `ref/docs/persian-datasets.md` · `scripts/s4_embed_bench.py` (reuse)
+- `results/wp03_embedder/embedder_benchmark.md` · `ref/docs/persian-datasets.md` · `scripts/s4_embed_bench.py` (reuse)
 
 ## Steps
 > **Updated 2026-10-25 (D-053):** steps 1–5 done with the paper protocol (train 60 % / val 400 / test,
 > 10 repeats, K = 3..8 + reference K, Khayyam human-difficulty proxy); figures by `scripts/s4_cluster_plots.py`.
-> Results `results/persian_clustering.md`. Waiting at the step-5 ⏸.
+> Results `results/wp03b_persian/persian_clustering.md`. Waiting at the step-5 ⏸.
 
 1. `scripts/ext_download.py`: download public sets to `data/external/<name>/` (git-ignored) via the HF
    datasets-server parquet/filter API (plain HTTP, resumable). Record source, config, split, licence,
@@ -38,14 +38,14 @@ Real Persian chat prompts (Arena, WildChat, lmsys) show how chat traffic cluster
    K ∈ {3, 4, 6, 8, 12, 16, 24, 32, 48, 64} (+ K = #labels); assign the 40 % by nearest centroid.
    Metrics on the 40 %: NMI, ARI, purity vs labels; cosine silhouette; cluster size spread. T3: silhouette,
    sizes, length/script mix per cluster (no labels). Reference: `text-matching` adapter for T1 (one K).
-5. `results/persian_clustering.md` (+ JSON); `runs/s4/persian_clusters_<model>.html` with 8 random
+5. `results/wp03b_persian/persian_clustering.md` (+ JSON); `runs/s4/persian_clusters_<model>.html` with 8 random
    items per cluster for the owner (T1 and T3).
    ⏸ **STOP:** owner reads the results and the HTML; says what changes (e.g. small vs nano).
 6. Log decisions; Q-023 updated; `/handoff`.
 
 ## Outputs
-- `scripts/ext_download.py`, `scripts/s4_persian_cluster.py`, `results/persian_clustering.md`,
-  `results/persian_clustering_<model>.json`, local HTML pages.
+- `scripts/ext_download.py`, `scripts/s4_persian_cluster.py`, `results/wp03b_persian/persian_clustering.md`,
+  `results/wp03b_persian/persian_clustering_<model>.json`, local HTML pages.
 
 ## Acceptance checks
 - [ ] No API call to any LLM; downloads only public HF datasets; nothing from `data/` committed.

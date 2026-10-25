@@ -32,7 +32,7 @@ s4:                                 # embedder (WP-03, D-048, D-052): choice bet
   task: clustering                  # routing (S4/S5, G2); same embedder offline and online
   cache_task: text-matching         # semantic cache (WP-17): better paraphrase separation (AUC)
   prompt_name: document             # D-049
-  merge_adapter: true               # same vectors, ~2x faster (results/embedder_benchmark.md)
+  merge_adapter: true               # same vectors, ~2x faster (results/wp03_embedder/embedder_benchmark.md)
   device: mps                       # cpu gives identical vectors (max diff 3.5e-7)
   dtype: float32                    # fp16 gains little
   batch_size: 16

@@ -1,7 +1,7 @@
 # Data card: public Persian data for the clustering test (WP-03b)
 
 Date 2026-10-25 · counts and statistics only (no text read) · downloaded by `scripts/ext_download.py`
-(sources, row counts and sha256 in `results/persian_sources.json`) · used by `scripts/s4_persian_cluster.py`.
+(sources, row counts and sha256 in `results/wp03b_persian/persian_sources.json`) · used by `scripts/s4_persian_cluster.py`.
 
 **12 sources, 70,186 unique texts** after removing duplicates and empty texts. Only the question or the
 first user message is used (no answer choices, no replies).
@@ -42,4 +42,4 @@ Language overall (`metis.data.lang.lang_tag`): 96 % Persian, 3 % mixed Persian/E
 - Khayyam: academic use only, no derivatives; fine for this course project, never redistribute the data
   (`data/` is git-ignored). Examinee answer rates exist for 16,777 questions.
 - Samples (PerCoR, legal QA, med QA) drawn with seed 20261020.
-- Results: `results/persian_clustering.md`.
+- Results: `results/wp03b_persian/persian_clustering.md`.

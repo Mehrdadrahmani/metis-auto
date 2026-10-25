@@ -49,7 +49,7 @@ answers, so here we use known labels and a human-difficulty signal as stand-ins.
 12 public Hugging Face sources; only the question or the first user message is used. Khayyam (38 school subjects,
 native Persian, gated, access granted) is the largest. Chat messages are short on average but have a long
 tail; benchmarks are short exam questions. 96 % of texts are Persian. Full table, licences and notes:
-[`results/persian_data_card.md`](../../results/persian_data_card.md).
+[`results/wp03b_persian/persian_data_card.md`](../../results/wp03b_persian/persian_data_card.md).
 
 | Test set | Size | Plays the role of |
 |---|---|---|
@@ -143,7 +143,7 @@ difficulty gain; worth re-checking on real labels. The final embedder choice sta
 
 Checked without reading any prompt, in three ways (nano, K = 8, one split, test prompts;
 `scripts/s4_cluster_meaning.py`, `scripts/s4_chat_topics.py`; numbers in
-`results/persian_cluster_meaning.json`, `results/persian_cluster_topics.json`).
+`results/wp03b_persian/persian_cluster_meaning.json`, `results/wp03b_persian/persian_cluster_topics.json`).
 
 **(a) Better than chance?** NMI of the clusters vs the known labels, and vs the same labels shuffled
 (chance level): Khayyam subjects 0.405 vs 0.005 · Global-MMLU subjects 0.392 vs 0.015 · mix sources 0.350 vs 0.001.
@@ -238,5 +238,5 @@ uv run python scripts/s4_chat_topics.py && uv run python scripts/s4_chat_topics_
   report/persian_clustering/figures/pipeline.drawio
 ```
 
-Raw numbers: `results/persian_clustering_{small,nano,nano_text-matching}.json` · short version:
-`results/persian_clustering.md`.
+Raw numbers: `results/wp03b_persian/persian_clustering_{small,nano,nano_text-matching}.json` · short version:
+`results/wp03b_persian/persian_clustering.md`.

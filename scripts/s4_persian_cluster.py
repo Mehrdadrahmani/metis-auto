@@ -12,7 +12,7 @@ examinees choosing the key) used as one "model": Ψ_k = mean error of the val pr
 
 Sets: mix (EmbedLLM-like benchmark mix, ≤ 4,000 per source), khayyam (38 categories, 95 courses),
 mmlu (Global-MMLU fa), one_topic (Khayyam's largest category; Headlines-like), chat (Persian chat
-first user messages; no labels). Numbers only on stdout and in results/; texts only go to a local
+first user messages; no labels). Numbers only on stdout and in results/wp03b_persian/; texts only go to a local
 HTML page for the owner. Embeddings: data/external/emb/<model>_<task>/store/ (keyed by text hash).
 
 Usage: uv run python scripts/s4_persian_cluster.py nano [--task text-matching] [--embed-only]
@@ -311,7 +311,7 @@ def main() -> None:
         return
 
     tag = a.model if task == s4["task"] else f"{a.model}_{task}"
-    out_path = ROOT / "results" / f"persian_clustering_{tag}.json"
+    out_path = ROOT / "results" / "wp03b_persian" / f"persian_clustering_{tag}.json"
     out: dict = json.loads(out_path.read_text()) if a.sets and out_path.exists() else {"sets": {}}
     out.update({"model": cand["name"], "revision": cand["revision"], "task": task,
                 "embedder_id": emb.embedder_id, "seed": SEED, "max_tokens": a.max_tokens,

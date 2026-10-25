@@ -15,7 +15,7 @@
   message fields), `tests/test_load.py` (hand-written fixture, report, strict mode, no output, card
   has no content). 48 passed.
 
-## Data card summary (`results/data_card_sample.md`)
+## Data card summary (`results/wp01_data/data_card_sample.md`)
 All expected counts match: 4 categories × 25 sessions, 907 messages (465 user / 442 bot),
 18 models, 7 providers, 14 attachment messages (15 images), 29 widget messages (all SINGLE_CHOICE),
 71 RAG messages (3–5 context chunks), 408 non-empty instructions (78 distinct), 33 > 20k chars

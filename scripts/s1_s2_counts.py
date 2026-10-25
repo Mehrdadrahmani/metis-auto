@@ -1,7 +1,7 @@
 """Counts report for S1 + S2 (WP-02 step 8). Aggregates only, no text.
 
-Usage: uv run python scripts/s1_s2_counts.py runs/s1 runs/s2 results/split_manifest_sample.json \
-       results/s1_s2_sample_counts.md
+Usage: uv run python scripts/s1_s2_counts.py runs/s1 runs/s2 results/wp02_prompts_splits/split_manifest_sample.json \
+       results/wp02_prompts_splits/s1_s2_sample_counts.md
 """
 
 from __future__ import annotations

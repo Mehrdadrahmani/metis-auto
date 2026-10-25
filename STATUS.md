@@ -11,11 +11,11 @@ Updated: 2026-10-25 · by session WP-03b (part 2, overnight)
 - `scripts/s4_persian_cluster.py` = paper protocol (train 60 % / val 400 / test, 10 repeats, K-means on
   train, K = 3..8 + reference K; Khayyam human-difficulty gap); embeddings in
   `data/external/emb/<model>_<task>/store/` (text-hash keyed). `scripts/s4_cluster_plots.py` = figures.
-- Results: `results/persian_clustering.md` (+ JSON, `results/figures/persian_*.png`). Headlines:
+- Results: `results/wp03b_persian/persian_clustering.md` (+ JSON, `results/wp03b_persian/figures/persian_*.png`). Headlines:
   mix clusters well, one topic not (paper's EmbedLLM vs Headlines reproduced); small ≈ nano (nano 2.5×
   faster); clusters cut the human-error gap ~5–6 %; val 400 limits K.
 - **Exact next step (WP-03b step 5 ⏸ → 6):**
-  1. Owner reads `results/persian_clustering.md` and opens `runs/s4/persian_map_{nano,small}.html`
+  1. Owner reads `results/wp03b_persian/persian_clustering.md` and opens `runs/s4/persian_map_{nano,small}.html`
      (interactive, hover = text) and `runs/s4/persian_clusters_{nano,small}.html` (8 prompts/cluster).
   2. Owner answers Q-024 (S5 cluster-size rule) and says what changes; log decisions; update Q-023;
      write `work/reports/WP-03b-report.md`; tick ROADMAP; `/handoff`. Then WP-05.

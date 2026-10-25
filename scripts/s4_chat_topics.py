@@ -4,7 +4,7 @@ Each topic = a short description we wrote (Persian + English), embedded with the
 as the prompts. Each prompt gets the topic with the highest cosine similarity; we report the topic mix
 of every K-means cluster (nano, K = 8, split 1, test part). Checked first on Khayyam, where the true
 subject is known (agreement of anchor topic with the known subject group).
-Writes results/persian_cluster_topics.json.
+Writes results/wp03b_persian/persian_cluster_topics.json.
 
 Usage: uv run python scripts/s4_chat_topics.py
 """
@@ -98,10 +98,10 @@ def main() -> None:
             log(f"khayyam sanity: anchor topic = expected subject for {r['sanity_agreement']:.1%} "
                 f"(chance {r['sanity_chance']:.1%}, n = {r['sanity_n']})")  # fmt: skip
         out["sets"][name] = r
-    (ROOT / "results" / "persian_cluster_topics.json").write_text(
+    (ROOT / "results" / "wp03b_persian" / "persian_cluster_topics.json").write_text(
         json.dumps(out, indent=1, ensure_ascii=False)
     )
-    log("done: results/persian_cluster_topics.json")
+    log("done: results/wp03b_persian/persian_cluster_topics.json")
 
 
 if __name__ == "__main__":

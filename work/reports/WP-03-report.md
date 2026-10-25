@@ -10,7 +10,7 @@ Sessions: 2026-10-22 (part 1), 2026-10-24 (part 2). Cost $0. Tests: 100 pass.
   `scripts/data/persian_pairs.yaml` (40 synthetic pairs).
 - `configs/pipeline.yaml` `s4:` (both candidates, choice pending).
 
-## Decision table (details: `results/embedder_benchmark.md`)
+## Decision table (details: `results/wp03_embedder/embedder_benchmark.md`)
 
 | Check | Guide | small | nano |
 |---|---|---|---|

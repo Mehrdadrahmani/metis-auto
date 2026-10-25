@@ -1,8 +1,8 @@
 """WP-03b: pictures of the Persian clustering test (no LLM calls).
 
-1. results/figures/persian_k_curves.png: NMI, silhouette, small-cluster count and Khayyam difficulty
-   gap vs K, both models, 95 % CI over the repeated splits (from results/persian_clustering_*.json).
-2. results/figures/persian_map_<model>_<set>.png: UMAP of test prompts (split 1, K = 8, the paper's
+1. results/wp03b_persian/figures/persian_k_curves.png: NMI, silhouette, small-cluster count and Khayyam difficulty
+   gap vs K, both models, 95 % CI over the repeated splits (from results/wp03b_persian/persian_clustering_*.json).
+2. results/wp03b_persian/figures/persian_map_<model>_<set>.png: UMAP of test prompts (split 1, K = 8, the paper's
    largest K for N_val = 400), left coloured by cluster, right by the known label. Dots only, no text.
 3. runs/s4/persian_map_<model>.html (git-ignored, local only): the same maps, interactive; hover shows
    the label and the first 200 characters of the prompt, for the owner.
@@ -38,7 +38,7 @@ from s4_persian_cluster import (
 )
 from sklearn.cluster import KMeans
 
-FIG = ROOT / "results" / "figures"
+FIG = ROOT / "results" / "wp03b_persian" / "figures"
 COLORS = {"nano": "#6c8ebf", "small": "#d79b00"}
 SETS = {"mix": "mix (EmbedLLM-like)", "khayyam": "Khayyam (38 categories)", "mmlu": "Global-MMLU",
         "one_topic": "one topic (Headlines-like)", "chat": "chat (no labels)"}  # fmt: skip
@@ -222,13 +222,13 @@ def main() -> None:
     FIG.mkdir(parents=True, exist_ok=True)
     results = {}
     for m in a.models.split(","):
-        p = ROOT / "results" / f"persian_clustering_{m}.json"
+        p = ROOT / "results" / "wp03b_persian" / f"persian_clustering_{m}.json"
         if p.exists():
             results[m] = json.loads(p.read_text())
     if not results:
-        sys.exit("no results/persian_clustering_*.json yet")
+        sys.exit("no results/wp03b_persian/persian_clustering_*.json yet")
     k_curves(results)
-    log("curves: results/figures/persian_k_curves.png, persian_difficulty_gap.png")
+    log("curves: results/wp03b_persian/figures/persian_k_curves.png, persian_difficulty_gap.png")
     if not a.no_maps:
         for m, res in results.items():
             maps(m, res["task"])

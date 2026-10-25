@@ -38,7 +38,7 @@ them; if Jina fails the Persian check, ⏸ ask the owner (reference: bge-m3).
    `embedder_id` (cosine, 1024-dim); point id = `prompt_id` hash; **payload = ids and numbers only**
    (split, category, lang, cluster), never text. Helpers: `upsert`, `search(vec, k, filter)`,
    `exact=True` option (K-NN baseline must equal brute force). Tests vs numpy brute force.
-5. Benchmarks, written to `results/embedder_benchmark.md`:
+5. Benchmarks, written to `results/wp03_embedder/embedder_benchmark.md`:
    - **Latency:** single-message p50/p95 over 200 calls (inputs of 30, 200, 512 tokens; synthetic Persian
      text), on CPU and on MPS; throughput (prompts/s) for batch 64; RAM use; load time.
    - **Persian sanity:** write **40 synthetic pairs** yourself (20 paraphrase pairs, 20 unrelated but
@@ -59,7 +59,7 @@ them; if Jina fails the Persian check, ⏸ ask the owner (reference: bge-m3).
 
 ## Outputs
 - `src/metis/embed/embedder.py`, tests (normalization, determinism, prefix handling),
-  `results/embedder_benchmark.md`, `configs/pipeline.yaml` updated.
+  `results/wp03_embedder/embedder_benchmark.md`, `configs/pipeline.yaml` updated.
 
 ## Acceptance checks
 - [ ] Same input → identical vector (determinism on the chosen device; if MPS isn't deterministic

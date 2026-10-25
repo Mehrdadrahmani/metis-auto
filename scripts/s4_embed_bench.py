@@ -6,7 +6,7 @@ sanity (AUC), token counts vs the model limit, K-means K = 4 / 6 on the sample (
 language mix, mean length, silhouette), Qdrant exact search == numpy on the real vectors.
 
 Usage: uv run python scripts/s4_embed_bench.py small   (or nano)
-Writes results/embedder_benchmark_<model>.json, runs/s4/emb_<model>.npy,
+Writes results/wp03_embedder/embedder_benchmark_<model>.json, runs/s4/emb_<model>.npy,
 runs/s4/cluster_samples_<model>.html (git-ignored, for the owner).
 """
 
@@ -243,7 +243,7 @@ def main() -> None:
     out["qdrant_equals_numpy"] = f"{ok}/20"
     st.close()
 
-    path = ROOT / f"results/embedder_benchmark_{a.model}.json"
+    path = ROOT / f"results/wp03_embedder/embedder_benchmark_{a.model}.json"
     path.write_text(json.dumps(out, indent=1, ensure_ascii=False))
     print(path)
 

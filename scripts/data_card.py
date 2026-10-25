@@ -1,6 +1,6 @@
 """Structure-only data card (WP-01).
 
-Usage: uv run python scripts/data_card.py data/raw/sample.json results/data_card_sample.md
+Usage: uv run python scripts/data_card.py data/raw/sample.json results/wp01_data/data_card_sample.md
 
 Writes the markdown card and a manifest next to it. Prints only the output paths.
 """

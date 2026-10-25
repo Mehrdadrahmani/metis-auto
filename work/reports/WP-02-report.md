@@ -14,7 +14,7 @@
 D-045 (embed current message only), D-046 / DEV-9 (judge also current message only), D-047 (embed
 the whole message, no cut), D-048 (Jina v5-text-small + Qdrant local). Light normalization kept.
 
-## Sample results (`results/s1_s2_sample_counts.md`)
+## Sample results (`results/wp02_prompts_splits/s1_s2_sample_counts.md`)
 | item | n |
 |---|---|
 | prompt rows (user message + bot reply) | 434 (31 user messages had no reply right after) |

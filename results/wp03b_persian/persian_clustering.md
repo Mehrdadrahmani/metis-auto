@@ -2,7 +2,7 @@
 
 Date 2026-10-25 · $0 (no LLM calls; public Hugging Face data, local embedding) · seed 20261020.
 Scripts `scripts/ext_download.py`, `scripts/s4_persian_cluster.py`, `scripts/s4_cluster_plots.py`.
-Raw numbers: `results/persian_clustering_{small,nano,nano_text-matching}.json`. All numbers are
+Raw numbers: `results/wp03b_persian/persian_clustering_{small,nano,nano_text-matching}.json`. All numbers are
 **measured**, on the held-out test part, mean over 10 random splits (3 for K > 8) with a 95 % t-interval.
 
 ## 1. What we did (= paper §5.1, §6, App. G.1–G.3, Gecko → Jina)

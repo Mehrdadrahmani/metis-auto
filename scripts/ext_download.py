@@ -294,7 +294,9 @@ def main() -> None:
         manifest[name] = rec
         man_path.write_text(json.dumps(manifest, indent=1))
         log(f"{name}: {len(df)} rows")
-    (ROOT / "results" / "persian_sources.json").write_text(json.dumps(manifest, indent=1))
+    (ROOT / "results" / "wp03b_persian" / "persian_sources.json").write_text(
+        json.dumps(manifest, indent=1)
+    )
 
 
 if __name__ == "__main__":

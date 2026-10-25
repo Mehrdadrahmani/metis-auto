@@ -88,7 +88,10 @@ def data_overview(df: pd.DataFrame) -> None:
 
 def model_compare() -> None:
     res = {
-        r: json.loads((ROOT / "results" / f"persian_clustering_{r}.json").read_text()) for r in RUNS
+        r: json.loads(
+            (ROOT / "results" / "wp03b_persian" / f"persian_clustering_{r}.json").read_text()
+        )
+        for r in RUNS
     }
     fig, axes = plt.subplots(1, 3, figsize=(15, 4.2), gridspec_kw={"width_ratios": [2, 1.4, 0.8]})
     w = 0.26

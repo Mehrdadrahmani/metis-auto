@@ -68,7 +68,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-049 | 2026-10-22 | Jina v5 clustering input = model prompt **"Document: "** + message (model-card and standalone `-clustering` model default `default_prompt_name = document`); passed explicitly as `prompt_name` and part of `embedder_id` | P | WP-03 |
 | D-050 | 2026-10-22 | Embedder weights stored in `models/<short>_<rev12>/` (git-ignored), fetched by `scripts/fetch_model.py` (curl, resumable; HF xet download stalled and a network drop lost 1 GB), loaded by local path; revisions pinned (small `dd76d535f544`, nano `8a7f00aac812`). Folder names must be Python identifiers (remote code import). Token-budget batching (`max_batch_tokens` 8,192) after an 11 GB out-of-memory kill | P | WP-03 |
 | D-051 | 2026-10-24 | **graphify** (uv tool `graphifyy[pdf]` 0.9.95, project-scoped) = knowledge graph of the whole project (code by local AST, docs/PDFs by the session's own subagents; no external API, no Gemini key). Outputs `graphify-out/` (graph.json, graph.html, GRAPH_REPORT.md committed; cache ignored). `.graphifyignore` excludes data/, cache/, runs/, models/, qdrant/, mlflow/, .env, sealed files. Git hooks (post-commit/checkout/merge/rewrite in `.githooks/`) rebuild the code graph; `/handoff` step 2b refreshes docs when needed; CLAUDE.md tells agents to query the graph before grepping | A | owner |
-| D-052 | 2026-10-24 | Embedder: keep **both** jina v5 small and nano as candidates; choose in **WP-08** on real train data (owner). Sample benchmark (`results/embedder_benchmark.md`): only nano meets 60 ms p95 at 512 tok (59 ms, adapter merged; small ≈ 220 ms); Persian pair AUC weak with `clustering` (small 0.61, nano 0.66), better with `text-matching` (0.76 / 0.85) → semantic cache uses `text-matching` (`s4.cache_task`). `merge_adapter` added (same vectors, ~2× faster). Owner's cluster verdict on the sample: "partly" (too small to judge). WP-08 step 6 updated | A | owner |
+| D-052 | 2026-10-24 | Embedder: keep **both** jina v5 small and nano as candidates; choose in **WP-08** on real train data (owner). Sample benchmark (`results/wp03_embedder/embedder_benchmark.md`): only nano meets 60 ms p95 at 512 tok (59 ms, adapter merged; small ≈ 220 ms); Persian pair AUC weak with `clustering` (small 0.61, nano 0.66), better with `text-matching` (0.76 / 0.85) → semantic cache uses `text-matching` (`s4.cache_task`). `merge_adapter` added (same vectors, ~2× faster). Owner's cluster verdict on the sample: "partly" (too small to judge). WP-08 step 6 updated | A | owner |
 | D-053 | 2026-10-25 | WP-03b follows the **paper's embedding + K-means protocol** with Jina instead of Gecko (owner): random split train 60 % / val 400 / test, 10 repeats; K-means on train only; nearest-centroid assignment; K grid 3..N_val/50 (+ larger K for reference). K choice by deferral area impossible at $0 → label NMI + Khayyam human-difficulty gap (Prop. 2 proxy). Embedding cache keyed by text hash. HF login (`hf auth login`, token in the user's HF cache, never in the repo) for gated Khayyam (access granted) | A | owner |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
@@ -86,7 +86,7 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-020 | K selection: report cards from graded train prompts (paper; ~$14, breaks fixed rule 6) or split-validation on val (spec, $0) | owner | WP-05 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-023 | Test the router on public Persian data like the paper (owner idea): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
-| Q-024 | Spec S5 says *every* val cluster ≥ 50 prompts; the paper only caps K ≤ N_val/50 (average 50). WP-03b: with val 400, K = 8 has ~5 of 8 clusters < 50, K ≥ 5 often ≥ 1 → strict rule leaves K = 3–4. Keep strict, or follow the paper + α-smoothing? (`results/persian_clustering.md` §4.5) | owner | WP-14 |
+| Q-024 | Spec S5 says *every* val cluster ≥ 50 prompts; the paper only caps K ≤ N_val/50 (average 50). WP-03b: with val 400, K = 8 has ~5 of 8 clusters < 50, K ≥ 5 often ≥ 1 → strict rule leaves K = 3–4. Keep strict, or follow the paper + α-smoothing? (`results/wp03b_persian/persian_clustering.md` §4.5) | owner | WP-14 |
 | Q-019 | Approve DEV-4, DEV-5, DEV-6 | owner | WP-06 (DEV-5), WP-11 (DEV-4), WP-05 (DEV-6) |
 
 ## 4. Budget ledger
@@ -107,7 +107,7 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 - `scripts/s4_persian_cluster.py` rewritten to the paper protocol (D-053); new `scripts/s4_cluster_plots.py`
   (K curves, difficulty gap, UMAP maps; interactive local maps in `runs/s4/`). Dev deps: matplotlib,
   umap-learn, plotly.
-- Runs: small, nano, nano text-matching on 65,897 unique texts. Results `results/persian_clustering.md`:
+- Runs: small, nano, nano text-matching on 65,897 unique texts. Results `results/wp03b_persian/persian_clustering.md`:
   paper picture holds (mix clusters well, one topic not, chat in between); small ≈ nano (±0.015 NMI), nano
   2.5× faster; clusters cut the Khayyam human-error gap ~5–6 % (one topic ~0 %); val 400 limits K (gain peaks
   K ≈ 8–16). New Q-024 (S5 cluster-size rule).
@@ -133,7 +133,7 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
   edges, 75 communities; docs/PDFs read by 6 session subagents (~640k tokens of usage, $0); 170
   dangling edges (doc→code name mismatches). `/handoff` step 2b added.
 - Step 5 benchmark run on battery (Low Power Mode off; owner said no charger needed): results in
-  `results/embedder_benchmark.md` + `_small.json` / `_nano.json`. MPS p95 at 512 tok: small 311 ms,
+  `results/wp03_embedder/embedder_benchmark.md` + `_small.json` / `_nano.json`. MPS p95 at 512 tok: small 311 ms,
   nano 95 ms. Found the Jina code switches LoRA adapters per call → `Embedder(merge_adapter=True)`
   (same vectors ≤ 4.6e-7, small 221 ms, nano **59 ms**). fp16 adds little.
 - Persian pairs AUC with `clustering`: small 0.61, nano 0.66 (fails 0.85 guide); `text-matching`
@@ -162,7 +162,7 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
   tests (90 pass). Deps added: pandas, pyarrow, pyyaml.
 - Sample: 434 prompt rows, 375 LLM replies, 343 eligible val/test, 371 train; huge prompts only
   in workflow turns (0 of 375 LLM replies); widget clicks 14/19 exact; est_tokens_in mean 1,675.
-  Dry-run split 60/40/20 reproducible; test ids sealed. `results/s1_s2_sample_counts.md`.
+  Dry-run split 60/40/20 reproducible; test ids sealed. `results/wp02_prompts_splits/s1_s2_sample_counts.md`.
 - Owner decisions this session: D-045, D-046 (DEV-9), D-047, D-048. No content read. Cost $0.
 
 ### 2026-10-21 · WP-01 follow-up (Opus)
@@ -176,7 +176,7 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 - Wrote `src/metis/data/{schema,load,redact,inspect}.py`, `scripts/data_card.py`,
   `tests/test_redact.py`, `tests/test_load.py` (48 tests pass, ruff clean). Text fields are hidden
   from `repr`; loader keeps unknown fields in `extra` and counts turn mismatches.
-- Data card on the sample → `results/data_card_sample.md` (+ manifest): all expected counts match
+- Data card on the sample → `results/wp01_data/data_card_sample.md` (+ manifest): all expected counts match
   (100 sessions, 907 messages 465/442, 18 models, 7 providers, 14 attachment / 29 widget / 71 RAG
   messages, 408 instructions, 78 distinct, 33 > 20k chars, 9 distinct > 20k). No unknown fields,
   no turn-count mismatches.

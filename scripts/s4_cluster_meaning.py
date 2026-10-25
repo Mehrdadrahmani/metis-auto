@@ -3,7 +3,7 @@
 nano, clustering adapter, K = 8, split 1 (seed 20261020), test part. For labelled sets: top labels per
 cluster (share of the cluster) and, per label, the share that lands in its main cluster; NMI against a
 shuffled-label baseline. For chat (no labels): counted text features per cluster (length, script,
-code / math / question markers, source). Writes results/persian_cluster_meaning.json.
+code / math / question markers, source). Writes results/wp03b_persian/persian_cluster_meaning.json.
 
 Usage: uv run python scripts/s4_cluster_meaning.py [--model nano] [--k 8]
 """
@@ -109,10 +109,10 @@ def main() -> None:
                 for col in cols
             )
         )
-    (ROOT / "results" / "persian_cluster_meaning.json").write_text(
+    (ROOT / "results" / "wp03b_persian" / "persian_cluster_meaning.json").write_text(
         json.dumps(res, indent=1, ensure_ascii=False)
     )
-    log("done: results/persian_cluster_meaning.json")
+    log("done: results/wp03b_persian/persian_cluster_meaning.json")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""WP-03b: heatmap of nearest-topic shares per cluster (from results/persian_cluster_topics.json)."""
+"""WP-03b: heatmap of nearest-topic shares per cluster (from results/wp03b_persian/persian_cluster_topics.json)."""
 
 import json
 
@@ -9,7 +9,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 root = str(__import__("pathlib").Path(__file__).resolve().parents[1]) + "/"
-r = json.loads(__import__("pathlib").Path(root + "results/persian_cluster_topics.json").read_text())
+r = json.loads(
+    __import__("pathlib")
+    .Path(root + "results/wp03b_persian/persian_cluster_topics.json")
+    .read_text()
+)
 topics = list(r["topics"])
 names = {
     "khayyam": [

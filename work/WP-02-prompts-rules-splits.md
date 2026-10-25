@@ -59,11 +59,11 @@ categories only balance splits and reports (never routing).
    **20261020**. Write `runs/s2/split.parquet` + `results/split_manifest.json` (counts per split ×
    category × language, sha256 of the sorted id lists). Sizes are parameters (`configs/pipeline.yaml`).
 8. Run on the sample with scaled sizes (val 60, test 40, pilot 20) as a dry run; write the counts
-   (no text) to `results/s1_s2_sample_counts.md`.
+   (no text) to `results/wp02_prompts_splits/s1_s2_sample_counts.md`.
 
 ## Outputs
 - `src/metis/data/{normalize,lang,prompts,rules,split}.py`, `configs/{models,pipeline}.yaml`, tests,
-  `results/s1_s2_sample_counts.md`.
+  `results/wp02_prompts_splits/s1_s2_sample_counts.md`.
 
 ## Acceptance checks
 - [ ] Tests green; no session appears in two splits (test asserts it).
