@@ -1,0 +1,550 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs,longtable,multirow,array}
+\usepackage{caption,subcaption}
+\usepackage{float}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{../figures/}}
+\setlist{itemsep=2pt,topsep=4pt}
+\captionsetup{font=small,labelfont=bf}
+\newcommand{\nmi}{\mathrm{NMI}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{\textbf{Embedding and Clustering Persian Prompts\\the UniRoute Way}\\[4pt]
+\large A review of the $K$-means stage of UniRoute on public Persian data with Jina v5 embeddings\\[2pt]
+\normalsize Metis-Auto v2 --- work package WP-03b}
+\author{Mehrdad Rahmani}
+\date{25 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+UniRoute (Jitkrittum et al., ICLR 2026) routes each prompt to a large language model (LLM) by clustering
+prompt embeddings with $K$-means and describing every LLM by its error rate per cluster. Before spending
+money on model answers for our Persian gateway, we tested the first half of that pipeline, \emph{embedding
+and clustering}, on public Persian data. We follow the paper's protocol exactly, replacing the Gecko
+embedder with Jina~v5 (\emph{small} and \emph{nano}). We use 70{,}186 unique texts from twelve sources:
+nine labelled benchmarks, among them the 20{,}577-question Khayyam Challenge, and 10{,}651 real Persian
+chat messages. All numbers are measured on held-out test prompts over ten random splits with
+95\,\% confidence intervals. The study made no API calls and cost \$0.
+Four findings stand out. (i)~The paper's qualitative result carries over to Persian. A mix of benchmarks
+forms clear clusters ($\nmi\approx0.35$ against nine sources); a single topic forms almost none
+($\nmi\approx0.10$). Real chat lies in between. (ii)~Jina \emph{small} and \emph{nano} are equivalent within
+0.015~NMI; nano is better separated and about 40\,\% faster. (iii)~Clusters are meaningful: on Khayyam they
+gather subjects far above chance (NMI $0.41$ vs.\ $0.005$ shuffled). On chat, five of eight clusters carry a
+clear topic (coding and technology, business, history and society, health, science). (iv)~Treating human
+examinees as one ``model'', clusters shrink the per-question error gap that bounds UniRoute's loss by
+5--6\,\% on Khayyam and by 0\,\% on a single topic. With 400 validation prompts the gain peaks near
+$K=8$--$16$, so validation size, not the embedder, limits $K$. We discuss what this means for the embedder
+choice, the choice of $K$ and the spec's cluster-size rule.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%=====================================================================
+\section{Introduction}
+%=====================================================================
+
+Metis-Auto is a gateway that sends each Persian chat message to one of four candidate LLMs. Its router follows
+UniRoute~\cite{uniroute}. Prompts are embedded and grouped by $K$-means. Each LLM is then described by its
+error rate in every cluster, measured on a small labelled validation set. A new prompt goes to the LLM with the
+lowest ``cluster error $+\ \lambda\cdot$cost''. Because LLMs are represented by these per-cluster profiles, new
+models can be added without retraining.
+
+The router is only as good as its clusters. If the clusters do not separate prompts that different LLMs handle
+differently, every LLM looks the same in every cluster, and routing reduces to always picking one model. The paper
+shows exactly this contrast. On EmbedLLM, a mix of many benchmarks, $K$-means routing is strong. On Headlines,
+where every prompt is financial news, it is weak.
+
+The project's real dataset has not arrived yet, and the rules forbid paid calls before it does. We therefore asked
+whether the clustering stage works on Persian at all, using only free public data. This report answers five
+questions:
+
+\begin{enumerate}[label=\textbf{RQ\arabic*}]
+\item Do Jina~v5 embeddings plus $K$-means recover known topics in Persian text, and how does this depend on $K$?
+\item Does the paper's ``benchmark mix vs.\ single topic'' contrast appear in Persian data?
+\item Which embedder variant should the project prefer for clustering: \emph{small} or \emph{nano}, and the
+  \texttt{clustering} or the \texttt{text-matching} adapter?
+\item Are the clusters meaningful, i.e.\ were prompts grouped correctly, including on unlabelled chat?
+\item Would these clusters help routing, and what limits the useful number of clusters?
+\end{enumerate}
+
+\paragraph{Scope.} This report covers embedding, clustering and cluster assignment (spec stages S4--S5). The later
+stages need a right/wrong label per LLM per prompt: per-model profiles, the choice of $K$ by the area under the
+deferral curve, and routing itself. Public Persian data has no such labels, so they are left for later work.
+\S\ref{sec:proxy} uses a human-difficulty signal as a stand-in.
+
+%=====================================================================
+\section{Background}
+%=====================================================================
+
+\subsection{UniRoute with $K$-means}
+
+Let $\varphi:\mathcal X\to\R^{D}$ be a frozen text embedder with unit-norm outputs. UniRoute's cluster-based
+variant has four steps:
+\begin{enumerate}
+\item \textbf{Cluster} a large unlabelled training set $S_{\mathrm{tr}}$ with $K$-means into centroids
+$\mu_1,\dots,\mu_K$. A prompt's cluster is
+\begin{equation}
+k(x)=\arg\max_{k}\ \varphi(x)^{\top}\mu_k .\label{eq:assign}
+\end{equation}
+\item \textbf{Profile} each LLM $h$ on a small labelled validation set $S_{\mathrm{val}}$ (about 400 prompts):
+\begin{equation}
+\Psi_k(h)=\frac{1}{|C_k|}\sum_{x\in C_k}\mathbf 1\!\left[h(x)\neq y(x)\right],\qquad C_k=\{x\in S_{\mathrm{val}}:k(x)=k\}.
+\label{eq:psi}
+\end{equation}
+\item \textbf{Route} a new prompt to
+\begin{equation}
+r(x)=\arg\min_{h}\ \Psi_{k(x)}(h)+\lambda\, c(h),\label{eq:route}
+\end{equation}
+where $c(h)$ is the cost of model $h$ and $\lambda\ge0$ trades quality for cost.
+\item \textbf{Choose $K$} from $\{3,\dots,N_{\mathrm{val}}/50\}$ by the largest area under the deferral
+curve (accuracy against cost as $\lambda$ varies), computed with the training LLMs (App.~G.1 of~\cite{uniroute}).
+\end{enumerate}
+With $K=1$ the rule picks the same LLM for every prompt (``ZeroRouter''). The paper's Proposition~2 bounds the
+excess loss of cluster routing by how far a prompt's error lies from its cluster's average error. Clusters help when
+they gather prompts of similar difficulty \emph{for each model}.
+
+\subsection{Embedders}
+
+The paper uses Gecko~1B (768 dimensions). We use \textbf{Jina embeddings v5 text}, which the project chose in
+decision D-048 for its multilingual quality and local use:
+\emph{small} (677\,M parameters, 1{,}024 dimensions) and \emph{nano} (768 dimensions, about 5$\times$ faster
+on our machine). Jina~v5 has task adapters (LoRA). We use the \texttt{clustering} adapter, merged into the weights,
+as configured in \texttt{configs/pipeline.yaml}. The \texttt{text-matching} adapter, chosen for the semantic cache,
+serves as a reference. An earlier benchmark (WP-03) found that only \emph{nano} meets the gateway's 60\,ms
+latency budget at 512 tokens.
+
+%=====================================================================
+\section{Data}
+%=====================================================================
+
+\subsection{Sources}
+
+We downloaded twelve public Hugging Face datasets (Table~\ref{tab:sources}). Nine are labelled benchmarks; three
+are collections of real chat conversations, from which we keep only the first user message, as in the project's
+spec (D-045). Khayyam is gated; its authors granted access. Texts are deduplicated exactly and empty texts dropped.
+Only questions and messages are embedded, never answer choices or replies. The agent running the experiments never
+read any text. All analysis uses counts, labels and scores, and texts appear only on local, git-ignored pages for
+the author.
+
+\begin{table}[H]
+\centering\small
+\caption{Sources. ``Kept'' = unique non-empty texts; ``Labels'' / ``Fine'' = number of coarse / fine classes
+(\,--\, = none); length in characters (median / 90th percentile); ``Persian'' = share tagged Persian.
+PerCoR, legal QA and medical QA are seeded samples.}
+\label{tab:sources}
+\resizebox{\linewidth}{!}{\input{tables/sources.tex}}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{data_overview.png}
+\caption{Data overview. Left: texts per source (blue benchmark, green chat). Middle: length on a log scale
+(box = middle 50\,\%). Right: language mix (axis starts at 80\,\%). Khayyam's ``mixed'' share comes from
+formulas; WildChat contains the most English.}
+\label{fig:data}
+\end{figure}
+
+\subsection{Test sets}
+
+From these sources we build five test sets. Each one mirrors a situation from the paper or from our project:
+
+\begin{center}\small
+\begin{tabular}{lrp{9.5cm}}
+\toprule
+Set & Size & Role \\
+\midrule
+mix & 28{,}802 & nine benchmarks, at most 4{,}000 each; mirrors \textbf{EmbedLLM} (a mix of benchmarks) \\
+Khayyam & 20{,}577 & native Persian school exams; 38 categories, 95 courses, 5 difficulty levels, examinee answer rates \\
+Global-MMLU & 13{,}867 & machine-translated MMLU; 57 subjects in 6 categories \\
+one topic & 1{,}672 & Khayyam's largest category (upper-secondary Persian literature); mirrors \textbf{Headlines} \\
+chat & 10{,}651 & lmsys (5{,}401), WildChat (3{,}222), Arena (2{,}028); no labels; closest to Metis traffic \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%=====================================================================
+\section{Method}
+%=====================================================================
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{pipeline.png}
+\caption{Pipeline of this study. Blue: free, offline steps; yellow: totals and outputs; grey: what still needs
+per-model labels.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Protocol (as in the paper)}
+
+\begin{itemize}
+\item \textbf{Embedding.} Every unique text is embedded once with each embedder and cached by text hash. Inputs
+are capped at 2{,}048 tokens for this test; this affects 111 (small) / 71 (nano) chat messages.
+\item \textbf{Split.} For each set and each of $R$ random seeds: train = 60\,\%, validation = 400 prompts
+(the project's $N_{\mathrm{val}}$), test = the rest. The paper uses 400 repeats; we use $R=10$ for
+$K\le8$ and $R=3$ for larger $K$.
+\item \textbf{Clustering.} $K$-means (k-means++, 10 restarts, seed recorded) is fitted on the train part only.
+Validation and test prompts are assigned with Eq.~\eqref{eq:assign}.
+\item \textbf{$K$ grid.} The paper's range $3\dots N_{\mathrm{val}}/50 = 3\dots8$, plus $K\in\{12,16,24,32,48,64\}$
+and $K$ = number of known classes, as references.
+\item \textbf{Statistics.} We report the mean over splits with a 95\,\% $t$-interval.
+\end{itemize}
+
+\subsection{Measures}
+
+The paper chooses $K$ by routing quality, which needs per-model labels. We use measures that do not need them.
+
+\begin{description}
+\item[NMI] Normalised mutual information between test clusters and a known label: 0 = unrelated, 1 = identical.
+We also report the NMI with shuffled labels as the chance level.
+\item[ARI, purity] Adjusted Rand index, and the share of test prompts that carry their cluster's most common label.
+\item[Silhouette] Cosine silhouette on up to 3{,}000 test prompts: how much closer a prompt is to its own cluster
+than to the next one. It needs no labels.
+\item[Cluster size] The number of validation clusters with fewer than 50 prompts. The spec (S5) requires
+$|C_k|\ge50$ for every cluster.
+\item[Composition] For one split at $K=8$, the label mix of every cluster, and for every label the share of its
+prompts that land in its main cluster (``loyalty'').
+\item[Topic anchors] For unlabelled chat, we wrote 13 short topic descriptions in Persian and English (e.g.\ programming,
+law, poetry, small talk) and embedded them with the same model. Each prompt gets its nearest topic, and we report
+the topic mix per cluster. We validate the method on Khayyam, where subjects are known.
+\end{description}
+
+\subsection{A routing proxy: human difficulty}\label{sec:proxy}
+
+Khayyam records, for 16{,}777 questions, the share of examinees who chose each option. We treat ``the examinees''
+as one model with error $e(x)=1-$(share choosing the key); blank answers count as wrong. In the spirit of
+Eq.~\eqref{eq:psi}, $\Psi_k=\overline{e}$ over the validation prompts of cluster $k$. On test prompts we measure the
+gap that Proposition~2 relates to routing loss, relative to one average for all prompts ($K=1$):
+\begin{equation}
+\text{gap shrink}(K)=1-\frac{\mathbb E_{\text{test}}\,|e(x)-\Psi_{k(x)}|}{\mathbb E_{\text{test}}\,|e(x)-\overline e|}.
+\end{equation}
+We compute $\Psi$ twice. Once from the 400 validation prompts, which is the paper's setting. Once from the large
+train part, which is free of sampling noise. The difference between the two isolates the effect of the small
+validation set.
+
+\subsection{Environment}
+Apple M1 Pro (16\,GB), PyTorch MPS, scikit-learn $K$-means, UMAP for the maps. A full run took 13 (nano) and
+21 (small) minutes including new embeddings. Code: \texttt{scripts/s4\_persian\_cluster.py} and companions
+(Appendix~\ref{app:repro}).
+
+%=====================================================================
+\section{Results}
+%=====================================================================
+
+\subsection{Do clusters recover known topics? (RQ1, RQ2)}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{k_curves.png}
+\caption{Scores against $K$ for both embedders (mean and 95\,\% CI over splits). Top: NMI against the known
+label. Middle: cosine silhouette. Bottom: validation clusters with fewer than 50 prompts. Yellow band = the
+paper's range $K=3\dots8$ for $N_{\mathrm{val}}=400$.}
+\label{fig:k}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\caption{Paper range $K=3\dots8$: NMI ($\pm$ 95\,\% CI over 10 splits), silhouette, and number of validation
+clusters with fewer than 50 prompts. Labels: mix = source, Khayyam = 38 categories, Global-MMLU = 57 subjects,
+one topic = 6 courses.}
+\label{tab:main}
+\input{tables/main_k.tex}
+\end{table}
+
+\begin{itemize}
+\item \textbf{Benchmark mix.} NMI against the nine sources rises from 0.23 ($K=3$) to 0.35--0.37 at $K=5$--8, then
+falls slightly. Most sources form their own clusters (\S\ref{sec:meaning}).
+\item \textbf{Subject-rich sets.} On Khayyam (38 categories) and Global-MMLU (57 subjects), NMI keeps rising with $K$
+(Khayyam 0.33 $\to$ 0.42 at $K=8$ $\to$ 0.47 at $K=38$; MMLU 0.24 $\to$ 0.41 $\to$ 0.52 at $K=64$). These sets have
+more real subjects than eight clusters can hold.
+\item \textbf{One topic.} NMI stays near 0.10 in the paper range, and the silhouette falls quickly with $K$:
+there is little structure to find. This reproduces the paper's EmbedLLM-versus-Headlines contrast (\textbf{RQ2}).
+\item \textbf{Chat.} Silhouette 0.10--0.15 in the paper range, against 0.15--0.30 for the benchmarks.
+Chat clusters exist but are softer.
+\item \textbf{Cluster sizes.} With 400 validation prompts, $K=8$ leaves on average about five of eight validation
+clusters below 50 prompts. Already at $K=5$, one cluster often falls below 50.
+\end{itemize}
+
+\subsection{small vs.\ nano vs.\ adapters (RQ3)}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{model_compare.png}
+\caption{At $K=8$: NMI against known labels, silhouette, and run time for small, nano and nano with the
+\texttt{text-matching} adapter.}
+\label{fig:compare}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\caption{Embedder comparison at $K=8$ (NMI $\pm$ 95\,\% CI; chat: silhouette).}
+\label{tab:compare}
+\input{tables/compare.tex}
+\end{table}
+
+\emph{small} beats \emph{nano} by 0.013--0.014 NMI on the two subject-rich sets. \emph{nano} wins on the mix at
+$K=4$--5 (0.370 vs.\ 0.324 at $K=5$) and on the single topic, and it is better separated on every labelled set.
+Both shrink the Khayyam difficulty gap equally. For clustering alone, the two are interchangeable, and nano is
+faster and the only one that meets the latency budget. The \texttt{text-matching} adapter clusters clearly worse:
+NMI 0.08--0.12 lower, silhouette near 0.05, and lopsided cluster sizes. Unexpectedly, its difficulty gain is larger
+(7.7\,\%); we return to this in \S\ref{sec:discussion}.
+
+\subsection{Cluster maps}
+
+Figure~\ref{fig:maps} projects 6{,}000 test prompts per set to two dimensions with UMAP. On the left, dots are
+coloured by $K$-means cluster ($K=8$); on the right, by known label. Where the coloured islands on both sides
+coincide, the clusters follow the labels.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{\linewidth}\includegraphics[width=\linewidth]{map_nano_mix.png}\caption{mix: right = source}\end{subfigure}
+\begin{subfigure}{\linewidth}\includegraphics[width=\linewidth]{map_nano_khayyam.png}\caption{Khayyam: right = ten largest categories (numbered as in Fig.~\ref{fig:compkh})}\end{subfigure}
+\caption{UMAP maps (nano, $K=8$, one split, test prompts).}
+\label{fig:maps}
+\end{figure}
+\begin{figure}[H]
+\ContinuedFloat
+\centering
+\begin{subfigure}{\linewidth}\includegraphics[width=\linewidth]{map_nano_chat.png}\caption{chat: right = source dataset}\end{subfigure}
+\caption{(continued) On chat, the three sources are largely mixed; clusters follow what is asked, not where the data came from.}
+\end{figure}
+
+\subsection{Are the clusters meaningful? (RQ4)}\label{sec:meaning}
+
+\paragraph{Better than chance.} At $K=8$ (nano, one split), NMI against the known label is far above the shuffled
+baseline: Khayyam 0.405 vs.\ 0.005, Global-MMLU subjects 0.392 vs.\ 0.015, mix sources 0.350 vs.\ 0.001. Khayyam's
+difficulty \emph{level} reaches only 0.009, so clusters group by subject, not by difficulty.
+
+\paragraph{Benchmark mix.}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.85\linewidth]{composition_mix.png}
+\caption{mix: share of each source inside each cluster (rows sum to 100\,\%).}
+\label{fig:compmix}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\caption{mix: largest sources per cluster.}
+\input{tables/mix_clusters.tex}
+\end{table}
+
+Legal QA (73\,\% of cluster 4), medical QA (64\,\% of cluster 5), PerCoR news and commonsense (55\,\% of cluster 2)
+and Persian ARC science (clusters 0 and 3) each dominate a cluster. Reasoning puzzles from BBH share clusters 1 and 6
+with Khayyam's mathematics and logic questions. Clusters follow \emph{what is asked}, not \emph{which dataset} the
+question came from. Global-MMLU spreads over all clusters because it covers 57 subjects.
+
+\paragraph{Khayyam.}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{composition_khayyam.png}
+\caption{Khayyam: share of the twelve largest categories inside each cluster. cat~1 Persian literature (upper sec.),
+2 physics, 3 chemistry, 4 biology, 5 mathematics (upper sec.), 6 mathematics \& statistics, 7 mathematical \& logical IQ
+(upper prim.), 8 mathematics (lower sec.), 9 science (lower sec.), 10 mathematics (upper prim.), 11 science (upper prim.),
+12 geometry; ``other'' = the 26 smaller categories.}
+\label{fig:compkh}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\caption{Khayyam clusters ($K=8$, nano, test prompts): name, size, largest categories, and mean examinee error.}
+\label{tab:khcl}
+\input{tables/khayyam_clusters.tex}
+\end{table}
+
+Eight clusters must hold 38 categories, so related subjects share. Every cluster can still be named
+(Table~\ref{tab:khcl}), and loyalty is high (Appendix~\ref{app:loyalty}): calculus 99.6\,\%, upper-secondary
+mathematics 95\,\%, discrete mathematics 95\,\%, chemistry 87\,\%, physics 83\,\%, Persian literature 79--87\,\% at
+all four school levels, religion 83--100\,\%. The errors are sensible. All mathematics merges into one cluster
+regardless of grade. Lower-grade ``general science'' and social studies split (30--37\,\% in their main cluster),
+which matches their mixed content. Clusters also \textbf{differ in difficulty}: examinees miss 71\,\% of
+mathematics and 69\,\% of physics questions, but only 54--58\,\% in the humanities clusters. That is the kind of
+signal Eq.~\eqref{eq:route} uses.
+
+\paragraph{Global-MMLU.}
+
+\begin{table}[H]
+\centering\small
+\caption{Global-MMLU clusters ($K=8$, nano).}
+\input{tables/mmlu_clusters.tex}
+\end{table}
+
+Each cluster has a clear theme: economics and accounting, physical sciences, medicine, history, mathematics, law
+(85\,\% professional law), psychology and philosophy, and moral scenarios. Medical and business questions each land
+77\,\% in one cluster. The ``humanities'' category splits into history, law and ethics, which really are different
+subjects.
+
+\paragraph{Chat (no labels).} The topic-anchor method agrees with Khayyam's known subject on 71.9\,\% of
+6{,}574 mapped questions, against 18.7\,\% by chance. It is rough but informative. Figure~\ref{fig:topics} and
+Table~\ref{tab:chat} apply it to chat.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{cluster_topics.png}
+\caption{Nearest topic per prompt, by cluster (top four topics per cluster shown). Left: Khayyam, where subjects
+are known (validation of the method). Right: chat.}
+\label{fig:topics}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\caption{Chat clusters ($K=8$, nano). Nearest topic (top three); median length; share of Latin letters; share
+with code or math markers; largest source.}
+\label{tab:chat}
+\resizebox{\linewidth}{!}{\input{tables/chat_clusters.tex}}
+\end{table}
+
+Five of eight chat clusters carry a clear topic. Coding and technology (cluster 7) is also the cluster with the
+most Latin script and code markers, which independently confirms the label. The others are business (80\,\%),
+history and society (71\,\%), health and science. The remaining three are general, which here also means ``no
+anchor fits''. Clusters 0, 2 and 6 come mostly from lmsys\_fa, a translated set, so part of their grouping may
+reflect translation style.
+
+\subsection{Would these clusters help routing? (RQ5)}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{difficulty_gap.png}
+\caption{Gap shrink against $K=1$ on test prompts. Solid: $\Psi$ from 400 validation prompts (paper setting);
+dashed: $\Psi$ from the large train part.}
+\label{fig:diff}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\caption{Gap shrink in \% (validation rows: $\pm$ 95\,\% CI).}
+\label{tab:diff}
+\input{tables/difficulty.tex}
+\end{table}
+
+On Khayyam, clusters shrink the error gap by 4--6\,\% across the paper range. On the single topic the shrink is
+zero within the confidence interval. A router fed with these clusters would learn something about difficulty on a
+subject mix and nothing on a single topic, which is again the paper's contrast. When the profiles come from the
+large train part, the gain keeps growing to about 10\,\% at $K=64$. With only 400 validation prompts it peaks at
+$K\approx8$--16 and then falls, because clusters with a handful of prompts give noisy profiles. \textbf{The
+validation size, not the embedder, limits the useful $K$.} This is the reason for the paper's cap
+$K\le N_{\mathrm{val}}/50$.
+
+%=====================================================================
+\section{Discussion}\label{sec:discussion}
+%=====================================================================
+
+\paragraph{Answers to the research questions.}
+\begin{description}
+\item[RQ1] Yes. Jina~v5 plus $K$-means recovers known Persian topics far above chance. Agreement rises with $K$ up
+to the number of real subjects.
+\item[RQ2] Yes. A benchmark mix clusters well, a single topic hardly at all, and real chat lies in between.
+\item[RQ3] \emph{nano} with the \texttt{clustering} adapter. It is within 0.015 NMI of \emph{small}, better
+separated, faster, and the only variant that meets the latency budget. The final choice stays with WP-08 on real
+data (D-052).
+\item[RQ4] Yes, on labelled data. Clusters are nameable and loyal, and their errors are sensible merges of
+neighbouring subjects. On chat, five of eight clusters are topical. A human check of sample prompts is still
+needed to confirm the chat names.
+\item[RQ5] Likely, on mixed traffic. Clusters separate easy from hard subjects, but the gain is modest (about
+5\,\%) and capped by the 400-prompt validation set.
+\end{description}
+
+\paragraph{Implications for the project.}
+\begin{itemize}
+\item \textbf{$K$ and the cluster-size rule (open question Q-024).} The spec requires \emph{every} validation
+cluster to hold at least 50 prompts; the paper only caps $K\le N_{\mathrm{val}}/50$, i.e.\ 50 \emph{on average}.
+With 400 validation prompts the strict rule leaves $K=3$--4. The paper's rule allows up to 8, where our gains
+peak. Following the paper, combined with the spec's $\alpha$-smoothing of small clusters, seems the better choice.
+A larger validation set would raise the ceiling, at a cost.
+\item \textbf{Real traffic will look like the chat set,} not like the benchmarks: softer clusters and a large
+``general'' share. Expect smaller per-cluster differences between models than on Khayyam.
+\item \textbf{Adapters.} The \texttt{clustering} adapter is the right default for routing. The larger difficulty
+gain of \texttt{text-matching}, despite worse topic clusters, suggests it may capture form (length, formulas,
+question type) that relates to difficulty. This should be re-checked when real per-model labels exist.
+\end{itemize}
+
+\paragraph{Comparison with the paper.} Our protocol matches the paper's in embedding, train-only $K$-means,
+nearest-centroid assignment, the validation size and the $K$ range. It differs in three ways. The embedder is
+Jina instead of Gecko. We use 10 splits instead of 400. And we use label-based and human-difficulty proxies
+instead of the deferral-curve area, which needs per-model correctness.
+
+%=====================================================================
+\section{Threats to validity}
+%=====================================================================
+\begin{itemize}
+\item \textbf{No model answers.} We measure cluster quality and a human-difficulty proxy, not routing quality.
+Human difficulty is one ``model''; LLMs may find different questions hard.
+\item \textbf{Domain shift.} Exam questions differ from chat. The chat set is the closest stand-in, but lmsys\_fa
+is translated, and the three chat sources may not match Metis users.
+\item \textbf{Labels as ground truth.} Source and subject labels are imperfect topic labels. Some benchmark
+questions cross subjects, and Global-MMLU is machine-translated.
+\item \textbf{Topic anchors} are hand-written and approximate (72\,\% on Khayyam). The ``small talk'' anchor also
+catches anything that fits no topic.
+\item \textbf{Statistics.} Ten splits ($K\le8$) and three ($K>8$) give narrow intervals for NMI, but wider ones
+for large $K$. Maps and compositions use one split.
+\item \textbf{Truncation} at 2{,}048 tokens affects about 1\,\% of chat messages in this test only.
+\end{itemize}
+
+%=====================================================================
+\section{Conclusion and next steps}
+%=====================================================================
+On Persian data, the embedding and clustering stage of UniRoute behaves as the paper describes. With Jina~v5 nano
+it produces meaningful, nameable clusters on mixed content and weak ones on a single topic. Its benefit is limited
+more by the size of the labelled validation set than by the embedder. Next steps: (1)~the author checks the chat
+cluster names on the local sample pages; (2)~decide Q-024 before WP-14; (3)~optionally, once the router core
+(WP-05) exists, run the full UniRoute pipeline on public data with per-model labels, either EmbedLLM to reproduce
+the paper or Khayyam answered by local open models, to measure routing quality directly.
+
+\begin{thebibliography}{9}
+\bibitem{uniroute} W.~Jitkrittum, H.~Narasimhan, A.~S.~Rawat, J.~Juneja, C.~Wang, Z.~Wang, A.~Go, C.-Y.~Lee,
+P.~Shenoy, R.~Panigrahy, A.~K.~Menon, S.~Kumar. \emph{Universal Model Routing for Efficient LLM Inference.}
+ICLR 2026.
+\bibitem{khayyam} Khayyam Challenge (PersianMMLU), \texttt{raia-center/khayyam-challenge}, arXiv:2404.06644.
+\bibitem{gmmlu} Global-MMLU, \texttt{CohereLabs/Global-MMLU}, arXiv:2412.03304.
+\bibitem{jina} Jina AI, \emph{jina-embeddings-v5-text} (small, nano), Hugging Face model cards.
+\end{thebibliography}
+
+\appendix
+%=====================================================================
+\section{Khayyam: where each category lands}\label{app:loyalty}
+%=====================================================================
+Share of each category's test questions that fall in its main cluster (nano, $K=8$, one split).
+{\small\input{tables/khayyam_loyalty.tex}}
+
+%=====================================================================
+\section{Full results per $K$}
+%=====================================================================
+NMI, ARI and purity against the main label of each set; silhouette; smallest validation cluster; number of
+validation clusters below 50; largest test-cluster share. Mean over splits (NMI $\pm$ 95\,\% CI).
+
+\subsection*{Jina v5 small}
+{\small\input{tables/full_small.tex}}
+\subsection*{Jina v5 nano}
+{\small\input{tables/full_nano.tex}}
+
+%=====================================================================
+\section{Reproducibility}\label{app:repro}
+%=====================================================================
+Seed 20261020. Embedders are pinned by revision in \texttt{configs/pipeline.yaml}. Data lives under
+\texttt{data/external/} (git-ignored); aggregates in \texttt{results/wp03b\_persian/}.
+\begin{small}\begin{verbatim}
+uv run hf auth login                              # once, gated Khayyam
+uv run python scripts/ext_download.py             # 12 sources
+uv run python scripts/s4_persian_cluster.py small # also: nano; nano --task text-matching
+uv run python scripts/s4_cluster_plots.py         # curves, maps
+uv run python scripts/s4_report_figs.py           # data overview, comparison, composition
+uv run python scripts/s4_cluster_meaning.py       # label make-up per cluster
+uv run python scripts/s4_chat_topics.py           # topic anchors
+uv run python scripts/s4_chat_topics_fig.py
+uv run python scripts/s4_latex_tables.py          # tables of this report
+cd report/persian_clustering/latex && latexmk -pdf main.tex
+\end{verbatim}\end{small}
+
+\end{document}
