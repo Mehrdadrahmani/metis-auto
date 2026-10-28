@@ -100,6 +100,16 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-10-25..28 · WP-03b session part 3 (Opus)
+- Data card for the public Persian data; separate Persian clustering report with figures, pipeline
+  diagram and cluster-meaning analysis; full LaTeX review (`report/persian_clustering/latex/`,
+  tables from `scripts/s4_latex_tables.py`); `results/` tidied into one folder per WP.
+- Owner studied the UniRoute paper (metrics Area/QNC, benchmarks, sign test, K choice). Two private
+  study PDFs written **outside the project** (`RahnemaCollege2026/uniroute-math/`, not in git): the
+  formula version in the paper's notation and a plain router/LLM version. Noted: the paper defines
+  Area and QNC only in words; our formulas are a formalisation (marked as such).
+- Still at the step-5 ⏸ (owner review, Q-024). Tests 100 pass. Cost $0.
+
 ### 2026-10-25 · WP-03b session part 2 (Opus, overnight, owner asleep after OK)
 - HF access fixed: `scripts/ext_download.py` sends the HF token (from `hf auth login`) only to
   huggingface.co hosts, never on redirects, curl header via stdin. Owner logged in; Khayyam source added

@@ -1,5 +1,5 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-10-25 · by session WP-03b (part 2, overnight)
+Updated: 2026-10-28 · by session WP-03b (part 3, reports + paper study)
 
 ## Now
 - Current WP: **WP-03b Persian clustering test** (steps 1–5 done; waiting at the step-5 ⏸; then WP-05)
@@ -14,8 +14,11 @@ Updated: 2026-10-25 · by session WP-03b (part 2, overnight)
 - Results: `results/wp03b_persian/persian_clustering.md` (+ JSON, `results/wp03b_persian/figures/persian_*.png`). Headlines:
   mix clusters well, one topic not (paper's EmbedLLM vs Headlines reproduced); small ≈ nano (nano 2.5×
   faster); clusters cut the human-error gap ~5–6 %; val 400 limits K.
+- Part 3 (2026-10-25..28): data card, separate report + LaTeX review
+  (`report/persian_clustering/latex/main.pdf`), results/ tidied per WP. Owner study of the UniRoute
+  paper: two private PDFs **outside the repo** (`../uniroute-math/uniroute_{math,simple}.pdf`; never commit).
 - **Exact next step (WP-03b step 5 ⏸ → 6):**
-  1. Owner reads `results/wp03b_persian/persian_clustering.md` and opens `runs/s4/persian_map_{nano,small}.html`
+  1. Owner reads `report/persian_clustering/latex/main.pdf` (or `results/wp03b_persian/persian_clustering.md`) and opens `runs/s4/persian_map_{nano,small}.html`
      (interactive, hover = text) and `runs/s4/persian_clusters_{nano,small}.html` (8 prompts/cluster).
   2. Owner answers Q-024 (S5 cluster-size rule) and says what changes; log decisions; update Q-023;
      write `work/reports/WP-03b-report.md`; tick ROADMAP; `/handoff`. Then WP-05.

@@ -59,6 +59,9 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - With Ψ from val 400 the gain peaks at K ≈ 8–16 then falls (noise); from train it keeps rising → why K ≤ N_val/50.
 - Surprise: text-matching adapter = worse topic clusters but slightly larger difficulty gain (7.7 %).
 - Figures: `results/wp03b_persian/figures/persian_*.png`.
+- Paper note for the method chapter: UniRoute defines Area (mean accuracy over the normalised budget range) and
+  QNC (smallest budget reaching the best test LLM's accuracy, / that LLM's cost) only in words; we formalise them
+  with linear interpolation between deferral-curve points (justified by random mixing of two routers).
 
 ## Decisions to explain in the method chapter
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
