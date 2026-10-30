@@ -126,7 +126,7 @@ owner points. Step-level detail is in the WP files.
   Metis AI prices (§7 formulas).
 - **Outputs:** `work/reports/WP-08-report.md` with data card, split table, cluster names, budget memo.
 - **Acceptance:** no session in two splits; val/test distributions ≈ recent traffic (language,
-  length, category); every cluster ≥ 50 val prompts for at least K = 3…5.
+  length, category); K candidates {3…⌊N_val/50⌋} with no per-cluster minimum (D-054).
 - **Time / cost:** 1–2 days · $0. **Deps:** full dataset, WP-01…07.
 - **⛔ Gate 1 (owner):** approve the budget memo (per-stage amounts, under the $60 cap).
 

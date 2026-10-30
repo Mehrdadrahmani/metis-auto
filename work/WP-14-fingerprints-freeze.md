@@ -54,7 +54,7 @@ nothing from the test set is logged before `pre-test`.
   `artifacts/router_v1/`, `results/eval_protocol.md`, tag `pre-test`.
 
 ## Acceptance checks
-- [ ] Spec §10: clusters ≥ n_min; method/τ chosen without test; α = 0 reproduces Eq. 12 (or BT
+- [ ] Spec §10 (n_min check replaced by K ≤ N_val/50, D-054); method/τ chosen without test; α = 0 reproduces Eq. 12 (or BT
       closed form = fit); mock-model add touches one row; rerun = cache hits.
 - [ ] No file under `runs/s7/*.sealed*` was opened (assert in code: the loader refuses sealed files
       unless called from `scripts/eval_test.py`).

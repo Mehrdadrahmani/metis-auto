@@ -1,32 +1,19 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-10-28 · by session WP-03b (part 3, reports + paper study)
+Updated: 2026-10-30 · by session WP-03b (close)
 
 ## Now
-- Current WP: **WP-03b Persian clustering test** (steps 1–5 done; waiting at the step-5 ⏸; then WP-05)
-- Owner asked (2026-10-24/25): do what the UniRoute paper does for embedding + clustering, with Jina
-  instead of Gecko; $0, no LLM calls. Done overnight (D-053).
-- Done: HF login works (`hf auth login`, user MehrdadRahmanigermi; token only in the user's HF cache);
-  `ext_download.py` sends it to huggingface.co only. Khayyam downloaded (20,805; 38 categories).
-  Arena + WildChat finished. All 12 sources in `data/external/*.parquet`.
-- `scripts/s4_persian_cluster.py` = paper protocol (train 60 % / val 400 / test, 10 repeats, K-means on
-  train, K = 3..8 + reference K; Khayyam human-difficulty gap); embeddings in
-  `data/external/emb/<model>_<task>/store/` (text-hash keyed). `scripts/s4_cluster_plots.py` = figures.
-- Results: `results/wp03b_persian/persian_clustering.md` (+ JSON, `results/wp03b_persian/figures/persian_*.png`). Headlines:
-  mix clusters well, one topic not (paper's EmbedLLM vs Headlines reproduced); small ≈ nano (nano 2.5×
-  faster); clusters cut the human-error gap ~5–6 %; val 400 limits K.
-- Part 3 (2026-10-25..28): data card, separate report + LaTeX review
-  (`report/persian_clustering/latex/main.pdf`), results/ tidied per WP. Owner study of the UniRoute
-  paper: two private PDFs **outside the repo** (`../uniroute-math/uniroute_{math,simple}.pdf`; never commit).
-- **Exact next step (WP-03b step 5 ⏸ → 6):**
-  1. Owner reads `report/persian_clustering/latex/main.pdf` (or `results/wp03b_persian/persian_clustering.md`) and opens `runs/s4/persian_map_{nano,small}.html`
-     (interactive, hover = text) and `runs/s4/persian_clusters_{nano,small}.html` (8 prompts/cluster).
-  2. Owner answers Q-024 (S5 cluster-size rule) and says what changes; log decisions; update Q-023;
-     write `work/reports/WP-03b-report.md`; tick ROADMAP; `/handoff`. Then WP-05.
+- Current WP: **WP-05 Router core + evaluation library** (not started; WP-03b finished 2026-10-30)
+- WP-03b closed: owner judged cluster quality good (D-055). Report `work/reports/WP-03b-report.md`.
+- Q-024 closed (D-054): follow the paper: K ≤ N_val/50, no per-cluster minimum, α = 0 (Eq. 12).
+- Embedder still open: small and nano both stay until WP-08 (D-052); WP-03b did not separate them
+  (quality about equal, nano 2.5× faster).
+- Private study PDFs stay **outside the repo** (`../uniroute-math/`; never commit).
+- **Exact next step:** `/start`, then WP-05 step 1 (`work/WP-05-router-core-eval.md`). Free, synthetic data.
 - Model: default (Opus 5.5)
 
 ## Waiting on the owner
-- WP-03b step-5 review (above) and **Q-024**: every val cluster ≥ 50 (spec; leaves K = 3–4 at val 400)
-  vs paper's K ≤ N_val/50 + α-smoothing. Needed by WP-14.
+- **Data deadline:** PLAN P4 trigger is **2026-11-01**. If no data by then: reduced plan (N_val 300 /
+  N_te 200, K ≤ 6, pilot merged). By 2026-11-08: sample-only demo. Owner decides at the trigger.
 - Q-020 K-selection data: owner wants K "exactly like the paper" → paper = graded train prompts
   (~$14, breaks fixed rule 6) vs spec split-validation ($0). Confirm explicitly before WP-14.
 - Q-023 Persian benchmark test option 1 ($0, persian-llm-eval per-item scores) after WP-05;
@@ -46,9 +33,10 @@ Updated: 2026-10-28 · by session WP-03b (part 3, reports + paper study)
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-055 WP-03b closed, cluster quality good; small vs nano stays open until WP-08
+- D-054 Cluster size follows the paper: K ≤ N_val/50, no per-cluster minimum, α = 0
 - D-053 WP-03b follows the paper's embedding + K-means protocol (Jina for Gecko); HF login for Khayyam
 - D-052 keep jina v5 small + nano; choose in WP-08; cache uses text-matching; merge_adapter
-- D-051 graphify knowledge graph for the whole project (local AST + session subagents, no API)
 
 ## Next WPs that can start
 - WP-05 (free, synthetic); WP-04 after Q-017; WP-06 after WP-04

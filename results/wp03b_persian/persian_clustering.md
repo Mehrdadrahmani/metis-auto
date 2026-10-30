@@ -74,7 +74,7 @@ cluster k (Eq. 12); we measure on test how much E|e(x) − Ψ_k(x)| shrinks comp
    then falls (noise), while Ψ from the big train part keeps rising. Our val size, not the embedder, limits K.
 5. **Spec check |C_k| ≥ 50 is stricter than the paper.** With val 400, K = 8 always has ~5 of 8 clusters under
    50 val prompts, and K ≥ 5 often has at least one. The paper's rule K ≤ N_val/50 means *50 on average*. If
-   S5 keeps "every cluster ≥ 50", only K = 3–4 survive with val 400. → owner question **Q-024** (below).
+   S5 keeps "every cluster ≥ 50", only K = 3–4 survive with val 400. → **Q-024**, decided: follow the paper (below).
 6. **text-matching adapter:** worse topic clusters (NMI −0.08 to −0.12, very low silhouette, lopsided sizes),
    but a slightly larger Khayyam difficulty gain (7.7 % at K = 8). A curiosity to re-check on real data with real
    labels (WP-14); the `clustering` adapter stays the default.
@@ -89,7 +89,7 @@ cluster k (Eq. 12); we measure on test how much E|e(x) − Ψ_k(x)| shrinks comp
 
 ## Owner questions
 
-- **Q-024** S5 cluster-size check: keep "every val cluster ≥ 50" (then K = 3–4 at val 400), or follow the
-  paper ("K ≤ N_val/50", average ≥ 50) and rely on α-smoothing for small clusters? Decide before WP-14.
+- **Q-024 decided (D-054, 2026-10-30):** follow the paper: K ≤ N_val/50 (average ≥ 50), no per-cluster
+  minimum, α = 0 (Eq. 12).
 - Look at `runs/s4/persian_map_{nano,small}.html` (interactive maps; hover shows the text, local only) and
   `runs/s4/persian_clusters_{nano,small}.html` (8 random prompts per cluster): are the chat clusters nameable?

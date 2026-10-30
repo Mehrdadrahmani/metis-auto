@@ -65,7 +65,7 @@ nobody looks at test prompts or test labels until WP-19.
 ## Acceptance checks
 - [ ] No session in two splits (assert); val/test standardized differences < 0.1 on language,
       length, category (or explained).
-- [ ] At least K = 3 valid (each cluster ≥ 50 val prompts).
+- [ ] K candidates {3…⌊N_val/50⌋} computed; val cluster sizes recorded (no per-cluster minimum, D-054); any cluster with 0 val prompts logged.
 - [ ] Gate 1 approved and recorded; approvals in `budget.yaml`.
 
 ## If blocked

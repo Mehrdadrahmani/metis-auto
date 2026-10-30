@@ -63,6 +63,9 @@ file, the WP reports and `MASTER_LOG.md §2`.
   QNC (smallest budget reaching the best test LLM's accuracy, / that LLM's cost) only in words; we formalise them
   with linear interpolation between deferral-curve points (justified by random mixing of two routers).
 
+- Spec check |C_k| ≥ 50 leaves K = 3–4 at val 400 (K = 8: ~5 of 8 clusters under 50). Owner chose the paper's rule
+  K ≤ N_val/50 with α = 0 (D-054). Small clusters give noisier Ψ; α = 2 is the robustness check.
+
 ## Decisions to explain in the method chapter
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);

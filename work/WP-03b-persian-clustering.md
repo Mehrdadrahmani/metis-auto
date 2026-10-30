@@ -48,9 +48,9 @@ Real Persian chat prompts (Arena, WildChat, lmsys) show how chat traffic cluster
   `results/wp03b_persian/persian_clustering_<model>.json`, local HTML pages.
 
 ## Acceptance checks
-- [ ] No API call to any LLM; downloads only public HF datasets; nothing from `data/` committed.
-- [ ] Metrics on held-out items only (K-means fitted on the 60 % part), seed recorded.
-- [ ] Same embedder settings as `configs/pipeline.yaml` `s4:`.
+- [x] No API call to any LLM; downloads only public HF datasets; nothing from `data/` committed.
+- [x] Metrics on held-out items only (K-means fitted on the 60 % part), seed recorded.
+- [x] Same embedder settings as `configs/pipeline.yaml` `s4:`.
 
 ## If blocked
 - Dataset gated / download fails → skip it, note it; Khayyam added later (`--only khayyam`).

@@ -70,6 +70,8 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-051 | 2026-10-24 | **graphify** (uv tool `graphifyy[pdf]` 0.9.95, project-scoped) = knowledge graph of the whole project (code by local AST, docs/PDFs by the session's own subagents; no external API, no Gemini key). Outputs `graphify-out/` (graph.json, graph.html, GRAPH_REPORT.md committed; cache ignored). `.graphifyignore` excludes data/, cache/, runs/, models/, qdrant/, mlflow/, .env, sealed files. Git hooks (post-commit/checkout/merge/rewrite in `.githooks/`) rebuild the code graph; `/handoff` step 2b refreshes docs when needed; CLAUDE.md tells agents to query the graph before grepping | A | owner |
 | D-052 | 2026-10-24 | Embedder: keep **both** jina v5 small and nano as candidates; choose in **WP-08** on real train data (owner). Sample benchmark (`results/wp03_embedder/embedder_benchmark.md`): only nano meets 60 ms p95 at 512 tok (59 ms, adapter merged; small ≈ 220 ms); Persian pair AUC weak with `clustering` (small 0.61, nano 0.66), better with `text-matching` (0.76 / 0.85) → semantic cache uses `text-matching` (`s4.cache_task`). `merge_adapter` added (same vectors, ~2× faster). Owner's cluster verdict on the sample: "partly" (too small to judge). WP-08 step 6 updated | A | owner |
 | D-053 | 2026-10-25 | WP-03b follows the **paper's embedding + K-means protocol** with Jina instead of Gecko (owner): random split train 60 % / val 400 / test, 10 repeats; K-means on train only; nearest-centroid assignment; K grid 3..N_val/50 (+ larger K for reference). K choice by deferral area impossible at $0 → label NMI + Khayyam human-difficulty gap (Prop. 2 proxy). Embedding cache keyed by text hash. HF login (`hf auth login`, token in the user's HF cache, never in the repo) for gated Khayyam (access granted) | A | owner |
+| D-054 | 2026-10-30 | **Q-024 answered: cluster size follows the paper.** K ∈ {3…⌊N_val/50⌋} is the only limit (50 prompts per cluster *on average*); no per-cluster minimum, no K dropped for small clusters; α = 0 (Eq. 12) stays the default, α = 2 only as a robustness check; a cluster with no val prompts falls back to the model's overall error rate. This confirms D-040 / DEV-7; the "+ α-smoothing" in the Q-024 wording was wrong (it contradicted D-040). PLAN §phase-2 acceptance, WP-08 and WP-14 checks updated | A | owner |
+| D-055 | 2026-10-30 | WP-03b closed: owner judged the cluster quality good. No change to the embedder decision: small and nano both stay until WP-08 (D-052); the Persian test did not separate them | A | owner |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -85,8 +87,7 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
 | Q-020 | K selection: report cards from graded train prompts (paper; ~$14, breaks fixed rule 6) or split-validation on val (spec, $0) | owner | WP-05 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
-| Q-023 | Test the router on public Persian data like the paper (owner idea): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
-| Q-024 | Spec S5 says *every* val cluster ≥ 50 prompts; the paper only caps K ≤ N_val/50 (average 50). WP-03b: with val 400, K = 8 has ~5 of 8 clusters < 50, K ≥ 5 often ≥ 1 → strict rule leaves K = 3–4. Keep strict, or follow the paper + α-smoothing? (`results/wp03b_persian/persian_clustering.md` §4.5) | owner | WP-14 |
+| Q-023 | Test the router on public Persian data like the paper (owner idea; the embedding + clustering half is done in WP-03b, the routing half is open): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
 | Q-019 | Approve DEV-4, DEV-5, DEV-6 | owner | WP-06 (DEV-5), WP-11 (DEV-4), WP-05 (DEV-6) |
 
 ## 4. Budget ledger
@@ -99,6 +100,13 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-30 · WP-03b close (Opus)
+- Owner: cluster quality good; clusters follow the paper (D-054, closes Q-024; D-055). WP-03b finished,
+  report `work/reports/WP-03b-report.md`, ROADMAP ticked, Q-023 updated.
+- Found the Q-024 wording ("+ α-smoothing") contradicted D-040 (α = 0); decision recorded with α = 0.
+- Removed leftover "every cluster ≥ 50" checks from PLAN, WP-08, WP-14; results and LaTeX report updated.
+- Cost $0.
 
 ### 2026-10-25..28 · WP-03b session part 3 (Opus)
 - Data card for the public Persian data; separate Persian clustering report with figures, pipeline

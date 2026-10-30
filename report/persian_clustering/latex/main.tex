@@ -458,10 +458,10 @@ needed to confirm the chat names.
 
 \paragraph{Implications for the project.}
 \begin{itemize}
-\item \textbf{$K$ and the cluster-size rule (open question Q-024).} The spec requires \emph{every} validation
+\item \textbf{$K$ and the cluster-size rule (Q-024, decided).} The spec requires \emph{every} validation
 cluster to hold at least 50 prompts; the paper only caps $K\le N_{\mathrm{val}}/50$, i.e.\ 50 \emph{on average}.
 With 400 validation prompts the strict rule leaves $K=3$--4. The paper's rule allows up to 8, where our gains
-peak. Following the paper, combined with the spec's $\alpha$-smoothing of small clusters, seems the better choice.
+peak. Decision (D-054): follow the paper, with no per-cluster minimum and $\alpha=0$ (Eq.~12).
 A larger validation set would raise the ceiling, at a cost.
 \item \textbf{Real traffic will look like the chat set,} not like the benchmarks: softer clusters and a large
 ``general'' share. Expect smaller per-cluster differences between models than on Khayyam.
@@ -498,7 +498,7 @@ for large $K$. Maps and compositions use one split.
 On Persian data, the embedding and clustering stage of UniRoute behaves as the paper describes. With Jina~v5 nano
 it produces meaningful, nameable clusters on mixed content and weak ones on a single topic. Its benefit is limited
 more by the size of the labelled validation set than by the embedder. Next steps: (1)~the author checks the chat
-cluster names on the local sample pages; (2)~decide Q-024 before WP-14; (3)~optionally, once the router core
+cluster names on the local sample pages; (2)~optionally, once the router core
 (WP-05) exists, run the full UniRoute pipeline on public data with per-model labels, either EmbedLLM to reproduce
 the paper or Khayyam answered by local open models, to measure routing quality directly.
 
