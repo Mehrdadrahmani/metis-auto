@@ -79,6 +79,15 @@ file, the WP reports and `MASTER_LOG.md §2`.
   less than their noise. Mean test area changes by at most 0.0006 (Q-025).
 - Exact QNC can read "never reached" over one prompt in 300; show it with QNC within 1 point.
 
+## WP-05 K rule review (simulated, 8 scenarios, 100 datasets each)
+- Mean test area: highest score 0.9354, one spread 0.9332, fixed K = 8 0.9360. Owner chose highest
+  score, the paper's rule (D-064). K* is not the number of real topics: it found planted K = 3 in
+  12 of 100 datasets, with almost no effect on routing.
+- What didn't work: the one-spread rule looked better on the datasets used to design it (93 of 100),
+  then lost up to 0.0066 area on fresh data with true K = 6.
+- A bug was found by a sanity check: Always-best scored above every router until `area()` stopped
+  giving credit below a model's cost.
+
 ## Decisions to explain in the method chapter
 - Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
 - Sessions are not independent: intervals resample whole sessions (D-060).

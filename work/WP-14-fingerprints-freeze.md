@@ -71,3 +71,10 @@ nothing from the test set is logged before `pre-test`.
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-14 step n", stop. Never tag `pre-test` in a hurry:
 it can wait for the next session.
+
+## Notes from WP-05
+- K: highest score, split-validation, R = 20, sessions kept whole (D-061, D-064, D-065). Do not
+  present K* as the number of real topics.
+- Decide in the evaluation protocol: QNC exact, or within 1 point (exact can read "never reached"
+  over one prompt in 300). Report both until then.
+- Logistic baseline is pointwise only.

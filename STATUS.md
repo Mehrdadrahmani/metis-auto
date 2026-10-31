@@ -12,7 +12,7 @@ Updated: 2026-10-31 · by session WP-05 close
 - Candidates (D-056) not confirmed on Metis AI; prices from third parties. `PLAN §7` partly recomputed.
 - `workflow` excluded (D-057). LLM judge only, pointwise vs pairwise in the pilot (D-059).
 - Only 700 prompts reach paid models (2,800 generation + about 3,500–4,800 judge calls).
-- Open for WP-14: QNC exact or within 1 point, in the evaluation protocol.
+- Open for WP-14: QNC exact or within 1 point (noted in the WP-14 file).
 - **Exact next step:** `/start`, then `work/WP-04-*.md` step 1 once Q-017 is answered and the key is
   in `.env`. Order: WP-04 → 06 → 07 → 08.
 - Model: default (Opus 5.5)
