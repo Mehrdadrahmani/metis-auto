@@ -41,8 +41,9 @@ def test_area_by_hand():
     assert area([0, 1], [0, 1], 0, 1) == pytest.approx(0.5)
     # Flat after the best point: 0.5 * 0.5 + 0.5 * 1.
     assert area([0, 0.5], [0, 1], 0, 1) == pytest.approx(0.75)
-    # A single point stays flat over the range.
-    assert area([0.2], [0.6], 0, 1) == pytest.approx(0.6)
+    # Flat after a single point, and nothing below its cost.
+    assert area([0.2], [0.6], 0, 1) == pytest.approx(0.48)
+    assert area([1.0], [0.9], 0, 1) == pytest.approx(0.0)
     assert area([0.4], [0.6], 0.4, 0.4) == pytest.approx(0.6)
 
 

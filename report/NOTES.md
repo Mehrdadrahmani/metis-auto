@@ -72,6 +72,13 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Limitation to measure in WP-05b: the deferral area keeps the best points of the scored half, so
   extra clusters can gain area by luck. On 5 no-structure datasets K = 3 beat K = 1 once.
 
+## WP-05b Synthetic proof (simulated, n_test = 300)
+- UniRoute minus ZeroRouter area: +0.0845 [+0.0520, +0.1178] with planted structure, -0.0057
+  [-0.0253, +0.0217] without. Quality within 1 point of the strong model at 3.6% of its cost.
+- Highest-score K selection finds planted K = 3 in 12 of 100 datasets: areas for K = 3..8 differ by
+  less than their noise. Mean test area changes by at most 0.0006 (Q-025).
+- Exact QNC can read "never reached" over one prompt in 300; show it with QNC within 1 point.
+
 ## Decisions to explain in the method chapter
 - Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
 - Sessions are not independent: intervals resample whole sessions (D-060).

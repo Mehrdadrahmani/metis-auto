@@ -69,12 +69,17 @@ def envelope_quality(budget, env_costs: np.ndarray, env_qualities: np.ndarray):
 
 
 def area(costs: np.ndarray, qualities: np.ndarray, c_min: float, c_max: float) -> float:
-    """Normalized area under the envelope over the pool's cost range."""
+    """Normalized area under the envelope over the pool's cost range.
+
+    A budget below the curve's cheapest point buys nothing, so it adds no area. Without this, one
+    expensive model would get credit at budgets it cannot be run on.
+    """
     env_c, env_q = pareto_envelope(costs, qualities)
     if c_max <= c_min:
         return float(envelope_quality(c_min, env_c, env_q))
-    inside = env_c[(env_c > c_min) & (env_c < c_max)]
-    grid = np.concatenate(([c_min], inside, [c_max]))
+    start = max(c_min, float(env_c[0]))
+    inside = env_c[(env_c > start) & (env_c < c_max)]
+    grid = np.concatenate(([start], inside, [c_max]))
     return float(np.trapezoid(envelope_quality(grid, env_c, env_q), grid) / (c_max - c_min))
 
 

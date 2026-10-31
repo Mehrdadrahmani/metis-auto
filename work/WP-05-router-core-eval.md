@@ -59,7 +59,7 @@ K ∈ {3…8} (+ K = 1 comparison), Eq. 12 with α = 0, nearest-centroid assignm
 
 ## Outputs
 - `src/metis/router/*`, `src/metis/eval/*`, `tests/test_router_*.py`, `tests/synthetic.py`,
-  `results/synthetic_validation.md` (the curves and numbers of step 9).
+  `results/wp05_router/synthetic_validation.md` (the curves and numbers of step 9).
 
 ## Acceptance checks
 - [ ] All step-9 tests green.
