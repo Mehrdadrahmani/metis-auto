@@ -1,8 +1,8 @@
 # Candidate models + judge (WP-02). Prices: USD per 1M tokens, list prices from
-# ref/PLANNING-REQUEST.md §3; Metis AI prices and exact api names are confirmed in WP-04.
+# public trackers (2026-10-31, D-056); Metis AI prices and exact api names are confirmed in WP-04.
 # context_window / vision: public model specs, `verified: false` until WP-04 checks them.
-price_date: "2026-10-20"
-price_source: "list prices (PLANNING-REQUEST §3); confirm on Metis AI in WP-04"
+price_date: "2026-10-31"
+price_source: "public list prices from third-party trackers + dataset billing (D-056); confirm on Metis AI in WP-04"
 reserve_output_tokens: 1024   # gen max_tokens (D-036); a model fits if tokens_in + this <= window
 models:
   - id: deepseek-v4-flash
@@ -15,17 +15,17 @@ models:
     is_anchor: false
     role: candidate
     verified: false
-  - id: gpt-4o-mini
+  - id: gpt-5.6-luna
     provider: openai
     api_name: null
-    price_in: 0.15
-    price_out: 0.60
+    price_in: 0.20
+    price_out: 1.20
     context_window: 128000
     vision: true
     is_anchor: false
     role: candidate
     verified: false
-  - id: gemini-2.5-flash
+  - id: gemini-3.5-flash-lite
     provider: google
     api_name: null
     price_in: 0.30
@@ -36,12 +36,12 @@ models:
     role: candidate
     exp_role: holdout   # hidden in the holdout demo (M4)
     verified: false
-  - id: claude-sonnet-4-6
+  - id: claude-sonnet-5-5
     provider: anthropic
     api_name: null
-    price_in: 3.00
-    price_out: 15.00
-    context_window: 200000
+    price_in: 2.00
+    price_out: 10.00
+    context_window: 1000000
     vision: true
     is_anchor: true      # premium baseline / pairwise anchor
     role: candidate

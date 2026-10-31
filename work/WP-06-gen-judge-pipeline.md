@@ -9,7 +9,7 @@
 
 ## Context
 S6 makes each candidate answer like production did (own system prompt, RAG context, history; PLAN
-M6). S7 grades answers: pointwise (score 1–10) and pairwise (vs claude-sonnet-4-6, both orders); the
+M6). S7 grades answers: pointwise (score 1–10) and pairwise (vs claude-sonnet-5-5, both orders); the
 pilot picks one (M8). The judge prompts are the spec's A1/A2 extended with the chatbot's instructions
 and context (DEV-5). The owner labels 100 items with a local tool (WP-10), so the tool must be ready
 and pleasant to use now.
@@ -21,7 +21,7 @@ and pleasant to use now.
 ## Steps
 1. Propose; ⏸ wait for OK.
 2. `configs/gen_config.yaml` (id = hash): `temperature: 0.3`, `max_tokens: 1024`, `top_p: 1`;
-   **thinking/reasoning off or minimal for every candidate** (e.g. gemini-2.5-flash thinking budget 0,
+   **thinking/reasoning off or minimal for every candidate** (e.g. gemini-3.5-flash-lite thinking budget 0,
    deepseek non-thinking mode) so costs match the estimate and the comparison is fair; record the
    exact provider parameters per model. Same for all models.
 3. `src/metis/llm/messages.py`: build the request: `system` = redacted chatbot instructions;
@@ -30,7 +30,7 @@ and pleasant to use now.
    **Every part is redacted** with `metis.data.redact.redact_message` (history, user message and
    RAG text too, not only instructions): WP-01 found key hits in user/bot `content` (4) and in
    attachment URLs (13), D-043. The judge prompt (step 4) also uses only redacted text.
-4. **Judge templates** `src/metis/judge/templates/{pointwise,pairwise}.txt` = spec A2/A1 **without
+4. ⏸ **Owner reviews the judge prompt first (D-059).** **Judge templates** `src/metis/judge/templates/{pointwise,pairwise}.txt` = spec A2/A1 **without
    `{context_turns}`** (judge sees the current user message only, D-046 / DEV-9) plus:
    sections `[CHATBOT INSTRUCTIONS]` (truncated to 6,000 tokens with a "(truncated)" note) and
    `[RETRIEVED CONTEXT]` (or "none"); an added criterion after instruction following: "Follows the

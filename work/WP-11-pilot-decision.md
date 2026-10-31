@@ -28,7 +28,7 @@ All analysis uses numbers only; Claude does not read prompts or answers.
    the train clustering): fraction of separable (cluster, model-pair) cells; mean halving correlation.
    Cross-evaluation (A) on pilot val only, labeled "informative, underpowered".
 5. **Bias and noise checks:** length bias (Spearman of score vs answer tokens within prompt; pairwise:
-   win rate of the longer answer); self-preference (judge–human disagreement for gpt-4o-mini vs the
+   win rate of the longer answer); self-preference (judge–human disagreement for gpt-5.6-luna vs the
    others, with counts); test–retest agreement from WP-09 step 5; owner intra-rater consistency if the
    re-label file is already done (otherwise add it later; it does not block the gate).
 6. **Decide** with the rule: method with higher agreement (κ-based) that also has D ≥ 0.2; if both
@@ -56,7 +56,7 @@ All analysis uses numbers only; Claude does not read prompts or answers.
 
 ## End of session
 - `work/reports/WP-11-report.md`. If length bias |ρ| > 0.3 → add a length-controlled analysis to
-  WP-19. If self-preference is visible → flag gpt-4o-mini in WP-19 reporting.
+  WP-19. If self-preference is visible → flag gpt-5.6-luna in WP-19 reporting.
 
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-11 step n", stop.

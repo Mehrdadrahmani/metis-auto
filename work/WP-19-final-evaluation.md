@@ -28,7 +28,7 @@ deviation that must be written down.
 4. **Secondary:** deferral curves, areas (with paired-bootstrap CIs of differences) and QNC for the
    whole ladder; per-cluster and per-category quality and cost; routing share; α = 2 robustness row;
    val-vs-test gap; holdout demo on test; length-controlled analysis if required by WP-11;
-   gpt-4o-mini self-preference flag if raised.
+   gpt-5.6-luna self-preference flag if raised.
 5. **Production comparison:** cost of what production actually used on the same test prompts (list
    prices; models without a price are listed separately) and **similarity to production's answers**
    (same embedder, cosine) for each router, with the M15 caveat.

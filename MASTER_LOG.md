@@ -28,8 +28,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-009 | 2026-10-19 | Commits authored by Mehrdad Rahmani | F | §4.9 |
 | D-010 | 2026-10-20 | Session continuity = hybrid: STATUS.md + hooks (SessionStart, UserPromptSubmit guard, PreCompact/PostCompact snapshots) + `/start`, `/handoff` + ROADMAP/WP files + git | A | CONTINUITY.md |
 | D-011 | 2026-10-20 | Deadline ~4 weeks (assumed 2026-11-17) | A | Q-007 |
-| D-012 | 2026-10-20 | Full dataset expected soon and large (≥ 5,000 prompts); exact date unknown | A | Q-001 |
-| D-013 | 2026-10-20 | API access through **Metis AI** | A | Q-002 |
+| D-012 | 2026-10-20 | Full dataset expected soon and large (≥ 5,000 prompts); exact date unknown | A | D-013 | 2026-10-20 | API access through **Metis AI** | A | Q-002 |
 | D-014 | 2026-10-20 | Budget hard cap **$60**; each paid stage approved separately | A | Q-003 |
 | D-015 | 2026-10-20 | Human labeling by the owner only (100 cal items + 20 re-labels) | A | Q-004 |
 | D-016 | 2026-10-20 | Candidates: deepseek-v4-flash, gpt-4o-mini, gemini-2.5-flash, claude-sonnet-4-6 (premium/anchor) | A | Q-005 |
@@ -72,6 +71,11 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-053 | 2026-10-25 | WP-03b follows the **paper's embedding + K-means protocol** with Jina instead of Gecko (owner): random split train 60 % / val 400 / test, 10 repeats; K-means on train only; nearest-centroid assignment; K grid 3..N_val/50 (+ larger K for reference). K choice by deferral area impossible at $0 → label NMI + Khayyam human-difficulty gap (Prop. 2 proxy). Embedding cache keyed by text hash. HF login (`hf auth login`, token in the user's HF cache, never in the repo) for gated Khayyam (access granted) | A | owner |
 | D-054 | 2026-10-30 | **Q-024 answered: cluster size follows the paper.** K ∈ {3…⌊N_val/50⌋} is the only limit (50 prompts per cluster *on average*); no per-cluster minimum, no K dropped for small clusters; α = 0 (Eq. 12) stays the default, α = 2 only as a robustness check; a cluster with no val prompts falls back to the model's overall error rate. This confirms D-040 / DEV-7; the "+ α-smoothing" in the Q-024 wording was wrong (it contradicted D-040). PLAN §phase-2 acceptance, WP-08 and WP-14 checks updated | A | owner |
 | D-055 | 2026-10-30 | WP-03b closed: owner judged the cluster quality good. No change to the embedder decision: small and nano both stay until WP-08 (D-052); the Persian test did not separate them | A | owner |
+| D-056 | 2026-10-31 | **Candidates updated to current models (owner; replaces D-016):** deepseek-v4-flash (unchanged), gpt-5.6-luna (was gpt-4o-mini), gemini-3.5-flash-lite (was gemini-2.5-flash; same price tier, gemini-3.5-flash is about 6× dearer), claude-sonnet-5-5 (was claude-sonnet-4-6; anchor). Prices from third-party trackers, luna and flash-lite roughly match dataset billing; none confirmed on Metis AI (WP-04). Holdout demo model follows gemini. Judge stays GPT-5.x: self-preference flag moves to gpt-5.6-luna | A | owner |
+| D-057 | 2026-10-31 | **`workflow` traffic excluded from train, val and test (owner).** Reasons: not a single-model routing decision; bot instructions are a 23-char placeholder, so the task cannot be reproduced or judged; 63 % follow a button or form. Results therefore apply to direct single-model bots only (~73 % of all user messages, ~25 % since Sep). Full criteria: `report/data_selection.md`. Code unchanged (`REASONS_LABELED`, `REASONS_TRAIN`) | A | owner |
+| D-058 | 2026-10-31 | Full data loaded through a new streaming parquet loader on DuckDB (`src/metis/data/load_parquet.py`; `uv add duckdb`); structure-only card and full secret scan in `results/wp08_full_data/`. PLAN P4 fallback retired, full data arrived before 2026-11-01 | A | owner |
+| D-059 | 2026-10-31 | Judging stays LLM judge only, pointwise vs pairwise in the pilot. Dropped by the owner: reference-answer method, rule-based checks, embedding similarity as a grader. The judge prompt is **not final**: owner reviews it before WP-06 step 4 | A | owner |
+| D-060 | 2026-10-31 | Confidence intervals and paired tests resample **whole sessions**, since messages in a session are not independent. WP-05 updated | P | WP-05 |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
 DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
@@ -81,7 +85,7 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | ID | Question | Owner | Needed by |
 |---|---|---|---|
 | Q-001 | Exact arrival date and size of the full dataset | course team | WP-08 |
-| Q-006 | What is the `default` model in the data? (assumed: a workflow step; `provider = workflow`) | owner asks course team | WP-08 |
+| Q-006 | What is the `default` model in the data? Not blocking: `workflow` is excluded (D-057); only useful for describing the limitation in the report | owner asks course team | WP-20 |
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
 | Q-017 | Does Metis AI work from the same network as Claude Code (VPN)? Planner saw TLS resets to metisai.ir on 2026-10-20 (PLAN R17) | owner | WP-04 |
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
@@ -100,6 +104,14 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-31 · Full data arrived; candidates updated (Opus)
+- Full dataset downloaded to `data/raw/metis/` (35 parquet files, 1.1 GB; private HF repo, owner-supplied token, not stored). Owner states the data is theirs and has no licence conflict. Q-001 answered: still to be closed at handoff.
+- Aggregate EDA only (no text read). Recent traffic (since Sep) is 74.9% `workflow`; owner excluded it (D-057). `report/data_selection.md` written.
+- D-056: candidates updated; configs, PLAN, AGENTS and WP-06/09/11/12/14/19 changed. Plan generation estimate now ~$6.0; rest of §7 not recomputed.
+- Loader: `src/metis/data/load_parquet.py` + tests. Full read strict: 80,179 sessions, 710,640 messages, 12 s, peak 3.4 GB, no mismatches. A DuckDB setting broke row order (2,009 of 2,000 sessions); removed, guard added.
+- Data card `results/wp08_full_data/data_card_full.md`. Secret scan: 1,544 rows hit, 0 left after redaction; includes bot `functions` (3 rows). `chat_message_rag_chunks` not scanned separately (same text as `chat_message.rag`).
+- Correction: 700 prompts reach paid models (not 800–900). Tests 106 pass. Cost $0.
 
 ### 2026-10-30 · WP-03b close (Opus)
 - Owner: cluster quality good; clusters follow the paper (D-054, closes Q-024; D-055). WP-03b finished,

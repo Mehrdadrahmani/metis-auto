@@ -67,6 +67,9 @@ file, the WP reports and `MASTER_LOG.md §2`.
   K ≤ N_val/50 with α = 0 (D-054). Small clusters give noisier Ψ; α = 2 is the robustness check.
 
 ## Decisions to explain in the method chapter
+- Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
+- Sessions are not independent: intervals resample whole sessions (D-060).
+- Data selection and the `workflow` exclusion (D-057): `report/data_selection.md`. State the limitation: results cover direct single-model bots only.
 - D-044 local MLflow for tracing and run comparison (vs Phoenix, Langfuse, Opik, cloud tools).
 - D-045 / DEV-8 embedding input = current user message only (paper) instead of + 2 turns (spec);
   generation sees the full history (M6).

@@ -20,7 +20,7 @@ them); **nobody looks at test answers or computes test metrics** until WP-19.
 ## Steps
 1. Show the estimate and the approved amount. ⏸ **STOP:** owner says "go".
 2. Run `scripts/s6_generate.py --split val,test --stage gen_main`, models in order deepseek-v4-flash →
-   gpt-4o-mini → gemini-2.5-flash → claude-sonnet-4-6. Generate each model within one short time
+   gpt-5.6-luna → gemini-3.5-flash-lite → claude-sonnet-5-5. Generate each model within one short time
    window (model versions; record the returned version string).
 3. Monitor per model after 50 calls: failure rate, cost/call vs estimate, `finish_reason=length`
    share, reasoning tokens. Anomaly → ⏸ stop and report (PLAN P3).

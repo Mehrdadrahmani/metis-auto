@@ -174,6 +174,11 @@ def load_categories(path: str | Path, strict: bool = False) -> tuple[list[Catego
 
 
 def load_with_report(path: str | Path, strict: bool = False) -> tuple[list[Session], LoadReport]:
+    from metis.data.load_parquet import is_parquet_dir, iter_sessions
+
+    if is_parquet_dir(path):
+        report = LoadReport()
+        return list(iter_sessions(path, report, strict=strict)), report
     cats, report = load_categories(path, strict=strict)
     return [s for c in cats for s in c.sessions], report
 

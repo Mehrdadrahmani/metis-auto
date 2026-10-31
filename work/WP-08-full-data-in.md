@@ -18,12 +18,15 @@ nobody looks at test prompts or test labels until WP-19.
 - `work/reports/WP-07-report.md`, `results/cost_estimate_v1.md`.
 
 ## Steps
+> **Update 2026-10-31:** steps 1–2 done early (D-058): data in `data/raw/metis/data/` (parquet, not `full.json`), loader `iter_sessions`, card `results/wp08_full_data/`. `load_with_report` accepts that folder. WP-08 still waits for WP-07.
+
 1. ⏸ **STOP:** ask the owner where the file is; copy it to `data/raw/full.json` (never open it, never
    commit). Propose the steps; wait for OK.
 2. Structure-only data card (`scripts/data_card.py`) → `results/data_card_full.md`. Compare with the
    sample's schema; adapt the loader for new fields (log them). Counts: sessions, messages, date
    range, categories, models, providers, widgets, attachments, RAG, redaction hits.
-3. S1 on the full data → exclusion table per reason; eligible prompts; share of huge-prompt turns
+3. Before S1: extend `reply_image` to provider `imagination`; choose a balancing field (no category in the data); see `report/data_selection.md` §6. Add the counts to that report.
+   S1 on the full data → exclusion table per reason (`workflow` excluded, D-057); eligible prompts; share of huge-prompt turns
    (if > 15%: ⏸ ask the owner: raise the threshold or truncate; PLAN §6).
    Report the share **among LLM replies** separately (on the sample all huge prompts were workflow
    turns, 0 of 375 LLM replies; WP-02 report). Check the recent pool capacity ≥ 3 × 700 and how many

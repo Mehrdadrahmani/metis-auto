@@ -9,7 +9,7 @@
 
 ## Context
 The slim pilot (PLAN M8, DEV-3): the 4 candidates answer the 100 pilot val prompts; the judge grades
-every answer **both** ways (pointwise 400 calls; pairwise vs claude-sonnet-4-6 in both orders, 600
+every answer **both** ways (pointwise 400 calls; pairwise vs claude-sonnet-5-5 in both orders, 600
 calls). All of it is cached and reused by the main build (pilot ⊂ val). Then the labeling sheet for
 the owner is built.
 
@@ -20,8 +20,8 @@ the owner is built.
 ## Steps
 1. Show the estimate for this stage (`scripts/estimate_costs.py --stage pilot`) and the approved
    amount. ⏸ **STOP:** owner says "go".
-2. S6 on `pilot_val` (100 prompts × 4 models = 400 calls), order: deepseek-v4-flash, gpt-4o-mini,
-   gemini-2.5-flash, claude-sonnet-4-6. After the first 20 calls of each model: check failure rate,
+2. S6 on `pilot_val` (100 prompts × 4 models = 400 calls), order: deepseek-v4-flash, gpt-5.6-luna,
+   gemini-3.5-flash-lite, claude-sonnet-5-5. After the first 20 calls of each model: check failure rate,
    cost per call vs estimate, finish_reason=length share, reasoning tokens (should be ~0). Any anomaly
    (failures > 5%, cost/call > 2× estimate, length cut > 10%) → ⏸ stop and report.
 3. S7-PT: 400 pointwise judgments. Check parse-failure rate (< 2%) after the first 40.

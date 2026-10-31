@@ -37,7 +37,7 @@ K ∈ {3…8} (+ K = 1 comparison), Eq. 12 with α = 0, nearest-centroid assignm
    randomized mixing per spec S11), **K-NN** (via `metis.embed.store` Qdrant exact search, D-048; k tuned by split-validation, candidate k ∈ {5, 10, 20,
    40, 80} capped by N_val/3), **logistic** per model on embeddings (C tuned by 5-fold CV on val;
    nice). All expose the same `predict_loss(x, h)` / routing interface.
-8. `eval/stats.py`: paired bootstrap (10,000, seeded) for differences of quality, cost and area;
+8. `eval/stats.py`: paired bootstrap (10,000, seeded, **resampling whole sessions**, D-060; test it on correlated synthetic sessions) for differences of quality, cost and area;
    exact McNemar; Wilson CI; Cohen's κ; balanced accuracy; Spearman; criteria C (stability over
    halvings) and D (separability) from spec §P.
 9. **Synthetic test bed** `tests/synthetic.py`: 3 well-separated Gaussian "prompt types" in 64-d,

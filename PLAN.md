@@ -21,16 +21,16 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 | ID | Decision | Priority | Why |
 |---|---|---|---|
 | M1 | **UniRoute (K-means) is the router, implemented as in the paper** (owner decision 2026-10-20, D-040). The paper's baselines (always-best, always-cheapest, ZeroRouter / Pareto-random, K-NN) are built from the *same* labels and **reported for comparison only**; the gateway always ships UniRoute. | must | Owner wants every clustering and routing step as in the paper. With a fixed pool of 4 models the paper (App. G.5) finds UniRoute only comparable to simpler routers, so the comparison is reported honestly; the primary claim (M2) does not depend on UniRoute winning. |
-| M2 | **The minimum credible result** is: routed system vs always-best (claude-sonnet-4-6) on the locked test set, cost saved with a pre-registered quality non-inferiority margin and paired CIs (§8). UniRoute vs ZeroRouter/K-NN is the secondary result. | must | It answers the brief's question ("cheaper without losing quality") whatever the ranking of routers. |
-| M3 | **4 candidates:** deepseek-v4-flash, gpt-4o-mini, gemini-2.5-flash, claude-sonnet-4-6 (strong; premium baseline; anchor if pairwise). | must (owner) | The most-used production models. |
-| M4 | **"Unseen model" test becomes a demo:** hide gemini-2.5-flash while choosing K and λ, then add it with its fingerprint only and show where it gets routed. Reported as an illustration, not as evidence. | should | With 4 models a real held-out evaluation (spec S3.4, ~1/3 of models) has 1 model; no statistics possible. Honest framing. |
+| M2 | **The minimum credible result** is: routed system vs always-best (claude-sonnet-5-5) on the locked test set, cost saved with a pre-registered quality non-inferiority margin and paired CIs (§8). UniRoute vs ZeroRouter/K-NN is the secondary result. | must | It answers the brief's question ("cheaper without losing quality") whatever the ranking of routers. |
+| M3 | **4 candidates:** deepseek-v4-flash, gpt-5.6-luna, gemini-3.5-flash-lite, claude-sonnet-5-5 (strong; premium baseline; anchor if pairwise). Updated to current models by D-056 (replaces D-016). | must (owner) | Current model of each family, same price tiers; not yet confirmed on Metis AI. |
+| M4 | **"Unseen model" test becomes a demo:** hide gemini-3.5-flash-lite while choosing K and λ, then add it with its fingerprint only and show where it gets routed. Reported as an illustration, not as evidence. | should | With 4 models a real held-out evaluation (spec S3.4, ~1/3 of models) has 1 model; no statistics possible. Honest framing. |
 | M5 | **Clustering input = the user's text only, embedded with a frozen general-purpose text embedder** (paper §5.1), never the system prompt. **Decided (Q-021, D-045):** the **current user message only** (paper), no previous turns. **[DEV-8]** vs spec S1 (T = 2), owner decision | must | System prompts are ~100× longer than user messages and would turn clusters into "one cluster per chatbot". The paper embeds the prompt itself. |
 | M6 | **Generation keeps each chatbot's own system prompt, retrieved context and real history** (as production). `gen_config` = sampling parameters only (temperature, max tokens). **[DEV-2]** (spec S6 says one shared system prompt) | must (owner) | Grading answers produced without the chatbot's instructions would measure the wrong thing. |
 | M7 | **Turns whose system prompt > 20,000 characters are excluded from val/test** (expected ~8% of turns; exact share reported). Online they are routed by the hard context rule. | must (owner) | A few prompts of 60k+ tokens would take a large part of the budget and bias costs. |
 | M8 | **Label method by a slim pilot** (owner-approved **[DEV-3]**): 100 pilot val prompts, 4 models, both pointwise and pairwise judging; the owner labels 100 items; choose the method by human agreement (criterion B) **and** separability (D); ties → pointwise. Spec criteria A and C are computed but not decisive (too few prompts to be meaningful). | must | The spec's full pilot (2×2 cross-evaluation on 150 test prompts) is underpowered; this saves ~1 week and ~$10 of the 4. |
 | M9 | **τ and the agreement gate use balanced measures:** choose τ by **balanced accuracy** on the calibration set; the gate is agreement ≥ 75% **and** Cohen's κ ≥ 0.40. **[DEV-4]** (spec: plain accuracy) | must | If 85% of answers pass, "always pass" already scores 85% accuracy; plain accuracy can pass a useless judge. |
 | M10 | **Judge = GPT-5.x class** (e.g. gpt-5.4, as available on Metis AI), blind, temperature 0 (or lowest reasoning effort if temperature is not supported; recorded). Prompts = spec A1/A2 **extended** with the chatbot's instructions (truncated at ~6k tokens, with a note) and the retrieved context, plus a criterion "follows the chatbot's instructions / stays grounded in the context". **[DEV-5]** | must | Different family from 3 of 4 candidates; the extension follows from M6. |
-| M11 | **Judge bias and noise controls:** same `max_tokens` for every candidate; length-bias check (Spearman score vs answer length within prompt); pairwise in both orders (position-consistency rate); self-preference check on gpt-4o-mini (judge–human disagreement by model on the calibration set, descriptive); **re-judge 5% of items** to measure test–retest agreement; the owner re-labels 20 calibration items a few days later (intra-rater consistency, ~30 min). | must (first four) / should (last two) | One labeler and one judge: we must at least measure how noisy they are. |
+| M11 | **Judge bias and noise controls:** same `max_tokens` for every candidate; length-bias check (Spearman score vs answer length within prompt); pairwise in both orders (position-consistency rate); self-preference check on gpt-5.6-luna (judge–human disagreement by model on the calibration set, descriptive); **re-judge 5% of items** to measure test–retest agreement; the owner re-labels 20 calibration items a few days later (intra-rater consistency, ~30 min). | must (first four) / should (last two) | One labeler and one judge: we must at least measure how noisy they are. |
 | M12 | **One answer per (prompt, model)** (spec). Multiple samples per pair (DARS) are a "nice" upgrade. | must | Budget and time; noise is measured instead (M11). |
 | M13 | **Split-validation repeats R = 20** instead of 5 for choosing K (and K-NN's k). **[DEV-6]** | should | $0 compute; reduces the noise of the choice with 400 prompts. |
 | M14 | **As in the paper:** K candidates {3, …, ⌊N_val/50⌋} = {3…8} (App. G.2); K-means (k-means++, ≥ 10 restarts) on the train split; each prompt assigned to its **nearest centroid** (K-means assignment, §5.1); fingerprint = **plain per-cluster error rate, Eq. 12 (α = 0)**; routing rule Eq. 8/11; K chosen by the **normalized area under the deferral curve** on validation. K = 1 is computed only as a comparison (paper App. D.1). No per-cluster minimum rule; a cluster with no validation prompts falls back to the model's overall error rate (logged). **[DEV-7]** vs the spec (α = 2, cosine assignment, n_min drop), owner-requested. **Open decision Q-020:** how the K-selection report cards are built (paper: graded train prompts; spec: split-validation). | must | Owner decision: every routing and clustering step as in the paper. |
@@ -62,7 +62,7 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 | P1 | **Build and test everything free before the data arrives** (WP-01…07, WP-15/16): when the data lands, the paid part is "run the stage", not "write code under pressure". | must | 4-week deadline; data date unknown. |
 | P2 | **Three gates** where money or validity is at stake: Gate 1 budget approval (after real token counts), Gate 2 judge quality (before the main build), Gate 3 freeze (`pre-test` tag before opening the test set). | must | Biggest money/time risks. |
 | P3 | **Cheapest-first paid order:** pilot (~$6) before the main build; within each stage, cheap models first, sonnet last; stop on any anomaly (failure rate > 5%, cost per call > 2× estimate). | must | De-risks money. |
-| P4 | **Fallback plan if the data is late:** trigger date **2026-11-01**. Reduced plan: N_val 300 / N_te 200, K ≤ 6, pilot merged into the main build (owner labels while judging runs). If no data by **2026-11-08**: a sample-only demonstration (labeled sample split by session; clearly labeled "illustrative, underpowered") so the gateway and pipeline can still be shown. | must | Deadline is fixed; the data date is not. |
+| P4 | **(Retired 2026-10-31, D-058: full data arrived.)** Fallback plan if the data is late: trigger date **2026-11-01**. Reduced plan: N_val 300 / N_te 200, K ≤ 6, pilot merged into the main build (owner labels while judging runs). If no data by **2026-11-08**: a sample-only demonstration (labeled sample split by session; clearly labeled "illustrative, underpowered") so the gateway and pipeline can still be shown. | must | Deadline is fixed; the data date is not. |
 | P5 | **Git local + private GitHub**, commits authored by Mehrdad Rahmani, one commit per handoff. | must (owner) | Fixed point 9; continuity. |
 | P6 | **Report the negative case well:** if UniRoute ≈ ZeroRouter, or everything passes (ceiling), that is a valid finding ("most traffic doesn't need the premium model"); the report explains it with the Ψ table and separability numbers. | must | Credibility with a skeptical reviewer. |
 
@@ -72,7 +72,7 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 
 | Item | Value |
 |---|---|
-| Candidates | deepseek-v4-flash · gpt-4o-mini · gemini-2.5-flash · claude-sonnet-4-6 (anchor/premium) |
+| Candidates | deepseek-v4-flash · gpt-5.6-luna · gemini-3.5-flash-lite · claude-sonnet-5-5 (anchor/premium) |
 | Judge | GPT-5.x class via Metis AI (confirm in WP-04) |
 | Splits | by session; val **400**, test **300** (locked), cal 100 items ⊂ val, pilot val 100 ⊂ val; train = all remaining eligible prompts (unlabeled); val/test drawn from the most recent period, stratified by the 4 categories |
 | Embedder | **jina-embeddings-v5-text-small** (`clustering` adapter), local; nano as latency fallback (D-048) |
@@ -150,7 +150,7 @@ owner points. Step-level detail is in the WP files.
 - **Tasks:** WP-12 generation on remaining val + all test (pilot answers reused; cheap models first;
   resumable); WP-13 judging with the chosen method (+5% re-judge); WP-14 (free): S8 fingerprints,
   S9 K by split-validation (R = 20), S10 λ, the router ladder on validation, representation test
-  holdout demo (gemini-2.5-flash), package S12 artifact; write the evaluation protocol;
+  holdout demo (gemini-3.5-flash-lite), package S12 artifact; write the evaluation protocol;
   **tag `pre-test`** (Gate 3).
 - **Outputs:** `router_artifact/v1`, Ψ table with cluster names, validation curves, protocol.
 - **Acceptance:** spec §10 checklist items that don't need test; adding a mock model touches only
@@ -239,7 +239,7 @@ files, logs a decision in `MASTER_LOG.md`, and updates `ROADMAP.md` if order or 
 | Pilot method choice (WP-11) | Pointwise: WP-13 judges 4 × 600 remaining; pairwise: 3 × 600 × 2 (+$10); anchor fixed | WP-13, PLAN §7, WP-14 |
 | τ and gate result (WP-11) | τ in judge config; if the gate failed twice → owner decision | WP-13, MASTER_LOG |
 | Separability D low / ceiling (WP-11, WP-14) | Raise τ (free, from stored scores) or switch to pairwise; report framing changes to "ceiling" (P6) | WP-14, WP-19, WP-20 |
-| Bias checks (WP-11) | Length bias → length-controlled analysis added to WP-19; self-preference → flag gpt-4o-mini results | WP-19 |
+| Bias checks (WP-11) | Length bias → length-controlled analysis added to WP-19; self-preference → flag gpt-5.6-luna results | WP-19 |
 | K* and λ (WP-14) | Artifact v1 shipped by the gateway | WP-15/16 config, WP-18, WP-19 |
 | UniRoute vs baselines on val (WP-14) | Report framing only (UniRoute ships regardless, M1) | WP-19, WP-20 |
 | Escalation/failure rates in replay (WP-18) | Check thresholds; fallback order | WP-16 |
@@ -267,10 +267,10 @@ J = 2, T_in / T_out = mean input / output tokens of eligible turns, p_in / p_out
 | Item | Calls | Low | Mid | High |
 |---|---|---|---|---|
 | Generation: deepseek-v4-flash ($0.00031/call) | 700 | | $0.22 | |
-| Generation: gpt-4o-mini ($0.00043) | 700 | | $0.30 | |
-| Generation: gemini-2.5-flash ($0.0012) | 700 | | $0.87 | |
-| Generation: claude-sonnet-4-6 ($0.0094) | 700 | | $6.59 | |
-| **Generation total** | 2,800 | $6.5 | **$8.0** | $10.0 |
+| Generation: gpt-5.6-luna ($0.00069) | 700 | | $0.48 | |
+| Generation: gemini-3.5-flash-lite ($0.0012) | 700 | | $0.87 | |
+| Generation: claude-sonnet-5-5 ($0.0063) | 700 | | $4.40 | |
+| **Generation total** | 2,800 | $4.5 | **$6.0** | $8.0 |
 | Pilot pairwise extra | 600 | $1.5 | **$3.0** | $4.5 |
 | Main judging, pointwise | 2,800 | $5.6 | **$11.2** | $16.8 |
 | Re-judge 5% | 140 | $0.3 | **$0.6** | $0.8 |
@@ -283,7 +283,7 @@ J = 2, T_in / T_out = mean input / output tokens of eligible turns, p_in / p_out
 
 Hard cap **$60**; every paid stage has its own approved amount (Gate 1). Metis AI may add a margin
 over list prices or price in another currency; WP-04 records real prices and WP-08 recomputes.
-Sonnet is ~80% of the generation cost; that is why the strong model goes last in each run.
+Sonnet is ~73% of the generation cost (recomputed for the D-056 models; totals below it not yet); that is why the strong model goes last in each run.
 
 ---
 
@@ -348,7 +348,7 @@ separability (D); val-vs-test gap; α = 2 smoothing reported only as a robustnes
 | R13 | Single aggregator makes failover partly simulated | certain / low | E3 honest framing + fault injection; optional 2nd route | WP-15 |
 | R14 | Model versions change mid-project | low / medium | record returned versions; generate each model in one short window | WP-12 logs |
 | R15 | Pro usage limits slow the work (all sessions on Opus 5.5, D-027) | medium / medium | status line shows 5-hour usage, small sessions; fallback: Sonnet for routine WPs (`CONTINUITY.md §7`) | status line |
-| R16 | Hidden reasoning ("thinking") tokens inflate cost (gemini-2.5-flash, deepseek, GPT-5.x judge) | medium / medium | thinking off/minimal for candidates (WP-06 gen_config), lowest reasoning effort for the judge; budget guard stops at 2× estimated cost per call | WP-09 cost per call |
+| R16 | Hidden reasoning ("thinking") tokens inflate cost (gemini-3.5-flash-lite, deepseek, GPT-5.x judge) | medium / medium | thinking off/minimal for candidates (WP-06 gen_config), lowest reasoning effort for the judge; budget guard stops at 2× estimated cost per call | WP-09 cost per call |
 | R17 | **Network split:** Metis AI (metisai.ir, api., docs.) was unreachable from this machine on 2026-10-20 (TLS connection reset), likely because the connection used by Claude Code (e.g. a VPN) cannot reach Iranian services, and vice versa | medium / high | WP-04 tests reachability first; paid runs are plain scripts the owner can start from a terminal on a network that reaches Metis AI (outside the Claude session if needed; the cache makes results visible to the next session); fallback provider route (e.g. OpenRouter) for the same models | WP-04 step 9 |
 
 ---

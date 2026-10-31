@@ -252,16 +252,16 @@
     "semantic_hash": "75a015f5657a512c1758ab303c9bf509"
   },
   "MASTER_LOG.md": {
-    "mtime": 1792925463.895616,
-    "seen": 1792925523.079676,
-    "ast_hash": "0dd177bd2edccc3dcb862783be4c49ea",
+    "mtime": 1793349927.463392,
+    "seen": 1793349976.9437819,
+    "ast_hash": "a9f72f4b7e5c924c940376082b3333af",
     "semantic_hash": ""
   },
   "PLAN.md": {
-    "mtime": 1792591355.5552943,
-    "seen": 1792836062.236655,
-    "ast_hash": "ec8ce2f0f67c0ba17a9560d33e754555",
-    "semantic_hash": "ec8ce2f0f67c0ba17a9560d33e754555"
+    "mtime": 1793349927.465422,
+    "seen": 1793349976.9437828,
+    "ast_hash": "ab3d6dde6247bf5e61521cb5e43b856a",
+    "semantic_hash": ""
   },
   "PROJECT.md": {
     "mtime": 1792507551.541774,
@@ -276,9 +276,9 @@
     "semantic_hash": "ac7b2e31103f1f75e15695498bf5e0be"
   },
   "ROADMAP.md": {
-    "mtime": 1792847857.5342715,
-    "seen": 1792850114.07164,
-    "ast_hash": "aed67fb8c521c47f45fe4adc05cefafb",
+    "mtime": 1793349927.470409,
+    "seen": 1793349976.943786,
+    "ast_hash": "64e53bc2e4825c61778d3b8cf72c0672",
     "semantic_hash": ""
   },
   "START_HERE.md": {
@@ -288,9 +288,9 @@
     "semantic_hash": "f518c7a52d7cbb99a373161293d12a86"
   },
   "STATUS.md": {
-    "mtime": 1792925463.896442,
-    "seen": 1792925523.079682,
-    "ast_hash": "1354557bc4ecfc65b8c755408ef3f778",
+    "mtime": 1793349950.5873802,
+    "seen": 1793349976.943787,
+    "ast_hash": "9181f51769e2881501059a640d336906",
     "semantic_hash": ""
   },
   "ref/PLANNING-REQUEST.md": {
@@ -342,9 +342,9 @@
     "semantic_hash": "62f2aac03613424b31f58a99e945e22d"
   },
   "report/NOTES.md": {
-    "mtime": 1792925463.9117386,
-    "seen": 1792925523.079691,
-    "ast_hash": "c6a71be1a02ba4ff58f0d6dcc005330c",
+    "mtime": 1793349950.5668879,
+    "seen": 1793349976.943795,
+    "ast_hash": "0107046f119d212e5e694c6ecaaae0df",
     "semantic_hash": ""
   },
   "work/WP-00-bootstrap.md": {
@@ -396,9 +396,9 @@
     "semantic_hash": "1f5306d055c20e27a4b1588212b3e3b6"
   },
   "work/WP-08-full-data-in.md": {
-    "mtime": 1792885992.7647314,
-    "seen": 1792886031.728888,
-    "ast_hash": "37b671a42a78fe75f46b93d283b5c3b7",
+    "mtime": 1793349927.4659102,
+    "seen": 1793349976.94381,
+    "ast_hash": "cc6ee1a9d656ddbd38593aca23618c1b",
     "semantic_hash": ""
   },
   "work/WP-09-pilot-run.md": {
@@ -432,10 +432,10 @@
     "semantic_hash": "5151fc9927349ee4e2f0644861826c7d"
   },
   "work/WP-14-fingerprints-freeze.md": {
-    "mtime": 1792587816.415431,
-    "seen": 1792836062.23668,
-    "ast_hash": "fe697baa6aedaa83c2d2e63a64bb26fe",
-    "semantic_hash": "fe697baa6aedaa83c2d2e63a64bb26fe"
+    "mtime": 1793349927.4661965,
+    "seen": 1793349976.943816,
+    "ast_hash": "ae962d3526fc64f08ede8caa37863bb3",
+    "semantic_hash": ""
   },
   "work/WP-15-gateway-core.md": {
     "mtime": 1792591355.554585,
@@ -612,9 +612,9 @@
     "semantic_hash": ""
   },
   "work/WP-03b-persian-clustering.md": {
-    "mtime": 1792925463.9068696,
-    "seen": 1792925523.079703,
-    "ast_hash": "581ca94eb8d19d79e5458b9df6075728",
+    "mtime": 1793349927.4708369,
+    "seen": 1793349976.943806,
+    "ast_hash": "636af3effcd00537ff219ba8303520fd",
     "semantic_hash": ""
   },
   "scripts/s4_cluster_plots.py": {
@@ -750,9 +750,9 @@
     "semantic_hash": ""
   },
   "results/wp03b_persian/persian_clustering.md": {
-    "mtime": 1792925463.9212794,
-    "seen": 1792925523.079697,
-    "ast_hash": "2a3fa5f97514f576af14a3f6812da755",
+    "mtime": 1793349927.471118,
+    "seen": 1793349976.9438012,
+    "ast_hash": "cc6970a5a6706af51d1b7060729e04db",
     "semantic_hash": ""
   },
   "results/wp03b_persian/persian_data_card.md": {
@@ -900,9 +900,15 @@
     "semantic_hash": ""
   },
   "report/persian_clustering/latex/main.pdf": {
-    "mtime": 1792931465.5277436,
-    "seen": 1792931481.545414,
-    "ast_hash": "03ab6822ca90408e7fc11f3d30aab8c9",
+    "mtime": 1793349953.7839577,
+    "seen": 1793349976.943839,
+    "ast_hash": "f7d363367b6c23d2c0962714253722b3",
+    "semantic_hash": ""
+  },
+  "work/reports/WP-03b-report.md": {
+    "mtime": 1793349950.5742123,
+    "seen": 1793349976.943827,
+    "ast_hash": "d437fd12a480cf8ae9e42662c3ab5d59",
     "semantic_hash": ""
   }
 }
