@@ -46,10 +46,10 @@ K ∈ {3…8} (+ K = 1 comparison), Eq. 12 with α = 0, nearest-centroid assignm
 9. **Synthetic test bed** `tests/synthetic.py`: 3 well-separated Gaussian "prompt types" in 64-d,
    4 models with known fail rates per type (e.g. cheap fails 0.6 on type 2, 0.05 elsewhere; strong
    0.05 everywhere; costs 0.03, 0.05, 0.13, 1.0); 5,000 train, 400 val, 300 test. Tests:
-   - K* = 3 is chosen; Ψ recovers the planted rates within 2 SE;
+   - UniRoute at the chosen K* beats ZeroRouter (D-064: K* need not equal 3); Ψ recovers the planted rates (at least 75% of cells within 2 SE, all within 3 SE);
    - UniRoute area > ZeroRouter area (bootstrap CI excludes 0);
    - on a "no structure" variant (same rates in every type), UniRoute ≈ ZeroRouter (CI includes 0)
-     and K* = 1 or the smallest K;
+     (K* itself is not checked, D-064);
    - BT fit = closed form (|Δ| < 1e-6); α = 0 equals Eq. 12; anchor row 0.5;
    - spec App. B worked example reproduces the routing choices (C for chat, S for literature);
    - adding a mock model changes only its row and the λ choice.

@@ -26,4 +26,4 @@ training-model labels (section "Hyper-parameter tuning"). With no training model
 K = N_val/50 directly. The paper states that UniRoute is robust to the choice of K.
 Project documents cite this as App. G.2; the heading in the PDF is G.1.
 
-**Recommendation:** keep highest score. One spread is withdrawn.
+**Decision (D-064):** highest score, the paper's rule. One spread withdrawn.

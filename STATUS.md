@@ -1,27 +1,23 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-10-31 · by session WP-05b
+Updated: 2026-10-31 · by session WP-05 close
 
 ## Now
-- Current WP: **WP-05 Router core + evaluation library** (code done; one check open, Q-025)
-- All steps 2–10 built and tested: 161 pass, 1 expected failure (K* = 3). Report:
-  `work/reports/WP-05-report.md`; numbers: `results/wp05_router/synthetic_validation.md`.
+- Current WP: **WP-04 LLM client, call cache, budget** (not started; blocked on Q-017 and the key)
+- WP-05 done: router, baselines, statistics, artifact. Report `work/reports/WP-05-report.md`; numbers
+  `results/wp05_router/`. K = paper's highest-score rule (D-064).
 - UniRoute beats ZeroRouter on planted data (+0.0845 [+0.0520, +0.1178]); no false gain without
   structure (-0.0057 [-0.0253, +0.0217]). Simulated, n_test = 300.
-- K rule review: `results/wp05_router/k_rule_review.md`. Keep highest score (recommended); one-spread
-  rule withdrawn; fixed K = 8 is the paper's other option.
 - Full data is in `data/raw/metis/data/` (git-ignored). Loader `src/metis/data/load_parquet.py`;
   selection rules in `report/data_selection.md`.
 - Candidates (D-056) not confirmed on Metis AI; prices from third parties. `PLAN §7` partly recomputed.
 - `workflow` excluded (D-057). LLM judge only, pointwise vs pairwise in the pilot (D-059).
 - Only 700 prompts reach paid models (2,800 generation + about 3,500–4,800 judge calls).
-- **Exact next step:** owner answers Q-025. Highest score: replace the xfail in
-  `tests/test_router_synthetic.py` with a routing-quality check, tick WP-05. Fixed K: also log DEV-10
-  and change S9. Then WP-04.
-  Order: WP-04 → 06 → 07 → 08.
+- Open for WP-14: QNC exact or within 1 point, in the evaluation protocol.
+- **Exact next step:** `/start`, then `work/WP-04-*.md` step 1 once Q-017 is answered and the key is
+  in `.env`. Order: WP-04 → 06 → 07 → 08.
 - Model: default (Opus 5.5)
 
 ## Waiting on the owner
-- Q-025: rule for choosing K (blocks ticking WP-05)
 - Q-026: confirm split-validation and R = 20 (D-061; "go on" was taken as approval)
 - Before WP-04: Q-017 (Metis AI reachable on your network?) + key in `.env`
 - Before WP-06 step 4: review the judge prompt with the agent; DEV-5
@@ -42,6 +38,7 @@ Updated: 2026-10-31 · by session WP-05b
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-064 K by the paper's rule, highest score
 - D-063 `area()` bug fix; QNC shown exact and within 1 point
 - D-062 WP-05a spec readings: K = 1 cannot win, sessions kept whole in halvings
 - D-061 K by split-validation (Q-020), R = 20 (DEV-6)
@@ -50,4 +47,4 @@ Updated: 2026-10-31 · by session WP-05b
 - D-058 Parquet loader on DuckDB; fallback plan P4 retired
 
 ## Next WPs that can start
-- WP-04 after Q-017; WP-06 after WP-04
+- WP-04 after Q-017; WP-06 after WP-04; Q-023 option 1 ($0)

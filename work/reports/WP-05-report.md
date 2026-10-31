@@ -1,6 +1,6 @@
 # WP-05 report: router core and evaluation library
 
-Status: **code complete, one acceptance check open** (Q-025). Not ticked in ROADMAP.
+Status: **done** (2026-10-31). K rule decided by the owner (D-064).
 
 ## What exists
 - `router/`: `kmeans`, `fingerprints`, `bt`, `route`, `select_k`, `select_lambda`, `artifact`.
@@ -19,11 +19,11 @@ Status: **code complete, one acceptance check open** (Q-025). Not ticked in ROAD
 ## Acceptance
 | Check | Result |
 |---|---|
-| K* = 3 chosen | **Fails with the spec rule: 12 of 100 datasets (Q-025)** |
+| K* = 3 chosen | Replaced (D-064): found in 12 of 100 datasets; the check is now routing quality at K* |
 | Ψ recovers planted rates | Pass; see the note below on 2 SE |
 | UniRoute area > ZeroRouter, CI excludes 0 | Pass |
 | No structure: UniRoute ≈ ZeroRouter | Pass |
-| No structure: K* = smallest K | **Fails with the spec rule: 22 of 100 (Q-025)** |
+| No structure: K* = smallest K | Replaced (D-064): 22 of 100; no false gain is the check |
 | BT = closed form, α = 0 = Eq. 12, anchor row 0.5, App. B, new mock model | Pass |
 | Runtime | Pass |
 
@@ -33,8 +33,8 @@ Status: **code complete, one acceptance check open** (Q-025). Not ticked in ROAD
    is close to a random pick. Routing quality is unaffected (mean change in test area at most
    0.0006), but a large K means fewer prompts per cluster and harder cluster names. The one-spread
    candidate looked better at first (K = 3 in 93 of 100) but failed a fresh check with true K = 6:
-   withdrawn, see `results/wp05_router/k_rule_review.md`. Recommended: keep highest score and judge
-   it by routing quality, not by finding K. K* must not be read as the number of real topics.
+   withdrawn, see `results/wp05_router/k_rule_review.md`. Decided (D-064): keep highest score, judged
+   by routing quality. K* must not be read as the number of real topics.
 2. **Bug found and fixed:** `area()` gave a model credit at budgets below its cost. Always-best
    showed 0.9533, above every router. Routers reaching the cheapest model were not affected, so the
    K search results did not change. Single models are now reported by cost and quality only.

@@ -28,8 +28,8 @@ def build(bed):
     fitted = fit_all(bed.train.emb, ks, SEED, n_init=3)
     labels = {k: assign(bed.val.emb, m.centroids) for k, m in fitted.items()}
     choice = select_k(labels, bed.val.losses, C_HAT, LAMS, seed=SEED, groups=bed.val.sessions)
-    # K = 3 is the planted answer. The tests below check the fit and routing at the true K; the
-    # choice of K has its own tests (open rule question, Q-025).
+    # K = 3 is the planted answer: these tests check the fit and routing at the true K. Routing
+    # at the chosen K has its own test (D-064).
     return choice, fitted[3], fingerprints(bed.val.losses, labels[3], 3)
 
 
@@ -53,12 +53,13 @@ def structured():
     return bed, *build(bed)
 
 
-@pytest.mark.xfail(
-    strict=True, reason="Q-025: the spec's argmax rule finds K = 3 in 12 of 100 runs"
-)
-def test_k_star_is_the_planted_three(structured):
-    _, choice, _, _ = structured
-    assert choice.k_star == 3
+def test_router_at_the_chosen_k_beats_zerorouter(structured):
+    """D-064: the rule is judged by routing quality; K* is not read as the number of topics."""
+    bed, choice, _, _ = structured
+    k = choice.k_star
+    fitted = fit_all(bed.train.emb, [k], SEED, n_init=3)[k]
+    fp = fingerprints(bed.val.losses, assign(bed.val.emb, fitted.centroids), k)
+    assert area_difference(bed, fitted, fp).excludes_zero()
 
 
 def test_k_above_one_helps_and_extra_clusters_add_nothing_real(structured):

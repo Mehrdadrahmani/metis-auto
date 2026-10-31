@@ -4,7 +4,8 @@ Usage: uv run python scripts/k_rule_review.py results/wp05_router/k_rule_review.
 Seeds 5000-5099, not used to design the rule. Simulated data only, $0.
 """
 
-import sys, json
+import json
+import sys
 
 sys.path.insert(0, "tests")
 import collections
@@ -117,4 +118,5 @@ for name, (t, lo, hi, spr) in scen.items():
         for r_ in pick
     ]
     sys.stdout.flush()
-json.dump(out, open(sys.argv[1], "w"), indent=1)
+with open(sys.argv[1], "w") as f:
+    json.dump(out, f, indent=1)
