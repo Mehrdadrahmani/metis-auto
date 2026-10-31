@@ -1,24 +1,22 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-10-31 · by session full-data intake
+Updated: 2026-10-31 · by session WP-05a
 
 ## Now
-- Current WP: **WP-05 Router core + evaluation library** (not started; propose at step 1)
-- **Full data is in** `data/raw/metis/data/` (git-ignored): parquet tables, 710,640 messages, 80,179
-  sessions, 2026-03-01..10-11. Private HF repo `poriniki/metis`; the owner's account has no access, the
-  pasted token worked and is not stored anywhere in the project. Owner: data is theirs, no licence conflict.
-- Done: `src/metis/data/load_parquet.py` (`iter_sessions`, streaming; 12 s, peak 3.4 GB; `load_with_report`
-  accepts the folder), `scripts/data_card_full.py`, `results/wp08_full_data/` (WP-08 steps 1–2).
-  Secret scan: 1,544 rows hit, 0 left after redaction.
-- Candidates changed (D-056): deepseek-v4-flash, gpt-5.6-luna, gemini-3.5-flash-lite, claude-sonnet-5-5
+- Current WP: **WP-05b Baselines, statistics, synthetic proof, artifact** (WP-05 steps 7–10; not started)
+- WP-05a done (steps 2–6): `router/kmeans.py`, `fingerprints.py`, `bt.py`, `route.py`, `select_k.py`,
+  `select_lambda.py`, `eval/metrics.py`. 137 tests pass, ruff clean, S9 takes 0.05 s.
+- Full data is in `data/raw/metis/data/` (git-ignored): 710,640 messages, 80,179 sessions. Loader
+  `src/metis/data/load_parquet.py`; selection rules in `report/data_selection.md`.
+- Candidates (D-056): deepseek-v4-flash, gpt-5.6-luna, gemini-3.5-flash-lite, claude-sonnet-5-5
   (anchor). Not confirmed on Metis AI; prices from third parties. `PLAN §7` only partly recomputed.
-- `workflow` excluded everywhere (D-057). Selection rules and limits: `report/data_selection.md`.
-- Judging: LLM judge only, pointwise vs pairwise in the pilot (D-059). Judge prompt review pending.
+- `workflow` excluded everywhere (D-057). LLM judge only, pointwise vs pairwise in the pilot (D-059).
 - Only 700 prompts reach paid models (2,800 generation + about 3,500–4,800 judge calls).
-- **Exact next step:** `/start`, then `work/WP-05-router-core-eval.md` step 1. Order: WP-05 → 04 → 06 → 07 → 08.
+- **Exact next step:** `/start`, then `work/WP-05b-baselines-stats-synthetic.md`, starting at
+  `eval/baselines.py` (WP-05 step 7). Must also measure the lucky-envelope effect in step 9.
+  Order: WP-05b → 04 → 06 → 07 → 08.
 - Model: default (Opus 5.5)
 
 ## Waiting on the owner
-- Before WP-05: Q-020 K-selection data (recommended: split-validation, $0) and DEV-6 (R = 20)
 - Before WP-04: Q-017 (Metis AI reachable on your network?) + key in `.env`
 - Before WP-06 step 4: review the judge prompt with the agent; DEV-5
 - Before WP-11: DEV-4
@@ -38,11 +36,12 @@ Updated: 2026-10-31 · by session full-data intake
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-062 WP-05a spec readings: K = 1 cannot win, sessions kept whole in halvings
+- D-061 K by split-validation (Q-020), R = 20 (DEV-6)
 - D-060 Intervals resample whole sessions
 - D-059 LLM judge only; judge prompt reviewed by the owner before WP-06 step 4
 - D-058 Parquet loader on DuckDB; fallback plan P4 retired
 - D-057 `workflow` excluded from train, val and test
-- D-056 Candidates updated to current models
 
 ## Next WPs that can start
-- WP-05 (free, synthetic); WP-04 after Q-017; WP-06 after WP-04
+- WP-05b (free, synthetic); WP-04 after Q-017; WP-06 after WP-04

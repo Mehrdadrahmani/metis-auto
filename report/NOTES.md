@@ -66,6 +66,12 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Spec check |C_k| ≥ 50 leaves K = 3–4 at val 400 (K = 8: ~5 of 8 clusters under 50). Owner chose the paper's rule
   K ≤ N_val/50 with α = 0 (D-054). Small clusters give noisier Ψ; α = 2 is the robustness check.
 
+## WP-05a Router core (synthetic only)
+- K chosen by split-validation (20 halvings, both directions, sessions kept whole): the search for
+  7 K values and 61 λ takes 0.05 s.
+- Limitation to measure in WP-05b: the deferral area keeps the best points of the scored half, so
+  extra clusters can gain area by luck. On 5 no-structure datasets K = 3 beat K = 1 once.
+
 ## Decisions to explain in the method chapter
 - Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
 - Sessions are not independent: intervals resample whole sessions (D-060).

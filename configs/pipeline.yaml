@@ -18,6 +18,14 @@ sample_dry_run:                     # step 8: scaled sizes for the 100-session s
   n_val: 60
   n_test: 40
   n_pilot: 20
+router:                             # S5, S8-S10 (WP-05); paper settings, PLAN M13, M14
+  kmeans_n_init: 10
+  alpha_point: 0                    # Eq. 12; 2 only as a robustness check (D-054)
+  alpha_pair: 2                     # virtual ties, spec S8-PW
+  select_k_repeats: 20              # DEV-6
+  lambda_n: 60
+  lambda_low: 0.001
+  lambda_high: 100.0
 s4:                                 # embedder (WP-03, D-048, D-052): choice between candidates in WP-08
   choice: pending                   # small | nano; decided in WP-08 on real data (owner, D-052)
   candidates:

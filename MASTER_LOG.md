@@ -76,9 +76,11 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-058 | 2026-10-31 | Full data loaded through a new streaming parquet loader on DuckDB (`src/metis/data/load_parquet.py`; `uv add duckdb`); structure-only card and full secret scan in `results/wp08_full_data/`. PLAN P4 fallback retired, full data arrived before 2026-11-01 | A | owner |
 | D-059 | 2026-10-31 | Judging stays LLM judge only, pointwise vs pairwise in the pilot. Dropped by the owner: reference-answer method, rule-based checks, embedding similarity as a grader. The judge prompt is **not final**: owner reviews it before WP-06 step 4 | A | owner |
 | D-060 | 2026-10-31 | Confidence intervals and paired tests resample **whole sessions**, since messages in a session are not independent. WP-05 updated | P | WP-05 |
+| D-061 | 2026-10-31 | **Q-020 answered: K is chosen by split-validation on val ($0), not graded train prompts. DEV-6 approved: R = 20.** Fixed rule 6 stays intact | O | WP-05 |
+| D-062 | 2026-10-31 | WP-05a readings of the spec: K = 1 is scored but cannot win (M14 over S5); every K uses the same halvings; **halvings keep sessions whole** (follows D-060); the K search uses the Bradley-Terry closed form (the optimizer is tested equal to it); envelope = undominated points joined linearly (spec §7; the paper gives no more detail); an empty pairwise cluster uses the overall rate (D-054); `select_lambda` returns the closest point with `feasible=False` if no λ meets the target | P | WP-05 |
 
-**Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5, DEV-6 (planner proposals; DEV-2 and
-DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
+**Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5 (planner proposals; DEV-2, DEV-3,
+DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
 
 ## 3. Open questions
 
@@ -89,10 +91,9 @@ DEV-3 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
 | Q-017 | Does Metis AI work from the same network as Claude Code (VPN)? Planner saw TLS resets to metisai.ir on 2026-10-20 (PLAN R17) | owner | WP-04 |
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
-| Q-020 | K selection: report cards from graded train prompts (paper; ~$14, breaks fixed rule 6) or split-validation on val (spec, $0) | owner | WP-05 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-023 | Test the router on public Persian data like the paper (owner idea; the embedding + clustering half is done in WP-03b, the routing half is open): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
-| Q-019 | Approve DEV-4, DEV-5, DEV-6 | owner | WP-06 (DEV-5), WP-11 (DEV-4), WP-05 (DEV-6) |
+| Q-019 | Approve DEV-4, DEV-5 | owner | WP-06 (DEV-5), WP-11 (DEV-4) |
 
 ## 4. Budget ledger
 
@@ -104,6 +105,17 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-31 · WP-05a: router core, steps 2–6 (Opus)
+- Owner approved split-validation (Q-020) and R = 20 (DEV-6), D-061; WP-05 split, steps 7–10 are
+  now `work/WP-05b-baselines-stats-synthetic.md`.
+- New: `router/kmeans.py`, `fingerprints.py`, `bt.py`, `route.py`, `select_k.py`, `select_lambda.py`,
+  `eval/metrics.py`, `tests/test_router_core.py`, `tests/test_router_select.py`; `router:` block in
+  `configs/pipeline.yaml`; `uv add scipy`.
+- Tests: 137 passed (31 new); ruff clean. App. B example, α = 0 = Eq. 12, BT = closed form (< 1e-6)
+  and a new model changing only its own column are tested. S9 with R = 20, 7 K values, 61 λ: 0.05 s.
+- Found: extra clusters can gain area by luck on no-structure data (WP-05b must measure it).
+- Synthetic data only; no real data read. Cost $0.
 
 ### 2026-10-31 · Full data arrived; candidates updated (Opus)
 - Full dataset downloaded to `data/raw/metis/` (35 parquet files, 1.1 GB; private HF repo, owner-supplied token, not stored). Owner states the data is theirs and has no licence conflict. Q-001 answered: still to be closed at handoff.

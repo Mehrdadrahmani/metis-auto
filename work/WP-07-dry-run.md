@@ -55,3 +55,7 @@ nothing**; only the plumbing is tested.
 
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-07 step n", stop.
+
+## Note from WP-05a
+`candidate_ks(n_val)` is empty for the 60-prompt sample (floor(60/50) = 1): pass explicit K values
+in the dry run, for example {1, 2, 3}, and say so in its report.

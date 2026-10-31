@@ -42,21 +42,21 @@
     "semantic_hash": "1aaa36b46f27a488279e46f035b2ab24"
   },
   "configs/models.yaml": {
-    "mtime": 1792591404.6969254,
-    "seen": 1792836062.236618,
-    "ast_hash": "df5c2fee54fd82624ac4286540701dec",
-    "semantic_hash": "df5c2fee54fd82624ac4286540701dec"
+    "mtime": 1793439885.6413043,
+    "seen": 1793443778.884593,
+    "ast_hash": "1ee19bb6c550ef73c042ab3b4c63f9db",
+    "semantic_hash": ""
   },
   "configs/pipeline.yaml": {
-    "mtime": 1792925463.908058,
-    "seen": 1792925523.0796201,
-    "ast_hash": "09879369af2e53008c783dedfef1903a",
+    "mtime": 1793439911.7932634,
+    "seen": 1793443778.884594,
+    "ast_hash": "bb27bfdb832d086cd8df0f5b6ff5b817",
     "semantic_hash": ""
   },
   "pyproject.toml": {
-    "mtime": 1792879322.4397023,
-    "seen": 1792886031.7288032,
-    "ast_hash": "92b683461e66cd071a195f8403299d66",
+    "mtime": 1793443266.8080313,
+    "seen": 1793443778.884595,
+    "ast_hash": "4bc1862446a1954ef9bd63c4c22f9db1",
     "semantic_hash": ""
   },
   "scripts/data_card.py": {
@@ -204,10 +204,10 @@
     "semantic_hash": "38bccebd3decdb5fec778fae93940a0f"
   },
   "tests/test_rules.py": {
-    "mtime": 1792591429.0536315,
-    "seen": 1792836062.236649,
-    "ast_hash": "e4190c2069ec46e677bc95c3fc184cf1",
-    "semantic_hash": "e4190c2069ec46e677bc95c3fc184cf1"
+    "mtime": 1793439936.0592558,
+    "seen": 1793443778.88465,
+    "ast_hash": "9fdcfccaca0da531947b0f5b093f5f85",
+    "semantic_hash": ""
   },
   "tests/test_split.py": {
     "mtime": 1792591617.3586657,
@@ -234,10 +234,10 @@
     "semantic_hash": "9bd8927c0850cfb1852a38c9f687c200"
   },
   "AGENTS.md": {
-    "mtime": 1792507551.542867,
-    "seen": 1792836062.236653,
-    "ast_hash": "e0ec4f1b13391e1e3697d1c53cf29a0a",
-    "semantic_hash": "e0ec4f1b13391e1e3697d1c53cf29a0a"
+    "mtime": 1793439911.7989714,
+    "seen": 1793443778.884655,
+    "ast_hash": "67a43f32f1716e2ba2f54ea4b5c864e2",
+    "semantic_hash": ""
   },
   "CLAUDE.md": {
     "mtime": 1792835091.9885247,
@@ -252,15 +252,15 @@
     "semantic_hash": "75a015f5657a512c1758ab303c9bf509"
   },
   "MASTER_LOG.md": {
-    "mtime": 1793349927.463392,
-    "seen": 1793349976.9437819,
-    "ast_hash": "a9f72f4b7e5c924c940376082b3333af",
+    "mtime": 1793443743.3958058,
+    "seen": 1793443778.8846579,
+    "ast_hash": "7e95c8100ed99c15845bd6bab1cbc3de",
     "semantic_hash": ""
   },
   "PLAN.md": {
-    "mtime": 1793349927.465422,
-    "seen": 1793349976.9437828,
-    "ast_hash": "ab3d6dde6247bf5e61521cb5e43b856a",
+    "mtime": 1793443743.3964605,
+    "seen": 1793443778.884659,
+    "ast_hash": "ddad34f978e605a22068eb9d54b66118",
     "semantic_hash": ""
   },
   "PROJECT.md": {
@@ -288,9 +288,9 @@
     "semantic_hash": "f518c7a52d7cbb99a373161293d12a86"
   },
   "STATUS.md": {
-    "mtime": 1793349950.5873802,
-    "seen": 1793349976.943787,
-    "ast_hash": "9181f51769e2881501059a640d336906",
+    "mtime": 1793443764.2875543,
+    "seen": 1793443778.884664,
+    "ast_hash": "a16f07fc2e8e3799aa752e8c6d509830",
     "semantic_hash": ""
   },
   "ref/PLANNING-REQUEST.md": {
@@ -342,9 +342,9 @@
     "semantic_hash": "62f2aac03613424b31f58a99e945e22d"
   },
   "report/NOTES.md": {
-    "mtime": 1793349950.5668879,
-    "seen": 1793349976.943795,
-    "ast_hash": "0107046f119d212e5e694c6ecaaae0df",
+    "mtime": 1793443743.3977556,
+    "seen": 1793443778.884674,
+    "ast_hash": "c8ff6ad1ad8660a78c8feb2f626f9a9b",
     "semantic_hash": ""
   },
   "work/WP-00-bootstrap.md": {
@@ -378,16 +378,16 @@
     "semantic_hash": "5776da8a4dbe9128fc502e0fc2a64fe5"
   },
   "work/WP-05-router-core-eval.md": {
-    "mtime": 1792591355.553838,
-    "seen": 1792836062.236671,
-    "ast_hash": "31655582e84682072625cf9bebf0d122",
-    "semantic_hash": "31655582e84682072625cf9bebf0d122"
+    "mtime": 1793443764.2871513,
+    "seen": 1793443778.884692,
+    "ast_hash": "d238319b85dd838e2c20ea43fff89386",
+    "semantic_hash": ""
   },
   "work/WP-06-gen-judge-pipeline.md": {
-    "mtime": 1792590506.500638,
-    "seen": 1792836062.236672,
-    "ast_hash": "4879d8312cd6baf2231ff21f11f0c6f5",
-    "semantic_hash": "4879d8312cd6baf2231ff21f11f0c6f5"
+    "mtime": 1793443743.3970964,
+    "seen": 1793443778.884693,
+    "ast_hash": "88460a15b35bf63ff6be1693a62f1d48",
+    "semantic_hash": ""
   },
   "work/WP-07-dry-run.md": {
     "mtime": 1792507551.5564017,
@@ -396,16 +396,16 @@
     "semantic_hash": "1f5306d055c20e27a4b1588212b3e3b6"
   },
   "work/WP-08-full-data-in.md": {
-    "mtime": 1793349927.4659102,
-    "seen": 1793349976.94381,
-    "ast_hash": "cc6ee1a9d656ddbd38593aca23618c1b",
+    "mtime": 1793443743.3968403,
+    "seen": 1793443778.884695,
+    "ast_hash": "3cd19af94d0f9ac35d7a85b0e04a663f",
     "semantic_hash": ""
   },
   "work/WP-09-pilot-run.md": {
-    "mtime": 1792507551.549197,
-    "seen": 1792836062.2366772,
-    "ast_hash": "91ea0f009174e4f75e4db412ac4122b5",
-    "semantic_hash": "91ea0f009174e4f75e4db412ac4122b5"
+    "mtime": 1793439911.8166401,
+    "seen": 1793443778.884696,
+    "ast_hash": "e64803569f8fbb1a509069e0596e7a1d",
+    "semantic_hash": ""
   },
   "work/WP-10-owner-labels.md": {
     "mtime": 1792507551.5495467,
@@ -414,16 +414,16 @@
     "semantic_hash": "8ed6965fc0fc663b745f22cbde456af1"
   },
   "work/WP-11-pilot-decision.md": {
-    "mtime": 1792507551.55555,
-    "seen": 1792836062.236678,
-    "ast_hash": "6e199a8e4619d0889ab780c191a6df2b",
-    "semantic_hash": "6e199a8e4619d0889ab780c191a6df2b"
+    "mtime": 1793439911.822499,
+    "seen": 1793443778.8846982,
+    "ast_hash": "b7658d081d22bc77d43e507174961d1c",
+    "semantic_hash": ""
   },
   "work/WP-12-generation.md": {
-    "mtime": 1792507551.5536964,
-    "seen": 1792836062.2366788,
-    "ast_hash": "50716a84e4cdb352dd4ba1f643725854",
-    "semantic_hash": "50716a84e4cdb352dd4ba1f643725854"
+    "mtime": 1793439911.8287218,
+    "seen": 1793443778.8846989,
+    "ast_hash": "2304fae355cb67fd40c5117bd67d9c80",
+    "semantic_hash": ""
   },
   "work/WP-13-judging.md": {
     "mtime": 1792507551.551711,
@@ -432,9 +432,9 @@
     "semantic_hash": "5151fc9927349ee4e2f0644861826c7d"
   },
   "work/WP-14-fingerprints-freeze.md": {
-    "mtime": 1793349927.4661965,
-    "seen": 1793349976.943816,
-    "ast_hash": "ae962d3526fc64f08ede8caa37863bb3",
+    "mtime": 1793439911.8348596,
+    "seen": 1793443778.884701,
+    "ast_hash": "58e3eb15261b4183fc2f085d12ec0ab6",
     "semantic_hash": ""
   },
   "work/WP-15-gateway-core.md": {
@@ -462,10 +462,10 @@
     "semantic_hash": ""
   },
   "work/WP-19-final-evaluation.md": {
-    "mtime": 1792507551.5499265,
-    "seen": 1792836062.236684,
-    "ast_hash": "e2181be2bbcc534360b8882364681ee2",
-    "semantic_hash": "e2181be2bbcc534360b8882364681ee2"
+    "mtime": 1793439911.8411486,
+    "seen": 1793443778.884706,
+    "ast_hash": "c9ba571379e14c79940ed7252e33ced3",
+    "semantic_hash": ""
   },
   "work/WP-20-report.md": {
     "mtime": 1792590506.5013084,
@@ -909,6 +909,36 @@
     "mtime": 1793349950.5742123,
     "seen": 1793349976.943827,
     "ast_hash": "d437fd12a480cf8ae9e42662c3ab5d59",
+    "semantic_hash": ""
+  },
+  "results/wp08_full_data/data_card_full.manifest.json": {
+    "mtime": 1793443704.5632768,
+    "seen": 1793443778.8846111,
+    "ast_hash": "a291ac6e4308c061c7fd911df0e0dfa2",
+    "semantic_hash": ""
+  },
+  "scripts/data_card_full.py": {
+    "mtime": 1793443336.385702,
+    "seen": 1793443778.884614,
+    "ast_hash": "7d7000cbef3ab2f65e34f1140f2377c1",
+    "semantic_hash": ""
+  },
+  "tests/test_load_parquet.py": {
+    "mtime": 1793443311.9965858,
+    "seen": 1793443778.884646,
+    "ast_hash": "b9b8d6b445fd502e7db52d7264f9a009",
+    "semantic_hash": ""
+  },
+  "report/data_selection.md": {
+    "mtime": 1793442974.655846,
+    "seen": 1793443778.884675,
+    "ast_hash": "779e56c77b0995c996b0790350881ba0",
+    "semantic_hash": ""
+  },
+  "results/wp08_full_data/data_card_full.md": {
+    "mtime": 1793443704.5624838,
+    "seen": 1793443778.884684,
+    "ast_hash": "ce58173d405ea8c7efbe414d1ab7bac8",
     "semantic_hash": ""
   }
 }

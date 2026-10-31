@@ -33,7 +33,7 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 | M11 | **Judge bias and noise controls:** same `max_tokens` for every candidate; length-bias check (Spearman score vs answer length within prompt); pairwise in both orders (position-consistency rate); self-preference check on gpt-5.6-luna (judge–human disagreement by model on the calibration set, descriptive); **re-judge 5% of items** to measure test–retest agreement; the owner re-labels 20 calibration items a few days later (intra-rater consistency, ~30 min). | must (first four) / should (last two) | One labeler and one judge: we must at least measure how noisy they are. |
 | M12 | **One answer per (prompt, model)** (spec). Multiple samples per pair (DARS) are a "nice" upgrade. | must | Budget and time; noise is measured instead (M11). |
 | M13 | **Split-validation repeats R = 20** instead of 5 for choosing K (and K-NN's k). **[DEV-6]** | should | $0 compute; reduces the noise of the choice with 400 prompts. |
-| M14 | **As in the paper:** K candidates {3, …, ⌊N_val/50⌋} = {3…8} (App. G.2); K-means (k-means++, ≥ 10 restarts) on the train split; each prompt assigned to its **nearest centroid** (K-means assignment, §5.1); fingerprint = **plain per-cluster error rate, Eq. 12 (α = 0)**; routing rule Eq. 8/11; K chosen by the **normalized area under the deferral curve** on validation. K = 1 is computed only as a comparison (paper App. D.1). No per-cluster minimum rule; a cluster with no validation prompts falls back to the model's overall error rate (logged). **[DEV-7]** vs the spec (α = 2, cosine assignment, n_min drop), owner-requested. **Open decision Q-020:** how the K-selection report cards are built (paper: graded train prompts; spec: split-validation). | must | Owner decision: every routing and clustering step as in the paper. |
+| M14 | **As in the paper:** K candidates {3, …, ⌊N_val/50⌋} = {3…8} (App. G.2); K-means (k-means++, ≥ 10 restarts) on the train split; each prompt assigned to its **nearest centroid** (K-means assignment, §5.1); fingerprint = **plain per-cluster error rate, Eq. 12 (α = 0)**; routing rule Eq. 8/11; K chosen by the **normalized area under the deferral curve** on validation. K = 1 is computed only as a comparison (paper App. D.1). No per-cluster minimum rule; a cluster with no validation prompts falls back to the model's overall error rate (logged). **[DEV-7]** vs the spec (α = 2, cosine assignment, n_min drop), owner-requested. **Q-020 decided (D-061):** K-selection report cards come from split-validation on val ($0). | must | Owner decision: every routing and clustering step as in the paper. |
 | M15 | **Similarity to production's answers** (the brief's metric) is reported as a **secondary** metric with a caveat: production used 18 models, so it measures "closeness to whatever production said", not quality. Same embedder, cosine. Judge-based quality is the primary metric. | must | The brief asks for it; it can't be the quality measure (v1 lesson). |
 | M16 | **Freeze before test:** the router artifact (method, τ, K, centroids, Ψ, ĉ, λ, chosen router from the ladder) and an evaluation protocol are committed (git tag `pre-test`) **before** the test labels are read. | must | Makes "the test set was used once" verifiable by a reviewer. |
 
@@ -77,7 +77,7 @@ better, cheap), **nice** (only if time remains). "Spec" = `UNIROUTE_PIPELINE.md`
 | Splits | by session; val **400**, test **300** (locked), cal 100 items ⊂ val, pilot val 100 ⊂ val; train = all remaining eligible prompts (unlabeled); val/test drawn from the most recent period, stratified by the 4 categories |
 | Embedder | **jina-embeddings-v5-text-small** (`clustering` adapter), local; nano as latency fallback (D-048) |
 | Vector store | **Qdrant**, local mode (`qdrant/`, git-ignored): K-NN baseline, near-duplicates, semantic cache (D-048) |
-| K | {3…8} (+ K = 1 comparison); Eq. 12 (α = 0); nearest centroid; area under the deferral curve; K-selection data per Q-020 |
+| K | {3…8} (+ K = 1 comparison); Eq. 12 (α = 0); nearest centroid; area under the deferral curve; K selected by split-validation (D-061) |
 | λ | {0} ∪ 60 log-spaced in [1e-3, 1e2]; quality mode (target set on val) and budget mode both reported |
 | Budget | hard cap **$60**; expected ~$25 (pointwise) / ~$35 (pairwise) (§7) |
 | Human work | owner labels 100 calibration items (~3 h) + 20 re-labels (~30 min) |
@@ -406,12 +406,12 @@ metis-auto/
 | WP-14 | Read the evaluation protocol before the freeze | wait |
 | WP-17 | **Cache threshold method** (deferred decision) | AI-grader labels (≤ $1) |
 | WP-19 | **Gate 3** is automatic (tag exists); "go" for the live latency run (~$1.5) | wait |
-| Any time | Deviations DEV-2…DEV-9 (§1); open decision Q-020; deadline or data-date changes | — |
+| Any time | Deviations DEV-2…DEV-9 (§1); deadline or data-date changes | — |
 
 Deviations: ~~DEV-1~~ (withdrawn: no instruction traits) · **DEV-2**
 per-chatbot system prompt in generation (agreed) · **DEV-3** slim pilot (agreed) · **DEV-4** balanced
 accuracy + κ in the gate · **DEV-5** judge prompt extended with instructions/context · **DEV-6**
-R = 20 split-validation repeats (only if Q-020 keeps split-validation) · **DEV-7** paper-faithful
+R = 20 split-validation repeats (agreed, D-061) · **DEV-7** paper-faithful
 clustering/routing: α = 0, nearest centroid, no n_min drop (owner-requested, agreed) · **DEV-8**
 embedding input = current user message only, no context turns (owner decision, agreed) · **DEV-9**
 judge input = current user message only (spec A1/A2 `{context_turns}` dropped; generation keeps the

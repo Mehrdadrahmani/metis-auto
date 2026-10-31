@@ -7,6 +7,9 @@
 |---|---|---|---|---|---|---|
 | 1 | default (Opus 5.5) | ~250k (split into 05a/05b if it grows) | – | $0 | WP-00 | WP-07, WP-14, WP-19 |
 
+**Split 2026-10-31:** steps 2–6 are done (WP-05a); steps 7–10 run from
+`work/WP-05b-baselines-stats-synthetic.md`. WP-05 is ticked when 05b finishes.
+
 ## Context
 All the "free" math of UniRoute plus the baselines and statistics. It is written and **proven on
 synthetic data where the right answer is known** before any real label exists, so the paid labels
