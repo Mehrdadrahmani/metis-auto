@@ -135,7 +135,7 @@ def test_session_bootstrap_covers_the_truth_on_correlated_sessions():
     for seed in range(200):
         rng = np.random.default_rng(seed)
         values = np.repeat(rng.normal(size=50), 3) + rng.normal(size=150) * 0.1
-        result = bootstrap(lambda i: float(values[i].mean()), groups, n_boot=300, seed=seed)
+        result = bootstrap(lambda i, v=values: float(v[i].mean()), groups, n_boot=300, seed=seed)
         covered.append(result.low <= 0 <= result.high)
     assert 0.88 <= np.mean(covered) <= 0.99
 
