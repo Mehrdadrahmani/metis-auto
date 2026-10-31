@@ -18,7 +18,6 @@ Updated: 2026-10-31 · by session WP-05 close
 - Model: default (Opus 5.5)
 
 ## Waiting on the owner
-- Q-026: confirm split-validation and R = 20 (D-061; "go on" was taken as approval)
 - Before WP-04: Q-017 (Metis AI reachable on your network?) + key in `.env`
 - Before WP-06 step 4: review the judge prompt with the agent; DEV-5
 - Before WP-11: DEV-4
@@ -38,6 +37,7 @@ Updated: 2026-10-31 · by session WP-05 close
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-065 Split-validation with R = 20 confirmed by the owner
 - D-064 K by the paper's rule, highest score
 - D-063 `area()` bug fix; QNC shown exact and within 1 point
 - D-062 WP-05a spec readings: K = 1 cannot win, sessions kept whole in halvings

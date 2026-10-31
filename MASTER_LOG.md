@@ -80,6 +80,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-062 | 2026-10-31 | WP-05a readings of the spec: K = 1 is scored but cannot win (M14 over S5); every K uses the same halvings; **halvings keep sessions whole** (follows D-060); the K search uses the Bradley-Terry closed form (the optimizer is tested equal to it); envelope = undominated points joined linearly (spec §7; the paper gives no more detail); an empty pairwise cluster uses the overall rate (D-054); `select_lambda` returns the closest point with `feasible=False` if no λ meets the target | P | WP-05 |
 | D-063 | 2026-10-31 | WP-05b: `area()` adds nothing below a curve's cheapest point (bug fix); single models reported by cost and quality, not area; logistic baseline pointwise only; report shows QNC exact and within 1 point | P | WP-05 |
 | D-064 | 2026-10-31 | **Q-025 answered: K by the paper's rule, highest score.** One-spread and fixed K = 8 rejected. No deviation. The rule is judged by routing quality; K* is not reported as the number of real topics. Step 9 checks changed accordingly | O | WP-05 |
+| D-065 | 2026-10-31 | Owner explicitly confirmed D-061: split-validation with R = 20 (closes Q-026) | O | WP-05 |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5 (planner proposals; DEV-2, DEV-3,
 DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
@@ -93,7 +94,6 @@ DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
 | Q-017 | Does Metis AI work from the same network as Claude Code (VPN)? Planner saw TLS resets to metisai.ir on 2026-10-20 (PLAN R17) | owner | WP-04 |
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
-| Q-026 | Confirm D-061: the owner's reply was "go on", taken as approval of split-validation and R = 20 | owner | WP-14 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-023 | Test the router on public Persian data like the paper (owner idea; the embedding + clustering half is done in WP-03b, the routing half is open): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
 | Q-019 | Approve DEV-4, DEV-5 | owner | WP-06 (DEV-5), WP-11 (DEV-4) |
