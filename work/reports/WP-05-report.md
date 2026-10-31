@@ -31,9 +31,10 @@ Status: **code complete, one acceptance check open** (Q-025). Not ticked in ROAD
 1. **The spec's K rule barely identifies K (Q-025).** Extra clusters cut true groups into pieces
    with the same rates, so areas for K = 3..8 differ by less than their noise and the highest score
    is close to a random pick. Routing quality is unaffected (mean change in test area at most
-   0.0006), but a large K means fewer prompts per cluster and harder cluster names. Candidate: the
-   smallest K within one spread (one SD of that K's halving areas) of the best: K = 3 in 93 of 100
-   (planted) and 90 of 100 (no structure). Not adopted: it changes the spec, so it is the owner's call.
+   0.0006), but a large K means fewer prompts per cluster and harder cluster names. The one-spread
+   candidate looked better at first (K = 3 in 93 of 100) but failed a fresh check with true K = 6:
+   withdrawn, see `results/wp05_router/k_rule_review.md`. Recommended: keep highest score and judge
+   it by routing quality, not by finding K. K* must not be read as the number of real topics.
 2. **Bug found and fixed:** `area()` gave a model credit at budgets below its cost. Always-best
    showed 0.9533, above every router. Routers reaching the cheapest model were not affected, so the
    K search results did not change. Single models are now reported by cost and quality only.

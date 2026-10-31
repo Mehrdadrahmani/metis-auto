@@ -92,7 +92,7 @@ DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
 | Q-017 | Does Metis AI work from the same network as Claude Code (VPN)? Planner saw TLS resets to metisai.ir on 2026-10-20 (PLAN R17) | owner | WP-04 |
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
-| Q-025 | Rule for K: keep the spec's highest score (finds planted K = 3 in 12 of 100) or use the smallest K within one spread of the best (93 of 100; would be DEV-10)? Area barely changes | owner | WP-14 |
+| Q-025 | Rule for K: (A) highest score (spec, paper; recommended), (B) one spread (withdrawn: loses up to 0.0065 area when the true K is 6), (C) fixed K = N_val/50 (paper, no training models). `results/wp05_router/k_rule_review.md` | owner | WP-14 |
 | Q-026 | Confirm D-061: the owner's reply was "go on", taken as approval of split-validation and R = 20 | owner | WP-14 |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-023 | Test the router on public Persian data like the paper (owner idea; the embedding + clustering half is done in WP-03b, the routing half is open): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
@@ -108,6 +108,11 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-31 · K rule review (Opus)
+- Read the paper's tuning section; ran 4 ways of setting K on 8 scenarios, 100 fresh datasets each.
+- My one-spread proposal failed the fresh check: mean area 0.9332 vs 0.9354 (highest score), 0.9360
+  (fixed K = 8). Recommendation changed to keep highest score. Simulated data only. Cost $0.
 
 ### 2026-10-31 · WP-05b: baselines, statistics, synthetic proof, artifact (Opus)
 - New: `eval/baselines.py`, `eval/stats.py`, `router/artifact.py`, `tests/synthetic.py`,

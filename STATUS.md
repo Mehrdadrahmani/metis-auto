@@ -7,15 +7,16 @@ Updated: 2026-10-31 · by session WP-05b
   `work/reports/WP-05-report.md`; numbers: `results/wp05_router/synthetic_validation.md`.
 - UniRoute beats ZeroRouter on planted data (+0.0845 [+0.0520, +0.1178]); no false gain without
   structure (-0.0057 [-0.0253, +0.0217]). Simulated, n_test = 300.
-- Spec's K rule finds planted K = 3 in only 12 of 100 datasets; "smallest K within one spread" 93.
+- K rule review: `results/wp05_router/k_rule_review.md`. Keep highest score (recommended); one-spread
+  rule withdrawn; fixed K = 8 is the paper's other option.
 - Full data is in `data/raw/metis/data/` (git-ignored). Loader `src/metis/data/load_parquet.py`;
   selection rules in `report/data_selection.md`.
 - Candidates (D-056) not confirmed on Metis AI; prices from third parties. `PLAN §7` partly recomputed.
 - `workflow` excluded (D-057). LLM judge only, pointwise vs pairwise in the pilot (D-059).
 - Only 700 prompts reach paid models (2,800 generation + about 3,500–4,800 judge calls).
-- **Exact next step:** owner answers Q-025. If the new rule: add it to `select_k` in
-  `src/metis/router/select_k.py`, log DEV-10, remove the xfail in `tests/test_router_synthetic.py`,
-  tick WP-05. If the spec rule: rewrite that test to record the behavior, tick WP-05. Then WP-04.
+- **Exact next step:** owner answers Q-025. Highest score: replace the xfail in
+  `tests/test_router_synthetic.py` with a routing-quality check, tick WP-05. Fixed K: also log DEV-10
+  and change S9. Then WP-04.
   Order: WP-04 → 06 → 07 → 08.
 - Model: default (Opus 5.5)
 
