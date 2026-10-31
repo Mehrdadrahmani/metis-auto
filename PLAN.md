@@ -406,7 +406,7 @@ metis-auto/
 | WP-14 | Read the evaluation protocol before the freeze | wait |
 | WP-17 | **Cache threshold method** (deferred decision) | AI-grader labels (≤ $1) |
 | WP-19 | **Gate 3** is automatic (tag exists); "go" for the live latency run (~$1.5) | wait |
-| Any time | Deviations DEV-2…DEV-9 (§1); deadline or data-date changes | — |
+| Any time | Deviations DEV-2…DEV-10 (§1); deadline or data-date changes | — |
 
 Deviations: ~~DEV-1~~ (withdrawn: no instruction traits) · **DEV-2**
 per-chatbot system prompt in generation (agreed) · **DEV-3** slim pilot (agreed) · **DEV-4** balanced

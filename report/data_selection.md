@@ -80,12 +80,26 @@ Owner decision, 2026-10-31. Applies to train, val and test.
 - Train is all remaining eligible prompts. It stays unlabeled.
 - Test is sealed until WP-19. Seed 20261020.
 
-## 6. Open items for WP-08
+## 6. Counts on the full data (S1, 2026-10-31)
 
-- Add the count and share removed by each rule on the full data, as in
-  `results/wp02_prompts_splits/s1_s2_sample_counts.md`.
-- `reply_image` only knows `dalle`, while the full data also has provider `imagination`
-  (`Flux-Schnell`, `gpt-image-1` and others). Extend the rule before S1.
-- The full data has no category. `s2` balances by category, so it needs another balancing field.
+| Step | Prompts |
+|---|---|
+| User messages | 355,965 |
+| No bot reply | -17,640 |
+| Prompt rows | 338,325 |
+| `reply_workflow` | 94,190 |
+| `reply_image` (after workflow) | 123 |
+| `has_image` | 6,436 |
+| `huge_prompt` | 406 |
+| `too_short` | 2,373 |
+| `junk` | 1,162 |
+| `dup_exact` | 26,906 |
+| **Eligible for val and test** | **206,729** |
+| **Eligible for train** | **209,109** |
+
+Counted in this order, each prompt under its first reason. All 48,170 widget clicks are also workflow turns. Balancing field: RAG yes/no. Exact repeats are matched within one bot.
+
+## 7. Open items for WP-08
+
 - Model, provider and instructions are the bot's current settings, not recorded per message.
   Bots changed later may be misattributed.

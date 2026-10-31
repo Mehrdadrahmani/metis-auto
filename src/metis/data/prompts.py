@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 from collections import Counter
+from collections.abc import Iterable
 from datetime import datetime
 from typing import Any
 
@@ -28,6 +29,9 @@ from metis.data.rules import (
 from metis.data.schema import Message, Session
 
 # Exclusion reasons for the labeled sets (val/test); each is counted separately.
+# Long per-prompt context, stored apart from the main table on the full data.
+CONTEXT_COLUMNS = ("instructions", "history", "rag_context", "prod_answer")
+
 REASONS_LABELED = (
     "reply_workflow",
     "reply_image",
@@ -97,12 +101,13 @@ def _history(
     return turns
 
 
-def build_prompts(sessions: list[Session], cfg: dict[str, Any]) -> tuple[pd.DataFrame, Counter]:
-    """Return the prompts table and structural counts (no content)."""
+def build_rows(
+    sessions: Iterable[Session], cfg: dict[str, Any], counts: Counter
+) -> list[dict[str, Any]]:
+    """One row per user message with a reply, before duplicates are marked (`finish_prompts`)."""
     s1 = cfg["s1"]
     huge, min_chars = s1["huge_prompt_chars"], s1["min_text_chars"]
     cpt = s1["chars_per_token"]
-    counts: Counter = Counter()
     rows: list[dict[str, Any]] = []
     for s in sessions:
         red = [redact_message(m)[0] for m in s.messages]
@@ -123,7 +128,7 @@ def build_prompts(sessions: list[Session], cfg: dict[str, Any]) -> tuple[pd.Data
             t_user, t_reply = _parse_ts(m.timestamp), _parse_ts(reply.timestamp)
             flags = {
                 "reply_workflow": is_workflow_turn_msg(reply),
-                "reply_image": is_image_generation(reply.model),
+                "reply_image": is_image_generation(reply.model, reply.provider),
                 "reply_no_model": reply.model is None,
                 "widget_click": is_widget_click_msg(prev_bot, raw),
                 "has_image": needs_vision_msg(m),
@@ -137,6 +142,7 @@ def build_prompts(sessions: list[Session], cfg: dict[str, Any]) -> tuple[pd.Data
                     "session_id": s.session_id,
                     "msg_index": i,
                     "category": s.category,
+                    "bot_id": s.extra.get("bot_id") or s.category,
                     "session_created_at": s.created_at,
                     "timestamp": m.timestamp,
                     "text": text,
@@ -169,25 +175,34 @@ def build_prompts(sessions: list[Session], cfg: dict[str, Any]) -> tuple[pd.Data
                     "instr_len_bucket": _instr_bucket(len(instr)),
                 }
             )
-    df = pd.DataFrame(rows)
-    counts["prompt_rows"] = len(df)
-    if df.empty:
-        return df, counts
+    return rows
+
+
+def finish_prompts(df: pd.DataFrame) -> pd.DataFrame:
+    """Mark duplicates and eligibility (needs the whole table: repeats cross session batches)."""
     other_l = [r for r in REASONS_LABELED if r != "dup_exact"]
     other_t = [r for r in REASONS_TRAIN if r != "dup_exact_train"]
     df["dup_exact"], df["dup_of"] = duplicates_within(df, ~df[other_l].any(axis=1))
     df["dup_exact_train"], _ = duplicates_within(df, ~df[other_t].any(axis=1))
     df["eligible_labeled"] = ~df[list(REASONS_LABELED)].any(axis=1)
     df["eligible_train"] = ~df[list(REASONS_TRAIN)].any(axis=1)
-    return df, counts
+    return df
+
+
+def build_prompts(sessions: list[Session], cfg: dict[str, Any]) -> tuple[pd.DataFrame, Counter]:
+    """Return the prompts table and structural counts (no content)."""
+    counts: Counter = Counter()
+    df = pd.DataFrame(build_rows(sessions, cfg, counts))
+    counts["prompt_rows"] = len(df)
+    return (df if df.empty else finish_prompts(df)), counts
 
 
 def duplicates_within(df: pd.DataFrame, base: pd.Series) -> tuple[pd.Series, pd.Series]:
-    """Exact duplicates (WP-02 step 6) = same normalized text within the same chatbot (category),
+    """Exact duplicates (WP-02 step 6) = same normalized text within the same chatbot (`bot_id`),
     among the rows in `base` only (so an excluded row never removes a usable one). The earliest
     occurrence is kept; returns (is_duplicate, prompt_id of the kept row)."""
     sub = df[base].sort_values(["timestamp", "prompt_id"], kind="stable")
-    key = sub["category"].astype(str) + "\x00" + sub["match_key"]
+    key = sub["bot_id"].astype(str) + "\x00" + sub["match_key"]
     first = sub.groupby(key, sort=False)["prompt_id"].transform("first")
     dup = (first != sub["prompt_id"]) & (sub["match_key"] != "")
     is_dup = pd.Series(False, index=df.index)

@@ -17,6 +17,7 @@ from metis.data.schema import Message
 WORKFLOW_PROVIDERS = {"workflow"}
 WORKFLOW_MODELS = {"default"}
 IMAGE_MODELS = {"dalle"}
+IMAGE_PROVIDERS = {"imagination"}
 CHARS_PER_TOKEN = 3
 
 
@@ -36,8 +37,8 @@ def is_workflow_turn(provider: str | None, model: str | None) -> bool:
     return provider in WORKFLOW_PROVIDERS or model in WORKFLOW_MODELS
 
 
-def is_image_generation(model: str | None) -> bool:
-    return model in IMAGE_MODELS
+def is_image_generation(model: str | None, provider: str | None = None) -> bool:
+    return model in IMAGE_MODELS or provider in IMAGE_PROVIDERS
 
 
 def estimate_tokens(text: str | None, chars_per_token: float = CHARS_PER_TOKEN) -> int:

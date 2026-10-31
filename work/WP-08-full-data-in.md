@@ -18,6 +18,7 @@ nobody looks at test prompts or test labels until WP-19.
 - `work/reports/WP-07-report.md`, `results/cost_estimate_v1.md`.
 
 ## Steps
+> **Update 2026-10-31 (D-068):** part A done early: steps 3 to 6 and K-means (step 7) on train, K = 3..20, after near-duplicates. Reports: `results/split_manifest.json`, `results/wp08_full_data/`. Part B after WP-07: rerun anything WP-07 changes, resolve Q-027/Q-028, then steps 8 to 10.
 > **Update 2026-10-31:** steps 1–2 done early (D-058): data in `data/raw/metis/data/` (parquet, not `full.json`), loader `iter_sessions`, card `results/wp08_full_data/`. `load_with_report` accepts that folder. WP-08 still waits for WP-07.
 
 1. ⏸ **STOP:** ask the owner where the file is; copy it to `data/raw/full.json` (never open it, never
@@ -48,7 +49,7 @@ nobody looks at test prompts or test labels until WP-19.
    the chosen model (`clustering` adapter, merged) → `runs/s4/` + Qdrant collection (payload
    ids/numbers only). Near-duplicate
    removal inside train via Qdrant search (cosine > 0.95, keep one); report counts.
-7. S5: K-means on train for K ∈ {3…8} (+ K = 1); assign val and test to the nearest centroid; report
+7. S5: K-means on train for K ∈ {3…20} (+ K = 1; DEV-10, D-072); assign val and test to the nearest centroid; report
    cluster sizes (train/val/test) per K (paper-faithful: no K is dropped; small clusters flagged).
 8. Cluster naming: write `runs/s5/clusters_K<k>.html` (10 random redacted **train** prompts per
    cluster, for K = 3…6). ⏸ **STOP:** the owner opens it and types a short name per cluster
@@ -68,7 +69,7 @@ nobody looks at test prompts or test labels until WP-19.
 ## Acceptance checks
 - [ ] No session in two splits (assert); val/test standardized differences < 0.1 on language,
       length, category (or explained).
-- [ ] K candidates {3…⌊N_val/50⌋} computed; val cluster sizes recorded (no per-cluster minimum, D-054); any cluster with 0 val prompts logged.
+- [ ] K candidates {3…20} computed (DEV-10); val cluster sizes recorded (no per-cluster minimum, D-054); any cluster with 0 val prompts logged.
 - [ ] Gate 1 approved and recorded; approvals in `budget.yaml`.
 
 ## If blocked

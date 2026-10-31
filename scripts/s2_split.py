@@ -13,10 +13,37 @@ import json
 import time
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from metis.config import load_config
 from metis.data.split import make_splits, split_manifest, write_split
+
+
+def smd(a: pd.Series, b: pd.Series) -> float:
+    """Standardized difference (pooled SD); 0 if both have no spread."""
+    sd = np.sqrt((a.var() + b.var()) / 2)
+    return 0.0 if sd == 0 else round(float(abs(a.mean() - b.mean()) / sd), 3)
+
+
+def similarity(prompts: pd.DataFrame, table: pd.DataFrame, pool_oldest: str) -> dict:
+    """Val vs test vs recent pool on language, length, RAG: aggregates only (WP-08 step 5)."""
+    d = prompts[["prompt_id", "session_created_at", "eligible_labeled", "uses_rag", "lang"]].copy()
+    d["log_len"] = np.log1p(prompts["text_chars"])
+    d["is_fa"] = d["lang"].eq("fa").astype(float)
+    d["rag"] = d["uses_rag"].astype(float)
+    d = d.merge(table[["prompt_id", "split"]], on="prompt_id")
+    groups = {
+        "val": d[d["split"] == "val"],
+        "test": d[d["split"] == "test"],
+        "pool": d[d["eligible_labeled"] & (d["session_created_at"].astype(str) >= pool_oldest)],
+    }
+    out = {}
+    for x, y in (("val", "test"), ("val", "pool"), ("test", "pool")):
+        out[f"{x}_vs_{y}"] = {c: smd(groups[x][c], groups[y][c]) for c in ("is_fa", "log_len", "rag")}
+    out["means"] = {g: {c: round(float(f[c].mean()), 3) for c in ("is_fa", "log_len", "rag")}
+                    for g, f in groups.items()}  # fmt: skip
+    return out
 
 
 def main() -> None:
@@ -32,8 +59,9 @@ def main() -> None:
     s2 = dict(cfg["s2"])
     if args.sizes:
         s2.update(cfg[args.sizes])
-    cols = ["prompt_id", "session_id", "category", "lang", "session_created_at",
-            "eligible_labeled", "eligible_train"]  # fmt: skip
+    cols = ["prompt_id", "session_id", s2["balance_field"], "lang", "session_created_at",
+            "msg_index", "text_chars", "uses_rag", "eligible_labeled", "eligible_train"]  # fmt: skip
+    cols = list(dict.fromkeys(cols))
     prompts = pd.read_parquet(args.prompts, columns=cols)
     res = make_splits(
         prompts,
@@ -44,8 +72,14 @@ def main() -> None:
         max_per_session=s2["max_per_session"],
         cal_models=s2["cal_models"],
         seed=cfg["seed"],
+        balance=s2["balance_field"],
     )
+    t = res.table
+    a, b = (set(t.loc[t["split"] == s, "session_id"]) for s in ("val", "test"))
+    train = set(t.loc[t["split"] == "train", "session_id"])
+    assert not (a & b or a & train or b & train), "a session is in two splits"
     manifest = split_manifest(res, {"pipeline": cfg["_id"]})
+    manifest["similarity"] = similarity(prompts, t, res.info["pool_oldest_created_at"])
     manifest.update({"sizes_section": args.sizes or "s2", "input": str(args.prompts),
                      "duration_s": round(time.perf_counter() - t0, 2), "cost_usd": 0.0})  # fmt: skip
     write_split(res, args.out_dir, manifest)

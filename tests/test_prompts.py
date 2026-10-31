@@ -108,3 +108,15 @@ def test_history_limits():
 def test_prompt_ids_stable():
     s = session("s", [user("x1"), bot()])
     assert build([s])[0]["prompt_id"].tolist() == build([s])[0]["prompt_id"].tolist()
+
+
+def test_duplicates_are_per_bot_when_category_is_empty():
+    one = session("x", [user("سلام"), bot()], category=None)
+    two = session("y", [user("سلام", ts="2026-01-01 12:00:00"), bot()], category=None)
+    same = session("z", [user("سلام", ts="2026-01-01 13:00:00"), bot()], category=None)
+    one.extra["bot_id"] = same.extra["bot_id"] = "bot-a"
+    two.extra["bot_id"] = "bot-b"
+    df, _ = build_prompts([one, two, same], CFG)
+    by_sid = df.set_index("session_id")
+    assert not by_sid.loc["x", "dup_exact"] and not by_sid.loc["y", "dup_exact"]
+    assert by_sid.loc["z", "dup_exact"]

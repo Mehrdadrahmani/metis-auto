@@ -24,6 +24,8 @@ Phase 7 Report, release  WP-20 → WP-21                                        
 
 ## Work packages
 
+**Order changed 2026-10-31 (D-068):** WP-08 part A is done first, then WP-04 → 06 → 07 → WP-08 part B. WP-08 stays unticked until Gate 1.
+
 | ☐ | WP | Phase | Goal | Model | Tokens | 👤 | $ | Needs | Unblocks |
 |---|---|---|---|---|---|---|---|---|---|
 | ☑ | **WP-00** Bootstrap | 0 | Project folder, git + private GitHub, secret scan, continuity mechanism installed and tested | default | 80k | 👤 approve installs, `gh` login | – | – | all |

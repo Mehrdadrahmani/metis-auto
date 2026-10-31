@@ -35,6 +35,7 @@ def test_candidates_follow_the_paper():
     assert candidate_ks(400) == [3, 4, 5, 6, 7, 8]
     assert candidate_ks(800)[-1] == 16
     assert candidate_ks(60) == []
+    assert candidate_ks(400, k_max=20) == list(range(3, 21))
 
 
 def test_kmeans_recovers_blobs_and_is_repeatable():

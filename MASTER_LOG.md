@@ -81,6 +81,13 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-063 | 2026-10-31 | WP-05b: `area()` adds nothing below a curve's cheapest point (bug fix); single models reported by cost and quality, not area; logistic baseline pointwise only; report shows QNC exact and within 1 point | P | WP-05 |
 | D-064 | 2026-10-31 | **Q-025 answered: K by the paper's rule, highest score.** One-spread and fixed K = 8 rejected. No deviation. The rule is judged by routing quality; K* is not reported as the number of real topics. Step 9 checks changed accordingly | O | WP-05 |
 | D-065 | 2026-10-31 | Owner explicitly confirmed D-061: split-validation with R = 20 (closes Q-026) | O | WP-05 |
+| D-066 | 2026-10-31 | **Replaces the store part of D-048:** Qdrant runs as a Docker server (`docker-compose.yml`, image v1.19.1 = client version), loopback only, data in git-ignored `qdrant/`, telemetry off. Reason: the gateway and offline jobs need it at the same time. Local/in-memory modes stay for tests | O | WP-08 |
+| D-067 | 2026-10-31 | Owner allows the agent to read small samples of **redacted user prompts** (train, val). Still barred: raw files, `.env`, instructions, RAG context, generated answers, test prompts. AGENTS §4 and CLAUDE.md changed | O | WP-08 |
+| D-068 | 2026-10-31 | New order: WP-08 part A (S1, S2, embedder choice, embedding, near-duplicates) first, then WP-04 → 06 → 07 → WP-08 part B (S5, cluster names, budget, Gate 1). Risk accepted: a bug found in WP-07 may mean a free rerun of S1, S2 and S4 | O | WP-08 |
+| D-069 | 2026-10-31 | Embedding input stays the current user message (option A; D-045/DEV-8 reviewed). Other inputs compared later on val, never test: T = 2 and chatbot as router input in WP-14; hybrid only if the S1 follow-up count is high | O | WP-08 |
+| D-070 | 2026-10-31 | Image rule covers all of provider `imagination` plus `dalle`. Val/test/pilot balanced by RAG yes/no (`s2.balance_field: uses_rag`; a session takes its first eligible prompt's value). Exact repeats matched within `bot_id` because the full data has no category | O | WP-08 |
+| D-071 | 2026-10-31 | Embedder = **nano** (owner), all eligible prompts. Agent defaults, not explicitly answered by the owner: the 11 messages over 32,768 tokens are cut at the limit (exception to D-047), and the 569 prompts with `[PLOT_HIDDEN_MEMORY_CONTEXT]` are left as they are. All eligible prompts are selected by flags, so the sealed test file stays closed | O/A | WP-08 |
+| D-072 | 2026-10-31 | **DEV-10:** K candidates are 3 to 20 (`router.k_max: 20`), owner's requirement while testing. Paper rule N_val/50 gives 8 for val 400. Consequence stated to the owner: about 20 val prompts per cluster at K = 20. Spec default stays available (`k_max` unset) | O | WP-08 |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5 (planner proposals; DEV-2, DEV-3,
 DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
@@ -89,6 +96,8 @@ DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
 
 | ID | Question | Owner | Needed by |
 |---|---|---|---|
+| Q-027 | Near-duplicate rule removes 29% of train at cosine 0.95: keep it or raise it? | owner | WP-08 part B |
+| Q-028 | Val is uneven at K ≥ 9, with clusters of 0 val from K = 16: keep K up to 20, and what rule for empty clusters? | owner | WP-14 |
 | Q-001 | Exact arrival date and size of the full dataset | course team | WP-08 |
 | Q-006 | What is the `default` model in the data? Not blocking: `workflow` is excluded (D-057); only useful for describing the limitation in the report | owner asks course team | WP-20 |
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
@@ -108,6 +117,16 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-10-31 · WP-08 part A on the full data (Opus)
+- Reordered the work (D-068). Qdrant moved to Docker (D-066). Rules: D-067, D-069 to D-072 (DEV-10).
+- S1 streamed in session batches; long context stored in `runs/s1/context/`. S2 balanced by RAG, test sealed.
+- Nano vs small on 10,000 train prompts, owner chose nano. 209,162 prompts embedded in 47 min: GPU to
+  208,000, CPU for the last 1,162 after a GPU out-of-memory hang. No work lost.
+- Near-duplicates: 61,242 of 208,163 train prompts removed (29.4%). K-means K = 3..20 on 146,921 prompts in 8 min.
+- Silhouette best at K = 5 (0.118), about 0.09 at K = 6..8, about 0.05 to 0.06 from K = 9.
+- Val spreads unevenly: smallest cluster has 10 val at K = 8, 3 at K = 9, 0 from K = 16.
+- Sample outputs moved to `runs/sample/`. Tests: 165 passed. Cost $0.
 
 ### 2026-10-31 · WP-05 closed (Opus)
 - Owner chose highest score (D-064). K* = 3 check replaced by routing quality at K*. WP-05 ticked. Cost $0.

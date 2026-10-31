@@ -2,7 +2,7 @@
 
 Sessions are sorted by `created_at`; the most recent ones form the **recent pool** (≈ factor × the
 labeled prompts needed). Val and test are drawn from it by sampling sessions **stratified by
-category**, with at most `max_per_session` eligible prompts per session. All other sessions go to
+the balance field** (`s2.balance_field`; a session takes the value of its first eligible prompt), with at most `max_per_session` eligible prompts per session. All other sessions go to
 train (unlabeled). Pilot ⊂ val (stratified); cal = each pilot prompt paired with one non-anchor
 model, round-robin. Same seed + same input → identical ids.
 """
@@ -23,7 +23,7 @@ SPLITS = ("train", "val", "test", "none")
 
 @dataclass
 class SplitResult:
-    table: pd.DataFrame  # prompt_id, session_id, category, lang, split, in_pilot, cal_model
+    table: pd.DataFrame  # prompt_id, session_id, stratum, lang, split, in_pilot, cal_model
     info: dict[str, Any] = field(default_factory=dict)
 
 
@@ -43,14 +43,14 @@ def _draw(
     cap: int,
     rng: np.random.Generator,
 ) -> tuple[list[str], set[str], dict[str, int]]:
-    """Draw `n` eligible prompts from `sessions`, stratified by category. Returns prompt ids,
-    used session ids and the shortfall per category (0 if met)."""
-    capacity = sessions.groupby("category")["capped"].sum()
+    """Draw `n` eligible prompts from `sessions`, stratified by stratum. Returns prompt ids,
+    used session ids and the shortfall per stratum (0 if met)."""
+    capacity = sessions.groupby("stratum")["capped"].sum()
     capacity = capacity[capacity > 0]
     targets = _largest_remainder(capacity, n) if n and len(capacity) else {}
     queues = {
         c: [str(x) for x in rng.permutation(sorted(g.index[g["capped"] > 0]))]
-        for c, g in sessions.groupby("category")
+        for c, g in sessions.groupby("stratum")
     }
     chosen: list[str] = []
     used: set[str] = set()
@@ -88,17 +88,22 @@ def make_splits(
     max_per_session: int,
     cal_models: list[str],
     seed: int,
+    balance: str = "category",
 ) -> SplitResult:
     rng = np.random.default_rng(seed)
     df = prompts.sort_values("prompt_id").reset_index(drop=True)
+    df["stratum"] = df[balance].astype(str)
     elig = df[df["eligible_labeled"]]
     elig_by_session = elig.groupby("session_id")["prompt_id"].apply(list).to_dict()
+    order = [c for c in ("session_id", "msg_index") if c in elig]
+    first_elig = elig.sort_values(order, kind="stable").groupby("session_id")["stratum"].first()
     sess = (
         df.groupby("session_id")
-        .agg(created=("session_created_at", "first"), category=("category", "first"))
+        .agg(created=("session_created_at", "first"), stratum=("stratum", "first"))
         .assign(n_elig=lambda s: s.index.map(lambda i: len(elig_by_session.get(i, []))))
     )
     sess["capped"] = sess["n_elig"].clip(upper=max_per_session)
+    sess["stratum"] = first_elig.reindex(sess.index).fillna(sess["stratum"])
     # newest first; ties broken by session id
     sess = sess.loc[sorted(sess.index, key=lambda i: (str(sess.at[i, "created"]), i), reverse=True)]
 
@@ -118,21 +123,22 @@ def make_splits(
     split[~df["session_id"].isin(labeled_sess) & df["eligible_train"]] = "train"
     df["split"] = split
 
-    # pilot ⊂ val, stratified by category; cal = round-robin over non-anchor models
+    # pilot ⊂ val, stratified; cal = round-robin over non-anchor models
     val = df[df["split"] == "val"]
-    targets = _largest_remainder(val.groupby("category").size(), min(n_pilot, len(val)))
+    targets = _largest_remainder(val.groupby("stratum").size(), min(n_pilot, len(val)))
     pilot: list[str] = []
     for c, t in sorted(targets.items()):
-        ids = sorted(val.loc[val["category"] == c, "prompt_id"])
+        ids = sorted(val.loc[val["stratum"] == c, "prompt_id"])
         pilot.extend(rng.choice(ids, size=t, replace=False).tolist())
     pilot_order = [str(x) for x in rng.permutation(sorted(pilot))]
     cal = {pid: cal_models[i % len(cal_models)] for i, pid in enumerate(pilot_order)}
     df["in_pilot"] = df["prompt_id"].isin(pilot)
     df["cal_model"] = df["prompt_id"].map(cal)
 
-    table = df[["prompt_id", "session_id", "category", "lang", "split", "in_pilot", "cal_model"]]
+    table = df[["prompt_id", "session_id", "stratum", "lang", "split", "in_pilot", "cal_model"]]
     info = {
         "seed": seed,
+        "balance_field": balance,
         "sizes_requested": {"val": n_val, "test": n_test, "pilot": n_pilot},
         "sessions_total": len(sess),
         "pool_sessions": n_pool,
@@ -152,7 +158,7 @@ def ids_sha256(ids) -> str:
 def split_manifest(res: SplitResult, config_ids: dict[str, str]) -> dict[str, Any]:
     t = res.table
     counts = (
-        t.groupby(["split", "category", "lang"]).size().rename("n").reset_index().to_dict("records")
+        t.groupby(["split", "stratum", "lang"]).size().rename("n").reset_index().to_dict("records")
     )
     by_split = t["split"].value_counts().to_dict()
     cal = t.dropna(subset=["cal_model"])
@@ -163,7 +169,7 @@ def split_manifest(res: SplitResult, config_ids: dict[str, str]) -> dict[str, An
         "counts_by_split": {s: int(by_split.get(s, 0)) for s in SPLITS},
         "pilot": int(t["in_pilot"].sum()),
         "cal_per_model": cal["cal_model"].value_counts().sort_index().to_dict(),
-        "counts_split_category_lang": counts,
+        "counts_split_stratum_lang": counts,
         "sha256": {
             **{
                 s: ids_sha256(t.loc[t["split"] == s, "prompt_id"]) for s in ("train", "val", "test")

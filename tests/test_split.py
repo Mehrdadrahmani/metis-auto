@@ -68,7 +68,7 @@ def test_only_eligible_in_labeled_and_recent_pool():
 def test_stratified_by_category():
     df = synthetic()
     t = run(df).table
-    val = t[t["split"] == "val"]["category"].value_counts(normalize=True)
+    val = t[t["split"] == "val"]["stratum"].value_counts(normalize=True)
     # category "a" holds more sessions (every 10th session + its share)
     assert val["a"] > val["b"]
 
@@ -95,3 +95,24 @@ def test_shortfall_reported_when_too_small():
     res = run(synthetic(n_sessions=10), n_val=60, n_test=40)
     assert (res.table["split"] == "val").sum() < 60 or (res.table["split"] == "test").sum() < 40
     assert res.info["pool_sessions"] == 10
+
+
+def test_session_stratum_is_first_eligible_prompt():
+    df = synthetic()
+    df["msg_index"] = df["prompt_id"].str[-1].astype(int)
+    df["uses_rag"] = df["msg_index"] == 0  # only each session's first prompt
+    res = run(df, balance="uses_rag")
+    assert res.info["balance_field"] == "uses_rag"
+    t = res.table
+    assert set(t["stratum"]) == {"True", "False"}
+    # every session's first prompt is eligible and RAG, so sessions all fall in one stratum
+    assert res.info["shortfall"]["val"] == {"True": 0}
+
+
+def test_session_stratum_follows_first_eligible_when_first_prompt_is_excluded():
+    df = synthetic()
+    df["msg_index"] = df["prompt_id"].str[-1].astype(int)
+    df["uses_rag"] = df["msg_index"] == 1
+    df["eligible_labeled"] = df["msg_index"] >= 1  # prompt 0 excluded, prompt 1 is RAG
+    res = run(df, balance="uses_rag")
+    assert res.info["shortfall"]["val"] == {"True": 0}

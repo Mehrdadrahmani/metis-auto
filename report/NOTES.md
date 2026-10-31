@@ -88,6 +88,17 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - A bug was found by a sanity check: Always-best scored above every router until `area()` stopped
   giving credit below a model's cost.
 
+## WP-08 part A (full data, measured)
+- 338,325 prompts; 206,729 eligible for val/test, 209,109 for train. Huge prompts 0.12%.
+- Eligible prompts: 94.2% Persian, 19.3% RAG; 83.4% not first in session; 21.8% short and not first.
+- Train is older and mostly non-RAG; val 87% and test 85% RAG (recent pool 89.5%).
+- Standardized differences: val vs test all < 0.1; test vs pool on RAG 0.136.
+- Nano vs small (10,000 train prompts): 146 vs 24 prompts/s; 60 vs 239 ms at 512 tokens (p95).
+- Near-duplicates at cosine 0.95: 29.4% of train; 50.9% of messages up to 10 chars, 33.4% over 500.
+- K = 3..20 on 146,921 prompts: silhouette 0.118 at K = 5, drops to about 0.05 at K = 9.
+- Val per cluster uneven from K = 9; clusters with 0 val from K = 16 (n_val = 400).
+- GPU memory failed on the longest messages; CPU finished the last 1,162.
+
 ## Decisions to explain in the method chapter
 - Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
 - Sessions are not independent: intervals resample whole sessions (D-060).

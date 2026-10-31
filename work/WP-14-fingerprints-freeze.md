@@ -19,8 +19,9 @@ paper** (PLAN M1, M14; DEV-7): UniRoute ships; the baselines are reported for co
 - `work/reports/WP-11-report.md`, `WP-13-report.md`, `results/clusters_full.md`.
 
 ## Steps
+> **Added 2026-10-31 (D-069):** on val only, compare embedding input A (current message) with T = 2, chatbot as router input, and the hybrid (previous message for short follow-ups; 21.8% of eligible prompts). Second embedding run is free. Clusters with 0 val prompts need a rule before fingerprints are computed (Q-028).
 1. Propose; ⏸ wait for OK.
-2. **S8** for K ∈ {3…8}: **Eq. 12, α = 0** (α = 2 only as a robustness row): Ψ table with counts and Wilson CIs;
+2. **S8** for K ∈ {3…20} (DEV-10, D-072; pass `router.k_max` to `candidate_ks`): **Eq. 12, α = 0** (α = 2 only as a robustness row): Ψ table with counts and Wilson CIs;
    ceiling flags; cluster names from `configs/cluster_names.yaml`.
 3. **S9** choose K* = the K with the largest **normalized area under the deferral curve** (paper App.
    G.2), using the K-selection data decided in **Q-020** (paper: report cards from graded train

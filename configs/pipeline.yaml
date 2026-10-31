@@ -13,8 +13,10 @@ s2:
   n_pilot: 100                      # subset of val
   recent_pool_factor: 3             # recent pool holds ~3x the needed labeled prompts
   max_per_session: 3                # eligible prompts per session in val/test
+  balance_field: uses_rag           # D-070; the full data has no category
   cal_models: [deepseek-v4-flash, gpt-5.6-luna, gemini-3.5-flash-lite]   # round-robin, non-anchor
 sample_dry_run:                     # step 8: scaled sizes for the 100-session sample
+  balance_field: category
   n_val: 60
   n_test: 40
   n_pilot: 20
@@ -23,11 +25,12 @@ router:                             # S5, S8-S10 (WP-05); paper settings, PLAN M
   alpha_point: 0                    # Eq. 12; 2 only as a robustness check (D-054)
   alpha_pair: 2                     # virtual ties, spec S8-PW
   select_k_repeats: 20              # DEV-6
+  k_max: 20                         # DEV-10 (owner); paper rule N_val/50 would give 8
   lambda_n: 60
   lambda_low: 0.001
   lambda_high: 100.0
 s4:                                 # embedder (WP-03, D-048, D-052): choice between candidates in WP-08
-  choice: pending                   # small | nano; decided in WP-08 on real data (owner, D-052)
+  choice: nano                      # owner, D-071; on real train sample (results/wp08_full_data/embedder_compare_*.json)
   candidates:
     small:
       name: jinaai/jina-embeddings-v5-text-small

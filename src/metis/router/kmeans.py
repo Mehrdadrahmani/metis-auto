@@ -15,9 +15,10 @@ class KMeansModel:
     inertia: float
 
 
-def candidate_ks(n_val: int) -> list[int]:
-    """Paper App. G.2: {3, ..., floor(N_val / 50)}. K = 1 is a comparison only (PLAN M14)."""
-    return list(range(3, n_val // 50 + 1))
+def candidate_ks(n_val: int, k_max: int | None = None) -> list[int]:
+    """Paper App. G.2: {3, ..., floor(N_val / 50)}; `k_max` replaces that limit (DEV-10, config
+    `router.k_max`). K = 1 is a comparison only (PLAN M14)."""
+    return list(range(3, (n_val // 50 if k_max is None else k_max) + 1))
 
 
 def fit_kmeans(train_emb: np.ndarray, k: int, seed: int, n_init: int = 10) -> KMeansModel:

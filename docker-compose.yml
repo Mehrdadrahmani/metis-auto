@@ -1,0 +1,12 @@
+# Qdrant server (D-066). Loopback only; data stays in the git-ignored qdrant/ folder.
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.19.1
+    container_name: metis-qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - ./qdrant:/qdrant/storage
+    environment:
+      QDRANT__TELEMETRY_DISABLED: "true"

@@ -1,6 +1,6 @@
-"""Vector store: Qdrant in local mode (WP-03 step 4b, D-048). No Docker, path `qdrant/` (git-ignored).
+"""Vector store: Qdrant server in Docker (D-066, `docker-compose.yml`), loopback only.
 
-One collection per `embedder_id` (cosine). Point id = UUID from the `prompt_id` hash. Payload holds
+Local mode (`path=`) and in-memory (`path=None`) remain for tests. One collection per `embedder_id` (cosine). Point id = UUID from the `prompt_id` hash. Payload holds
 ids and numbers only (split, category, lang, cluster), never text: short strings are allowed,
 anything longer than `MAX_PAYLOAD_STR` is refused.
 """
@@ -17,6 +17,7 @@ import numpy as np
 from qdrant_client import QdrantClient, models
 
 MAX_PAYLOAD_STR = 64
+DEFAULT_URL = "http://127.0.0.1:6333"
 
 
 def point_id(prompt_id: str) -> str:
@@ -36,12 +37,23 @@ def _check_payload(p: dict[str, Any]) -> None:
 
 
 class VectorStore:
-    def __init__(self, embedder_id: str, dim: int, path: str | Path | None = "qdrant/"):
-        # path=None → in-memory (tests)
-        self.client = (
-            QdrantClient(location=":memory:") if path is None else QdrantClient(path=str(path))
-        )
-        self._local = True  # both constructors above are local (no server)
+    def __init__(
+        self,
+        embedder_id: str,
+        dim: int,
+        path: str | Path | None = None,
+        url: str | None = None,
+    ):
+        # url set → server. url=None → local folder `path`, or in-memory if path is None (tests).
+        if url is not None and path is not None:
+            raise ValueError("give either url or path, not both")
+        if url is not None:
+            self.client = QdrantClient(url=url, timeout=60)
+        elif path is None:
+            self.client = QdrantClient(location=":memory:")
+        else:
+            self.client = QdrantClient(path=str(path))
+        self._local = url is None
         self.name = collection_name(embedder_id)
         self.dim = dim
         if not self.client.collection_exists(self.name):

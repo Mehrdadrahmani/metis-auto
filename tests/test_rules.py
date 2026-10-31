@@ -42,6 +42,8 @@ def test_vision_and_workflow():
     assert is_workflow_turn("workflow", "x") and is_workflow_turn("openai", "default")
     assert not is_workflow_turn("openai", "gpt-4o-mini")
     assert is_image_generation("dalle") and not is_image_generation("gpt-4o-mini")
+    assert is_image_generation("Flux-Schnell", "imagination")
+    assert is_image_generation("gpt-image-1", "imagination")
 
 
 def test_estimate_tokens():

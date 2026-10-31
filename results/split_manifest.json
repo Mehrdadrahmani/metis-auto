@@ -1,0 +1,244 @@
+{
+  "stage": "s2_split",
+  "seed": 20261020,
+  "balance_field": "uses_rag",
+  "sizes_requested": {
+    "val": 400,
+    "test": 300,
+    "pilot": 100
+  },
+  "sessions_total": 70813,
+  "pool_sessions": 3863,
+  "pool_capacity": 2101,
+  "pool_oldest_created_at": "2026-09-30T16:20:06.071199",
+  "val_sessions": 223,
+  "test_sessions": 169,
+  "shortfall": {
+    "val": {
+      "False": 0,
+      "True": 0
+    },
+    "test": {
+      "False": 0,
+      "True": 0
+    }
+  },
+  "config_ids": {
+    "pipeline": "f18a6b25e72f"
+  },
+  "counts_by_split": {
+    "train": 208163,
+    "val": 400,
+    "test": 300,
+    "none": 129462
+  },
+  "pilot": 100,
+  "cal_per_model": {
+    "deepseek-v4-flash": 34,
+    "gemini-3.5-flash-lite": 33,
+    "gpt-5.6-luna": 33
+  },
+  "counts_split_stratum_lang": [
+    {
+      "split": "none",
+      "stratum": "False",
+      "lang": "en",
+      "n": 13987
+    },
+    {
+      "split": "none",
+      "stratum": "False",
+      "lang": "fa",
+      "n": 86369
+    },
+    {
+      "split": "none",
+      "stratum": "False",
+      "lang": "mixed",
+      "n": 228
+    },
+    {
+      "split": "none",
+      "stratum": "False",
+      "lang": "other",
+      "n": 5550
+    },
+    {
+      "split": "none",
+      "stratum": "True",
+      "lang": "en",
+      "n": 924
+    },
+    {
+      "split": "none",
+      "stratum": "True",
+      "lang": "fa",
+      "n": 21316
+    },
+    {
+      "split": "none",
+      "stratum": "True",
+      "lang": "mixed",
+      "n": 170
+    },
+    {
+      "split": "none",
+      "stratum": "True",
+      "lang": "other",
+      "n": 918
+    },
+    {
+      "split": "test",
+      "stratum": "False",
+      "lang": "fa",
+      "n": 45
+    },
+    {
+      "split": "test",
+      "stratum": "True",
+      "lang": "en",
+      "n": 3
+    },
+    {
+      "split": "test",
+      "stratum": "True",
+      "lang": "fa",
+      "n": 249
+    },
+    {
+      "split": "test",
+      "stratum": "True",
+      "lang": "mixed",
+      "n": 2
+    },
+    {
+      "split": "test",
+      "stratum": "True",
+      "lang": "other",
+      "n": 1
+    },
+    {
+      "split": "train",
+      "stratum": "False",
+      "lang": "en",
+      "n": 6310
+    },
+    {
+      "split": "train",
+      "stratum": "False",
+      "lang": "fa",
+      "n": 157601
+    },
+    {
+      "split": "train",
+      "stratum": "False",
+      "lang": "mixed",
+      "n": 4698
+    },
+    {
+      "split": "train",
+      "stratum": "False",
+      "lang": "other",
+      "n": 289
+    },
+    {
+      "split": "train",
+      "stratum": "True",
+      "lang": "en",
+      "n": 375
+    },
+    {
+      "split": "train",
+      "stratum": "True",
+      "lang": "fa",
+      "n": 38369
+    },
+    {
+      "split": "train",
+      "stratum": "True",
+      "lang": "mixed",
+      "n": 449
+    },
+    {
+      "split": "train",
+      "stratum": "True",
+      "lang": "other",
+      "n": 72
+    },
+    {
+      "split": "val",
+      "stratum": "False",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "val",
+      "stratum": "False",
+      "lang": "fa",
+      "n": 51
+    },
+    {
+      "split": "val",
+      "stratum": "True",
+      "lang": "en",
+      "n": 1
+    },
+    {
+      "split": "val",
+      "stratum": "True",
+      "lang": "fa",
+      "n": 344
+    },
+    {
+      "split": "val",
+      "stratum": "True",
+      "lang": "mixed",
+      "n": 3
+    }
+  ],
+  "sha256": {
+    "train": "2610453d50cc7e19aa4af47934fc5018b91f8462815799134e1725075dd636e4",
+    "val": "89f31567989b16bbb2887b989d2af822f85b617c3c2b3984d623881d2211cfbd",
+    "test": "988c8ee97c2a72026bb95d0e46aedef0bb03362e59ea8d58d5aded3f8b5d5073",
+    "pilot": "1944e8184dadee15290effa474083571f138138ed3268c4d471b4725dfad1fb8",
+    "cal": "8dca63729f684df36ecc178183009063fe7250151f4cc81c7763719956a7322b"
+  },
+  "similarity": {
+    "val_vs_test": {
+      "is_fa": 0.059,
+      "log_len": 0.033,
+      "rag": 0.058
+    },
+    "val_vs_pool": {
+      "is_fa": 0.098,
+      "log_len": 0.031,
+      "rag": 0.078
+    },
+    "test_vs_pool": {
+      "is_fa": 0.04,
+      "log_len": 0.002,
+      "rag": 0.136
+    },
+    "means": {
+      "val": {
+        "is_fa": 0.988,
+        "log_len": 3.802,
+        "rag": 0.87
+      },
+      "test": {
+        "is_fa": 0.98,
+        "log_len": 3.773,
+        "rag": 0.85
+      },
+      "pool": {
+        "is_fa": 0.974,
+        "log_len": 3.775,
+        "rag": 0.895
+      }
+    }
+  },
+  "sizes_section": "s2",
+  "input": "runs/s1/prompts.parquet",
+  "duration_s": 2.57,
+  "cost_usd": 0.0
+}

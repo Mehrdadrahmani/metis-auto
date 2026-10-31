@@ -163,7 +163,7 @@ def main() -> None:
         "| split × category | n |",
         "|---|---|",
     ]
-    by = pd.DataFrame(s2["counts_split_category_lang"]).groupby(["split", "category"])["n"].sum()
+    by = pd.DataFrame(s2["counts_split_stratum_lang"]).groupby(["split", "stratum"])["n"].sum()
     L += [f"| {s} × {cat} | {n} |" for (s, cat), n in by.items()]
     L += [
         "",
