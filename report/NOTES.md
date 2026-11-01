@@ -127,3 +127,9 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - D-047 the whole user message is embedded (no truncation); only light Persian normalization.
 - D-046 / DEV-9 judge also sees only the current message (spec had 2 previous turns) → limitation:
   short follow-ups are harder to judge; check in the pilot (WP-11) whether follow-ups disagree more.
+
+## WP-04
+- Metis AI margin is about 10% over list prices; routes differ per provider; DeepSeek doubles at peak hours.
+- Sonnet is 82% of generation cost ($4.84 of $5.92 for 700 calls per model, planned sizes).
+- Judge cost for 2,800 calls (assumed 2,800 in, 150 out tokens): gpt-5.6-terra ~$23, jev-latest ~$0.36.
+- Candidate change: gemini-2.5-flash-lite replaces gemini-3.5-flash-lite for a wider quality spread.

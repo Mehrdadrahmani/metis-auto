@@ -1,15 +1,17 @@
-# Candidate models + judge (WP-02). Prices: USD per 1M tokens, list prices from
-# public trackers (2026-10-31, D-056); Metis AI prices and exact api names are confirmed in WP-04.
+# Candidate models + judge (WP-02). Prices: USD per 1M tokens, Metis AI prices (WP-04 step 10).
+# deepseek-v4-flash costs double in peak hours: Mon-Fri 01:00-04:00 and 06:00-10:00 UTC.
 # context_window / vision: public model specs, `verified: false` until WP-04 checks them.
-price_date: "2026-10-31"
-price_source: "public list prices from third-party trackers + dataset billing (D-056); confirm on Metis AI in WP-04"
+price_date: "2026-11-01"
+price_source: "https://api.metisai.ir/api/v1/meta/providers/pricing"
+# api_path: appended to METIS_BASE_URL; Metis AI has one route per provider (docs.metisai.ir).
 reserve_output_tokens: 1024   # gen max_tokens (D-036); a model fits if tokens_in + this <= window
 models:
   - id: deepseek-v4-flash
     provider: deepseek
-    api_name: null
-    price_in: 0.14
-    price_out: 0.28
+    api_path: "/deepseek/v1"
+    api_name: deepseek-v4-flash
+    price_in: 0.165
+    price_out: 0.66
     context_window: 128000
     vision: false
     is_anchor: false
@@ -17,19 +19,21 @@ models:
     verified: false
   - id: gpt-5.6-luna
     provider: openai
-    api_name: null
-    price_in: 0.20
-    price_out: 1.20
+    api_path: "/openai/v1"
+    api_name: gpt-5.6-luna
+    price_in: 0.22
+    price_out: 1.32
     context_window: 128000
     vision: true
     is_anchor: false
     role: candidate
     verified: false
-  - id: gemini-3.5-flash-lite
+  - id: gemini-2.5-flash-lite
     provider: google
-    api_name: null
-    price_in: 0.30
-    price_out: 2.50
+    api_path: "/api/v1/wrapper/google"
+    api_name: gemini-2.5-flash-lite
+    price_in: 0.11
+    price_out: 0.44
     context_window: 1048576
     vision: true
     is_anchor: false
@@ -38,9 +42,10 @@ models:
     verified: false
   - id: claude-sonnet-5-5
     provider: anthropic
-    api_name: null
-    price_in: 2.00
-    price_out: 10.00
+    api_path: "/api/v1/wrapper/anthropic"
+    api_name: claude-sonnet-5-5
+    price_in: 2.2
+    price_out: 11.0
     context_window: 1000000
     vision: true
     is_anchor: true      # premium baseline / pairwise anchor
@@ -48,11 +53,34 @@ models:
     verified: false
   - id: judge
     provider: openai
-    api_name: null       # GPT-5.x class on Metis AI (M10), set in WP-04
-    price_in: null
-    price_out: null
+    api_path: "/openai/v1"
+    api_name: gpt-5.6-terra   # D-083; compared with jev in the pilot
+    price_in: 2.20
+    price_out: 13.20
     context_window: null
     vision: false
     is_anchor: false
     role: judge
+    verified: false
+  - id: deepseek-v4-pro
+    provider: deepseek
+    api_path: "/deepseek/v1"
+    api_name: deepseek-v4-pro
+    price_in: 0.726
+    price_out: 2.178
+    context_window: null
+    vision: false
+    is_anchor: false
+    role: pilot_option   # D-082: compared with claude-sonnet-5-5 in the pilot; not a candidate yet
+    verified: false
+  - id: jev
+    provider: typesafe
+    api_name: jev-latest
+    api_path: null       # not chat format: needs its own adapter (/typesafe/v1/systemone), WP-06
+    price_in: 0.0462
+    price_out: 0
+    context_window: null
+    vision: false
+    is_anchor: false
+    role: judge_option   # owner: "may use"; compare with the judge in the pilot if confirmed
     verified: false

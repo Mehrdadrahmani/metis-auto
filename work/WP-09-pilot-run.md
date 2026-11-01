@@ -21,7 +21,7 @@ the owner is built.
 1. Show the estimate for this stage (`scripts/estimate_costs.py --stage pilot`) and the approved
    amount. ⏸ **STOP:** owner says "go".
 2. S6 on `pilot_val` (100 prompts × 4 models = 400 calls), order: deepseek-v4-flash, gpt-5.6-luna,
-   gemini-3.5-flash-lite, claude-sonnet-5-5. After the first 20 calls of each model: check failure rate,
+   gemini-2.5-flash-lite, claude-sonnet-5-5. After the first 20 calls of each model: check failure rate,
    cost per call vs estimate, finish_reason=length share, reasoning tokens (should be ~0). Any anomaly
    (failures > 5%, cost/call > 2× estimate, length cut > 10%) → ⏸ stop and report.
 3. S7-PT: 400 pointwise judgments. Check parse-failure rate (< 2%) after the first 40.
@@ -55,3 +55,7 @@ the owner is built.
 
 ## If the context is getting full
 Runs resume from the cache: stop at a checkpoint, `/handoff` with "next: WP-09 step n", stop.
+
+## Added by D-082, D-083
+- Also generate deepseek-v4-pro on the 100 pilot prompts (off-peak: not Mon-Fri 01:00-04:00, 06:00-10:00 UTC).
+- Judge all pilot answers with both gpt-5.6-terra and jev-latest. Update the estimate before the go.

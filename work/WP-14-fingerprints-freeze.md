@@ -34,7 +34,7 @@ paper** (PLAN M1, M14; DEV-7): UniRoute ships; the baselines are reported for co
 6. **S10 λ:** quality mode with target = always-best's val quality minus 2 points (PLAN §8.2 target);
    also budget mode at 50% of always-best's cost. Record λ for both; the **primary** operating point
    is quality mode.
-7. **Holdout demo (M4):** redo S9–S10 with gemini-3.5-flash-lite hidden (`dev` = the other 3); then add it
+7. **Holdout demo (M4):** redo S9–S10 with gemini-2.5-flash-lite hidden (`dev` = the other 3); then add it
    back using only its validation fingerprint row; show its routing share and the val curve before/after.
 8. Assemble the S12 **artifact v1** (`router/artifact.py`) incl. the λ
    values; copy it to `artifacts/router_v1/` (committed: centroids, Ψ, ĉ, configs, hashes; no text).

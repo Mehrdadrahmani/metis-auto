@@ -60,3 +60,7 @@ All analysis uses numbers only; Claude does not read prompts or answers.
 
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-11 step n", stop.
+
+## Added by D-082, D-083
+- Choose the judge: gpt-5.6-terra or jev-latest, by agreement with the owner labels; the cheaper on a tie. Include Persian items separately.
+- Decide whether deepseek-v4-pro replaces claude-sonnet-5-5, and note the effect on the premium baseline and the anchor.

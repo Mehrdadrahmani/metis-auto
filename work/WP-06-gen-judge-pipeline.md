@@ -21,7 +21,7 @@ and pleasant to use now.
 ## Steps
 1. Propose; ⏸ wait for OK.
 2. `configs/gen_config.yaml` (id = hash): `temperature: 0.3`, `max_tokens: 1024`, `top_p: 1`;
-   **thinking/reasoning off or minimal for every candidate** (e.g. gemini-3.5-flash-lite thinking budget 0,
+   **thinking/reasoning off or minimal for every candidate** (e.g. gemini-2.5-flash-lite thinking budget 0,
    deepseek non-thinking mode) so costs match the estimate and the comparison is fair; record the
    exact provider parameters per model. Same for all models.
 3. `src/metis/llm/messages.py`: build the request: `system` = redacted chatbot instructions;
@@ -81,3 +81,7 @@ and pleasant to use now.
 
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-06 step n", stop.
+
+## Added by D-082, D-083
+- Add a Jev adapter: `https://api.metisai.ir/typesafe/v1/systemone` uses `state` and `questions`, not chat messages. Write the A1/A2 judge prompts in that form, and test it with a mock. Set `api_path` for `jev` in `configs/models.yaml` only then.
+- Callers must use `redact_messages` when building requests: `complete()` refuses any request with a key pattern.

@@ -1,0 +1,16 @@
+# Budget guard (WP-04, PLAN E12, AGENTS.md §5). USD.
+# Every stage stays at 0 until the owner says "go" for that stage.
+hard_cap_usd: 60
+approved_usd:
+  pilot: 0
+  gen_main: 0
+  judge_main: 0
+  cache_labels: 0
+  live: 0
+# Automatic stops in run_batch (AGENTS.md §5).
+anomalies:
+  min_calls: 20            # rate checks start after this many new calls
+  max_failure_rate: 0.05
+  max_cost_ratio: 2.0      # running cost per call / estimate
+  max_truncation_rate: 0.10
+  max_reasoning_share: 0.10  # reasoning tokens / output tokens

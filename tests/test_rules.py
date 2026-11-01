@@ -57,7 +57,7 @@ def test_fits_context():
     reserve = cfg["reserve_output_tokens"]
     assert fits_context("gpt-5.6-luna", 1000, cfg)
     assert not fits_context("gpt-5.6-luna", 128000 - reserve + 1, cfg)
-    assert fits_context("gemini-3.5-flash-lite", 500000, cfg)
+    assert fits_context("gemini-2.5-flash-lite", 500000, cfg)
     assert fits_context("judge", 10**9, cfg)  # unknown window
     with pytest.raises(KeyError):
         fits_context("nope", 1, cfg)
@@ -67,7 +67,7 @@ def test_models_config():
     cfg = load_config("models")
     cands = [m for m in cfg["models"] if m["role"] == "candidate"]
     assert [m["id"] for m in cands] == [
-        "deepseek-v4-flash", "gpt-5.6-luna", "gemini-3.5-flash-lite", "claude-sonnet-5-5",
+        "deepseek-v4-flash", "gpt-5.6-luna", "gemini-2.5-flash-lite", "claude-sonnet-5-5",
     ]  # fmt: skip
     assert sum(m["is_anchor"] for m in cands) == 1
     assert "deepseek-v4-flash" not in vision_models(cfg)

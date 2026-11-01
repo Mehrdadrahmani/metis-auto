@@ -59,3 +59,6 @@ Finish the current step, `/handoff` with "next: WP-07 step n", stop.
 ## Note from WP-05a
 `candidate_ks(n_val)` is empty for the 60-prompt sample (floor(60/50) = 1): pass explicit K values
 in the dry run, for example {1, 2, 3}, and say so in its report.
+
+## Added by D-080
+Rerun the split (free): `runs/s2` and `results/split_manifest.json` still name gemini-3.5-flash-lite as a calibration model. Prompt sets should not change; check that with the manifest hashes. Do not open sealed test ids.

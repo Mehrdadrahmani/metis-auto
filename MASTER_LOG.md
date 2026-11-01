@@ -88,6 +88,10 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-070 | 2026-10-31 | Image rule covers all of provider `imagination` plus `dalle`. Val/test/pilot balanced by RAG yes/no (`s2.balance_field: uses_rag`; a session takes its first eligible prompt's value). Exact repeats matched within `bot_id` because the full data has no category | O | WP-08 |
 | D-071 | 2026-10-31 | Embedder = **nano** (owner), all eligible prompts. Agent defaults, not explicitly answered by the owner: the 11 messages over 32,768 tokens are cut at the limit (exception to D-047), and the 569 prompts with `[PLOT_HIDDEN_MEMORY_CONTEXT]` are left as they are. All eligible prompts are selected by flags, so the sealed test file stays closed | O/A | WP-08 |
 | D-079 | 2026-11-01 | Owner answers: **D-076 confirmed** (equal chance per message). **Q-027 closed:** near-duplicates stay at 0.95. **K limit:** all of 3 to 20 are scored and reported, only K ≤ 11 can win (`router.k_ship_max: 11`; narrows DEV-10; highest score wins inside 3 to 11, D-064). Stability is the reason: ARI 0.99 or higher to K = 11, 0.60 to 0.84 from K = 12. Cluster names stay a draft until after WP-07 | O | WP-08 |
+| D-080 | 2026-11-01 | **Candidate replaced (owner; updates D-056):** gemini-2.5-flash-lite replaces gemini-3.5-flash-lite, for a wider quality spread at lower cost. Keeps the holdout role. Price not yet confirmed. Calibration names in `runs/s2` still use the old id until the free split rerun in WP-07 | O | AGENTS §3, PLAN M3 |
+| D-081 | 2026-11-01 | Jev (`jev-latest`, TypeSafe, on Metis) kept as a judge option (owner: "may use"). Not chosen; needs an adapter. Decide before WP-09 | O | configs/models.yaml |
+| D-082 | 2026-11-01 | Sonnet stays the candidate and anchor for now. deepseek-v4-pro joins the pilot as a cheaper comparison; WP-11 decides whether it replaces Sonnet (saves about $3.55 of generation). The pilot is 5 models, not 4 | O | WP-09, WP-11 |
+| D-083 | 2026-11-01 | Pilot judges: gpt-5.6-terra and jev-latest side by side on the same answers; WP-11 keeps the one that agrees better with the owner's labels, the cheaper on a tie. Metis prices recorded (WP-04 step 10) | O | WP-09, WP-11 |
 | D-078 | 2026-11-01 | Bot clusters kept as a later test, not in the main pipeline. Experiment in `experiments/bot_clusters/` (elbow K = 13, silhouette 0.28, ARI 0.82). Owner idea: a bot term in task difficulty; test in WP-14 at $0 (would be DEV-12). Owner also moved WP-08 part B ahead of WP-04, 06, 07 (changes D-068) | O | WP-08 |
 | D-077 | 2026-11-01 | **Owner changed the data rule:** the agent may read anything in the data and results, including `instructions`, RAG context and generated answers. Replaces D-067 and D-073. Agent's handling: read through `metis.data.redact` so keys stay masked; test stays sealed under AGENTS.md §6; data text stays out of git, `results/`, `report/`. AGENTS.md §4 and CLAUDE.md updated | O | WP-08 |
 | D-076 | 2026-11-01 | Agent decision, to report to the owner: first run drew sessions equally and missed the all-traffic target (val 28.5% business support against about 16% of eligible prompts). Draw changed to **each eligible prompt equally likely**; sessions stay in one split, max 3 per session. Seed unchanged. Judged on val vs eligible; test labels and text not used | P | WP-08 |
@@ -107,7 +111,7 @@ DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
 | Q-001 | Exact arrival date and size of the full dataset | course team | WP-08 |
 | Q-006 | What is the `default` model in the data? Not blocking: `workflow` is excluded (D-057); only useful for describing the limitation in the report | owner asks course team | WP-20 |
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
-| Q-017 | Does Metis AI work from the same network as Claude Code (VPN)? Planner saw TLS resets to metisai.ir on 2026-10-20 (PLAN R17) | owner | WP-04 |
+| Q-017 (closed 2026-11-01: yes) | Does Metis AI work from the same network as Claude Code (VPN)? Planner saw TLS resets to metisai.ir on 2026-10-20 (PLAN R17) | owner | WP-04 |
 | Q-018 | Metis AI: exact model ids, prices (currency), rate limits, usage and cached-token reporting | WP-04 | WP-08 budget memo |
 | Q-022 | GitHub secret scanning / push protection unavailable on the free private repo (HTTP 422). Accept local hook only, or upgrade/make public later? | owner | WP-21 |
 | Q-023 | Test the router on public Persian data like the paper (owner idea; the embedding + clustering half is done in WP-03b, the routing half is open): (1) $0 run on persian-llm-eval's per-item results (17–20 models, ~294 items), (2) paid: Khayyam / Persian ARC / PMWP answered by our 4 candidates, exact-match graded (~$1–3, after the full data). Details `ref/docs/persian-datasets.md` | owner | WP-05 (option 1) / WP-14 |
@@ -123,6 +127,12 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-01 WP-04 finished ($0.00)
+- Built the client, cache, budget guard, runner, mock mode, MLflow tracing and Metis check; 39 new tests, 208 pass.
+- Metis reached; key in `.env`. Model-list and metadata GETs only, no generation. Prices stored from the public pricing address.
+- Decisions D-080 to D-083. Later WP files updated: 06, 07, 09, 11, and the model name in 12, 14. PLAN M3, M4 and §7.2 row updated; §7 totals wait for the Gate 1 recompute (prices differ by more than 25% for some models).
+- Q-017 closed: Metis works from this network. The Metis key was pasted in chat: owner should replace it.
 
 ### 2026-11-01 · WP-08 split redo, part B start (Opus)
 - New split: first draw (equal per session) missed all traffic (28.5% support); equal per prompt gives val 16.5% vs 16.0%, RAG 21.0% vs 19.3%. Train 179,185, near-duplicates 52,072, fitted 127,113. Old split in `runs/s2_old`.

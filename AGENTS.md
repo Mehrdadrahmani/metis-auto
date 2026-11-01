@@ -48,7 +48,7 @@ in files. Plan: `PLAN.md`. Route: `ROADMAP.md`. Where we are: `STATUS.md`. Mecha
 
 ## 3. Decisions already made (details in `MASTER_LOG.md §Decisions`)
 
-4 candidates (deepseek-v4-flash, gpt-5.6-luna, gemini-3.5-flash-lite, claude-sonnet-5-5 = premium
+4 candidates (deepseek-v4-flash, gpt-5.6-luna, gemini-2.5-flash-lite, claude-sonnet-5-5 = premium
 baseline/anchor) · judge GPT-5.x class via Metis AI · val 400 / test 300 / cal 100 / pilot 100 ·
 clusters from **user text only** · generation with each chatbot's own system prompt, RAG context and
 history; prompts > 20,000 chars excluded from labeled sets · slim pilot · categories only for
