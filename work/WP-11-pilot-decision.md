@@ -64,3 +64,6 @@ Finish the current step, `/handoff` with "next: WP-11 step n", stop.
 ## Added by D-082, D-083
 - Choose the judge: gpt-5.6-terra or jev-latest, by agreement with the owner labels; the cheaper on a tie. Include Persian items separately.
 - Decide whether deepseek-v4-pro replaces claude-sonnet-5-5, and note the effect on the premium baseline and the anchor.
+
+## Added by D-087
+Report judge-human agreement by group: with or without retrieved context, short or long instructions, instructions cut or not. Groups are small, so these are warning signs with n and CI, not decisions. List the disagreements and read terra's reasons (Jev gives none). Jev scores are not whole numbers (1 + 2.25 × level), so the τ sweep compares with >=.

@@ -20,7 +20,7 @@ and pleasant to use now.
 
 ## Steps
 1. Propose; ⏸ wait for OK.
-2. `configs/gen_config.yaml` (id = hash): `temperature: 0.3`, `max_tokens: 1024`, `top_p: 1`;
+2. `configs/gen_config.yaml` (id = hash): `max_tokens: 1024`, no temperature or top_p (D-084);
    **thinking/reasoning off or minimal for every candidate** (e.g. gemini-2.5-flash-lite thinking budget 0,
    deepseek non-thinking mode) so costs match the estimate and the comparison is fair; record the
    exact provider parameters per model. Same for all models.

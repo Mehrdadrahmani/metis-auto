@@ -133,3 +133,9 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Sonnet is 82% of generation cost ($4.84 of $5.92 for 700 calls per model, planned sizes).
 - Judge cost for 2,800 calls (assumed 2,800 in, 150 out tokens): gpt-5.6-terra ~$23, jev-latest ~$0.36.
 - Candidate change: gemini-2.5-flash-lite replaces gemini-3.5-flash-lite for a wider quality spread.
+
+## WP-06
+- Sonnet 5.5 rejects non-default temperature, so all candidates run at provider defaults (D-084). Provider differences limit a "same settings" comparison.
+- Cost estimate (simulated, mean input 2,871 tokens against 1,640 planned): pointwise $47.68, pairwise $62.12, cap $60. Longer prompts and judge price drive the rise.
+- Jev has no free-text prompt or reasons, so the two pilot judges differ in form as well as in model (D-086).
+- Agreement is measured overall; 100 labels cannot validate the judge per chatbot.

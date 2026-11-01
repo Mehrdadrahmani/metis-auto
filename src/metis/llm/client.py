@@ -9,6 +9,7 @@ also needs a ``Permit`` from ``metis.llm.budget``, so spending cannot bypass the
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import os
 import random
@@ -24,6 +25,7 @@ from metis.obs import tracking
 
 MOCK_MEAN_OUT = 174  # mean output tokens in mock mode (WP-04 step 8)
 MOCK_SIGMA = 0.6
+MOCK_JUDGE_OUT = 120  # WP-06: judge replies in mock mode
 CONNECT_TIMEOUT_S = 5.0  # PLAN E4
 TOTAL_TIMEOUT_S = 60.0
 MAX_ATTEMPTS = 2  # first try + 1 retry with jitter on 429/5xx
@@ -100,13 +102,22 @@ def _mock_response(model_id: str, messages: list[dict[str, Any]], gen: dict[str,
     rng = random.Random(seed)
     mu = math.log(MOCK_MEAN_OUT) - MOCK_SIGMA**2 / 2  # lognormal with mean MOCK_MEAN_OUT
     tokens_out = max(1, round(rng.lognormvariate(mu, MOCK_SIGMA)))
-    limit = gen.get("max_tokens")
+    limit = gen.get("max_tokens", gen.get("max_completion_tokens"))
     finish = "stop"
     if limit is not None and tokens_out >= limit:
         tokens_out, finish = int(limit), "length"
     tokens_in = max(1, sum(len(str(m.get("content", ""))) for m in messages) // 4)
+    text = f"mock answer from {model_id}: " + " ".join(["lorem"] * tokens_out)
+    last = str(messages[-1].get("content", "")) if messages else ""
+    # Judge prompts must parse in mock runs too, and short replies are never cut off.
+    if '"score": <integer 1-10>' in last:
+        text = json.dumps({"reason": "mock", "score": rng.randint(1, 10)})
+        tokens_out, finish = MOCK_JUDGE_OUT, "stop"
+    elif '"verdict": "A"' in last:
+        text = json.dumps({"reason": "mock", "verdict": rng.choice(["A", "B", "tie"])})
+        tokens_out, finish = MOCK_JUDGE_OUT, "stop"
     return Response(
-        text=f"mock answer from {model_id}: " + " ".join(["lorem"] * tokens_out),
+        text=text,
         tokens_in=tokens_in,
         tokens_out=tokens_out,
         finish_reason=finish,
@@ -194,7 +205,7 @@ def complete(
                 raise NoPermitError(f"model={model_id} prompt_id={prompt_id}")
             model = load_models()[model_id]
             api_name, api_path = model.get("api_name"), model.get("api_path")
-            if not api_name or api_path is None:
+            if not api_name or api_path is None or model.get("provider") == "typesafe":
                 raise ModelNotReadyError(model_id)
             load_dotenv()
             if not (os.environ.get("METIS_BASE_URL") and os.environ.get("METIS_API_KEY")):

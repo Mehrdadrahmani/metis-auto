@@ -44,3 +44,6 @@ them); **nobody looks at test answers or computes test metrics** until WP-19.
 
 ## If the context is getting full
 The runner checkpoints every 25 items: stop, `/handoff` with "next: WP-12 step 2 (resume)", stop.
+
+## Added by D-087
+`scripts/s6_generate.py` cannot select the test set (`metis.llm.stage.SETS`). Add it here, reading the sealed ids only inside the batch and never printing them.

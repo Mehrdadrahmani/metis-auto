@@ -86,3 +86,6 @@ nobody looks at test prompts or test labels until WP-19.
 ## If the context is getting full
 Finish the current step, `/handoff` with "next: WP-08 step n", stop. Never leave the split half-written
 (rerun step 5 from scratch instead).
+
+## Added by D-087 (WP-06 cost estimate)
+`results/cost_estimate_v1.md` (simulated, T_in 2,871): pointwise $47.68, pairwise $62.12, pilot with both judges $15.28. Pointwise is above $45, so PLAN §6 applies. Before Gate 1, rerun `scripts/estimate_costs.py` with the 6,000-token cut applied, then choose from: shorter judge input, drop the re-judge, use one judge in the pilot, smaller val.

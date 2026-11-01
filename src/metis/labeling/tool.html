@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metis labeling</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--ink:#222;--dim:#666;--line:#ddd;--on:#dae8fc;--edge:#6c8ebf}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1c1c;--card:#262626;--ink:#eee;--dim:#aaa;--line:#444;--on:#2c4262;--edge:#6c8ebf}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 Vazirmatn,Vazir,Tahoma,system-ui,sans-serif}
+main{max-width:1100px;margin:auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:12px 0}
+.label{font-size:13px;color:var(--dim);margin-bottom:4px}
+.text{white-space:pre-wrap;overflow-wrap:anywhere;unicode-bidi:plaintext}
+.scroll{max-height:320px;overflow:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+button{font:inherit;padding:8px 16px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);cursor:pointer}
+button.on{background:var(--on);border-color:var(--edge)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.grow{flex:1}
+textarea{width:100%;font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
+summary{cursor:pointer;color:var(--dim)}
+progress{width:100%}
+</style>
+</head>
+<body>
+<main>
+<details class="card" id="guide" open>
+<summary>راهنما / Guideline</summary>
+<p dir="rtl">شما دو کار انجام می‌دهید: ۱) آیا یک کاربر سخت‌گیر این پاسخ را بدون پرسیدن دوباره می‌پذیرد؟ ۲) کدام‌یک از دو پاسخ بهتر است؟ نام مدل‌ها پنهان است. پاسخ طولانی‌تر لزوماً بهتر نیست. دستورهای چت‌بات و متن بازیابی‌شده را هم در نظر بگیرید؛ مطلب ساختگی خطاست.</p>
+<p dir="ltr">Two tasks: (1) would a demanding user accept this answer without asking again? (2) which of the two answers is better? Model names are hidden. Longer is not better. Keep the chatbot's instructions and the retrieved context in mind; invented facts are errors.</p>
+<div dir="ltr" class="text" id="bands"></div>
+<p dir="ltr">Keys: Y yes · N no · 1 left · 2 tie · 3 right · ← → move between items</p>
+</details>
+
+<div class="row">
+  <button id="prev">←</button>
+  <span class="grow" id="where"></span>
+  <button id="next">→</button>
+  <button id="gap">Next unfinished</button>
+  <button id="csv">Export CSV</button>
+</div>
+<progress id="bar" value="0" max="1"></progress>
+
+<details class="card"><summary>Chatbot instructions</summary><div class="text scroll" id="instructions"></div></details>
+<details class="card" id="ctxbox"><summary>Retrieved context</summary><div class="text scroll" id="context"></div></details>
+<section class="card"><div class="label">User message</div><div class="text" id="user"></div></section>
+
+<section class="card">
+  <div class="label">Answer</div><div class="text scroll" id="answer"></div>
+  <p>Acceptable? A demanding user would accept it without asking again.</p>
+  <div class="row"><button data-pass="yes">Yes</button><button data-pass="no">No</button></div>
+</section>
+
+<section class="card">
+  <p>Which answer is better?</p>
+  <div class="two">
+    <div><div class="label">Left</div><div class="text scroll" id="left"></div></div>
+    <div><div class="label">Right</div><div class="text scroll" id="right"></div></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <button data-pref="left">Left is better</button>
+    <button data-pref="tie">Tie</button>
+    <button data-pref="right">Right is better</button>
+  </div>
+</section>
+
+<section class="card"><div class="label">Note (optional)</div><textarea id="note" rows="2"></textarea></section>
+</main>
+<script id="data" type="application/json">/*DATA*/null</script>
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const items = DATA.items;
+const store = "metis-labels-" + DATA.mode + "-" + items.length;
+let labels = {};
+try { labels = JSON.parse(localStorage.getItem(store)) || {}; } catch (e) {}
+const save = () => { try { localStorage.setItem(store, JSON.stringify(labels)); } catch (e) {} };
+const done = id => { const l = labels[id] || {}; return l.pass && l.pref; };
+const $ = id => document.getElementById(id);
+let at = Math.max(0, items.findIndex(i => !done(i.id)));
+
+$("bands").textContent = DATA.bands.join("\n");
+if (Object.keys(labels).length) $("guide").open = false;
+
+function show() {
+  if (!items.length) { $("where").textContent = "No items"; return; }
+  const it = items[at], l = labels[it.id] || {};
+  $("where").textContent = `${at + 1} / ${items.length} · done ${items.filter(i => done(i.id)).length}`;
+  $("bar").max = items.length;
+  $("bar").value = items.filter(i => done(i.id)).length;
+  for (const k of ["instructions", "context", "user", "answer", "left", "right"]) $(k).textContent = it[k];
+  $("ctxbox").style.display = it.context ? "" : "none";
+  $("note").value = l.note || "";
+  document.querySelectorAll("[data-pass]").forEach(b => b.classList.toggle("on", b.dataset.pass === l.pass));
+  document.querySelectorAll("[data-pref]").forEach(b => b.classList.toggle("on", b.dataset.pref === l.pref));
+  window.scrollTo(0, 0);
+}
+function set(field, value) {
+  const it = items[at];
+  labels[it.id] = { ...(labels[it.id] || {}), [field]: value };
+  save();
+  if (field !== "note" && done(it.id) && at < items.length - 1) { at++; }
+  if (field !== "note") show();
+}
+function move(step) { at = Math.min(items.length - 1, Math.max(0, at + step)); show(); }
+document.querySelectorAll("[data-pass]").forEach(b => b.onclick = () => set("pass", b.dataset.pass));
+document.querySelectorAll("[data-pref]").forEach(b => b.onclick = () => set("pref", b.dataset.pref));
+$("note").oninput = e => set("note", e.target.value);
+$("prev").onclick = () => move(-1);
+$("next").onclick = () => move(1);
+$("gap").onclick = () => { const i = items.findIndex(x => !done(x.id)); if (i >= 0) { at = i; show(); } };
+$("csv").onclick = () => {
+  const q = s => '"' + String(s ?? "").replaceAll('"', '""') + '"';
+  const lines = ["item_id,pass,pref,note,mode"];
+  for (const it of items) {
+    const l = labels[it.id] || {};
+    lines.push([it.id, l.pass, l.pref, l.note, DATA.mode].map(q).join(","));
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿" + lines.join("\n")], { type: "text/csv" }));
+  a.download = "labels_" + DATA.mode + ".csv";
+  a.click();
+};
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "TEXTAREA") return;
+  const k = e.key.toLowerCase();
+  if (k === "y") set("pass", "yes");
+  else if (k === "n") set("pass", "no");
+  else if (k === "1") set("pref", "left");
+  else if (k === "2") set("pref", "tie");
+  else if (k === "3") set("pref", "right");
+  else if (e.key === "ArrowLeft") move(-1);
+  else if (e.key === "ArrowRight") move(1);
+});
+show();
+</script>
+</body>
+</html>

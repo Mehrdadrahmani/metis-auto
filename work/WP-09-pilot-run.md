@@ -59,3 +59,6 @@ Runs resume from the cache: stop at a checkpoint, `/handoff` with "next: WP-09 s
 ## Added by D-082, D-083
 - Also generate deepseek-v4-pro on the 100 pilot prompts (off-peak: not Mon-Fri 01:00-04:00, 06:00-10:00 UTC).
 - Judge all pilot answers with both gpt-5.6-terra and jev-latest. Update the estimate before the go.
+
+## Added by D-087
+Before the batch, with the owner's "go", send one call per model and judge, including Jev. Check that each route answers, that `reasoning_tokens` is 0 or small, that usage is returned, and that Sonnet accepts `thinking: between_tools`. All params in `configs/gen_config.yaml` and `judge_config.yaml` are unverified. Commands: `scripts/s6_generate.py --set pilot --stage pilot`, `scripts/s7_judge.py --set pilot --stage pilot --judge judge`, then `--judge jev`. Set `approved_usd.pilot` in `configs/budget.yaml` first. The pilot estimate is $15.28, not ~$6.

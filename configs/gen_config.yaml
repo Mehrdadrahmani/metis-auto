@@ -1,0 +1,26 @@
+# Generation settings (WP-06 step 2, PLAN M6). id = hash of this file (load_config).
+# Goal: same length limit for all, reasoning off, so costs match and answers compare.
+# No temperature or top_p for any model: claude-sonnet-5-5 answers 400 to non-default values, so
+# all models run at their defaults and are treated alike (owner decision, WP-06 step 4).
+# All provider params below are `unverified` until the first paid call (WP-09): the Metis docs
+# show only model, max_tokens and messages for the wrappers. The runner stops if reasoning tokens
+# exceed 10% of output, so a param that is silently ignored cannot run up the bill.
+common:
+  max_tokens: 1024
+models:
+  deepseek-v4-flash:
+    # Thinks by default. Sent in the body; the docs found were reseller pages.
+    add: {extra_body: {thinking: {type: disabled}}}
+  deepseek-v4-pro:
+    add: {extra_body: {thinking: {type: disabled}}}
+  gpt-5.6-luna:
+    # OpenAI GPT-5 chat uses max_completion_tokens.
+    rename: {max_tokens: max_completion_tokens}
+    add: {reasoning_effort: none}
+  gemini-2.5-flash-lite:
+    # Google's OpenAI-compatible form. Route /api/v1/wrapper/google is not in the Metis docs.
+    add: {reasoning_effort: none}
+  claude-sonnet-5-5:
+    # `disabled` is a 400 on this model; between_tools is how to turn thinking off.
+    # Effort stays at its default (high): between_tools is accepted at high or below.
+    add: {extra_body: {thinking: {type: between_tools}}}

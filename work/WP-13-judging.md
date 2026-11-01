@@ -46,3 +46,6 @@ still here, WP-11 has not done so: stop and check.
 
 ## If the context is getting full
 Stop at a checkpoint, `/handoff` with "next: WP-13 step 2 (resume)", stop.
+
+## Added by D-087
+`scripts/s7_judge.py` has no 5% re-judge yet. Add it with its own `config_id` suffix, so the cache does not return the first answer.

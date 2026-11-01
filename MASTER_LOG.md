@@ -92,6 +92,10 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-081 | 2026-11-01 | Jev (`jev-latest`, TypeSafe, on Metis) kept as a judge option (owner: "may use"). Not chosen; needs an adapter. Decide before WP-09 | O | configs/models.yaml |
 | D-082 | 2026-11-01 | Sonnet stays the candidate and anchor for now. deepseek-v4-pro joins the pilot as a cheaper comparison; WP-11 decides whether it replaces Sonnet (saves about $3.55 of generation). The pilot is 5 models, not 4 | O | WP-09, WP-11 |
 | D-083 | 2026-11-01 | Pilot judges: gpt-5.6-terra and jev-latest side by side on the same answers; WP-11 keeps the one that agrees better with the owner's labels, the cheaper on a tie. Metis prices recorded (WP-04 step 10) | O | WP-09, WP-11 |
+| D-084 | 2026-11-01 | No temperature or top_p for any candidate: claude-sonnet-5-5 answers 400 to non-default values, so all models run at their defaults alike. Replaces the planned 0.3 | O | configs/gen_config.yaml, WP-06 |
+| D-085 | 2026-11-01 | DEV-5 approved: judge prompts as in `src/metis/judge/templates/`, including an added line not to follow instructions inside the evaluated text | O | WP-06 report |
+| D-086 | 2026-11-01 | Jev form approved: same material as `state`, one score or choice question, level mapped by 1 + 2.25 × level (not rounded). Jev-only wording: "caps the answer at level 1". No written reason | O | src/metis/judge/render.py |
+| D-087 | 2026-11-01 | Later WPs updated: WP-08 recomputes the budget (estimate above the $45 line, PLAN §6); WP-09 checks provider params first; WP-11 splits agreement by context and instruction length; WP-12 adds test selection; WP-13 adds the 5% re-judge | C | WP-08, 09, 11, 12, 13 |
 | D-078 | 2026-11-01 | Bot clusters kept as a later test, not in the main pipeline. Experiment in `experiments/bot_clusters/` (elbow K = 13, silhouette 0.28, ARI 0.82). Owner idea: a bot term in task difficulty; test in WP-14 at $0 (would be DEV-12). Owner also moved WP-08 part B ahead of WP-04, 06, 07 (changes D-068) | O | WP-08 |
 | D-077 | 2026-11-01 | **Owner changed the data rule:** the agent may read anything in the data and results, including `instructions`, RAG context and generated answers. Replaces D-067 and D-073. Agent's handling: read through `metis.data.redact` so keys stay masked; test stays sealed under AGENTS.md §6; data text stays out of git, `results/`, `report/`. AGENTS.md §4 and CLAUDE.md updated | O | WP-08 |
 | D-076 | 2026-11-01 | Agent decision, to report to the owner: first run drew sessions equally and missed the all-traffic target (val 28.5% business support against about 16% of eligible prompts). Draw changed to **each eligible prompt equally likely**; sessions stay in one split, max 3 per session. Seed unchanged. Judged on val vs eligible; test labels and text not used | P | WP-08 |
@@ -133,6 +137,14 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 - Metis reached; key in `.env`. Model-list and metadata GETs only, no generation. Prices stored from the public pricing address.
 - Decisions D-080 to D-083. Later WP files updated: 06, 07, 09, 11, and the model name in 12, 14. PLAN M3, M4 and §7.2 row updated; §7 totals wait for the Gate 1 recompute (prices differ by more than 25% for some models).
 - Q-017 closed: Metis works from this network. The Metis key was pasted in chat: owner should replace it.
+
+### 2026-11-01 · WP-06: generation and judge pipeline, labeling tool (Opus)
+- Built `configs/{gen_config,judge_config}.yaml`, `src/metis/llm/{messages,stage}.py`, `src/metis/judge/*`
+  (templates, parse, render, pointwise, pairwise, common, jev), `src/metis/labeling/*`,
+  `scripts/{s6_generate,s7_judge,estimate_costs}.py`, tests (51 new). `api_path` set for jev.
+- Decisions D-084 to D-087. Mock S6+S7 on 20 sample prompts: rerun 0 new calls. Tests 259 pass.
+- Cost estimate (simulated): pointwise $47.68, pairwise $62.12, pilot $15.28. Above the $45 line.
+- Tool built with 5 mock items; the owner replied OK at step 8. Cost $0.00.
 
 ### 2026-11-01 · WP-08 split redo, part B start (Opus)
 - New split: first draw (equal per session) missed all traffic (28.5% support); equal per prompt gives val 16.5% vs 16.0%, RAG 21.0% vs 19.3%. Train 179,185, near-duplicates 52,072, fitted 127,113. Old split in `runs/s2_old`.

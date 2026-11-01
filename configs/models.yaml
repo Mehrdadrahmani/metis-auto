@@ -76,7 +76,7 @@ models:
   - id: jev
     provider: typesafe
     api_name: jev-latest
-    api_path: null       # not chat format: needs its own adapter (/typesafe/v1/systemone), WP-06
+    api_path: "/typesafe/v1/systemone"   # full route, not chat format: metis.judge.jev only
     price_in: 0.0462
     price_out: 0
     context_window: null
