@@ -61,7 +61,7 @@ model (Opus 5.5).
   `head` or open data files; never paste their text; never commit `data/`, `cache/`, `runs/`, `.env`.
 - **Owner decision D-067:** the agent may read **small samples of redacted user prompts** from train
   and val (through `metis.data.redact`) when it helps. Reading sends them to the model provider of
-  this session. Test prompts stay sealed; prompt text never goes into git, `results/` or `report/`.
+  this session. Bot `description` may also be read after redaction (D-073). Test prompts stay sealed; prompt text never goes into git, `results/` or `report/`.
 - **You (the agent) never read system prompts, `instructions`, retrieved context, generated answers
   or raw data files.** Otherwise work with counts, lengths, hashes, scores and statistics. When a
   human must read such content (labeling, spot checks), write a **local, git-ignored HTML/CSV file**

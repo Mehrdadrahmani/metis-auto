@@ -87,6 +87,8 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-069 | 2026-10-31 | Embedding input stays the current user message (option A; D-045/DEV-8 reviewed). Other inputs compared later on val, never test: T = 2 and chatbot as router input in WP-14; hybrid only if the S1 follow-up count is high | O | WP-08 |
 | D-070 | 2026-10-31 | Image rule covers all of provider `imagination` plus `dalle`. Val/test/pilot balanced by RAG yes/no (`s2.balance_field: uses_rag`; a session takes its first eligible prompt's value). Exact repeats matched within `bot_id` because the full data has no category | O | WP-08 |
 | D-071 | 2026-10-31 | Embedder = **nano** (owner), all eligible prompts. Agent defaults, not explicitly answered by the owner: the 11 messages over 32,768 tokens are cut at the limit (exception to D-047), and the 569 prompts with `[PLOT_HIDDEN_MEMORY_CONTEXT]` are left as they are. All eligible prompts are selected by flags, so the sealed test file stays closed | O/A | WP-08 |
+| D-074 | 2026-11-01 | Split target: **all traffic**, random whole sessions as in the paper; dates are not to be used to choose splits. Replaces the recent pool and RAG balancing once the owner says go (would be DEV-11). Embeddings and S1 are kept. Date-based proposals from the paper review are withdrawn, as is the 25% bot cap | O | WP-08 |
+| D-073 | 2026-11-01 | Owner allows the agent to read the bot `description` field for all 1,830 bots, after redaction. `instructions` stays closed. Lists are in git-ignored `runs/bots/` | O | WP-08 |
 | D-072 | 2026-10-31 | **DEV-10:** K candidates are 3 to 20 (`router.k_max: 20`), owner's requirement while testing. Paper rule N_val/50 gives 8 for val 400. Consequence stated to the owner: about 20 val prompts per cluster at K = 20. Spec default stays available (`k_max` unset) | O | WP-08 |
 
 **Deviations waiting for the owner's explicit OK:** DEV-4, DEV-5 (planner proposals; DEV-2, DEV-3,
@@ -117,6 +119,12 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-01 · WP-08 part A review (Opus)
+- Reread the paper against the spec. Measured: val vs train gap 0.43 at K = 5; stability about 1.00 up to K = 8, 0.71 to 0.85 at K = 12 and 20.
+- Val is 53.8% `b_1724` and 90.2% company support; eligible prompts are 15.8% support. The top bot is also 51.9% of the recent pool, so a bot cap was withdrawn.
+- Read 781 unique redacted bot descriptions (D-073); keyword groups in `runs/bots/`.
+- Owner chose all traffic (D-074). New split plan written in STATUS; not run. No files in `runs/s2` or Qdrant changed. Cost $0.
 
 ### 2026-10-31 · WP-08 part A on the full data (Opus)
 - Reordered the work (D-068). Qdrant moved to Docker (D-066). Rules: D-067, D-069 to D-072 (DEV-10).

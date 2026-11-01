@@ -99,6 +99,14 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Val per cluster uneven from K = 9; clusters with 0 val from K = 16 (n_val = 400).
 - GPU memory failed on the longest messages; CPU finished the last 1,162.
 
+## WP-08 paper review (measured, current split, to be replaced)
+- Paper p6: success "critically requires" val to reflect deployment; val is a random subset of train.
+- Current val vs train gap 0.43 (K = 5); against RAG train 0.055. Val 90.2% company support vs 15.8% overall.
+- Stability (ARI, other seeds): 1.00 at K = 3, 5; 0.998 to 1.00 at K = 8; 0.74 to 0.85 at K = 12; 0.71 to 0.82 at K = 20.
+- Paper Math+Code (no training labels) uses K = N_val/50, our situation. Static pool tries K from 5 to 300.
+- Paper App. G.4: attributes beat text embeddings under prompt shift (.545 vs .529).
+- All 1,830 bots: 807 with a description, 1,177 with no prompts; `b_1765` 35.7% of eligible prompts.
+
 ## Decisions to explain in the method chapter
 - Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
 - Sessions are not independent: intervals resample whole sessions (D-060).
