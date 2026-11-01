@@ -138,3 +138,15 @@ def test_merged_adapter_gives_same_vectors():
     assert merged.embedder_id != Embedder(**kw, model=FakeModel()).embedder_id
     with pytest.raises(ValueError, match="merged"):
         merged.model[0].model.set_adapter("retrieval")
+
+
+def test_set_payload_changes_field_and_keeps_vector():
+    from metis.embed.store import VectorStore
+
+    store = VectorStore("set-payload-test", 2)
+    store.upsert(["a", "b"], np.array([[1.0, 0.0], [0.0, 1.0]]), [{"split": "train"}] * 2)
+    store.set_payload(["a"], {"split": "val"})
+    assert store.search(np.array([1.0, 0.0]), 1, filter={"split": "val"})[0][0] == "a"
+    assert store.count() == 2
+    with pytest.raises(ValueError):
+        store.set_payload(["a"], {"split": "x" * 100})

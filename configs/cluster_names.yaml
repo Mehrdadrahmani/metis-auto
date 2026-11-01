@@ -1,0 +1,25 @@
+# WP-08 step 8. Agent's draft from reading 9 to 14 redacted train prompts per cluster (D-077).
+# Status: draft until the owner confirms. Valid only for the current fits in runs/s5/view/.
+status: draft
+k_3:
+  0: Personal chat and role-play
+  1: Support and account problems
+  2: Short questions and fragments
+k_4:
+  0: Everyday knowledge (health, products, study)
+  1: Short fragments and follow-ups
+  2: Practical requests and support
+  3: Personal chat and role-play
+k_5:
+  0: Everyday knowledge questions
+  1: Short fragments and follow-ups
+  2: Personal chat and role-play
+  3: Money, orders and account support
+  4: Product setup and tech help
+k_6:
+  0: Short information questions
+  1: Health and personal advice
+  2: Short fragments and translation
+  3: Mixed chat and role-play
+  4: Money and purchase support
+  5: Apps, devices and tech problems

@@ -107,6 +107,13 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Paper App. G.4: attributes beat text embeddings under prompt shift (.545 vs .529).
 - All 1,830 bots: 807 with a description, 1,177 with no prompts; `b_1765` 35.7% of eligible prompts.
 
+## WP-08 split redo (measured, val n = 400)
+- Drawing sessions equally over-samples short support chats: val 28.5% support vs 16.0% of eligible prompts. Drawing prompts equally: 16.5%. Top 5% of sessions hold 44% of messages.
+- Cost of keeping sessions whole: train falls from 207,839 to 179,185.
+- Val vs train gap at K = 5: 0.43 (recent, RAG-balanced split) to 0.05. K-means ARI 0.99 or higher to K = 11, 0.60 to 0.84 at K 12 to 20; silhouette 0.05 to 0.12.
+- Messages: median 27 chars; code about 0.09% (pattern count). Bot clusters: silhouette 0.28 at elbow K = 13, ARI 0.82; not used in routing yet.
+- Draft cost (simulated): input tokens about 2,800 vs 1,640 planned, mid total $35 vs $25.
+
 ## Decisions to explain in the method chapter
 - Full data: 710,640 messages, 80,179 sessions; secret scan 1,544 rows hit, 0 left after redaction (`results/wp08_full_data/`). Sample showed live keys in instructions; full data shows 3 such rows.
 - Sessions are not independent: intervals resample whole sessions (D-060).

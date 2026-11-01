@@ -1,36 +1,32 @@
 {
   "stage": "s2_split",
   "seed": 20261020,
-  "balance_field": "uses_rag",
+  "balance_field": null,
   "sizes_requested": {
     "val": 400,
     "test": 300,
     "pilot": 100
   },
   "sessions_total": 70813,
-  "pool_sessions": 3863,
-  "pool_capacity": 2101,
-  "pool_oldest_created_at": "2026-09-30T16:20:06.071199",
-  "val_sessions": 223,
-  "test_sessions": 169,
+  "capacity": 86878,
+  "val_sessions": 374,
+  "test_sessions": 290,
   "shortfall": {
     "val": {
-      "False": 0,
-      "True": 0
+      "all": 0
     },
     "test": {
-      "False": 0,
-      "True": 0
+      "all": 0
     }
   },
   "config_ids": {
-    "pipeline": "f18a6b25e72f"
+    "pipeline": "758635c0204c"
   },
   "counts_by_split": {
-    "train": 208163,
+    "train": 179185,
     "val": 400,
     "test": 300,
-    "none": 129462
+    "none": 158440
   },
   "pilot": 100,
   "cal_per_model": {
@@ -41,204 +37,238 @@
   "counts_split_stratum_lang": [
     {
       "split": "none",
-      "stratum": "False",
+      "stratum": "all",
       "lang": "en",
-      "n": 13987
+      "n": 15705
     },
     {
       "split": "none",
-      "stratum": "False",
+      "stratum": "all",
       "lang": "fa",
-      "n": 86369
+      "n": 135259
     },
     {
       "split": "none",
-      "stratum": "False",
+      "stratum": "all",
       "lang": "mixed",
-      "n": 228
+      "n": 977
     },
     {
       "split": "none",
-      "stratum": "False",
+      "stratum": "all",
       "lang": "other",
-      "n": 5550
-    },
-    {
-      "split": "none",
-      "stratum": "True",
-      "lang": "en",
-      "n": 924
-    },
-    {
-      "split": "none",
-      "stratum": "True",
-      "lang": "fa",
-      "n": 21316
-    },
-    {
-      "split": "none",
-      "stratum": "True",
-      "lang": "mixed",
-      "n": 170
-    },
-    {
-      "split": "none",
-      "stratum": "True",
-      "lang": "other",
-      "n": 918
+      "n": 6499
     },
     {
       "split": "test",
-      "stratum": "False",
-      "lang": "fa",
-      "n": 45
-    },
-    {
-      "split": "test",
-      "stratum": "True",
+      "stratum": "all",
       "lang": "en",
-      "n": 3
+      "n": 11
     },
     {
       "split": "test",
-      "stratum": "True",
+      "stratum": "all",
       "lang": "fa",
-      "n": 249
+      "n": 278
     },
     {
       "split": "test",
-      "stratum": "True",
+      "stratum": "all",
       "lang": "mixed",
-      "n": 2
+      "n": 11
     },
     {
-      "split": "test",
-      "stratum": "True",
+      "split": "train",
+      "stratum": "all",
+      "lang": "en",
+      "n": 5874
+    },
+    {
+      "split": "train",
+      "stratum": "all",
+      "lang": "fa",
+      "n": 168424
+    },
+    {
+      "split": "train",
+      "stratum": "all",
+      "lang": "mixed",
+      "n": 4556
+    },
+    {
+      "split": "train",
+      "stratum": "all",
       "lang": "other",
-      "n": 1
+      "n": 331
     },
     {
-      "split": "train",
-      "stratum": "False",
+      "split": "val",
+      "stratum": "all",
       "lang": "en",
-      "n": 6310
+      "n": 11
     },
     {
-      "split": "train",
-      "stratum": "False",
+      "split": "val",
+      "stratum": "all",
       "lang": "fa",
-      "n": 157601
+      "n": 383
     },
     {
-      "split": "train",
-      "stratum": "False",
+      "split": "val",
+      "stratum": "all",
       "lang": "mixed",
-      "n": 4698
-    },
-    {
-      "split": "train",
-      "stratum": "False",
-      "lang": "other",
-      "n": 289
-    },
-    {
-      "split": "train",
-      "stratum": "True",
-      "lang": "en",
-      "n": 375
-    },
-    {
-      "split": "train",
-      "stratum": "True",
-      "lang": "fa",
-      "n": 38369
-    },
-    {
-      "split": "train",
-      "stratum": "True",
-      "lang": "mixed",
-      "n": 449
-    },
-    {
-      "split": "train",
-      "stratum": "True",
-      "lang": "other",
-      "n": 72
-    },
-    {
-      "split": "val",
-      "stratum": "False",
-      "lang": "en",
-      "n": 1
-    },
-    {
-      "split": "val",
-      "stratum": "False",
-      "lang": "fa",
-      "n": 51
-    },
-    {
-      "split": "val",
-      "stratum": "True",
-      "lang": "en",
-      "n": 1
-    },
-    {
-      "split": "val",
-      "stratum": "True",
-      "lang": "fa",
-      "n": 344
-    },
-    {
-      "split": "val",
-      "stratum": "True",
-      "lang": "mixed",
-      "n": 3
+      "n": 6
     }
   ],
   "sha256": {
-    "train": "2610453d50cc7e19aa4af47934fc5018b91f8462815799134e1725075dd636e4",
-    "val": "89f31567989b16bbb2887b989d2af822f85b617c3c2b3984d623881d2211cfbd",
-    "test": "988c8ee97c2a72026bb95d0e46aedef0bb03362e59ea8d58d5aded3f8b5d5073",
-    "pilot": "1944e8184dadee15290effa474083571f138138ed3268c4d471b4725dfad1fb8",
-    "cal": "8dca63729f684df36ecc178183009063fe7250151f4cc81c7763719956a7322b"
+    "train": "4303f372357234bacf6047189b7927003735257d6f81db69888c37e329109e7e",
+    "val": "e18ac4d23d1085753fc461cdaa2ae4f28039593bfdcd7151e0a74ebf6d48d600",
+    "test": "82608911dabb03d06543659574f2e8004c79656f627cbb374844abdabb94613f",
+    "pilot": "2a04fdc96a697a228f7dd6684dc2023eb4aee6ca6bb9b7b21e6374ee7d36bb9e",
+    "cal": "9172d118f770962254c7e21886c922ef2496cd8d085eaa5dc0fe830390e211cd"
   },
   "similarity": {
     "val_vs_test": {
-      "is_fa": 0.059,
-      "log_len": 0.033,
-      "rag": 0.058
+      "is_fa": 0.132,
+      "log_len": 0.001,
+      "rag": 0.008,
+      "bot_Business support (Botify / Javab / Divar)": 0.014,
+      "bot_Companion / characters / stories": 0.034,
+      "bot_Direct chat with one model": 0.015,
+      "bot_Education / study / language": 0.026,
+      "bot_Health / therapy / life advice": 0.034,
+      "bot_Image / media creation": 0.082,
+      "bot_No description": 0.115,
+      "bot_Other": 0.119,
+      "bot_Other company support": 0.01,
+      "bot_Test / internal": 0.071,
+      "bot_Workflow": 0.0,
+      "bot_Writing / translation / content": 0.044
     },
-    "val_vs_pool": {
-      "is_fa": 0.098,
-      "log_len": 0.031,
-      "rag": 0.078
+    "val_vs_eligible": {
+      "is_fa": 0.072,
+      "log_len": 0.01,
+      "rag": 0.043,
+      "bot_Business support (Botify / Javab / Divar)": 0.014,
+      "bot_Companion / characters / stories": 0.039,
+      "bot_Direct chat with one model": 0.022,
+      "bot_Education / study / language": 0.049,
+      "bot_Health / therapy / life advice": 0.002,
+      "bot_Image / media creation": 0.065,
+      "bot_No description": 0.02,
+      "bot_Other": 0.072,
+      "bot_Other company support": 0.049,
+      "bot_Test / internal": 0.035,
+      "bot_Workflow": 0.0,
+      "bot_Writing / translation / content": 0.024
     },
-    "test_vs_pool": {
-      "is_fa": 0.04,
-      "log_len": 0.002,
-      "rag": 0.136
+    "test_vs_eligible": {
+      "is_fa": 0.06,
+      "log_len": 0.011,
+      "rag": 0.035,
+      "bot_Business support (Botify / Javab / Divar)": 0.0,
+      "bot_Companion / characters / stories": 0.005,
+      "bot_Direct chat with one model": 0.037,
+      "bot_Education / study / language": 0.024,
+      "bot_Health / therapy / life advice": 0.036,
+      "bot_Image / media creation": 0.023,
+      "bot_No description": 0.095,
+      "bot_Other": 0.047,
+      "bot_Other company support": 0.039,
+      "bot_Test / internal": 0.045,
+      "bot_Workflow": 0.0,
+      "bot_Writing / translation / content": 0.068
+    },
+    "val_vs_train": {
+      "is_fa": 0.08,
+      "log_len": 0.012,
+      "rag": 0.01,
+      "bot_Business support (Botify / Javab / Divar)": 0.03,
+      "bot_Companion / characters / stories": 0.04,
+      "bot_Direct chat with one model": 0.002,
+      "bot_Education / study / language": 0.041,
+      "bot_Health / therapy / life advice": 0.021,
+      "bot_Image / media creation": 0.065,
+      "bot_No description": 0.128,
+      "bot_Other": 0.119,
+      "bot_Other company support": 0.043,
+      "bot_Test / internal": 0.056,
+      "bot_Workflow": 0.0,
+      "bot_Writing / translation / content": 0.002
     },
     "means": {
       "val": {
-        "is_fa": 0.988,
-        "log_len": 3.802,
-        "rag": 0.87
+        "is_fa": 0.958,
+        "log_len": 3.746,
+        "rag": 0.21,
+        "bot_Business support (Botify / Javab / Divar)": 0.165,
+        "bot_Companion / characters / stories": 0.025,
+        "bot_Direct chat with one model": 0.028,
+        "bot_Education / study / language": 0.005,
+        "bot_Health / therapy / life advice": 0.018,
+        "bot_Image / media creation": 0.0,
+        "bot_No description": 0.357,
+        "bot_Other": 0.343,
+        "bot_Other company support": 0.007,
+        "bot_Test / internal": 0.003,
+        "bot_Workflow": 0.0,
+        "bot_Writing / translation / content": 0.05
       },
       "test": {
-        "is_fa": 0.98,
-        "log_len": 3.773,
-        "rag": 0.85
+        "is_fa": 0.927,
+        "log_len": 3.745,
+        "rag": 0.207,
+        "bot_Business support (Botify / Javab / Divar)": 0.16,
+        "bot_Companion / characters / stories": 0.02,
+        "bot_Direct chat with one model": 0.03,
+        "bot_Education / study / language": 0.003,
+        "bot_Health / therapy / life advice": 0.013,
+        "bot_Image / media creation": 0.003,
+        "bot_No description": 0.303,
+        "bot_Other": 0.4,
+        "bot_Other company support": 0.007,
+        "bot_Test / internal": 0.0,
+        "bot_Workflow": 0.0,
+        "bot_Writing / translation / content": 0.06
       },
-      "pool": {
-        "is_fa": 0.974,
-        "log_len": 3.775,
-        "rag": 0.895
+      "train": {
+        "is_fa": 0.94,
+        "log_len": 3.733,
+        "rag": 0.214,
+        "bot_Business support (Botify / Javab / Divar)": 0.176,
+        "bot_Companion / characters / stories": 0.019,
+        "bot_Direct chat with one model": 0.027,
+        "bot_Education / study / language": 0.003,
+        "bot_Health / therapy / life advice": 0.02,
+        "bot_Image / media creation": 0.002,
+        "bot_No description": 0.298,
+        "bot_Other": 0.4,
+        "bot_Other company support": 0.004,
+        "bot_Test / internal": 0.0,
+        "bot_Workflow": 0.0,
+        "bot_Writing / translation / content": 0.05
+      },
+      "eligible": {
+        "is_fa": 0.942,
+        "log_len": 3.756,
+        "rag": 0.193,
+        "bot_Business support (Botify / Javab / Divar)": 0.16,
+        "bot_Companion / characters / stories": 0.019,
+        "bot_Direct chat with one model": 0.024,
+        "bot_Education / study / language": 0.002,
+        "bot_Health / therapy / life advice": 0.018,
+        "bot_Image / media creation": 0.002,
+        "bot_No description": 0.348,
+        "bot_Other": 0.377,
+        "bot_Other company support": 0.004,
+        "bot_Test / internal": 0.001,
+        "bot_Workflow": 0.0,
+        "bot_Writing / translation / content": 0.045
       }
     }
   },
   "sizes_section": "s2",
   "input": "runs/s1/prompts.parquet",
-  "duration_s": 2.57,
+  "duration_s": 1.94,
   "cost_usd": 0.0
 }

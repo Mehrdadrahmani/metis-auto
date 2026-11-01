@@ -57,15 +57,15 @@ model (Opus 5.5).
 
 ## 4. Secrets and data (strict)
 
-- `data/` holds raw data with **live API keys** (inside `instructions`). **Never** print, `cat`,
-  `head` or open data files; never paste their text; never commit `data/`, `cache/`, `runs/`, `.env`.
-- **Owner decision D-067:** the agent may read **small samples of redacted user prompts** from train
-  and val (through `metis.data.redact`) when it helps. Reading sends them to the model provider of
-  this session. Bot `description` may also be read after redaction (D-073). Test prompts stay sealed; prompt text never goes into git, `results/` or `report/`.
-- **You (the agent) never read system prompts, `instructions`, retrieved context, generated answers
-  or raw data files.** Otherwise work with counts, lengths, hashes, scores and statistics. When a
-  human must read such content (labeling, spot checks), write a **local, git-ignored HTML/CSV file**
-  and ask the owner to open it.
+- `data/` holds raw data with **live API keys** (inside `instructions`). Never commit `data/`,
+  `cache/`, `runs/`, `.env`.
+- **Owner decision D-077 (replaces D-067, D-073):** the agent may read anything in the data and
+  results when it helps: user prompts, `instructions`, retrieved context, generated answers, bot
+  fields. Reading sends that text to the model provider of this session, so read through
+  `metis.data.redact`, which masks keys and leaves the rest. Read what the task needs.
+- Test prompts and labels stay sealed under §6: that rule protects the final score, not privacy.
+- Data text never goes into git, `results/` or `report/`. When a human must read such content
+  (labeling, spot checks), write a **local, git-ignored HTML/CSV file**.
 - Everything sent to an LLM API goes through `metis.data.redact` and the outgoing guard in
   `metis.llm.client` (refuses if a key pattern remains).
 - Key patterns: `sk-…`, `sk-ant-…`, `AIza…`, `ghp_…`, `Bearer …`, JWT-like `eyJ….…`, URLs with

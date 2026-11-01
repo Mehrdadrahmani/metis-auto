@@ -87,6 +87,11 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-069 | 2026-10-31 | Embedding input stays the current user message (option A; D-045/DEV-8 reviewed). Other inputs compared later on val, never test: T = 2 and chatbot as router input in WP-14; hybrid only if the S1 follow-up count is high | O | WP-08 |
 | D-070 | 2026-10-31 | Image rule covers all of provider `imagination` plus `dalle`. Val/test/pilot balanced by RAG yes/no (`s2.balance_field: uses_rag`; a session takes its first eligible prompt's value). Exact repeats matched within `bot_id` because the full data has no category | O | WP-08 |
 | D-071 | 2026-10-31 | Embedder = **nano** (owner), all eligible prompts. Agent defaults, not explicitly answered by the owner: the 11 messages over 32,768 tokens are cut at the limit (exception to D-047), and the 569 prompts with `[PLOT_HIDDEN_MEMORY_CONTEXT]` are left as they are. All eligible prompts are selected by flags, so the sealed test file stays closed | O/A | WP-08 |
+| D-079 | 2026-11-01 | Owner answers: **D-076 confirmed** (equal chance per message). **Q-027 closed:** near-duplicates stay at 0.95. **K limit:** all of 3 to 20 are scored and reported, only K ≤ 11 can win (`router.k_ship_max: 11`; narrows DEV-10; highest score wins inside 3 to 11, D-064). Stability is the reason: ARI 0.99 or higher to K = 11, 0.60 to 0.84 from K = 12. Cluster names stay a draft until after WP-07 | O | WP-08 |
+| D-078 | 2026-11-01 | Bot clusters kept as a later test, not in the main pipeline. Experiment in `experiments/bot_clusters/` (elbow K = 13, silhouette 0.28, ARI 0.82). Owner idea: a bot term in task difficulty; test in WP-14 at $0 (would be DEV-12). Owner also moved WP-08 part B ahead of WP-04, 06, 07 (changes D-068) | O | WP-08 |
+| D-077 | 2026-11-01 | **Owner changed the data rule:** the agent may read anything in the data and results, including `instructions`, RAG context and generated answers. Replaces D-067 and D-073. Agent's handling: read through `metis.data.redact` so keys stay masked; test stays sealed under AGENTS.md §6; data text stays out of git, `results/`, `report/`. AGENTS.md §4 and CLAUDE.md updated | O | WP-08 |
+| D-076 | 2026-11-01 | Agent decision, to report to the owner: first run drew sessions equally and missed the all-traffic target (val 28.5% business support against about 16% of eligible prompts). Draw changed to **each eligible prompt equally likely**; sessions stay in one split, max 3 per session. Seed unchanged. Judged on val vs eligible; test labels and text not used | P | WP-08 |
+| D-075 | 2026-11-01 | Owner said go. **DEV-11:** S2 draws val and test as random whole sessions from all sessions; spec says "most recent period". No RAG balancing, max 3 per session, near-duplicates removed from train at 0.95, val 400 (pilot 100), test 300, seed 20261020 | O / DEV | WP-08 |
 | D-074 | 2026-11-01 | Split target: **all traffic**, random whole sessions as in the paper; dates are not to be used to choose splits. Replaces the recent pool and RAG balancing once the owner says go (would be DEV-11). Embeddings and S1 are kept. Date-based proposals from the paper review are withdrawn, as is the 25% bot cap | O | WP-08 |
 | D-073 | 2026-11-01 | Owner allows the agent to read the bot `description` field for all 1,830 bots, after redaction. `instructions` stays closed. Lists are in git-ignored `runs/bots/` | O | WP-08 |
 | D-072 | 2026-10-31 | **DEV-10:** K candidates are 3 to 20 (`router.k_max: 20`), owner's requirement while testing. Paper rule N_val/50 gives 8 for val 400. Consequence stated to the owner: about 20 val prompts per cluster at K = 20. Spec default stays available (`k_max` unset) | O | WP-08 |
@@ -98,8 +103,7 @@ DEV-6 and DEV-7 agreed; DEV-1 withdrawn).
 
 | ID | Question | Owner | Needed by |
 |---|---|---|---|
-| Q-027 | Near-duplicate rule removes 29% of train at cosine 0.95: keep it or raise it? | owner | WP-08 part B |
-| Q-028 | Val is uneven at K ≥ 9, with clusters of 0 val from K = 16: keep K up to 20, and what rule for empty clusters? | owner | WP-14 |
+| Q-028 | Rule for empty clusters: new split has none at K 3 to 20, the fallback stays the overall rate (D-054); confirm in WP-14 | owner | WP-14 |
 | Q-001 | Exact arrival date and size of the full dataset | course team | WP-08 |
 | Q-006 | What is the `default` model in the data? Not blocking: `workflow` is excluded (D-057); only useful for describing the limitation in the report | owner asks course team | WP-20 |
 | Q-007b | Exact deadline date and deliverable format (report/slides/demo/code) | owner | WP-20 (format), now (date) |
@@ -119,6 +123,13 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-01 · WP-08 split redo, part B start (Opus)
+- New split: first draw (equal per session) missed all traffic (28.5% support); equal per prompt gives val 16.5% vs 16.0%, RAG 21.0% vs 19.3%. Train 179,185, near-duplicates 52,072, fitted 127,113. Old split in `runs/s2_old`.
+- K-means 3..20 refit. Gap at K = 5: 0.43 to 0.05. ARI 0.99 or higher to K = 11, 0.60 to 0.84 from K = 12. No empty val cluster. Qdrant payload updated without re-embedding; snapshot in `qdrant/share/`.
+- Added `scripts/s5_stability.py`, `set-split` step, `results/wp08_full_data/char_distribution.*`.
+- Bot experiment: elbow K = 13 (soft), silhouette 0.28, ARI 0.82; one bot (Athena) about 37% of messages. Saved for WP-14 (D-078).
+- Draft budget memo: real inputs about 2,800 tokens vs 1,640 planned; pointwise $13 / $35 / $73. Decisions D-075 to D-079. Tests 169 passed. Cost $0.
 
 ### 2026-11-01 · WP-08 part A review (Opus)
 - Reread the paper against the spec. Measured: val vs train gap 0.43 at K = 5; stability about 1.00 up to K = 8, 0.71 to 0.85 at K = 12 and 20.

@@ -2,6 +2,7 @@
 
 Usage: uv run python scripts/s4_embed_full.py embed      (resumable, safe to kill)
        uv run python scripts/s4_embed_full.py embed --device cpu   (longest messages: GPU runs out)
+       uv run python scripts/s4_embed_full.py set-split  (Qdrant split payload only, no embedding)
        uv run python scripts/s4_embed_full.py near-dups  (train only)
 
 The sealed test ids are never opened: prompts are chosen by eligibility flags. Rows in
@@ -20,6 +21,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from qdrant_client import models
 
 from metis.config import config_id, load_config
 from metis.embed.embedder import Embedder
@@ -94,6 +96,28 @@ def run_embed(cfg: dict, out: Path, device: str | None = None) -> None:
     print(json.dumps(manifest))
 
 
+def run_set_split(cfg: dict) -> None:
+    """Rewrite the split payload after a new S2. Test is inside `unassigned`, so it stays unmarked."""
+    df = load_table()
+    cand = cfg["s4"]["candidates"][cfg["s4"]["choice"]]
+    res = ROOT / "results/wp08_full_data/embed_full.json"
+    manifest = json.loads(res.read_text(encoding="utf-8"))
+    dim = np.load(next((ROOT / "runs/s4/full" / cfg["s4"]["choice"]).glob("part-*.npz")))["vecs"].shape[1]
+    store = VectorStore(manifest["embedder_id"], dim, url=DEFAULT_URL)
+    assert store.count() == len(df), "Qdrant and the prompt table differ"
+    for name, ids in df.groupby("split")["prompt_id"]:
+        store.set_payload(ids.tolist(), {"split": name})
+        print(name, len(ids), flush=True)
+    counts = {s: store.client.count(store.name, exact=True, count_filter=models.Filter(must=[
+        models.FieldCondition(key="split", match=models.MatchValue(value=s))])).count
+        for s in df["split"].unique()}  # fmt: skip
+    store.close()
+    assert counts == df["split"].value_counts().to_dict(), counts
+    manifest["by_split"] = counts
+    res.write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+    print(cand["name"], counts)
+
+
 def run_near_dups(out: Path) -> None:
     """Exact cosine search inside train, earliest id kept. Same result as an exact Qdrant search,
     and far faster in memory for 200k vectors."""
@@ -130,7 +154,7 @@ def run_near_dups(out: Path) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("step", choices=["embed", "near-dups"])
+    ap.add_argument("step", choices=["embed", "set-split", "near-dups"])
     ap.add_argument("--device", help="override s4.device, e.g. cpu for the longest messages")
     a = ap.parse_args()
     cfg = load_config("pipeline")
@@ -138,6 +162,8 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     if a.step == "embed":
         run_embed(cfg, out, a.device)
+    elif a.step == "set-split":
+        run_set_split(cfg)
     else:
         run_near_dups(out)
 

@@ -1,10 +1,11 @@
 """S2: split by session (WP-02 step 7, spec S2).
 
-Sessions are sorted by `created_at`; the most recent ones form the **recent pool** (≈ factor × the
-labeled prompts needed). Val and test are drawn from it by sampling sessions **stratified by
-the balance field** (`s2.balance_field`; a session takes the value of its first eligible prompt), with at most `max_per_session` eligible prompts per session. All other sessions go to
-train (unlabeled). Pilot ⊂ val (stratified); cal = each pilot prompt paired with one non-anchor
-model, round-robin. Same seed + same input → identical ids.
+Val and test are random prompts from **all** eligible prompts, each equally likely (DEV-11, D-074,
+D-076; dates are not used), with at most `max_per_session` per session. A session belongs to one
+split only: every other prompt of a val or test session leaves train. `balance` is optional: with a
+field name the draw is stratified by it (a session takes the value of its first eligible prompt);
+with None it is plain random. All other sessions go to train (unlabeled). Pilot ⊂ val; cal = each
+pilot prompt paired with one non-anchor model, round-robin. Same seed + same input → identical ids.
 """
 
 from __future__ import annotations
@@ -37,46 +38,49 @@ def _largest_remainder(shares: pd.Series, n: int) -> dict[str, int]:
 
 
 def _draw(
-    sessions: pd.DataFrame,
-    elig_by_session: dict[str, list[str]],
-    n: int,
-    cap: int,
-    rng: np.random.Generator,
+    elig: pd.DataFrame, n: int, cap: int, rng: np.random.Generator
 ) -> tuple[list[str], set[str], dict[str, int]]:
-    """Draw `n` eligible prompts from `sessions`, stratified by stratum. Returns prompt ids,
-    used session ids and the shortfall per stratum (0 if met)."""
-    capacity = sessions.groupby("stratum")["capped"].sum()
-    capacity = capacity[capacity > 0]
-    targets = _largest_remainder(capacity, n) if n and len(capacity) else {}
-    queues = {
-        c: [str(x) for x in rng.permutation(sorted(g.index[g["capped"] > 0]))]
-        for c, g in sessions.groupby("stratum")
-    }
+    """Draw `n` eligible prompts, each equally likely, at most `cap` from one session. Stratified by
+    `stratum`. Returns prompt ids, used session ids and the shortfall per stratum (0 if met)."""
+    sizes = elig.groupby("stratum").size()
+    targets = _largest_remainder(sizes, n) if n and len(sizes) else {}
     chosen: list[str] = []
-    used: set[str] = set()
-    got = {c: 0 for c in targets}
+    per_session: dict[str, int] = {}
+    leftovers: list[tuple[str, str, str]] = []
 
-    def take(c: str, want: int) -> int:
-        sid = queues[c].pop(0)
-        ids = sorted(elig_by_session[sid])
-        k = min(cap, len(ids), want)
-        chosen.extend(rng.choice(ids, size=k, replace=False).tolist())
-        used.add(sid)
-        return k
+    def walk(rows: list[tuple[str, str, str]], want: int) -> int:
+        got = 0
+        for row in rows:
+            pid, sid, _ = row
+            if got == want or per_session.get(sid, 0) >= cap:
+                leftovers.append(row)
+                continue
+            chosen.append(pid)
+            per_session[sid] = per_session.get(sid, 0) + 1
+            got += 1
+        return got
 
-    for c, t in targets.items():
-        while got[c] < t and queues.get(c):
-            got[c] += take(c, t - got[c])
-    # categories that ran short: fill from the others, round-robin
+    got: dict[str, int] = {}
+    for c, group in elig.groupby("stratum"):
+        rows = list(group[["prompt_id", "session_id", "stratum"]].itertuples(index=False, name=None))
+        order = rng.permutation(len(rows))
+        got[str(c)] = walk([rows[i] for i in order], targets.get(str(c), 0))
+    # strata that ran short: fill from the rest (order stays random inside each stratum)
     short = n - len(chosen)
-    while short > 0 and any(queues.values()):
-        for c in sorted(queues):
-            if short > 0 and queues[c]:
-                k = take(c, short)
-                got[c] = got.get(c, 0) + k
-                short -= k
+    if short > 0:
+        rows, leftovers = leftovers, []
+        order = rng.permutation(len(rows))
+        before = {c: 0 for c in got}
+        for i in order:
+            if short <= 0 or per_session.get(rows[i][1], 0) >= cap:
+                continue
+            chosen.append(rows[i][0])
+            per_session[rows[i][1]] = per_session.get(rows[i][1], 0) + 1
+            before[rows[i][2]] += 1
+            short -= 1
+        got = {c: got[c] + before[c] for c in got}
     shortfall = {c: max(0, targets[c] - got.get(c, 0)) for c in targets}
-    return chosen, used, shortfall
+    return chosen, set(per_session), shortfall
 
 
 def make_splits(
@@ -84,37 +88,26 @@ def make_splits(
     n_val: int,
     n_test: int,
     n_pilot: int,
-    pool_factor: float,
     max_per_session: int,
     cal_models: list[str],
     seed: int,
-    balance: str = "category",
+    balance: str | None = None,
 ) -> SplitResult:
     rng = np.random.default_rng(seed)
     df = prompts.sort_values("prompt_id").reset_index(drop=True)
-    df["stratum"] = df[balance].astype(str)
+    df["stratum"] = df[balance].astype(str) if balance else "all"
     elig = df[df["eligible_labeled"]]
-    elig_by_session = elig.groupby("session_id")["prompt_id"].apply(list).to_dict()
     order = [c for c in ("session_id", "msg_index") if c in elig]
     first_elig = elig.sort_values(order, kind="stable").groupby("session_id")["stratum"].first()
-    sess = (
-        df.groupby("session_id")
-        .agg(created=("session_created_at", "first"), stratum=("stratum", "first"))
-        .assign(n_elig=lambda s: s.index.map(lambda i: len(elig_by_session.get(i, []))))
-    )
-    sess["capped"] = sess["n_elig"].clip(upper=max_per_session)
+    sess = df.groupby("session_id").agg(stratum=("stratum", "first"))
     sess["stratum"] = first_elig.reindex(sess.index).fillna(sess["stratum"])
-    # newest first; ties broken by session id
-    sess = sess.loc[sorted(sess.index, key=lambda i: (str(sess.at[i, "created"]), i), reverse=True)]
+    sess["capped"] = sess.index.map(elig["session_id"].value_counts()).fillna(0).astype(int)
+    sess["capped"] = sess["capped"].clip(upper=max_per_session)
+    draw = elig[["prompt_id", "session_id"]].assign(stratum=elig["session_id"].map(sess["stratum"]))
 
-    need = pool_factor * (n_val + n_test)
-    cum = sess["capped"].cumsum()
-    n_pool = int((cum < need).sum()) + 1 if cum.iloc[-1] >= need else len(sess)
-    pool = sess.iloc[:n_pool]
-
-    val_ids, val_sess, val_short = _draw(pool, elig_by_session, n_val, max_per_session, rng)
-    rest = pool.drop(index=list(val_sess))
-    test_ids, test_sess, test_short = _draw(rest, elig_by_session, n_test, max_per_session, rng)
+    val_ids, val_sess, val_short = _draw(draw, n_val, max_per_session, rng)
+    rest = draw[~draw["session_id"].isin(val_sess)]
+    test_ids, test_sess, test_short = _draw(rest, n_test, max_per_session, rng)
 
     labeled_sess = val_sess | test_sess
     split = pd.Series("none", index=df.index)
@@ -141,9 +134,7 @@ def make_splits(
         "balance_field": balance,
         "sizes_requested": {"val": n_val, "test": n_test, "pilot": n_pilot},
         "sessions_total": len(sess),
-        "pool_sessions": n_pool,
-        "pool_capacity": int(pool["capped"].sum()),
-        "pool_oldest_created_at": str(pool["created"].min()),
+        "capacity": int(sess["capped"].sum()),
         "val_sessions": len(val_sess),
         "test_sessions": len(test_sess),
         "shortfall": {"val": val_short, "test": test_short},

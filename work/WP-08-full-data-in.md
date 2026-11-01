@@ -18,7 +18,8 @@ nobody looks at test prompts or test labels until WP-19.
 - `work/reports/WP-07-report.md`, `results/cost_estimate_v1.md`.
 
 ## Steps
-> **Update 2026-11-01 (D-074):** part A's split will be redone: all traffic, random whole sessions, no dates. Plan and steps in `STATUS.md`. Embeddings stay; near-duplicates and K-means rerun.
+> **Update 2026-11-01 (D-078, D-079):** step 8 draft names in `configs/cluster_names.yaml`, owner reviews after WP-07. Step 9 draft in `results/budget_memo.md`; redo with the WP-04 estimator. If the pointwise total stays above $45, PLAN §6 applies: decide a judge token cap at Gate 1.
+> **Update 2026-11-01 (D-074, D-075, DEV-11):** part A's split redone: all traffic, random whole sessions, no dates, no RAG balancing. Step 3's recent-pool check and step 5's "recent traffic" comparison now mean all eligible prompts. Embeddings stay; near-duplicates and K-means rerun.
 > **Update 2026-10-31 (D-068):** part A done early: steps 3 to 6 and K-means (step 7) on train, K = 3..20, after near-duplicates. Reports: `results/split_manifest.json`, `results/wp08_full_data/`. Part B after WP-07: rerun anything WP-07 changes, resolve Q-027/Q-028, then steps 8 to 10.
 > **Update 2026-10-31:** steps 1–2 done early (D-058): data in `data/raw/metis/data/` (parquet, not `full.json`), loader `iter_sessions`, card `results/wp08_full_data/`. `load_with_report` accepts that folder. WP-08 still waits for WP-07.
 

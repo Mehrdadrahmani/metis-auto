@@ -50,6 +50,15 @@ MLflow run in experiment `router-selection` (params: method, K, α, λ, config i
 QNC, quality, cost; plots as artifacts), so the owner can compare them in the UI. Validation only:
 nothing from the test set is logged before `pre-test`.
 
+> **Update 2026-11-01 (D-079):** step 3: score all K in 3..20, but K* is the highest score among K ≤ `router.k_ship_max` (11).
+
+## Later test: bot clusters as a difficulty term (owner idea, D-078; $0, same labels)
+After the main steps and before Gate 3, compare the shipped setup with:
+`score(h) = overall(h) + (Ψ_message(h) − overall(h)) + (Ψ_bot(h) − overall(h)) + λ·c(h)`.
+Bot groups come from `experiments/bot_clusters/` (elbow K = 13; use the 6 big clusters + "other").
+On validation only. Ship it only if it beats message-only, K = 1 and baselines, as DEV-12 with the
+owner's approval. Risks: double counting, one bot (Athena, about 37%) dominating a group.
+
 ## Outputs
 - `results/{fingerprints,select_k,ladder_val,representation_test,holdout_demo}.md` + figures,
   `artifacts/router_v1/`, `results/eval_protocol.md`, tag `pre-test`.

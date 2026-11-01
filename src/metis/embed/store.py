@@ -76,6 +76,13 @@ class VectorStore:
         for i in range(0, len(points), 256):
             self.client.upsert(self.name, points=points[i : i + 256], wait=True)
 
+    def set_payload(self, prompt_ids: list[str], payload: dict[str, Any]) -> None:
+        """Change payload fields only; vectors stay."""
+        _check_payload(payload)
+        for i in range(0, len(prompt_ids), 2000):
+            points = [point_id(p) for p in prompt_ids[i : i + 2000]]
+            self.client.set_payload(self.name, payload=payload, points=points, wait=True)
+
     def count(self) -> int:
         return self.client.count(self.name, exact=True).count
 

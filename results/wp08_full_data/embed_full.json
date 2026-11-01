@@ -7,17 +7,17 @@
  "embedded_this_run": 1162,
  "qdrant_points": 209162,
  "by_split": {
-  "train": 208163,
-  "unassigned": 599,
+  "train": 179185,
+  "unassigned": 29577,
   "val": 400
  },
  "duration_s": 2805.2,
  "cost_usd": 0.0,
  "near_dups": {
-  "train": 208163,
-  "removed": 61242,
-  "kept": 146921,
+  "train": 179185,
+  "removed": 52072,
+  "kept": 127113,
   "cosine": 0.95,
-  "duration_s": 51.1
+  "duration_s": 47.7
  }
 }

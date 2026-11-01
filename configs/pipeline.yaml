@@ -11,9 +11,8 @@ s2:
   n_val: 400
   n_test: 300
   n_pilot: 100                      # subset of val
-  recent_pool_factor: 3             # recent pool holds ~3x the needed labeled prompts
   max_per_session: 3                # eligible prompts per session in val/test
-  balance_field: uses_rag           # D-070; the full data has no category
+  balance_field: null               # DEV-11, D-074: plain random whole sessions
   cal_models: [deepseek-v4-flash, gpt-5.6-luna, gemini-3.5-flash-lite]   # round-robin, non-anchor
 sample_dry_run:                     # step 8: scaled sizes for the 100-session sample
   balance_field: category
@@ -26,6 +25,7 @@ router:                             # S5, S8-S10 (WP-05); paper settings, PLAN M
   alpha_pair: 2                     # virtual ties, spec S8-PW
   select_k_repeats: 20              # DEV-6
   k_max: 20                         # DEV-10 (owner); paper rule N_val/50 would give 8
+  k_ship_max: 11                    # D-079: 12..20 are scored and reported, only K <= 11 can win
   lambda_n: 60
   lambda_low: 0.001
   lambda_high: 100.0

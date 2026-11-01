@@ -31,7 +31,6 @@ def run(df, seed=20261020, **kw):
         "n_val": 60,
         "n_test": 40,
         "n_pilot": 20,
-        "pool_factor": 3,
         "max_per_session": 3,
         "cal_models": CAL,
         "seed": seed,
@@ -55,19 +54,46 @@ def test_sizes_and_no_session_leak():
     assert t["prompt_id"].is_unique
 
 
-def test_only_eligible_in_labeled_and_recent_pool():
-    df = synthetic()
+def test_only_eligible_in_labeled_and_draws_from_all_sessions():
+    df = synthetic(n_sessions=400)
     res = run(df)
     t = res.table.merge(df[["prompt_id", "eligible_labeled", "session_created_at"]])
     lab = t[t["split"].isin(["val", "test"])]
     assert lab["eligible_labeled"].all()
-    assert lab["session_created_at"].min() >= res.info["pool_oldest_created_at"]
-    assert res.info["pool_capacity"] >= 3 * 100
+    assert res.info["capacity"] >= 3 * 100
+    # no recent pool: labeled sessions cover the whole date range
+    days = df["session_created_at"].sort_values()
+    assert lab["session_created_at"].min() < days.iloc[len(days) // 4]
+    assert lab["session_created_at"].max() > days.iloc[3 * len(days) // 4]
+
+
+def test_input_dates_are_not_used():
+    df = synthetic()
+    moved = df.assign(session_created_at="2020-01-01 00:00:00")
+    assert split_manifest(run(df), {})["sha256"] == split_manifest(run(moved), {})["sha256"]
+
+
+def test_each_prompt_is_equally_likely_so_long_sessions_count_more():
+    rows = []
+    for s in range(3000):  # 3000 one-prompt sessions, 300 ten-prompt sessions: half of the prompts
+        n = 1 if s < 2700 else 10
+        rows += [{"prompt_id": f"p{s}_{i}", "session_id": f"s{s}", "lang": "fa",
+                  "eligible_labeled": True, "eligible_train": True} for i in range(n)]  # fmt: skip
+    df = pd.DataFrame(rows)
+    t = run(df, n_val=600, n_test=0, n_pilot=0).table
+    val = t[t["split"] == "val"]
+    long_share = val["session_id"].str[1:].astype(int).ge(2700).mean()
+    assert 0.45 < long_share < 0.60  # sessions alone would give about 0.1 to 0.25
+
+
+def test_no_balancing_by_default():
+    t = run(synthetic()).table
+    assert set(t["stratum"]) == {"all"}
 
 
 def test_stratified_by_category():
     df = synthetic()
-    t = run(df).table
+    t = run(df, balance="category").table
     val = t[t["split"] == "val"]["stratum"].value_counts(normalize=True)
     # category "a" holds more sessions (every 10th session + its share)
     assert val["a"] > val["b"]
@@ -94,7 +120,7 @@ def test_deterministic_and_seed_sensitive():
 def test_shortfall_reported_when_too_small():
     res = run(synthetic(n_sessions=10), n_val=60, n_test=40)
     assert (res.table["split"] == "val").sum() < 60 or (res.table["split"] == "test").sum() < 40
-    assert res.info["pool_sessions"] == 10
+    assert res.info["sessions_total"] == 10
 
 
 def test_session_stratum_is_first_eligible_prompt():

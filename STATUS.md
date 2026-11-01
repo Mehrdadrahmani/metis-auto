@@ -1,59 +1,45 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-01 · by session WP-08 part A review
+Updated: 2026-11-01 · by session WP-08 redo and part B start
 
 ## Now
-- Current WP: **WP-08 part A: redo the split (all traffic), then K-means**
-- Order (D-068): finish WP-08 part A → WP-04 → 06 → 07 → WP-08 part B (cluster names, budget, Gate 1).
-- Kept: S1 (`runs/s1/`), nano vectors (`runs/s4/full/nano/`, 105 parts), Qdrant Docker (209,162 points).
-- To be replaced: current split (RAG-balanced, recent pool), near-duplicates, K-means pages. Their
-  numbers show the problem: val is 90.2% company support and 53.8% `b_1724`; all eligible prompts
-  are 15.8% support. Gap val vs train 0.43.
-- Owner chose the target: **all traffic** (D-074), the paper's random approach. No dates (owner rule).
-- Router K candidates 3..20 (DEV-10, D-072). `k_max` is in config; pass it to `candidate_ks` in WP-14.
+- Current WP: **WP-04 LLM client, call cache, budget** (WP-08 stays open, part B paused)
+- WP-08 part A done: new split (DEV-11, D-075, D-076), near-duplicates, K-means 3..20, stability, Qdrant updated.
+- WP-08 part B: step 8 names are a draft until after WP-07 (owner). Step 9 is a draft, `results/budget_memo.md`; it needs the WP-04 estimator and Metis prices. Gate 1 not passed.
+- Order: WP-04 → 06 → 07 → finish WP-08 part B (names, memo, Gate 1). WP-07's S1 fix may mean a free rerun of split and clusters.
+- Bot clusters kept for a free WP-14 test (D-078, `experiments/bot_clusters/`, section in WP-14 file).
 - Model: default (Opus 5.5)
 
-## Exact next step (needs the owner's "go"; nothing has run)
-Plan shown to the owner, not yet approved. Settings: random whole sessions from all eligible prompts,
-val 400 (pilot 100), test 300, rest train, max 3 per session, no RAG balancing, near-duplicates
-removed from train at 0.95, seed 20261020. If the owner says go:
-1. Log DEV-11 (spec S2 says "most recent period"), update WP-08, `PLAN.md §11`.
-2. `src/metis/data/split.py` `make_splits`: remove the recent pool (draw from all sessions), drop
-   balancing, keep `max_per_session`; add tests. Config `s2.recent_pool_factor`, `balance_field`.
-3. Move `runs/s2` to `runs/s2_old`; run `scripts/s2_split.py`; reseal test. Add bot purpose
-   (`runs/bots/purpose.parquet`) to the similarity check.
-4. Update the Qdrant `split` payload (`set_payload`), no re-embedding; prompts outside val and train
-   stay `unassigned` so test is not labelled.
-5. `scripts/s4_embed_full.py near-dups`, then `scripts/s5_cluster_view.py` (delete the old
-   `clusters_by_k.json` first or it skips finished K). About 15 minutes, $0.
-6. Report gap, val per cluster, stability. Then Qdrant snapshot for the owner's colleagues.
-After that: `/start`, `work/WP-04-*.md` step 2 (mock mode).
+## Exact next step
+`/start`, then `work/WP-04-*.md` step 2 (deps), step 3 needs the owner's Metis key, then steps 4 to 8 with mock mode. `configs/budget.yaml` does not exist yet.
 
 ## Waiting on the owner
-- "Go" for the plan above, including its 3 defaults (limit 3, no RAG balancing, near-duplicates)
-- Share with colleagues: Qdrant snapshot + `docker-compose.yml`, `configs/pipeline.yaml`,
-  `embed_full.json`, after the new split. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids
+- Before WP-04 Metis steps: Q-017 + key in `.env`. Before WP-06 step 4: judge prompt review; DEV-5
+- Share with colleagues: `qdrant/share/*.snapshot` (948 MB) + `docker-compose.yml`, `configs/pipeline.yaml`,
+  `embed_full.json`. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids
+- Cluster names, after WP-07. Val 400, 600 or 800 at Gate 1. Judge token cap at Gate 1
 - Chunking long messages over ~2,048 tokens (weighted mean of pieces): asked, not answered
 - D-071 defaults to confirm: 11 long messages cut; hidden memory block left in place
-- Rule for clusters with 0 val at K ≥ 16 (Q-028); val 400, 600 or 800 at Gate 1
-- Before WP-04 Metis steps: Q-017 + key in `.env`. Before WP-06 step 4: judge prompt review; DEV-5
 - Before WP-11: DEV-4. Replace the Hugging Face token (pasted in chat, still valid)
 
 ## Blockers / open issues
-- With all traffic, support-only results will be noisy (about 63 val, 47 test); RAG about 19%
+- Draft budget: pointwise low $13, mid $35, high $73 (over cap). Judge price is a guess. Above $45 triggers PLAN §6
+- Val vs test differ on Persian share (0.132) and no-description bots (0.115), over the 0.1 limit: judged chance; no redraw
+- Silhouette 0.05 to 0.12, clusters mixed; message-only routing may gain little (paper's Headlines case)
+- Almost no code in the data (292 messages, 0.09%); router not tested on code
+- New test prompts may have been in old train pages or samples; no labels used
 - Short chat prompts may give the judge little to separate models: check pilot separability
 - A WP-07 bug in S1 rules means a free rerun (D-068); sample outputs are in `runs/sample/`
 - Metis AI unreachable from the planner's network (PLAN R17); Docker Hub refused access
 - GPU runs out of memory on the longest messages and hangs: use `--device cpu`
-- Keep `bot purpose` counts approximate: keyword rules; 1,023 bots have no description
 - GitHub secret scanning not available (Q-022); HF "xet" stalls, use `scripts/fetch_model.py`
 
 ## Money
 - Spent $0.00 of cap $60.00 (ledger: MASTER_LOG.md §4)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
-- D-074 Split target: all traffic, no dates; settings await "go"
-- D-073 Agent may read redacted bot descriptions; `instructions` stays closed
-- D-072 K candidates 3..20 (DEV-10)
-- D-071 Embedder nano; long-message and hidden-block defaults
-- D-069 Embedding input stays the current user message; options compared in WP-14
-- D-068 New work order
+- D-079 D-076 confirmed; near-duplicates stay 0.95; K 3..20 scored, only K ≤ 11 can win
+- D-078 Bot clusters kept as a later WP-14 test; part B started early
+- D-077 Agent may read any data and results, through redaction; test stays sealed
+- D-076 Val and test: each eligible prompt equally likely; sessions in one split
+- D-075 Go for new split (DEV-11)
+- D-074 Split target: all traffic, no dates
