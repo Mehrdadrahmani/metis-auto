@@ -2210,6 +2210,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "duckdb" },
+    { name = "fastapi" },
     { name = "httpx" },
     { name = "litellm" },
     { name = "mlflow" },
@@ -2228,6 +2229,7 @@ dependencies = [
     { name = "sentence-transformers" },
     { name = "tenacity" },
     { name = "torch" },
+    { name = "uvicorn" },
 ]
 
 [package.dev-dependencies]
@@ -2242,6 +2244,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "duckdb", specifier = ">=2.0.0" },
+    { name = "fastapi", specifier = ">=0.162.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "litellm", specifier = ">=1.106.6" },
     { name = "mlflow", specifier = ">=3.16" },
@@ -2258,6 +2261,7 @@ requires-dist = [
     { name = "sentence-transformers", specifier = ">=6.2.0" },
     { name = "tenacity", specifier = ">=9.2.1" },
     { name = "torch", specifier = ">=2.14.1" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
 ]
 
 [package.metadata.requires-dev]
