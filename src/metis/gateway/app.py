@@ -66,7 +66,7 @@ def build_gateway(cfg: dict[str, Any] | None = None, embed=None, cache_embed=Non
         provider = LiveProvider() if cfg["provider"] == "live" else MockProvider(cfg["mock"]["latency_ms"])
     c = cfg["cache"]
     cache = SemanticCache(c["theta"], c["ttl_days"], c.get("path"), c.get("semantic", True)) if c.get("enabled") else None
-    return Gateway(artifact, provider, embed, cfg, load_models(), TraceStore(ROOT / cfg["traces"]["path"]), cache, cache_embed)
+    return Gateway(artifact, provider, embed, cfg, load_models(), TraceStore(":memory:" if cfg["traces"]["path"] == ":memory:" else ROOT / cfg["traces"]["path"]), cache, cache_embed)
 
 
 def create_app(gateway: Gateway | None = None) -> FastAPI:

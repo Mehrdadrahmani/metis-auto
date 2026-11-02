@@ -165,9 +165,8 @@ class Gateway:
         order = list(decision.ranking)
         stick = self.cfg.get("stickiness", {})
         previous = self.session_model.get(req.session or "")
-        if stick.get("enabled") and previous in decision.scores:
-            if decision.scores[previous] <= min(decision.scores.values()) + stick.get("delta", 0):
-                order = [previous, *[m for m in order if m != previous]]
+        if stick.get("enabled") and previous in decision.scores and decision.scores[previous] <= min(decision.scores.values()) + stick.get("delta", 0):
+            order = [previous, *[m for m in order if m != previous]]
         return decision, order
 
     def handle(self, req: ChatRequest) -> ChatResult:
