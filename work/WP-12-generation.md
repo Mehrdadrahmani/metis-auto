@@ -5,7 +5,7 @@
 
 | Phase | Model | Size | Needs owner | Cost | Depends on | Unblocks |
 |---|---|---|---|---|---|---|
-| 4 | default (Opus 5.5) | ~100k | **"go"** with the estimate | ~$7 (approved `gen_main`) | Gate 2 | WP-13 |
+| 4 | default (Opus 5.5) | ~100k | **"go"** with the estimate | about $9.70 (`results/cost_estimate_v2.md`; set `gen_main` at the "go") | Gate 2 | WP-13 |
 
 ## Context
 Every candidate answers every val and test prompt **once** (spec golden rule 3). Pilot answers
@@ -47,3 +47,6 @@ The runner checkpoints every 25 items: stop, `/handoff` with "next: WP-12 step 2
 
 ## Added by D-087
 `scripts/s6_generate.py` cannot select the test set (`metis.llm.stage.SETS`). Add it here, reading the sealed ids only inside the batch and never printing them.
+
+## Added by WP-11 (D-107, D-108)
+First fix the whole-batch pre-check in `s6_generate.py` (D-097). Candidates stay the 4, val stays 400; deepseek-v4-pro is not generated.

@@ -5,14 +5,14 @@
 
 | Phase | Model | Size | Needs owner | Cost | Depends on | Unblocks |
 |---|---|---|---|---|---|---|
-| 4 | default (Opus 5.5) | ~100k | **"go"** with the estimate | pointwise ~$10 / pairwise ~$20 (approved `judge_main`) | WP-12 | WP-14 |
+| 4 | default (Opus 5.5) | ~100k | **"go"** with the estimate | about $0.60, pointwise jev (set `judge_main` at the "go") | WP-12 | WP-14 |
 
 ## Context
 Only the method chosen at Gate 2 is run (spec §P: "the full build runs only the chosen method's
 judging"). **WP-11 updates this file** with the method, τ, call counts and estimate; if this note is
 still here, WP-11 has not done so: stop and check.
 
-> Method: `<set by WP-11>` · τ: `<set by WP-11>` · calls: `<set by WP-11>` · estimate: `<set by WP-11>`
+> Method: **pointwise, jev** · τ: **7** · calls: **2,400 + 5% re-judge (about 120)** · estimate: **about $0.60** at the pilot's $0.00022 per call, with the 7% margin (D-105, D-106). Keep judge config id `356e63e52245`.
 
 ## Read (only these)
 - `work/reports/WP-11-report.md`, `work/reports/WP-12-report.md`, `configs/judge_config.yaml`.
@@ -52,3 +52,6 @@ Stop at a checkpoint, `/handoff` with "next: WP-13 step 2 (resume)", stop.
 
 ## Added by D-101, D-102
 Judge = Jev, pointwise and pairwise; no terra. Add chat history to the Jev form first (`render.py`, `{history}` slot, same turns as generation). New judge config id, so the cache starts fresh for judgments. Estimate about $1 for 500 new prompts. Set `approved_usd.judge_main` after Gate 2. Add cache-write cost to the estimate, or use a 7% margin.
+
+## Added by WP-11 (D-105, D-106)
+Pairwise is not run. WP-12 must not change the 4 candidates (D-107). Compare the returned Jev version with jev-1.14.0.

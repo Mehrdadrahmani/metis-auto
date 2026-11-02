@@ -252,9 +252,9 @@
     "semantic_hash": "75a015f5657a512c1758ab303c9bf509"
   },
   "MASTER_LOG.md": {
-    "mtime": 1793624093.9656484,
-    "seen": 1793624130.587989,
-    "ast_hash": "9acb8d50cdb11fe6b9952daa45bab6f6",
+    "mtime": 1793625153.5219777,
+    "seen": 1793625155.3396962,
+    "ast_hash": "fefd135008bd6793cd3de6aee609f039",
     "semantic_hash": ""
   },
   "PLAN.md": {
@@ -288,9 +288,9 @@
     "semantic_hash": "f518c7a52d7cbb99a373161293d12a86"
   },
   "STATUS.md": {
-    "mtime": 1793624093.966795,
-    "seen": 1793624130.587994,
-    "ast_hash": "10fd3344a364c37c561df2be2ca37426",
+    "mtime": 1793625153.5227232,
+    "seen": 1793625155.3397021,
+    "ast_hash": "a0412ae28a6148f20b86628903add7c9",
     "semantic_hash": ""
   },
   "ref/PLANNING-REQUEST.md": {
@@ -342,9 +342,9 @@
     "semantic_hash": "62f2aac03613424b31f58a99e945e22d"
   },
   "report/NOTES.md": {
-    "mtime": 1793624093.9658651,
-    "seen": 1793624130.5880032,
-    "ast_hash": "8a6c0d56b6fcd5f4148952dc602e613e",
+    "mtime": 1793625153.5222309,
+    "seen": 1793625155.339711,
+    "ast_hash": "c5a63e4bdcff9e6d3b5c6053285a43af",
     "semantic_hash": ""
   },
   "work/WP-00-bootstrap.md": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "work/WP-11-pilot-decision.md": {
-    "mtime": 1793624093.966018,
-    "seen": 1793624130.588033,
-    "ast_hash": "9d750e97bfe5e67a136528b7a009f391",
+    "mtime": 1793625153.5225832,
+    "seen": 1793625155.339742,
+    "ast_hash": "4bceda89dbd37b9e44f1e251e328eeba",
     "semantic_hash": ""
   },
   "work/WP-12-generation.md": {
@@ -1260,9 +1260,9 @@
     "semantic_hash": ""
   },
   "results/metis_capabilities.md": {
-    "mtime": 1793547490.4200811,
-    "seen": 1793547894.404056,
-    "ast_hash": "82a94ad951f1d0922412f1bd0bc0920b",
+    "mtime": 1793624770.9051497,
+    "seen": 1793625155.3397179,
+    "ast_hash": "b2b5cf23fc1f59cdbb4d159b2af502ed",
     "semantic_hash": ""
   },
   "work/reports/WP-04-report.md": {

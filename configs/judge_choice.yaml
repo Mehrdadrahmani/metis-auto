@@ -1,0 +1,7 @@
+# Gate 2 choice (WP-11, D-105). Kept apart from judge_config.yaml on purpose: that file is hashed into
+# judge_config_id, and WP-13 must keep the pilot's id 356e63e52245 so pilot judgments stay reusable.
+judge: jev
+method: pointwise
+tau: 7
+anchor: claude-sonnet-5-5
+pilot_judge_config_id: 356e63e52245

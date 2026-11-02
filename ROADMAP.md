@@ -40,7 +40,7 @@ Phase 7 Report, release  WP-20 → WP-21                                        
 | ☑ | **WP-08** Full data in | 2 | Data card, S1–S5 on real data, splits locked, clusters named, **budget memo** | default | 200k | 👤 provide data; **⛔ Gate 1** approve budget | – | data, 07 | 09, 12 |
 | ☑ | **WP-09** Pilot run | 3 | 4 models × 100 pilot prompts; pointwise + pairwise judging; labeling sheet | default | 120k | 👤 "go" | **~$6** | G1 | 10 |
 | ☑ | **WP-10** Owner labels (done by Opus, D-098) | 3 | 100 calibration items (`human_pass`, `human_pref`) + 20 re-labels later | – (owner) | – | 👤 **~3.5 h** | – | 09 | 11 |
-| ☐ | **WP-11** Pilot decision | 3 | Agreement + κ, τ, separability, bias + noise checks; choose method; update WP-13 | default | 150k | 👤 **⛔ Gate 2** | (~$2 if rubric revised) | 10 | 12, 13 |
+| ☑ | **WP-11** Pilot decision | 3 | Agreement + κ, τ, separability, bias + noise checks; choose method; update WP-13 | default | 150k | 👤 **⛔ Gate 2** | (~$2 if rubric revised) | 10 | 12, 13 |
 | ☐ | **WP-12** Generation val + test | 4 | Remaining answers for 400 val + 300 test (pilot reused); cheap models first | default | 100k | 👤 "go" | **~$7** | G2 | 13 |
 | ☐ | **WP-13** Judging | 4 | Chosen method on all val + test + 5% re-judge | default | 100k | 👤 "go" | **~$10 / ~$20** | 12 | 14 |
 | ☐ | **WP-14** Fingerprints, settings, freeze | 4 | Ψ (Eq. 12), K by deferral-curve area, λ, baselines for comparison, holdout demo, artifact v1, evaluation protocol, **tag `pre-test`** | default | 250k | 👤 approve shipped router (+ DEV-1 if traits win) | – | 05, 13 | 18, 19 |

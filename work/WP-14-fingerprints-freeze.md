@@ -88,3 +88,6 @@ it can wait for the next session.
 - Decide in the evaluation protocol: QNC exact, or within 1 point (exact can read "never reached"
   over one prompt in 300). Report both until then.
 - Logistic baseline is pointwise only.
+
+## Added by WP-11 (D-105)
+S8 is pointwise only, τ = 7 from `configs/judge_choice.yaml`; skip Bradley-Terry. Pilot separability at K = 3 was 0.111, so compare with ZeroRouter early and report plainly if routing by cluster gains nothing.

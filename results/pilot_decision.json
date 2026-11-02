@@ -1,0 +1,631 @@
+{
+ "labels": "Opus, not human (D-098)",
+ "judge": "jev, with history (D-103)",
+ "n_prompts": 100,
+ "base_rate_pass": {
+  "cal": 0.62,
+  "anchor": 0.82
+ },
+ "tau_sweep": {
+  "4": {
+   "value": 0.63,
+   "n": 100,
+   "ci": [
+    0.532,
+    0.718
+   ],
+   "balanced": 0.513,
+   "kappa": 0.032,
+   "judge_pass": 0.99
+  },
+  "5": {
+   "value": 0.65,
+   "n": 100,
+   "ci": [
+    0.553,
+    0.736
+   ],
+   "balanced": 0.55,
+   "kappa": 0.118,
+   "judge_pass": 0.93
+  },
+  "6": {
+   "value": 0.74,
+   "n": 100,
+   "ci": [
+    0.646,
+    0.816
+   ],
+   "balanced": 0.683,
+   "kappa": 0.399,
+   "judge_pass": 0.78
+  },
+  "7": {
+   "value": 0.74,
+   "n": 100,
+   "ci": [
+    0.646,
+    0.816
+   ],
+   "balanced": 0.709,
+   "kappa": 0.431,
+   "judge_pass": 0.68
+  },
+  "8": {
+   "value": 0.66,
+   "n": 100,
+   "ci": [
+    0.563,
+    0.745
+   ],
+   "balanced": 0.69,
+   "kappa": 0.345,
+   "judge_pass": 0.42
+  },
+  "9": {
+   "value": 0.44,
+   "n": 100,
+   "ci": [
+    0.347,
+    0.538
+   ],
+   "balanced": 0.548,
+   "kappa": 0.075,
+   "judge_pass": 0.06
+  }
+ },
+ "tau_star": 7,
+ "auc": 0.789,
+ "pointwise_ci": {
+  "accuracy": [
+   0.65,
+   0.82
+  ],
+  "kappa": [
+   0.236,
+   0.616
+  ],
+  "auc": [
+   0.691,
+   0.876
+  ]
+ },
+ "pointwise_loo": {
+  "value": 0.74,
+  "n": 100,
+  "ci": [
+   0.646,
+   0.816
+  ],
+  "balanced": 0.709,
+  "kappa": 0.431
+ },
+ "pointwise_with_anchor_items": {
+  "7": {
+   "value": 0.77,
+   "n": 200,
+   "ci": [
+    0.707,
+    0.823
+   ],
+   "balanced": 0.726,
+   "kappa": 0.442
+  }
+ },
+ "pass_by_model": {
+  "7": {
+   "claude-sonnet-5-5": 0.72,
+   "deepseek-v4-flash": 0.73,
+   "deepseek-v4-pro": 0.64,
+   "gemini-2.5-flash-lite": 0.57,
+   "gpt-5.6-luna": 0.65
+  },
+  "8": {
+   "claude-sonnet-5-5": 0.5,
+   "deepseek-v4-flash": 0.47,
+   "deepseek-v4-pro": 0.39,
+   "gemini-2.5-flash-lite": 0.29,
+   "gpt-5.6-luna": 0.47
+  }
+ },
+ "mean_score": {
+  "claude-sonnet-5-5": 7.583,
+  "deepseek-v4-flash": 7.619,
+  "deepseek-v4-pro": 7.291,
+  "gemini-2.5-flash-lite": 7.16,
+  "gpt-5.6-luna": 7.362
+ },
+ "position": {
+  "all_models": {
+   "value": 0.738,
+   "n": 400,
+   "ci": [
+    0.692,
+    0.778
+   ]
+  },
+  "candidates_only": {
+   "value": 0.733,
+   "n": 300,
+   "ci": [
+    0.681,
+    0.78
+   ]
+  },
+  "tie_rate": 0.087,
+  "h_wins_when_h_is": {
+   "a_first": 0.367,
+   "h_first": 0.188
+  },
+  "by_model": {
+   "deepseek-v4-flash": {
+    "value": 0.67,
+    "n": 100,
+    "ci": [
+     0.573,
+     0.754
+    ]
+   },
+   "deepseek-v4-pro": {
+    "value": 0.75,
+    "n": 100,
+    "ci": [
+     0.657,
+     0.825
+    ]
+   },
+   "gemini-2.5-flash-lite": {
+    "value": 0.83,
+    "n": 100,
+    "ci": [
+     0.745,
+     0.891
+    ]
+   },
+   "gpt-5.6-luna": {
+    "value": 0.7,
+    "n": 100,
+    "ci": [
+     0.604,
+     0.781
+    ]
+   }
+  }
+ },
+ "pairwise": {
+  "non_tie_items": 96,
+  "judge_undecided": 24,
+  "decided_only": {
+   "value": 0.736,
+   "n": 72,
+   "ci": [
+    0.624,
+    0.824
+   ],
+   "balanced": 0.652,
+   "kappa": 0.285
+  },
+  "undecided_as_wrong": {
+   "value": 0.552,
+   "n": 96,
+   "ci": [
+    0.453,
+    0.648
+   ]
+  },
+  "soft_score": {
+   "value": 0.698,
+   "n": 96,
+   "ci": [
+    0.6,
+    0.781
+   ],
+   "balanced": 0.66,
+   "kappa": 0.284
+  },
+  "pointwise_gap_predicts_pref": {
+   "value": 0.615,
+   "n": 96,
+   "ci": [
+    0.515,
+    0.706
+   ],
+   "balanced": 0.576,
+   "kappa": 0.129
+  },
+  "auc_soft": 0.709,
+  "auc_pointwise_gap": 0.671,
+  "single_order_a_first": {
+   "value": 0.663,
+   "n": 92,
+   "ci": [
+    0.562,
+    0.751
+   ],
+   "balanced": 0.651,
+   "kappa": 0.257
+  },
+  "single_order_h_first": {
+   "value": 0.702,
+   "n": 94,
+   "ci": [
+    0.603,
+    0.785
+   ],
+   "balanced": 0.595,
+   "kappa": 0.195
+  },
+  "soft_ci": {
+   "accuracy": [
+    0.604,
+    0.792
+   ],
+   "kappa": [
+    0.08,
+    0.497
+   ]
+  },
+  "hard_ci": {
+   "kappa": [
+    0.04,
+    0.52
+   ]
+  }
+ },
+ "cluster_sizes": {
+  "1": [
+   100
+  ],
+  "3": [
+   39,
+   25,
+   36
+  ],
+  "8": [
+   15,
+   12,
+   7,
+   14,
+   13,
+   7,
+   22,
+   10
+  ]
+ },
+ "separability_stability": {
+  "pt_tau7": {
+   "1": {
+    "D": 0.333,
+    "C": null
+   },
+   "3": {
+    "D": 0.111,
+    "C": 0.635
+   },
+   "8": {
+    "D": 0.042,
+    "C": 0.28
+   }
+  },
+  "pt_tau8": {
+   "1": {
+    "D": 0.5,
+    "C": null
+   },
+   "3": {
+    "D": 0.167,
+    "C": 0.579
+   },
+   "8": {
+    "D": 0.062,
+    "C": 0.281
+   }
+  },
+  "pw": {
+   "1": {
+    "D": 0.5,
+    "C": null
+   },
+   "3": {
+    "D": 0.278,
+    "C": 0.823
+   },
+   "8": {
+    "D": 0.062,
+    "C": 0.575
+   }
+  },
+  "pw_soft": {
+   "1": {
+    "D": 0.5,
+    "C": null
+   },
+   "3": {
+    "D": 0.0,
+    "C": 0.877
+   },
+   "8": {
+    "D": 0.0,
+    "C": 0.735
+   }
+  }
+ },
+ "cost_per_answer": {
+  "deepseek-v4-flash": 0.000632,
+  "gpt-5.6-luna": 0.000808,
+  "gemini-2.5-flash-lite": 0.000391,
+  "claude-sonnet-5-5": 0.015616
+ },
+ "cross_eval_informative_underpowered": {
+  "router_pt": {
+   "Qpt": [
+    0.702,
+    0.034
+   ],
+   "Qpw": [
+    0.402,
+    0.066
+   ]
+  },
+  "router_pw": {
+   "Qpt": [
+    0.706,
+    0.044
+   ],
+   "Qpw": [
+    0.466,
+    0.041
+   ]
+  }
+ },
+ "length_bias": {
+  "mean_within_prompt_rho": 0.008,
+  "n_prompts": 100,
+  "pooled_demeaned_rho": -0.041,
+  "pairwise_longer_wins": {
+   "value": 0.656,
+   "n": 730,
+   "ci": [
+    0.621,
+    0.69
+   ]
+  },
+  "sonnet_longer_share": 0.947,
+  "h_win_when_h_longer": {
+   "value": 0.128,
+   "n": 39,
+   "ci": [
+    0.056,
+    0.267
+   ]
+  },
+  "h_win_when_h_shorter": {
+   "value": 0.314,
+   "n": 691,
+   "ci": [
+    0.281,
+    0.35
+   ]
+  }
+ },
+ "pointwise_groups": {
+  "model": {
+   "deepseek-v4-flash": {
+    "value": 0.765,
+    "n": 34,
+    "ci": [
+     0.6,
+     0.876
+    ],
+    "balanced": 0.688,
+    "kappa": 0.398,
+    "judge_over": 5,
+    "judge_under": 3
+   },
+   "gemini-2.5-flash-lite": {
+    "value": 0.667,
+    "n": 33,
+    "ci": [
+     0.496,
+     0.802
+    ],
+    "balanced": 0.678,
+    "kappa": 0.346,
+    "judge_over": 8,
+    "judge_under": 3
+   },
+   "gpt-5.6-luna": {
+    "value": 0.788,
+    "n": 33,
+    "ci": [
+     0.622,
+     0.893
+    ],
+    "balanced": 0.763,
+    "kappa": 0.512,
+    "judge_over": 3,
+    "judge_under": 4
+   }
+  },
+  "rag": {
+   "False": {
+    "value": 0.723,
+    "n": 83,
+    "ci": [
+     0.618,
+     0.808
+    ],
+    "balanced": 0.688,
+    "kappa": 0.393
+   },
+   "True": {
+    "value": 0.824,
+    "n": 17,
+    "ci": [
+     0.59,
+     0.938
+    ],
+    "balanced": 0.875,
+    "kappa": 0.638
+   }
+  },
+  "instr_bucket": {
+   "1-5k": {
+    "value": 0.766,
+    "n": 64,
+    "ci": [
+     0.649,
+     0.853
+    ],
+    "balanced": 0.73,
+    "kappa": 0.486
+   },
+   "5-20k": {
+    "value": 0.769,
+    "n": 13,
+    "ci": [
+     0.497,
+     0.918
+    ],
+    "balanced": 0.864,
+    "kappa": 0.451
+   },
+   "<=1k": {
+    "value": 0.652,
+    "n": 23,
+    "ci": [
+     0.449,
+     0.812
+    ],
+    "balanced": 0.646,
+    "kappa": 0.292
+   }
+  },
+  "instr_cut": {
+   "False": {
+    "value": 0.74,
+    "n": 100,
+    "ci": [
+     0.646,
+     0.816
+    ],
+    "balanced": 0.709,
+    "kappa": 0.431
+   }
+  },
+  "persian": {
+   "False": {
+    "value": 0.5,
+    "n": 4,
+    "ci": [
+     0.15,
+     0.85
+    ],
+    "balanced": 0.5,
+    "kappa": 0.0
+   },
+   "True": {
+    "value": 0.75,
+    "n": 96,
+    "ci": [
+     0.655,
+     0.826
+    ],
+    "balanced": 0.717,
+    "kappa": 0.448
+   }
+  }
+ },
+ "pairwise_groups_soft": {
+  "model": {
+   "deepseek-v4-flash": {
+    "value": 0.688,
+    "n": 32,
+    "ci": [
+     0.514,
+     0.82
+    ]
+   },
+   "gemini-2.5-flash-lite": {
+    "value": 0.844,
+    "n": 32,
+    "ci": [
+     0.682,
+     0.931
+    ]
+   },
+   "gpt-5.6-luna": {
+    "value": 0.562,
+    "n": 32,
+    "ci": [
+     0.393,
+     0.718
+    ]
+   }
+  },
+  "persian": {
+   "False": {
+    "value": 0.75,
+    "n": 4,
+    "ci": [
+     0.301,
+     0.954
+    ]
+   },
+   "True": {
+    "value": 0.696,
+    "n": 92,
+    "ci": [
+     0.595,
+     0.78
+    ]
+   }
+  },
+  "rag": {
+   "False": {
+    "value": 0.704,
+    "n": 81,
+    "ci": [
+     0.597,
+     0.792
+    ]
+   },
+   "True": {
+    "value": 0.667,
+    "n": 15,
+    "ci": [
+     0.417,
+     0.848
+    ]
+   }
+  }
+ },
+ "opus_pref_counts": {
+  "anchor": 72,
+  "h": 24,
+  "tie": 4
+ },
+ "pro_vs_sonnet": {
+  "mean_gap_pro_minus_sonnet": -0.292,
+  "gap_ci": [
+   -0.529,
+   -0.035
+  ],
+  "pairwise_o": 0.282,
+  "pairwise_soft": 0.372,
+  "pro_cost_per_answer": 0.002662
+ },
+ "pairwise_o_by_model": {
+  "deepseek-v4-flash": 0.4,
+  "deepseek-v4-pro": 0.282,
+  "gemini-2.5-flash-lite": 0.16,
+  "gpt-5.6-luna": 0.443
+ },
+ "pairwise_soft_by_model": {
+  "deepseek-v4-flash": 0.441,
+  "deepseek-v4-pro": 0.372,
+  "gemini-2.5-flash-lite": 0.297,
+  "gpt-5.6-luna": 0.453
+ },
+ "seconds": 4.3
+}

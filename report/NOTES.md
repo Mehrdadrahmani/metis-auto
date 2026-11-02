@@ -166,3 +166,12 @@ file, the WP reports and `MASTER_LOG.md §2`.
 
 ## Jev with chat history (measured, pilot, against Opus labels, n = 100)
 - Pointwise at pass mark 7: agreement 0.68 to 0.74, kappa 0.36 to 0.43. Marks 6 to 7.5 now give 0.72 to 0.74. Pairwise agreement 0.647 (n = 68) to 0.736 (n = 72). Position consistency fell from 0.755 to 0.738 (n = 400); B 441, A 289, tie 70. Mean score 6.81 to 7.40. Spearman old against new 0.749. The earlier split by history did not predict this gain. Rater saw history too, so part of the gain may be shared input.
+
+## WP-11 pilot decision (measured, pilot, against Opus labels, not human)
+- Gate 2 failed by one item and the owner went ahead on record: pointwise jev with history, τ = 7, agreement 0.74 (CI 0.65 to 0.82, n = 100, line 0.75), κ 0.431 (CI 0.24 to 0.62), AUC 0.79. The report must state this. Leave-one-out τ gives the same result.
+- Pairwise: agreement 0.736 on 72 decided items, 24 of 96 undecided, κ 0.285, position consistency 0.738 (n = 400). A model won 0.367 shown second, 0.188 shown first.
+- Separability pointwise 0.333 at K = 1, 0.111 at K = 3, n = 100. Length bias none (ρ 0.008). No visible self-preference for gpt-5.6-luna; gemini over-passed 8 to 3 (n = 33).
+- Chat history helped Jev: AUC 0.727 to 0.789. Terra without history AUC 0.727, κ 0.268 at τ = 7. Terra with history not measured.
+- Of 26 disagreements, 10 under-passed (mostly required bot behaviour) and 16 over-passed (mostly poor fit to the bot, or weak on the question).
+- deepseek-v4-pro against Sonnet: mean gap -0.29 (CI -0.53 to -0.04, n = 100), cost per answer $0.0027 against $0.0156.
+- Not done: human check, 20 re-labels, wrong-prompt test.
