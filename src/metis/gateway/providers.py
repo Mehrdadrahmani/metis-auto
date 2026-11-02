@@ -45,27 +45,48 @@ class MockProvider:
 
 
 class LiveProvider:
-    """Real calls through `metis.llm.client`: redaction, outgoing guard, budget permit per call."""
+    """Real calls: redaction, outgoing guard, budget guard and ledger through `get_or_call`."""
 
-    def __init__(self, stage: str = "live", gen: dict[str, dict[str, Any]] | None = None, max_tokens: int = 1024):
+    def __init__(self, stage: str = "live"):
+        import time
+
+        from metis.config import load_config
         from metis.llm.budget import Budget
-        from metis.llm.client import load_models
+        from metis.llm.callcache import CallCache
 
-        self.stage, self.gen, self.max_tokens = stage, gen or {}, max_tokens
-        self.budget, self.models = Budget(), load_models()
-        self.semaphores: dict[str, threading.Semaphore] = {}
+        self.stage = stage
+        self.cache = CallCache()
+        self.budget = Budget(self.cache)
+        self.gen = load_config("gen_config")
+        self.run_id = f"live-{int(time.time())}"  # fresh calls, so latency is real
+        self.lock = threading.Lock()
+
+    def send(self, model, messages, gen, permit=None, prompt_id=None):
+        import os
+
+        from metis.llm.client import AccountBlocked, complete
+
+        try:
+            return complete(model, messages, gen, permit, prompt_id)
+        except AccountBlocked:
+            spare = os.environ.pop("METIS_API_KEY_SPARE", None)
+            if not spare:
+                raise
+            os.environ["METIS_API_KEY"] = spare  # owner's spare key, used once the first runs out
+            return complete(model, messages, gen, permit, prompt_id)
 
     def call(self, model: str, messages: list[dict[str, Any]], context: dict[str, Any]) -> Reply:
         from metis.llm.budget import call_cost
-        from metis.llm.client import CallFailed, complete, redact_messages
+        from metis.llm.callcache import get_or_call
+        from metis.llm.client import redact_messages
+        from metis.llm.messages import gen_params
 
         clean = redact_messages(messages)
+        params = gen_params(model, self.gen)
         chars = sum(len(str(m.get("content", ""))) for m in clean)
-        estimate = call_cost(self.models[model], chars // 3 + 1, self.max_tokens)
-        permit = self.budget.guard(self.stage, estimate)
-        try:
-            r = complete(model, clean, self.gen.get(model, {"max_tokens": self.max_tokens}), permit)
-        except CallFailed as exc:
-            self.budget.release(permit)
-            raise ProviderError(exc.kind if hasattr(exc, "kind") else "call_failed") from None
+        estimate = call_cost(self.budget.models[model], chars // 3 + 1, 300)
+        result = get_or_call(self.cache, self.budget, self.stage, model, clean, params, self.run_id, estimate, self.send, prompt_id=context.get("prompt_id"))
+        if result.status != "ok" or result.response is None:
+            raise ProviderError(result.error_kind or "call_failed")
+        r = result.response
         return Reply(r.text, r.tokens_in, r.tokens_out, r.finish_reason, r.latency_ms, r.cached_tokens)

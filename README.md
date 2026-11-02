@@ -1,120 +1,83 @@
-# Metis-Auto v2
+# TakRouter (project Metis-Auto v2)
 
-An LLM router for Persian-first chatbot traffic. It tries to send each message to the cheapest model
-that is good enough, using the UniRoute method (ICLR 2026). Rahnema College 2026 course project.
+An OpenAI-compatible LLM gateway for Persian-first chatbots. For each message it picks a model with the **UniRoute** method (ICLR 2026), then adds a semantic cache, quality checks with escalation, failover and traces. Rahnema College 2026 course project.
 
-> **Status, 2026-11-02: in progress.** Answers and labels are done, and test labels stay sealed. The router has
-> **not** been tested on real data yet and the gateway is not built. Live status: [`STATUS.md`](STATUS.md).
+**New here?** Read [The result](#the-result), run [Quick start](#quick-start), then open the site at `http://localhost:8000`. Live project status: [`STATUS.md`](STATUS.md). Full results: [`report/REPORT.md`](report/REPORT.md).
 
-**Reading this as an AI agent?** Go to [For AI agents](#for-ai-agents).
+## The result
 
-## Contents
+Final test: 299 sealed prompts, opened once after the router and protocol were frozen with tag `pre-test`. Each answer was scored 1 to 10 by the Jev judge; 7 or above is a pass. Costs are measured from tokens at list prices.
 
-- [Results so far](#results-so-far)
-- [How it works](#how-it-works)
-- [Progress](#progress)
-- [Quick start](#quick-start)
-- [Repository map](#repository-map)
-- [What is not in this repo](#what-is-not-in-this-repo)
-- [Rules for everyone](#rules-for-everyone)
-- [For AI agents](#for-ai-agents)
+| Setup | Pass | $ per 1,000 messages |
+|---|---:|---:|
+| **TakRouter K = 8 (shipped)** | **66.9%** | **0.69** |
+| TakRouter K = 4 (comparison) | 70.2% | 5.55 |
+| Always DeepSeek v4 Flash | 68.6% | 0.68 |
+| Always Sonnet 5.5 (premium) | 64.9% | 16.32 |
+| Always Luna | 61.9% | 0.84 |
+| Always Gemini 2.5 Flash Lite | 51.8% | 0.41 |
 
-## Results so far
-
-Measured on 400 validation prompts per model. Each model answered with the chatbot's own system
-prompt, retrieved context and chat history. Answers were scored 1 to 10 by the Jev judge, and 7 or
-above is a pass. Pass rates carry about ±5 points of sampling error.
-
-| Model | Mean score | Pass rate | Cost of 300 new answers |
-|---|---:|---:|---:|
-| claude-sonnet-5-5 (premium baseline) | 7.35 | 65.2% | $5.17 |
-| deepseek-v4-flash | 7.31 | 64.9% | $0.20 |
-| gpt-5.6-luna | 7.22 | 61.2% | $0.26 |
-| gemini-2.5-flash-lite | 6.86 | 53.9% | $0.13 |
-
-Details: [`results/s6_stats.md`](results/s6_stats.md), [`results/s7_stats.md`](results/s7_stats.md).
-
-What this does and does not show:
-
-- DeepSeek matches Sonnet on this measure at about 1/26 of the price.
-- At least one model passes on about 79% of prompts, against 65% for the best single model. That is
-  the ceiling for a perfect router, not a result.
-- Routing may add little over "always DeepSeek". All 4 models pass together on 41% of prompts and
-  all fail together on 21%. DeepSeek and Sonnet each beat the other on only 9%. Pilot separability
-  was also weak (0.111 at K = 3).
-
-Known limits:
-
-- **Gate 2 was missed by one item.** Judge agreement was 0.74 against a 0.75 line, κ 0.431, n = 100.
-  The owner went ahead on record.
-- Calibration labels came from Claude Opus, not from a human.
-- The wrong-prompt check and the 20 re-labels were not done.
-- 1 Sonnet answer failed and counts as the worst score. 1 prompt has no judgments because Jev refused
-  it.
+- **Against Sonnet, all 3 pre-registered criteria were met:** 95.8% cheaper; quality difference +2.0 points (95% CI -3.0 to +7.1, limit -5); simulated p90 latency 4.4 s vs 8.8 s.
+- **Against always-DeepSeek, the shipped router adds no value:** -1.7 points (95% CI -3.8 to +0.3) at about the same cost. Most of the saving comes from one good cheap model. This is the most important limit of the result.
+- Judge labels are noisy (5% of 60 repeats flipped pass or fail) and pilot agreement missed its line (0.74 vs 0.75, Opus labels, not human).
+- **Semantic cache:** no threshold met the 2% wrong-hit target. At 0.97 about 10% of meaning hits were judged wrong (95% CI 5.5% to 17.4%). See `results/cache_threshold.md`.
 
 ## How it works
 
-![System overview](ref/diagrams/01-overview.png)
+```text
+request → G1 rules → G2 embed → G3 cache → G4 UniRoute → G5 call + failover → G6 checks + escalation → G7 trace
+```
 
-1. **Prompt types (free).** Embed unlabeled real user messages locally and group them with K-means.
-2. **Report cards (paid once).** Every candidate answers the validation prompts and a judge scores
-   them. A model's fingerprint is its failure rate in each prompt type.
-3. **Route (online).** Embed the new message, find its nearest type, and pick the model with the
-   lowest `Ψ_k(model) + λ · cost(model)`.
-4. **Add a model later.** It answers the same prompts, which adds one fingerprint. No retraining.
+**Offline:** cluster train prompts with no labels (K-means on Jina nano vectors), generate answers on validation, judge them, and build Ψ, the fail rate of each model in each cluster.
+**Online:** assign the message to its nearest cluster k and pick the model with the lowest `s(h) = Ψ_k(h) + λ·ĉ(h)`. Adding a model only adds one row to Ψ.
 
-The planned gateway adds hard rules, a semantic cache, failover, escalation on bad answers, and
-traces. The spec is the source of truth: [`ref/UNIROUTE_PIPELINE.md`](ref/UNIROUTE_PIPELINE.md).
-A plain walkthrough is in [`PROJECT.md`](PROJECT.md). Deliberate changes are listed in
-[`PLAN.md`](PLAN.md) §11.
+The router artifact is `artifacts/router_v1/` (K = 8, λ = 0.5151). Secrets are redacted before any model call, and traces hold no message text.
 
-## Progress
-
-| Stage | State |
-|---|---|
-| Data, splits, embeddings, clusters (WP-01 to WP-08) | Done |
-| Router and evaluation library, on synthetic data (WP-05) | Done |
-| Pilot and judge choice (WP-09 to WP-11) | Done, Gate 2 missed by one item |
-| Generation (WP-12) | Done, test answers sealed |
-| Judging (WP-13) | Done, test labels sealed |
-| Fingerprints, settings, freeze (WP-14) | Not started |
-| Gateway, cache, replay, dashboard (WP-15 to WP-18) | Not started |
-| Final evaluation, report, release (WP-19 to WP-21) | Not started |
-
-Full route: [`ROADMAP.md`](ROADMAP.md). Spent about $19.06 of the $60 cap; about $21.60 expected in
-total.
+| Measured | Value |
+|---|---:|
+| Gateway overhead, real embedder | p50 23 ms, p95 72 ms |
+| One model down | 0 failed requests in tests and replay |
+| Unit tests | see `uv run pytest` |
 
 ## Quick start
 
-Needs [uv](https://docs.astral.sh/uv/) and Python 3.12. `uv sync` also downloads PyTorch, so it takes
-a while the first time.
+Needs [uv](https://docs.astral.sh/uv/) and Python 3.12.
 
 ```bash
-git clone <this repo> && cd <this repo>
-git checkout TakRoute
-git config core.hooksPath .githooks   # turns on the secret scan: do this before your first commit
 uv sync
-uv run pytest -q
+uv run pytest                                  # no keys or data needed
+TAKROUTER_FAKE_EMBED=1 uv run uvicorn metis.gateway.app:app --port 8000
 ```
 
-Tests need no keys, no data and no paid calls.
+Open `http://localhost:8000` for the site. That command needs no keys or model files: the provider is a mock, answers are placeholders, and a fake embedder replaces Jina, so **routing in this mode is not real**. For real routing, download the embedder (`scripts/fetch_model.py`) and drop `TAKROUTER_FAKE_EMBED`. For real answers, set `provider: live` in `configs/gateway.yaml` and put `METIS_BASE_URL` and `METIS_API_KEY` in `.env`, with an approved `live` budget.
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="local")
+reply = client.chat.completions.create(model="takrouter", messages=[{"role": "user", "content": "سلام"}])
+print(reply.model, reply.takrouter)
+```
+
+Use `model="takrouter"` to route, or a concrete id such as `deepseek-v4-flash` to skip the router. Optional headers: `X-Metis-Chatbot`, `X-Metis-Session`.
 
 | Task | Command |
 |---|---|
-| Lint | `uv run ruff check src scripts tests` |
-| Price the next generation run, sends nothing | `uv run python scripts/s6_generate.py --set val --stage gen_main --estimate-only` |
-| Rebuild the validation stats | `uv run python scripts/s6_stats.py --set val` |
-| Refresh the knowledge graph after code changes | `graphify update .` |
+| Replay on validation ($0, needs `runs/`) | `PYTHONPATH=scripts uv run python scripts/s18_replay.py` |
+| Refresh site numbers | `PYTHONPATH=scripts uv run python scripts/build_web_data.py` |
+| Latency benchmark | `uv run python scripts/gateway_latency.py` |
 
-The stage scripts read `data/`, `runs/` and `cache/`, which are not in git (see below). Paid runs also
-need `.env`: copy [`.env.example`](.env.example) and ask the owner about keys.
+## Pitch deck
+
+Persian slides: see `deck/README.md`.
 
 ## Repository map
 
 | Path | What it holds |
 |---|---|
-| `src/metis/` | Package: `data`, `embed`, `llm`, `judge`, `router`, `eval`, `sim`, `labeling`, `obs`. `gateway` is still empty |
+| `src/metis/` | Package: `data`, `embed`, `llm`, `judge`, `router`, `gateway`, `eval`, `sim`, `labeling`, `obs` |
 | `scripts/` | One script per stage: `s1_` ingest to `s7_` judge, plus reports |
+| `web/` | The TakRouter site, served by the gateway at `/` |
+| `artifacts/` | Frozen routers: `router_v1` (shipped), `router_v1_k4` |
 | `configs/` | YAML settings. `budget.yaml` holds the money limits, `models.yaml` the prices |
 | `tests/` | pytest suite |
 | `results/`, `report/` | Aggregates only, no prompt or answer text |
@@ -145,7 +108,7 @@ The full list is in [`AGENTS.md`](AGENTS.md). The ones that matter most:
 
 - **Never commit** `data/`, `runs/`, `cache/` or `.env`, or paste a key in chat.
 - **The test set stays sealed.** No method, K, λ, threshold or other choice may use test prompts or
-  labels. Only `scripts/eval_test.py` (WP-19, not written yet) opens them, once.
+  labels. Only `scripts/eval_test.py` opens them. That one look is done, so results must not lead to new tuning on the same test set.
 - **Paid calls need the owner's "go"** with an estimate. All go through `metis.llm.runner`, which adds
   the cache, the budget limit and automatic stops. The hard cap is $60.
 - **Prompts and answers stay out of** git, `results/` and `report/`.

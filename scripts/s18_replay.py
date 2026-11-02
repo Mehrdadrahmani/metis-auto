@@ -31,7 +31,6 @@ def main() -> None:
     tr, answers = traffic()
     art = load_artifact("artifacts/router_v1")
     k4 = load_artifact("artifacts/router_v1_k4")
-    chosen = route(tr.vectors[0], MODELS, art.router(), art.meta.lam).model
     main_model = "deepseek-v4-flash"
     runs = [(Settings("TakRouter K = 8, plain"), art), (Settings("TakRouter K = 4, plain"), k4),
             (Settings("Always Sonnet", fixed_model="claude-sonnet-5-5"), art), (Settings("Always DeepSeek", fixed_model=main_model), art),

@@ -7,6 +7,7 @@ approved_usd:
   judge_main: 3        # owner "go pairwise" 2026-11-03 (D-116): pairwise on val 800, estimate $1.15 to $1.50
   cache_labels: 1      # owner consent D-119
   live: 1.5            # owner consent D-119
+  khayyam: 5           # owner "go khayyam" after main work, D-119
 # Automatic stops in run_batch (AGENTS.md §5).
 anomalies:
   min_calls: 20            # rate checks start after this many new calls

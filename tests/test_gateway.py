@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
-from metis.config import load_config
 
+from metis.config import load_config
 from metis.gateway.app import build_gateway, create_app
 from metis.gateway.cache import SemanticCache
 from metis.gateway.cache_policy import is_cacheable

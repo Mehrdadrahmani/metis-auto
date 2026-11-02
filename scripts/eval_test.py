@@ -26,7 +26,6 @@ from metis.llm.client import load_models
 from metis.router.artifact import load_artifact
 from metis.router.kmeans import assign
 from metis.router.route import cluster_choices
-from metis.router.select_k import fit_psi
 from metis.router.select_lambda import lambda_grid
 from metis.sim.replay import Settings, Traffic, run
 
@@ -108,7 +107,7 @@ def main() -> None:
     near = np.argsort(-(unit_t @ unit_v.T), axis=1)[:, :80]
     gamma_knn = val_loss[near].mean(1)
     gamma_log = LogisticRouter(xv, val_loss, c_hat, SEED, val_groups).predict_loss(x)
-    from metis.router.route import rank_models  # noqa: PLC0415
+    from metis.router.route import rank_models
 
     def per_prompt(gamma):
         return np.array([[rank_models(g + lam * c_hat, c_hat)[0] for g in gamma] for lam in lams])
@@ -136,7 +135,7 @@ def main() -> None:
         ladder.append({"router": name, "area": area_of(name, full), "minus_k8": d.estimate, "low": d.low, "high": d.high,
                        "qnc": qnc(c.mean(1), q.mean(1), q_best, c_best), "qnc1": qnc(c.mean(1), q.mean(1), q_best - 0.01, c_best)})
 
-    from metis.router.fingerprints import fingerprints  # noqa: PLC0415
+    from metis.router.fingerprints import fingerprints
 
     psi2 = fingerprints(val_loss, val_labels[8], 8, alpha=2.0).psi
     pick_a2 = cluster_choices(psi2, c_hat, np.array([art8.meta.lam]))[0][cl8]
@@ -193,7 +192,7 @@ def main() -> None:
     data = dict(n=n, refused=refused, head=head, frozen_changed=changed, primary=prim, pass_rates={m: float(pass_all[:, j].mean()) for j, m in enumerate(MODELS)} | {"K = 8": float(r8.mean()), "K = 4": float(r4.mean())},
                 usd_1k={m: float(usd[:, j].mean() * 1000) for j, m in enumerate(MODELS)} | {"K = 8": float(usd8.mean() * 1000), "K = 4": float(usd4.mean() * 1000)},
                 shares={"K = 8": np.bincount(pick8, minlength=4).tolist(), "K = 4": np.bincount(pick4, minlength=4).tolist()}, ladder=ladder, alpha2=alpha2, budget_points=budget_points, holdout=holdout,
-                per_cluster=per_cluster, by_length=by_len, repeats={"n": int(len(rep)), "mean_gap": float(np.nanmean(gap)), "pass_flips": float(np.mean(flips))},
+                per_cluster=per_cluster, by_length=by_len, repeats={"n": len(rep), "mean_gap": float(np.nanmean(gap)), "pass_flips": float(np.mean(flips))},
                 production={"priced_share": float(priced.mean()), "usd_1k_priced": float(np.nanmean(prod_usd)) * 1000, "top_models": prod.value_counts().head(6).to_dict()}, similarity=sim, replay=replay,
                 criteria={"cost_40": bool(c1), "noninferior": bool(c2), "latency": bool(c3), "adds_over_deepseek": bool(adds)})
     (OUT / "final.json").write_text(json.dumps(data, indent=1, ensure_ascii=False, default=float), encoding="utf-8")
@@ -202,8 +201,8 @@ def main() -> None:
 
 def production_similarity(order, answers, pick8, pick4):
     """Mean cosine to production's answer, nano vectors. Similarity is not quality (M15)."""
-    from metis.gateway.app import ROOT
     from metis.embed.embedder import Embedder
+    from metis.gateway.app import ROOT
 
     prod = pd.concat(pd.read_parquet(p, columns=["prompt_id", "prod_answer"], filters=[("prompt_id", "in", order)]) for p in sorted(glob.glob("runs/s1/context/part-*.parquet"))).set_index("prompt_id").prod_answer
     s4 = load_config("pipeline")["s4"]

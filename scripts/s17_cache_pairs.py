@@ -14,8 +14,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from metis.config import load_config
-from metis.embed.embedder import Embedder
 from metis.eval.stats import wilson_ci
 from metis.gateway.cache_policy import is_cacheable
 from metis.judge import pointwise, render

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 from pathlib import Path
 from typing import Any
 
@@ -57,7 +58,8 @@ def build_gateway(cfg: dict[str, Any] | None = None, embed=None, cache_embed=Non
     cfg = cfg or load_config("gateway")
     artifact = load_artifact(ROOT / cfg["artifact"])
     if embed is None:
-        embed = hash_embedder(artifact.centroids.shape[1]) if cfg.get("fake_embedder") else None
+        fake = cfg.get("fake_embedder") or os.environ.get("TAKROUTER_FAKE_EMBED") == "1"
+        embed = hash_embedder(artifact.centroids.shape[1]) if fake else None
     if embed is None:
         embed, cache_embed = real_embedder()
     if provider is None:
