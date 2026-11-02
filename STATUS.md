@@ -1,5 +1,5 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-03 · WP-14 mid (handoff 2)
+Updated: 2026-11-03 · WP-14 mid (handoff 3)
 
 ## Now
 - Current WP: **WP-14 Fingerprints, settings, freeze**. Val grown to 800 (D-115). Test answers and labels sealed, unread. About $28.07 spent
@@ -9,7 +9,7 @@ Updated: 2026-11-03 · WP-14 mid (handoff 2)
 - Model: default (Opus 5.5)
 
 ## Exact next step
-`/start`, then WP-14: sealed-file guard, artifact (`router/artifact.py`, `artifacts/router_v1/`), draft `results/eval_protocol.md`, charts. **Stop before `git tag pre-test`: owner approves.** Owner's overnight list: all free WPs, visuals, pitch deck. Khayyam run waits for "go khayyam" (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
+`/start`, then WP-14: sealed-file guard, artifact (`router/artifact.py`, `artifacts/router_v1/`), draft `results/eval_protocol.md`, charts. Then Gate 3 and on through WP-21 under D-119 (owner consent, all stops approved, wait out usage limits). Deck after WP-16, updated at the end. Khayyam runs after the main work (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
 
 ## Validation results (`results/router_check_val.md`, `select_k.md`, `ladder_val.md`, `lambda_val.md`; n = 798)
 - Pass at 7: Sonnet 66.2%, DeepSeek 65.4%, Luna 61.5%, Gemini 53.5%. Perfect router 79.4%
@@ -47,13 +47,13 @@ Updated: 2026-11-03 · WP-14 mid (handoff 2)
 
 ## Money
 - Spent about $28.07 of cap $60. Approved: pilot $10, gen_main $21.50, judge_main $3
-- Rest planned: about $2.50 (cache labels, live run). Each stage needs a "go"
+- Rest planned: about $2.50 (cache labels, live run), plus Khayyam limit $5. All approved by D-119
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-119 Overnight consent, all WPs
 - D-118 λ out of fold, proposed (DEV-16)
 - D-117 K = 8 by owner, K = 4 comparison
 - D-116 Pairwise on val 800, second view
 - D-115 Val 800 from train sessions (DEV-15)
 - D-114 WP-14 protocol notes
 - D-113 Team branch `TakRoute`
-- D-112 Val labels, refused prompt unlabeled

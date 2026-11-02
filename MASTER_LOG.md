@@ -119,6 +119,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-116 | 2026-11-03 | Pairwise jev run on all 800 val prompts as a second view (owner "go pairwise"; D-106 stays for the main method). Test has no pairwise labels | O | WP-14 |
 | D-117 | 2026-11-03 | **Owner chose K = 8 as main router, K = 4 kept as comparison.** The D-064 rule on val 800 gives K = 4 (area 0.6634; K = 3 0.6629; K = 8 0.6522). Set aside on purpose; report must state it, and that K = 8 lost to DeepSeek by 2.0 points on the new 400 when fitted on the old 400. Final approval at Gate 3 | O | WP-14 |
 | D-118 | 2026-11-03 | **Proposed, needs owner at Gate 3 (DEV-16):** λ chosen on unseen folds as the largest λ not below always-DeepSeek, because S10's in-sample rule missed its target on unseen prompts (K = 8: 63.7% vs 64.2%). Protocol draft also adds always-DeepSeek as a main comparison. Used as defaults overnight | A | WP-14 |
+| D-119 | 2026-11-03 | **Owner overnight consent ("i consent all"):** continue through all WPs in one session, handoffs included; wait out the 5-hour limit and resume; Gate 3 freeze, `pre-test` tag and the one test opening; WP-17 labels (≤ $1), WP-19 live run (~$1.50); Khayyam after the main work ("go khayyam", limit $5). Owner did not read the protocol before the freeze, so the agent commits it for later audit. UniRoute stays the shipped router; no faked results | O | WP-14..21 |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -172,6 +173,9 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-03 · WP-14 handoff 3 before overnight run (Opus)
+- /start, owner gave overnight consent (D-119). No code changed. Tests: 273 passed. Keys: 3 Metis keys in total, original ran out, 1 spare in `.env`, 1 spare unused and not on disk. $0.
 
 ### 2026-11-03 · WP-14: signal tests
 - `scripts/s11_signal_tests.py`, `results/signal_tests.md`: bot groups (D-078) and simple features show no clear gain, $0. `scripts/s12_input_test.py`, `results/representation_test.md`: previous-message input gives small area changes, no gain over DeepSeek at low cost, $0. Committed test fix after a commit that had one failing test.
