@@ -418,4 +418,4 @@ clustering/routing: α = 0, nearest centroid, no n_min drop (owner-requested, ag
 embedding input = current user message only, no context turns (owner decision, agreed) · **DEV-9**
 judge input = current user message only (spec A1/A2 `{context_turns}` dropped; generation keeps the
 history, M6; owner decision, agreed) · **DEV-10** K candidates 3 to 20 (owner, D-072) · **DEV-13** pilot pairwise with jev only, not gpt-5.6-terra (owner, D-093) · **DEV-11**
-S2 draws val and test from all sessions at random, not the most recent period (owner, D-074, D-075).
+S2 draws val and test from all sessions at random, not the most recent period (owner, D-074, D-075). · **DEV-15** val grown to 800 from train sessions, moved sessions leave train, centroids not refit (owner, D-115) · **DEV-16** λ chosen out of fold against always-DeepSeek (proposed, D-118).

@@ -115,6 +115,10 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-112 | 2026-11-02 | Validation labels: score < 7 is a loss, failed answer keeps score 1, the one prompt Jev refused (400) has no labels | A | WP-13 |
 | D-113 | 2026-11-02 | Team branch `TakRoute` with README and `.env.example` (owner) | O | – |
 | D-114 | 2026-11-02 | WP-14 updated: free validation check first, protocol must state refused prompts, failed and cut-off answers before the freeze. Test judged and sealed, no choice used it | A | WP-14 |
+| D-115 | 2026-11-03 | **Val grows to 800 (owner "go", reverses D-108, DEV-15).** 400 new prompts drawn at random from train sessions, cap 3 per session, seed 20261103 (`scripts/s2_grow_val.py`, `results/split_grow_manifest.json`). Train is the only safe pool: split `none` is mostly leftovers of test sessions. Moved sessions (391) leave train; 8,519 train rows went to `none`. Centroids not refit, so these sessions took part in K-means at 0.2% of train. Old split kept as `runs/s2/split_val400.parquet`. Limits raised: gen_main $21.50, judge_main $3 | O | WP-14 |
+| D-116 | 2026-11-03 | Pairwise jev run on all 800 val prompts as a second view (owner "go pairwise"; D-106 stays for the main method). Test has no pairwise labels | O | WP-14 |
+| D-117 | 2026-11-03 | **Owner chose K = 8 as main router, K = 4 kept as comparison.** The D-064 rule on val 800 gives K = 4 (area 0.6634; K = 3 0.6629; K = 8 0.6522). Set aside on purpose; report must state it, and that K = 8 lost to DeepSeek by 2.0 points on the new 400 when fitted on the old 400. Final approval at Gate 3 | O | WP-14 |
+| D-118 | 2026-11-03 | **Proposed, needs owner at Gate 3 (DEV-16):** λ chosen on unseen folds as the largest λ not below always-DeepSeek, because S10's in-sample rule missed its target on unseen prompts (K = 8: 63.7% vs 64.2%). Protocol draft also adds always-DeepSeek as a main comparison. Used as defaults overnight | A | WP-14 |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -162,9 +166,18 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-02 | judge_main | WP-13 | $1 | $0.28 | 1,251 | Validation only, Jev, 80 repeat calls included. 8 failed tries, all the one refused prompt |
 | 2026-11-02 | gen_main | WP-12 | $14 | $6.12 | 1,253 | Test set, owner "go", estimate $5.90. Sonnet $5.49, luna $0.27, flash $0.22, gemini $0.14. 0 failed |
 | 2026-11-02 | judge_main | WP-13 | $1 | $0.30 | 1,240 | Test set, sealed, owner "go". 60 repeats included. 8 failed tries, all one refused prompt |
-| | **Total** | | | **about $19.06** | | Ledger $18.62 + dashboard gap (D-100) |
+| 2026-11-03 | gen_main | WP-14 | $21.50 | $7.54 | 1,600 | Val +400, owner "go" (D-115), estimate $7.86. Sonnet about $6.74. Key ran out once (402), resumed with spare key. Stopped once at the old $20 limit |
+| 2026-11-03 | judge_main | WP-14 | $3 | $0.42 | 1,717 | Val +400 pointwise jev + repeats. 2x cost stop after 52 calls was a few long prompts; final about $0.00024 per call |
+| 2026-11-03 | judge_main | WP-14 | $3 | $1.05 | 4,092 | Pairwise jev on val 800 (D-116), estimate $1.15 to $1.50 |
+| | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-03 · WP-14: val 800, K = 8 luck exposed, pairwise
+- Free router check first: on val 400, K = 8 looked +1.3 points over ZeroRouter (CI -1.0 to +3.6). Owner grew val to 800 (D-115). Cost $9.01 this session.
+- Val 800: pass DeepSeek 65.4%, Sonnet 66.2%, Luna 61.5%, Gemini 53.5%, ceiling 79.4%. K* = 4. K = 8 fitted on old 400 lost to DeepSeek on new 400 by 2.0 points (-4.2 to 0.0); shuffle test p = 0.44.
+- Pairwise (0.5 = equal to Sonnet): DeepSeek 0.403, Luna 0.409, Gemini 0.176. Position consistency 0.753, later answer favored. Topic routing adds nothing on pairwise labels either.
+- New: `scripts/router_check.py`, `s9_router_val.py`, `s10_lambda_holdout.py`, `s2_grow_val.py`; `s7_judge.py --est-usd`. Results: `fingerprints`, `select_k`, `ladder_val`, `router_check_val`, `lambda_val`, `holdout_demo`.
 
 ### 2026-11-02 · Handoff, both remotes
 - WP-12 and WP-13 closed. `TakRoute` pushed to the team repo and the owner's repo; owner's `main` moved to the same commit. Team `main` untouched. Tests 273 pass.

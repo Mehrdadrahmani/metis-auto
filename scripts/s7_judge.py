@@ -37,6 +37,7 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=Path("runs/s7"))
     ap.add_argument("--concurrency", type=int, default=4)
     ap.add_argument("--retry-failed", action="store_true", help="retry calls stored as failed")
+    ap.add_argument("--est-usd", type=float, help="measured pointwise cost per call, replaces the token-based estimate")
     args = ap.parse_args()
 
     if args.which == "test" and (args.stage != "judge_main" or args.method != "pointwise"):
@@ -63,7 +64,7 @@ def main() -> int:
 
     tasks = []
     if args.method in ("pointwise", "both"):
-        tasks.append(("pointwise", [(p, m) for m in models for p in ids], price(1)))
+        tasks.append(("pointwise", [(p, m) for m in models for p in ids], args.est_usd or price(1)))
     if args.method in ("pairwise", "both"):
         items = [(p, m, o) for m in models if m != anchor for p in ids for o in pairwise.ORDERS]
         random.Random(cfg["seed"]).shuffle(items)
