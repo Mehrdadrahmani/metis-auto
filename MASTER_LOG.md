@@ -121,6 +121,9 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-118 | 2026-11-03 | **Proposed, needs owner at Gate 3 (DEV-16):** λ chosen on unseen folds as the largest λ not below always-DeepSeek, because S10's in-sample rule missed its target on unseen prompts (K = 8: 63.7% vs 64.2%). Protocol draft also adds always-DeepSeek as a main comparison. Used as defaults overnight | A | WP-14 |
 | D-119 | 2026-11-03 | **Owner overnight consent ("i consent all"):** continue through all WPs in one session, handoffs included; wait out the 5-hour limit and resume; Gate 3 freeze, `pre-test` tag and the one test opening; WP-17 labels (≤ $1), WP-19 live run (~$1.50); Khayyam after the main work ("go khayyam", limit $5). Owner did not read the protocol before the freeze, so the agent commits it for later audit. UniRoute stays the shipped router; no faked results | O | WP-14..21 |
 | D-120 | 2026-11-03 | D-118 applied: λ = 0.5151 (K = 8), λ = 0.04954 (K = 4). Protocol adds always-DeepSeek as second main comparison. Gate 3 passed by consent D-119 (DEV-16) | O | WP-14 |
+| D-121 | 2026-11-03 | Cache: AI-grader method (agent choice under D-119). No θ met ≤ 2% wrong hits; WP-17 fallback θ = 0.97, 10.0% wrong hits (5.5% to 17.4%), report it. One routing vector reused, text-matching gain too small | A | WP-17 |
+| D-122 | 2026-11-03 | Replay settings pinned before test: K = 8, cache on, checks on, stickiness off (no change on val), per `configs/gateway.yaml` | A | WP-18 |
+| D-123 | 2026-11-03 | Product name **TakRouter** (owner). Internal package stays `metis`; both `takrouter` and `metis-auto` route | O | all |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -170,6 +173,7 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-02 | judge_main | WP-13 | $1 | $0.30 | 1,240 | Test set, sealed, owner "go". 60 repeats included. 8 failed tries, all one refused prompt |
 | 2026-11-03 | gen_main | WP-14 | $21.50 | $7.54 | 1,600 | Val +400, owner "go" (D-115), estimate $7.86. Sonnet about $6.74. Key ran out once (402), resumed with spare key. Stopped once at the old $20 limit |
 | 2026-11-03 | judge_main | WP-14 | $3 | $0.42 | 1,717 | Val +400 pointwise jev + repeats. 2x cost stop after 52 calls was a few long prompts; final about $0.00024 per call |
+| 2026-11-03 | cache_labels | WP-17 | $1 | $0.06 | 700 | Cache pairs, consent D-119 |
 | 2026-11-03 | judge_main | WP-14 | $3 | $1.05 | 4,092 | Pairwise jev on val 800 (D-116), estimate $1.15 to $1.50 |
 | | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 

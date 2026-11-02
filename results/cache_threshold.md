@@ -30,3 +30,13 @@ Measured, n = 350. AUC for telling good hits from wrong hits: routing vectors 0.
 | 0.85 | 145 | 17 | 11.7% | 7.5% to 18.0% |
 
 The new message's own production answer passes 37.7% of the time, and saved answers 22.3%. Repeat-judging noise also creates some wrong hits.
+
+
+## Hit rate on real traffic
+
+Measured sequentially on 170666 eligible train prompts, no TTL applied, so an upper estimate.
+Allowed by the policy: 109765 (64.3%). Exact repeats: 0 (0.0% of all). Meaning hits at 0.97: about 4.2% of the 59166 unique cacheable prompts checked, 2.7% of all.
+Validation replay shows 0 hits because 800 sampled prompts rarely repeat each other, so it cannot show this rate.
+
+## Decision (D-121)
+θ = 0.97 on routing vectors, the WP-17 fallback, because no θ met the wrong-hit limits. At 0.97 about 1 hit in 10 was judged wrong (95% CI 5.5% to 17.4%). Text-matching vectors gained little (AUC 0.660 vs 0.643) and need a second embedding, so one vector is reused.
