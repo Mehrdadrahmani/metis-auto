@@ -160,9 +160,13 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-02 | gen_main | WP-12 | $8 | $5.76 | 1,234 | Validation only. Sonnet $5.17, luna $0.26, flash $0.20, gemini $0.13. 3 failed tries, all one Sonnet prompt |
 | 2026-11-02 | judge_main | WP-13 | $1 | $0.28 | 1,251 | Validation only, Jev, 80 repeat calls included. 8 failed tries, all the one refused prompt |
 | 2026-11-02 | gen_main | WP-12 | $14 | $6.12 | 1,253 | Test set, owner "go", estimate $5.90. Sonnet $5.49, luna $0.27, flash $0.22, gemini $0.14. 0 failed |
-| | **Total** | | | **about $18.76** | | Ledger $18.32 + dashboard gap (D-100) |
+| 2026-11-02 | judge_main | WP-13 | $1 | $0.30 | 1,240 | Test set, sealed, owner "go". 60 repeats included. 8 failed tries, all one refused prompt |
+| | **Total** | | | **about $19.06** | | Ledger $18.62 + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · WP-13 done, test labels sealed
+- 1,196 of 1,200 test answers scored, 1 prompt refused by Jev, $0.30, 60 sealed repeats. No test score read. Report: `work/reports/WP-13-report.md`. Next: WP-14.
 
 ### 2026-11-02 · WP-12 done, test answers sealed
 - 1,200 test answers, 0 failed, 3 still cut off, $6.12. `s6_generate.py --set test` reads `test_ids.sealed`; outputs are `*.sealed*`. S7 refuses test until WP-13. No test text read, no test quality computed. Report: `work/reports/WP-12-report.md`.

@@ -4,6 +4,7 @@ Usage: uv run python scripts/s7_noise.py --set pilot --stage pilot
 Pointwise: 20 items for terra and jev. Pairwise: 20 items for jev (D-093). Prints aggregates only.
 Compares with the first judgments in runs/s7; writes runs/pilot/noise_*.parquet and a manifest.
 WP-13: --stage judge_main --out runs/s7 re-judges 5% of the shipped judge's items (pointwise jev).
+On the test set it only stores the repeats, sealed: comparing them waits for WP-19.
 """
 
 from __future__ import annotations
@@ -33,7 +34,7 @@ MAIN_JOBS = (("pointwise", "jev"),)
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", dest="which", choices=st.OPEN_SETS, required=True)
+    ap.add_argument("--set", dest="which", choices=st.SETS, required=True)
     ap.add_argument("--stage", choices=("pilot", "judge_main"), required=True)
     ap.add_argument("--prompts", type=Path, default=Path("runs/s1/prompts.parquet"))
     ap.add_argument("--s6", type=Path, default=Path("runs/s6"))
@@ -44,11 +45,15 @@ def main() -> int:
     start = time.perf_counter()
     base = render.judge_config()
     main_run = args.stage == "judge_main"
+    sealed = args.which == "test"
+    if sealed and not main_run:
+        ap.error("the test set takes --stage judge_main only")
+    tag = st.file_tag(args.which)
     salt = MAIN_SALT if main_run else SALT
     cfg = {**base, "judge_config_id": base["judge_config_id"] + salt}
     cache = CallCache()
     budget = Budget(cache)
-    answers = pd.read_parquet(args.s6 / f"responses_{args.which}.parquet")
+    answers = pd.read_parquet(args.s6 / f"responses_{tag}.parquet")
     text = {(a.prompt_id, a.model_id): a.text if isinstance(a.text, str) else None
             for a in answers.itertuples()}
     rows = st.load_rows(args.prompts, sorted(answers["prompt_id"].unique()))
@@ -56,7 +61,7 @@ def main() -> int:
     summary, stopped = {}, False
 
     for method, judge in MAIN_JOBS if main_run else JOBS:
-        first = pd.read_parquet(args.s7 / f"{method}_{judge}_{args.which}.parquet")
+        first = pd.read_parquet(args.s7 / f"{method}_{judge}_{tag}.parquet")
         first = first[first["status"] == "ok"]
         keys = ["prompt_id", "model_id"] + (["order"] if method == "pairwise" else [])
         items = sorted(first[keys].itertuples(index=False, name=None))
@@ -82,9 +87,11 @@ def main() -> int:
             est_cost_per_call=cost, params={"judge_config_id": cfg["judge_config_id"]},
         )
         table = pd.DataFrame(records).sort_values(keys, ignore_index=True)
-        table.to_parquet(args.out / f"noise_{method}_{judge}_{args.which}.parquet", index=False)
+        table.to_parquet(args.out / f"noise_{method}_{judge}_{tag}.parquet", index=False)
         both = table[table["status"] == "ok"].merge(first, on=keys, suffixes=("_2", "_1"))
-        if method == "pointwise":
+        if sealed:
+            agree = {}
+        elif method == "pointwise":
             gap = (both["score_1"] - both["score_2"]).abs()
             agree = {"exact": float((gap == 0).mean()), "within_1": float((gap <= 1).mean()),
                      "mean_abs_gap": float(gap.mean())}
@@ -99,7 +106,7 @@ def main() -> int:
             stopped = True
             break
 
-    st.write_manifest(args.out / f"manifest_noise_{args.which}.json",
+    st.write_manifest(args.out / f"manifest_noise_{tag}.json",
                       sorted(answers["prompt_id"].unique()), {
         "stage": args.stage, "judge_config_id": cfg["judge_config_id"], "seed": base["seed"],
         "summary": summary, "seconds": round(time.perf_counter() - start, 2),

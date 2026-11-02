@@ -17,7 +17,7 @@ from metis.data.split import ids_sha256
 
 T_OUT = 300  # PLAN 7.2, mean answer tokens
 SETS = ("pilot", "val", "test")
-OPEN_SETS = ("pilot", "val")  # sets that may be judged or analysed here
+OPEN_SETS = ("pilot", "val")  # sets whose scores may be read
 TEXT_COLUMNS = ("text", "instructions", "history", "rag_context", "est_tokens_in")
 
 

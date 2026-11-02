@@ -28,7 +28,7 @@ TEMPLATE_TOKENS = 500  # the template's own text
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", dest="which", choices=st.OPEN_SETS, required=True)
+    ap.add_argument("--set", dest="which", choices=st.SETS, required=True)
     ap.add_argument("--stage", choices=("pilot", "judge_main"), required=True)
     ap.add_argument("--judge", choices=("judge", "jev"), required=True)
     ap.add_argument("--method", choices=("pointwise", "pairwise", "both"), default="both")
@@ -39,12 +39,15 @@ def main() -> int:
     ap.add_argument("--retry-failed", action="store_true", help="retry calls stored as failed")
     args = ap.parse_args()
 
+    if args.which == "test" and (args.stage != "judge_main" or args.method != "pointwise"):
+        ap.error("the test set takes --stage judge_main --method pointwise only")
+    tag = st.file_tag(args.which)
     start = time.perf_counter()
     cfg = render.judge_config()
     cache = CallCache()
     budget = Budget(cache)
     limits = budget.config["anomalies"]
-    answers = pd.read_parquet(args.s6 / f"responses_{args.which}.parquet")
+    answers = pd.read_parquet(args.s6 / f"responses_{tag}.parquet")
     ids = sorted(answers["prompt_id"].unique())
     rows = st.load_rows(args.prompts, ids)
     # A failed generation has no text; parquet may hand it back as NaN, which is truthy.
@@ -93,7 +96,7 @@ def main() -> int:
             f"{args.stage}_{method}_{args.judge}", items, one, limits, args.concurrency,
             est_cost_per_call=cost, params={"judge_config_id": cfg["judge_config_id"]},
         )
-        name = f"{method}_{args.judge}_{args.which}"
+        name = f"{method}_{args.judge}_{tag}"
         keys = [c for c in ("prompt_id", "model_id", "order") if records and c in records[0]]
         table = pd.DataFrame(records).sort_values(keys, ignore_index=True)  # threads race
         # A stopped run never writes the table later stages read. Rerun the command to resume.
@@ -111,7 +114,7 @@ def main() -> int:
             stopped = True
             break
 
-    st.write_manifest(args.out / f"manifest_{args.judge}_{args.which}.json", ids, {
+    st.write_manifest(args.out / f"manifest_{args.judge}_{tag}.json", ids, {
         "stage": args.stage, "judge": args.judge, "mock": is_mock(), "complete": not stopped,
         "judge_config_id": cfg["judge_config_id"], "seed": cfg["seed"], "summary": summary,
         "seconds": round(time.perf_counter() - start, 2),
