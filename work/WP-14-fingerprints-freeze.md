@@ -91,3 +91,9 @@ it can wait for the next session.
 
 ## Added by WP-11 (D-105)
 S8 is pointwise only, τ = 7 from `configs/judge_choice.yaml`; skip Bradley-Terry. Pilot separability at K = 3 was 0.111, so compare with ZeroRouter early and report plainly if routing by cluster gains nothing.
+
+## Added by WP-12, WP-13 (D-114)
+- Start with the free check on validation: router against ZeroRouter, always-DeepSeek and always-Sonnet. Validation only, `runs/s7/labels_val.parquet`. Never open `*.sealed*`.
+- `results/val_vs_pilot.md` gives first numbers: D 0.167 at K = 3, 0.104 at K = 8. Stability C 0.736 and 0.533. Reading the best model per cluster off that table is optimistic, so use held-out folds.
+- `eval_protocol.md` must state before the freeze: prompts Jev refused (1 val, 1 test) are left out of scoring for all models; a failed answer keeps the worst score; 3 test answers stayed cut off and are scored as they are.
+- WP-19 compares the 60 sealed test repeats with the first test scores. That result is not known yet.

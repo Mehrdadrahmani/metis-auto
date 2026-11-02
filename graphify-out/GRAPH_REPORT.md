@@ -1,17 +1,17 @@
 # Graph Report - metis-auto  (2026-11-02)
 
 ## Corpus Check
-- 208 files · ~185,625 words
+- 223 files · ~195,677 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 35 file(s) not represented in the graph (top: (none) 13, .tex 13, .drawio 8)
+- Unclassified: 36 file(s) not represented in the graph (top: (none) 13, .tex 13, .drawio 8)
 
 ## Summary
-- 1844 nodes · 3767 edges · 133 communities (97 shown, 36 thin omitted)
-- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 316 edges (avg confidence: 0.87)
+- 1888 nodes · 3888 edges · 134 communities (96 shown, 38 thin omitted)
+- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 332 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `03a56e0d`
+- Built from commit: `cbc0dee7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -29,7 +29,7 @@
 - s4
 - UniRoute's embedding + clustering step on public Persian data
 - s4_persian_cluster.py
-- callcache.py
+- hashlib
 - LLM routing state of the art (research)
 - Final Eval and Release
 - tracking.py
@@ -64,9 +64,9 @@
 - results/README.md
 - Owner Fixed Points
 - models
-- Metis AI and Risks
+- Metis-Auto v2
 - Fingerprint Ψ_k(h)
-- render.py
+- load_config
 - WP Template
 - Evaluation Protocol
 - Status Line
@@ -78,51 +78,51 @@
 - Context and Usage Guard
 - metis Package
 - complete
-- pandas
-- s4_embed_full.py
+- test_load_parquet.py
+- assign
 - Data card: full dataset (structure only)
-- hashlib
+- test_router_baselines.py
 - ndarray
-- CallFailed
+- client.py
 - Checkpoint: all work packages and tasks
 - Online path diagram (G1-G7)
-- client.py
+- json
 - bot_clusters/README.md
 - budget_memo.md
 - test_embed.py
 - runner.py
 - Metis AI capabilities
-- get_or_call
 - Course brief: Intelligent LLM Routing Middleware (Metis-OS Team)
+- test_load.py
 - test_split.py
 - WP-03b: Persian clustering test on public data (embedding + K-means only)
 - Data selection criteria
 - test_normalize_lang.py
-- data_card_full.py
+- VectorStore
 - anomalies
 - test_router_select.py
-- metis_check.py
-- s5_cluster_view.py
+- Claude Code hooks (SessionStart, UserPromptSubmit, PreCompact, PostCompact)
+- test_redact.py
 - WP-03b report: Persian clustering test
 - metrics.py
 - qdrant
-- numpy
-- HTTPRange
-- test_router_synthetic.py
+- dev_pool
+- pandas
+- baselines.py
 - s4_embed_bench.py
 - s4_latex_tables.py
 - numpy
-- test_planted_key_never_reaches_mlflow
+- store.py
 - WP-10-report.md
 - WP-03 report: Embedder + Qdrant
 - UniRoute every-step diagram (S1-S12, R1-R4, M1-M4)
-- artifact.py
+- s6_stats_test.md
 - WP-05b: Baselines, statistics, synthetic proof, artifact (steps 7–10 of WP-05)
 - Proposal v2: Metis-Auto v2, a measured LLM router built on UniRoute
-- build.py
+- WP-12-report.md
 - nano
 - FakeMetis
-- test_load.py
+- test_rules.py
 - run.py
 - router
 - Synthetic validation of the router (WP-05 step 9)
@@ -131,13 +131,15 @@
 - pipeline.yaml
 - s1
 - ._merge
-- _send
+- WP-04 report: LLM client, call cache, budget
+- WP-13-report.md
+- config.py
 
 ## God Nodes (most connected - your core abstractions)
-1. `UniRoute Pipeline Specification` - 40 edges
-2. `load_config()` - 33 edges
-3. `complete()` - 33 edges
-4. `Budget` - 30 edges
+1. `UniRoute Pipeline Specification` - 41 edges
+2. `Budget` - 33 edges
+3. `load_config()` - 33 edges
+4. `complete()` - 33 edges
 5. `Proposal v2: Metis-Auto v2, a measured LLM router built on UniRoute` - 27 edges
 6. `Roadmap diagram (WP-00..WP-21)` - 27 edges
 7. `Embedder` - 24 edges
@@ -154,8 +156,8 @@
   work/reports/WP-05-report.md → src/metis/router/route.py
 - `What exists` --references--> `fingerprints()`  [INFERRED]
   work/reports/WP-05-report.md → src/metis/router/fingerprints.py
-- `What exists` --references--> `artifact()`  [INFERRED]
-  work/reports/WP-05-report.md → tests/test_router_baselines.py
+- `Differences from the WP` --references--> `complete()`  [INFERRED]
+  work/reports/WP-04-report.md → src/metis/llm/client.py
 
 ## Import Cycles
 - None detected.
@@ -180,7 +182,7 @@
 - **Test-set sealing and single-look evaluation** — work_wp_13_judging_labels_test_sealed, work_wp_14_fingerprints_freeze_gate_3_pre_test_tag, work_wp_19_final_evaluation_eval_test_script, work_wp_14_fingerprints_freeze_eval_protocol [INFERRED 0.85]
 - **UniRoute routing method** — plan_uniroute_router, plan_embedder_jina, plan_fingerprint_psi, plan_lambda_cost_weight, master_log_d_040_paper_faithful [INFERRED 0.85]
 
-## Communities (133 total, 36 thin omitted)
+## Communities (134 total, 38 thin omitted)
 
 ### Community 0 - "Offline build diagram (S1-S12)"
 Cohesion: 0.18
@@ -191,8 +193,8 @@ Cohesion: 0.19
 Nodes (22): Answer, Cache hit?, Call model + failover, Code checks + escalation, Choose K and lambda on validation, Clean, redact secrets, split by conversation, System overview diagram (offline build + online gateway), Embed locally + K-means (no API calls) (+14 more)
 
 ### Community 2 - "Data card: `sample.json` (structure only)"
-Cohesion: 0.07
-Nodes (28): Categorical value sets, Counts, Data card: `sample.json` (structure only), Key paths, Models (bot messages), Providers, Redaction hits, Roles (+20 more)
+Cohesion: 0.19
+Nodes (19): Categorical value sets, Counts, Data card: `sample.json` (structure only), Key paths, Models (bot messages), Providers, Redaction hits, Roles (+11 more)
 
 ### Community 3 - "UniRoute Paper Concepts"
 Cohesion: 0.08
@@ -203,8 +205,8 @@ Cohesion: 0.07
 Nodes (53): Roadmap diagram (WP-00..WP-21), Full dataset arrives, Gate 1: owner approves budget, Gate 2: agreement >= 75%, kappa >= 0.40, Gate 3: git tag pre-test, Paid total ~$25-35, hard cap $60, WP-00 Bootstrap (git, GitHub, session mechanism), WP-01 Data + redaction (safe loader, data card) (+45 more)
 
 ### Community 5 - "ext_download.py"
-Cohesion: 0.17
-Nodes (10): arena100(), arena140(), build(), filtered(), get_json(), log(), main(), parquet() (+2 more)
+Cohesion: 0.06
+Nodes (21): _files(), main(), scan(), table(), arena100(), arena140(), build(), filtered() (+13 more)
 
 ### Community 7 - "UniRoute Pipeline Spec"
 Cohesion: 0.18
@@ -215,8 +217,8 @@ Cohesion: 0.08
 Nodes (23): k_3, 0, 1, 2, k_4, 0, 1, 2 (+15 more)
 
 ### Community 9 - "test_judge.py"
-Cohesion: 0.07
-Nodes (15): _answers(), _pairs(), run(), make(), test_failed_anchor_is_dropped(), test_failed_answers_are_left_out_of_labeling(), test_failed_generation_gets_the_worst_label_without_a_call(), test_jev_level_maps_to_one_to_ten() (+7 more)
+Cohesion: 0.06
+Nodes (16): _answers(), _pairs(), run(), make(), test_failed_anchor_is_dropped(), test_failed_answers_are_left_out_of_labeling(), test_failed_generation_gets_the_worst_label_without_a_call(), test_jev_level_maps_to_one_to_ten() (+8 more)
 
 ### Community 10 - "manifest.json"
 Cohesion: 0.08
@@ -231,8 +233,12 @@ Cohesion: 0.11
 Nodes (16): 10. Next steps (proposals, need the owner's OK), 1. What UniRoute does, and what we tested, 2. Data, 3. Do the clusters follow real topics?, 4. What is inside the clusters? (nano, K = 8, one split, test prompts), 5. Cluster maps, 6. Would these clusters help routing? (human-difficulty test), 7. small vs nano (and the text-matching adapter) (+8 more)
 
 ### Community 13 - "s4_persian_cluster.py"
+Cohesion: 0.12
+Nodes (19): main(), mix_table(), features(), labelled(), main(), curve(), k_curves(), main() (+11 more)
+
+### Community 14 - "hashlib"
 Cohesion: 0.08
-Nodes (30): main(), mix_table(), features(), labelled(), main(), curve(), k_curves(), main() (+22 more)
+Nodes (14): main(), price(), BudgetRefused, call_cost(), cache_key(), CallCache, CallResult, default_path() (+6 more)
 
 ### Community 15 - "LLM routing state of the art (research)"
 Cohesion: 0.29
@@ -243,7 +249,7 @@ Cohesion: 0.12
 Nodes (17): runs/s7/labels_test.sealed.parquet (sealed), results/eval_protocol.md, WP-19: Final evaluation on test set, scripts/eval_test.py, Live latency run (stage live, ~$1.5, val messages), Primary analysis: router vs always-best (paired bootstrap, McNemar), Production comparison (cost, answer similarity, M15), results/final/ (+9 more)
 
 ### Community 17 - "tracking.py"
-Cohesion: 0.27
+Cohesion: 0.24
 Nodes (5): batch_run(), call_span(), enabled(), _mlflow(), mlflow_dir()
 
 ### Community 18 - "Gateway, Cache, Replay WPs"
@@ -255,16 +261,16 @@ Cohesion: 0.25
 Nodes (4): UniRoute paper notes, Paper experimental facts (datasets, val 400, Gecko), Ideas for later (attribute clusters, coreset, budget control), UniRoute paper (Jitkrittum et al., ICLR 2026)
 
 ### Community 20 - "Budget"
-Cohesion: 0.18
-Nodes (21): Budget, call(), config(), fake_response(), Sender, test_budget_refusal_stops_batch(), test_cache_hit_needs_no_budget(), test_estimate_and_missing_price() (+13 more)
+Cohesion: 0.14
+Nodes (26): Budget, call(), config(), fake_response(), mock_batch(), Sender, test_budget_refusal_stops_batch(), test_cache_hit_needs_no_budget() (+18 more)
 
 ### Community 21 - "Pilot Decision and Judging"
 Cohesion: 0.16
 Nodes (12): WP-11: Pilot decision (Gate 2), Bias and noise checks (length bias, self-preference, test-retest), Human calibration labels (cal_labels.csv), configs/judge_config.yaml, Pairwise judging, results/pilot_decision.md, Pointwise judging, One rubric revision fallback (DEV-5) (+4 more)
 
 ### Community 22 - "Session Protocol Docs"
-Cohesion: 0.31
-Nodes (13): /handoff skill, /start skill, AGENTS.md rules and session protocol, CLAUDE.md project pointers, CONTINUITY.md session mechanism, Claude Code hooks (SessionStart, UserPromptSubmit, PreCompact, PostCompact), STATUS.md template, Work-package sizing (100k-250k tokens) (+5 more)
+Cohesion: 0.26
+Nodes (16): /handoff skill, /start skill, AGENTS.md rules and session protocol, uv virtual environment metis-rahnema, CLAUDE.md project pointers, CONTINUITY.md session mechanism, STATUS.md template, Work-package sizing (100k-250k tokens) (+8 more)
 
 ### Community 23 - "S1 + S2 counts on the sample (WP-02 dry run)"
 Cohesion: 0.25
@@ -283,8 +289,8 @@ Cohesion: 0.27
 Nodes (10): WP-02 Report, Sample exclusion waterfall (434 rows, 375 LLM replies, 343 eligible), WP-02 Prompt Builder, Hard Rules, Splitter, eligible_labeled filter, lang_tag (lang.py), Persian normalization (normalize.py), prompts table S1 (prompts.py), Seed 20261020 (+2 more)
 
 ### Community 27 - "Bootstrap and Environment"
-Cohesion: 0.17
-Nodes (11): uv virtual environment metis-rahnema, Budget ledger ($60 cap, $0 spent), Open questions (Q-001..Q-022), Q-017 Metis AI reachability (VPN), Q-020 K selection report cards, Budget estimate (~$25 pointwise / ~$35 pairwise), Budget guard in code (E12), Target repository layout (+3 more)
+Cohesion: 0.25
+Nodes (7): Budget ledger ($60 cap, $0 spent), Open questions (Q-001..Q-022), Q-017 Metis AI reachability (VPN), Q-020 K selection report cards, Budget estimate (~$25 pointwise / ~$35 pairwise), Budget guard in code (E12), ROADMAP.html visual roadmap
 
 ### Community 28 - "Model Registry Fields"
 Cohesion: 0.11
@@ -347,8 +353,8 @@ Cohesion: 0.32
 Nodes (7): Fingerprint Psi (Eq. 12, per-cluster error rate), Lambda price weight in routing score, UNIROUTE_PIPELINE.md router spec, UniRoute K-means router (M1), PROJECT.md overview, Project glossary, Metis-Auto virtual model
 
 ### Community 43 - "Gateway Observability"
-Cohesion: 0.29
-Nodes (6): Quality checks + escalation cascade (E7), FastAPI OpenAI-compatible gateway with LiteLLM (E1), Observability: MLflow traces, SQLite, dashboard (E10), Semantic cache (E8, WP-17 decision), Gateway flow G1-G7, WP-17 Semantic cache
+Cohesion: 0.15
+Nodes (11): Quality checks + escalation cascade (E7), Fallback plan for late data (P4), FastAPI OpenAI-compatible gateway with LiteLLM (E1), Judge GPT-5.x class via Metis AI (M10), Metis AI API aggregator, Observability: MLflow traces, SQLite, dashboard (E10), R17 network split (Metis AI unreachable), Risks R1-R17 (+3 more)
 
 ### Community 44 - "Embedder benchmark (WP-03 step 5)"
 Cohesion: 0.29
@@ -356,7 +362,7 @@ Nodes (6): 1. Latency, p50 / p95 in ms (one message), 2. Determinism and devices
 
 ### Community 45 - "test_router_baselines.py"
 Cohesion: 0.09
-Nodes (21): balanced_accuracy(), BootResult, bootstrap(), cohen_kappa(), fingerprint_stability(), mcnemar_exact(), separability(), session_resample() (+13 more)
+Nodes (20): main(), balanced_accuracy(), BootResult, bootstrap(), cohen_kappa(), fingerprint_stability(), mcnemar_exact(), separability() (+12 more)
 
 ### Community 47 - "Owner Fixed Points"
 Cohesion: 0.29
@@ -366,17 +372,17 @@ Nodes (3): draw.io pastel diagram style, Reproducibility: cached calls, config h
 Cohesion: 0.10
 Nodes (22): extra_body, reasoning_effort, add, drop, common, max_tokens, temperature, top_p (+14 more)
 
-### Community 50 - "Metis AI and Risks"
-Cohesion: 0.33
-Nodes (5): Fallback plan for late data (P4), Judge GPT-5.x class via Metis AI (M10), Metis AI API aggregator, R17 network split (Metis AI unreachable), Risks R1-R17
+### Community 50 - "Metis-Auto v2"
+Cohesion: 0.20
+Nodes (10): Contents, For AI agents, How it works, Metis-Auto v2, Progress, Quick start, Repository map, Results so far (+2 more)
 
 ### Community 51 - "Fingerprint Ψ_k(h)"
 Cohesion: 0.16
 Nodes (14): Pipeline explained step by step, Manager/employees report-card analogy, Online example: complaint message routed to gpt-4o-mini, Diagram 05-uniroute, UniRoute explained with one diagram, M1 Add a model (no retraining), Online steps R1-R4, Seven diagram bands (prepare..maintain) (+6 more)
 
-### Community 52 - "render.py"
+### Community 52 - "load_config"
 Cohesion: 0.07
-Nodes (35): _context(), cut_instructions(), _fill(), history_text(), jev_pair_messages(), jev_point_messages(), jev_questions(), judge_config() (+27 more)
+Nodes (36): load_config(), _context(), cut_instructions(), _fill(), history_text(), jev_pair_messages(), jev_point_messages(), jev_questions() (+28 more)
 
 ### Community 53 - "WP Template"
 Cohesion: 0.21
@@ -387,32 +393,32 @@ Cohesion: 0.50
 Nodes (3): 4 candidate models (deepseek-v4-flash, gpt-4o-mini, gemini-2.5-flash, claude-sonnet-4-6), Statistics and evaluation protocol (§8), WP-19 Final evaluation
 
 ### Community 72 - "complete"
-Cohesion: 0.12
-Nodes (19): complete(), Permit, Crash, msgs(), test_gives_up_after_one_retry(), test_guard_sees_nested_content_and_runs_before_send(), test_key_is_stable_and_sensitive(), test_missing_env_is_not_a_failed_call() (+11 more)
+Cohesion: 0.11
+Nodes (26): complete(), Permit, go(), cache(), Crash, env(), fake_metis(), fn() (+18 more)
 
-### Community 76 - "pandas"
-Cohesion: 0.12
-Nodes (6): main(), similarity(), smd(), _msg(), root(), test_length_mismatch_and_unknown_type()
+### Community 76 - "test_load_parquet.py"
+Cohesion: 0.14
+Nodes (6): list_ids(), main(), matches(), report(), _msg(), test_length_mismatch_and_unknown_type()
 
-### Community 77 - "s4_embed_full.py"
-Cohesion: 0.20
-Nodes (6): embedder(), load_table(), main(), run_embed(), run_near_dups(), run_set_split()
+### Community 77 - "assign"
+Cohesion: 0.12
+Nodes (16): fit_bed(), rule_picks(), rule_study(), assign(), candidate_ks(), fit_all(), fit_kmeans(), KMeansModel (+8 more)
 
 ### Community 78 - "Data card: full dataset (structure only)"
 Cohesion: 0.20
 Nodes (9): Billing (currency not stated), Data card: full dataset (structure only), Finish reasons, Integrity, Message types (length in characters), Messages per month, Secret scan (`metis.data.redact`, may include false positives), Tables (+1 more)
 
-### Community 79 - "hashlib"
-Cohesion: 0.12
-Nodes (6): main(), build_streaming(), input_hash(), main(), main(), stats()
+### Community 79 - "test_router_baselines.py"
+Cohesion: 0.19
+Nodes (11): load_artifact(), Meta, RouterArtifact, save_artifact(), _sha256(), Router, artifact(), meta() (+3 more)
 
 ### Community 80 - "ndarray"
 Cohesion: 0.08
-Nodes (17): always_best(), always_cheapest(), AlwaysModel, KNNRouter, LogisticRouter, LossRouter, lower_hull(), neighbor_order() (+9 more)
+Nodes (18): always_best(), always_cheapest(), AlwaysModel, KNNRouter, LogisticRouter, LossRouter, lower_hull(), neighbor_order() (+10 more)
 
-### Community 81 - "CallFailed"
-Cohesion: 0.18
-Nodes (4): CallFailed, check_outgoing(), NoPermitError, OutgoingSecretError
+### Community 81 - "client.py"
+Cohesion: 0.09
+Nodes (13): CallFailed, check_outgoing(), _detail(), _failure_kind(), _is_retryable(), _mock_response(), ModelNotReadyError, NoPermitError (+5 more)
 
 ### Community 82 - "Checkpoint: all work packages and tasks"
 Cohesion: 0.11
@@ -422,25 +428,25 @@ Nodes (18): Checkpoint: all work packages and tasks, Done, WP-06 Generation and 
 Cohesion: 0.25
 Nodes (16): Answer, One repair, then escalate to next-lower Psi_k model (cascade), Online path diagram (G1-G7), Failover: next-lowest s(h), prefer another provider; breaker 3 fails -> 30 s pause, G1 Hard rules (menu->workflow, image->image model, filter -> allowed set A), G2 Preprocess + embed (same as offline S1/S4), G3 Semantic cache hit? (same chatbot, safe to cache), G4 UniRoute router (nearest centroid, s(h)=Psi_k(h)+lambda*c(h), tie->cheaper) (+8 more)
 
-### Community 84 - "client.py"
-Cohesion: 0.12
-Nodes (8): config_id(), load_config(), cache_key(), is_mock(), load_models(), _mock_response(), ModelNotReadyError, test_every_generating_model_has_params()
+### Community 84 - "json"
+Cohesion: 0.09
+Nodes (12): main(), main(), build_streaming(), input_hash(), main(), main(), main(), similarity() (+4 more)
 
 ### Community 87 - "test_embed.py"
-Cohesion: 0.09
-Nodes (18): _check_payload(), collection_name(), point_id(), VectorStore, emb(), FakeModel, FakeTokModel, test_deterministic() (+10 more)
+Cohesion: 0.20
+Nodes (8): emb(), FakeModel, FakeTokModel, test_deterministic(), test_embedder_id_changes_with_preprocessing(), test_empty_input(), test_l2_normalized_float32(), test_prefix_and_task_passed()
 
 ### Community 88 - "runner.py"
 Cohesion: 0.24
 Nodes (10): _add(), anomaly(), BatchReport, _checkpoint(), _progress(), _run(), run_batch(), worker() (+2 more)
 
-### Community 90 - "get_or_call"
-Cohesion: 0.17
-Nodes (8): CallCache, CallResult, default_path(), get_or_call(), _detail(), _parse(), Response, test_mock_store_is_a_separate_file()
-
-### Community 91 - "Course brief: Intelligent LLM Routing Middleware (Metis-OS Team)"
+### Community 90 - "Course brief: Intelligent LLM Routing Middleware (Metis-OS Team)"
 Cohesion: 0.28
 Nodes (13): Action 1: Smart classifier & dynamic routing, Action 2: Cascade architecture & semantic caching, Action 3 (optional): Financial modeling & observability dashboard, AI decision fatigue, API fragmentation, Course brief: Intelligent LLM Routing Middleware (Metis-OS Team), Feature extraction (language, intent, code, multimodal), Metis-Auto virtual meta-model (+5 more)
+
+### Community 91 - "test_load.py"
+Cohesion: 0.18
+Nodes (5): test_set_payload_changes_field_and_keeps_vector(), path(), test_bad_structure(), test_strict_raises_without_content(), test_fits_context()
 
 ### Community 92 - "test_split.py"
 Cohesion: 0.30
@@ -454,25 +460,21 @@ Nodes (8): Acceptance checks, Context, End of session (in addition to `/handoff`
 Cohesion: 0.20
 Nodes (9): 1. Dataset, 2. What counts as a prompt, 3. Exclusion rules, 4. Why `workflow` is excluded (D-057), 5. How val and test are drawn, 6. Counts on the full data (S1, 2026-10-31), 7. Open items for WP-08, Data selection criteria (+1 more)
 
-### Community 96 - "data_card_full.py"
-Cohesion: 0.23
-Nodes (4): _files(), main(), scan(), table()
+### Community 96 - "VectorStore"
+Cohesion: 0.28
+Nodes (5): _check_payload(), VectorStore, test_store_exact_search_equals_numpy(), test_store_upsert_idempotent_and_guards(), unit()
 
 ### Community 97 - "anomalies"
 Cohesion: 0.14
 Nodes (13): anomalies, max_cost_ratio, max_failure_rate, max_reasoning_share, max_truncation_rate, min_calls, approved_usd, cache_labels (+5 more)
 
 ### Community 98 - "test_router_select.py"
-Cohesion: 0.11
-Nodes (20): select_k(), lambda_grid(), LambdaChoice, select_lambda(), planted(), test_k1_cannot_win_even_when_it_scores_best(), test_lambda_grid_shape(), test_routing_beats_a_single_cluster_on_planted_data() (+12 more)
+Cohesion: 0.09
+Nodes (23): stats(), KSelection, select_k(), lambda_grid(), LambdaChoice, select_lambda(), test_code_defaults_match_the_config(), planted() (+15 more)
 
-### Community 99 - "metis_check.py"
-Cohesion: 0.33
-Nodes (4): list_ids(), main(), matches(), report()
-
-### Community 100 - "s5_cluster_view.py"
-Cohesion: 0.17
-Nodes (5): load_vectors(), main(), page(), gap(), main()
+### Community 100 - "test_redact.py"
+Cohesion: 0.23
+Nodes (6): fake(), test_each_kind_redacted(), test_idempotent(), test_key_inside_assignment_counted_once(), test_no_false_positive(), test_redact_message_all_fields()
 
 ### Community 101 - "WP-03b report: Persian clustering test"
 Cohesion: 0.29
@@ -480,35 +482,39 @@ Nodes (6): Acceptance, Built, Limits, Outcome, Results (measured, K = 8, small /
 
 ### Community 102 - "metrics.py"
 Cohesion: 0.11
-Nodes (18): ladder(), difference(), tune_knn_k(), area(), best_single(), cost_quality(), envelope_quality(), operating_point() (+10 more)
+Nodes (17): ladder(), difference(), tune_knn_k(), area(), best_single(), cost_quality(), envelope_quality(), operating_point() (+9 more)
 
 ### Community 103 - "qdrant"
 Cohesion: 0.20
 Nodes (9): QDRANT__TELEMETRY_DISABLED, container_name, environment, image, ports, restart, volumes, services (+1 more)
 
-### Community 104 - "numpy"
-Cohesion: 0.14
-Nodes (19): cluster_choices(), next_best(), normalize_costs(), rank_models(), route(), RouteDecision, test_set_payload_changes_field_and_keeps_vector(), app_b_router() (+11 more)
+### Community 104 - "dev_pool"
+Cohesion: 0.29
+Nodes (5): dev_pool(), normalize_costs(), test_helpers(), test_dev_pool_is_respected_when_choosing_k(), test_new_model_changes_only_its_row_and_lambda()
 
-### Community 106 - "test_router_synthetic.py"
-Cohesion: 0.07
-Nodes (30): bed(), fit_bed(), main(), rule_picks(), rule_study(), assign(), candidate_ks(), cluster_counts() (+22 more)
+### Community 105 - "pandas"
+Cohesion: 0.14
+Nodes (11): crosstab(), difficulty(), khayyam_difficulty(), legacy_texts(), main(), purity(), run_set(), summarize() (+3 more)
+
+### Community 106 - "baselines.py"
+Cohesion: 0.10
+Nodes (10): bed(), cluster_choices(), next_best(), RouteDecision, halvings(), Bed, make_bed(), _split() (+2 more)
 
 ### Community 107 - "s4_embed_bench.py"
 Cohesion: 0.14
-Nodes (14): main(), train_sample(), clusters(), latency(), log(), main(), persian_check(), rss_mb() (+6 more)
+Nodes (15): main(), train_sample(), clusters(), latency(), log(), main(), persian_check(), rss_mb() (+7 more)
 
 ### Community 108 - "s4_latex_tables.py"
 Cohesion: 0.39
 Nodes (14): load(), main(), pm(), t_chat_clusters(), t_compare(), t_difficulty(), t_full(), t_khayyam_clusters() (+6 more)
 
 ### Community 109 - "numpy"
-Cohesion: 0.13
-Nodes (13): BTFit, closed_form_psi(), fit_bt(), _objective(), _prepare(), check_inputs(), cluster_sums(), fail_rates() (+5 more)
+Cohesion: 0.10
+Nodes (30): BTFit, closed_form_psi(), fit_bt(), _objective(), _prepare(), check_inputs(), cluster_sums(), fail_rates() (+22 more)
 
-### Community 110 - "test_planted_key_never_reaches_mlflow"
-Cohesion: 0.22
-Nodes (10): go(), cache(), env(), fake_metis(), mock_batch(), fn(), test_planted_key_never_reaches_mlflow(), fn() (+2 more)
+### Community 110 - "store.py"
+Cohesion: 0.24
+Nodes (3): collection_name(), point_id(), test_point_id_stable()
 
 ### Community 112 - "WP-03 report: Embedder + Qdrant"
 Cohesion: 0.50
@@ -518,10 +524,6 @@ Nodes (3): Decision table (details: `results/wp03_embedder/embedder_benchmark.md
 Cohesion: 0.19
 Nodes (21): UniRoute every-step diagram (S1-S12, R1-R4, M1-M4), M1 Add a model (answer 400 val prompts -> new Psi row), M2 Remove a model (delete Psi row, $0), M3 Price change (update c, re-pick lambda, $0), M4 Traffic drift (re-run S5, $0), R1 Embed (same model as S4), R2 Nearest cluster k*, R3 Score each model s(h)=Psi_k*(h)+lambda*c(h) (+13 more)
 
-### Community 114 - "artifact.py"
-Cohesion: 0.19
-Nodes (11): load_artifact(), Meta, RouterArtifact, save_artifact(), _sha256(), Router, artifact(), meta() (+3 more)
-
 ### Community 115 - "WP-05b: Baselines, statistics, synthetic proof, artifact (steps 7–10 of WP-05)"
 Cohesion: 0.29
 Nodes (6): Context, End of session, Must check in step 9 (found in WP-05a), Read (only these), Steps, WP-05b: Baselines, statistics, synthetic proof, artifact (steps 7–10 of WP-05)
@@ -530,21 +532,13 @@ Nodes (6): Context, End of session, Must check in step 9 (found in WP-05a), Read
 Cohesion: 0.13
 Nodes (18): Evaluation: quality, cache hit rate, cost vs premium baseline, latency, Baselines: always-best, always-cheapest, ZeroRouter, K-NN, production, DARS (EMNLP 2026), Decisions needed (dataset, API access, budget, labeling, pool), Proposal v2: Metis-Auto v2, a measured LLM router built on UniRoute, Later upgrades (LearnedMap, safety-net judge, cache-aware cost, Redis), How Reliable is Multilingual LLM-as-a-Judge? (EMNLP 2025), Simulating new models (hide a third of models) (+10 more)
 
-### Community 117 - "build.py"
-Cohesion: 0.19
-Nodes (6): bands(), main(), make_items(), pick_pairs(), relabel_pairs(), render_html()
-
 ### Community 118 - "nano"
 Cohesion: 0.22
 Nodes (9): nano, small, name, path, revision, candidates, name, path (+1 more)
 
-### Community 121 - "test_load.py"
-Cohesion: 0.20
-Nodes (3): path(), test_bad_structure(), test_strict_raises_without_content()
-
 ### Community 123 - "run.py"
-Cohesion: 0.33
-Nodes (5): bot_table(), elbow(), main(), run_cluster(), run_embed()
+Cohesion: 0.11
+Nodes (10): bot_table(), elbow(), main(), run_cluster(), run_embed(), load_vectors(), main(), page() (+2 more)
 
 ### Community 124 - "router"
 Cohesion: 0.20
@@ -566,29 +560,33 @@ Nodes (6): sample_dry_run, balance_field, n_pilot, n_test, n_val, seed
 Cohesion: 0.29
 Nodes (7): s1, chars_per_token, embed_truncate, history_max_tokens, history_max_turns, huge_prompt_chars, min_text_chars
 
-### Community 131 - "_send"
+### Community 131 - "WP-04 report: LLM client, call cache, budget"
 Cohesion: 0.33
-Nodes (3): _failure_kind(), _is_retryable(), _send()
+Nodes (5): Acceptance, Built, Metis findings, Not proven, WP-04 report: LLM client, call cache, budget
+
+### Community 133 - "config.py"
+Cohesion: 0.18
+Nodes (7): embedder(), load_table(), main(), run_embed(), run_near_dups(), run_set_split(), config_id()
 
 ## Knowledge Gaps
-- **111 isolated node(s):** `metis`, `M2 Remove a model (delete Psi row, $0)`, `M3 Price change (update c, re-pick lambda, $0)`, `Decisions needed (dataset, API access, budget, labeling, pool)`, `Risks and mitigations` (+106 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 682 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **111 isolated node(s):** `metis`, `Later upgrades: safety-net judge, cache-aware cost, LearnedMap`, `Sample dataset sample-data/data.json (100 sessions, 907 messages, 4 categories)`, `M2 Remove a model (delete Psi row, $0)`, `M3 Price change (update c, re-pick lambda, $0)` (+106 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 699 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **38 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Embedder` connect `s4_embed_bench.py` to `._merge`, `s4_embed_full.py`, `s4_persian_cluster.py`, `client.py`, `test_embed.py`, `run.py`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `metis`, `M2 Remove a model (delete Psi row, $0)`, `M3 Price change (update c, re-pick lambda, $0)` to the rest of the system?**
-  _111 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Data card: `sample.json` (structure only)` be split into smaller, more focused modules?**
-  _Cohesion score 0.07293868921775898 - nodes in this community are weakly interconnected._
-- **Why does `load_config()` connect `client.py` to `Data card: `sample.json` (structure only)`, `s5_cluster_view.py`, `numpy`, `test_router_synthetic.py`, `s4_embed_bench.py`, `pandas`, `s4_persian_cluster.py`, `s4_embed_full.py`, `hashlib`, `render.py`, `build.py`, `Budget`, `run.py`?**
+- **Why does `labelled()` connect `s4_persian_cluster.py` to `pandas`, `numpy`?**
   _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **What connects `metis`, `Later upgrades: safety-net judge, cache-aware cost, LearnedMap`, `Sample dataset sample-data/data.json (100 sessions, 907 messages, 4 categories)` to the rest of the system?**
+  _111 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `UniRoute Paper Concepts` be split into smaller, more focused modules?**
   _Cohesion score 0.08130081300813008 - nodes in this community are weakly interconnected._
-- **Why does `main()` connect `s4_embed_bench.py` to `ext_download.py`, `numpy`, `s4_embed_full.py`, `hashlib`, `test_embed.py`?**
+- **Why does `ZeroRouter` connect `ndarray` to `baselines.py`, `assign`, `metrics.py`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `Roadmap and Phases` be split into smaller, more focused modules?**
   _Cohesion score 0.06778476589797344 - nodes in this community are weakly interconnected._
+- **Should `ext_download.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.05649350649350649 - nodes in this community are weakly interconnected._
+- **Should `k_6` be split into smaller, more focused modules?**
+  _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._

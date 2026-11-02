@@ -1,14 +1,14 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-02 · validation done, team branch
+Updated: 2026-11-02 · WP-13 close
 
 ## Now
-- WP-12 and WP-13 done. Test answers and labels sealed, unread. Gate 2 failed by one item, owner went ahead (D-105). About $19.06 spent
-- Branch `TakRoute` holds this work, for the team. Team repo push waits for the owner
+- Current WP: **WP-14 Fingerprints, settings, freeze**. WP-12 and WP-13 done. Test answers and labels sealed, unread. Gate 2 failed by one item, owner went ahead (D-105). About $19.06 spent
+- Branch `TakRoute` holds this work, in the team repo `farzanenadem/Metis` and the owner's repo. Owner's `main` matches it
 - Judge: pointwise jev with history, τ = 7, `configs/judge_choice.yaml`. Val stays 400 (D-108). K limit 9 (D-089). K = 8 names from Qwen3-8B (D-092)
 - Model: default (Opus 5.5)
 
 ## Exact next step
-`/start`, `work/WP-14-*.md`. First the free router check on validation against ZeroRouter and single models. Stay on validation only: never open `*.sealed*`.
+`/start`, `work/WP-14-fingerprints-freeze.md`, section "Added by WP-12, WP-13": the free router check on validation against ZeroRouter and single models, new script using `runs/s7/labels_val.parquet`. Never open `*.sealed*`.
 
 ## Validation results (`results/s6_stats.md`, `results/s7_stats.md`; n = 400)
 - Pass at 7: Sonnet 65.2%, DeepSeek 64.9%, Luna 61.2%, Gemini 53.9%. All pass 41%, all fail 21%, best possible 79%
@@ -48,6 +48,7 @@ Updated: 2026-11-02 · validation done, team branch
 - Rest: about $2.50 (cache labels and live run). Total about $21.60. Each stage needs a "go"
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-114 WP-14 protocol notes
 - D-113 Team branch `TakRoute`
 - D-112 Val labels, refused prompt unlabeled
 - D-111 Sonnet estimate from measured price
@@ -57,4 +58,3 @@ Updated: 2026-11-02 · validation done, team branch
 - D-107 Sonnet stays; no deepseek-v4-pro, no Qwen
 - D-106 Main judging pointwise only; terra out
 - D-105 Gate 2 failed by one item, owner went ahead on record
-- D-104 `tpsg-` key pattern; new key in `.env`

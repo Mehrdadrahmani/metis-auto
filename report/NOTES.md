@@ -175,3 +175,11 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Of 26 disagreements, 10 under-passed (mostly required bot behaviour) and 16 over-passed (mostly poor fit to the bot, or weak on the question).
 - deepseek-v4-pro against Sonnet: mean gap -0.29 (CI -0.53 to -0.04, n = 100), cost per answer $0.0027 against $0.0156.
 - Not done: human check, 20 re-labels, wrong-prompt test.
+
+## WP-12, WP-13 validation and test (measured)
+- Pass at 7, n = 400: Sonnet 65.2%, DeepSeek 64.9%, Luna 61.2%, Gemini 53.9%, each about ±5 points. DeepSeek at about 1/26 of Sonnet's price.
+- Pilot n = 100 ran higher: 72, 73, 65, 57. All pass 40.9%, all fail 21.3%, ceiling 78.7%. DeepSeek and Sonnet disagree on about 18% of prompts.
+- Separability at K = 3 and K = 8: 0.111, 0.042 on the pilot; 0.167, 0.104 on 399 prompts. Part of the rise comes from n.
+- Val repeat n = 80: mean gap 0.147, all within 1 point.
+- Generation $11.88, judging $0.58. Test answers 1,200, 0 failed, 3 left cut off. Failed val answer: Sonnet error 500 on 3 tries. Jev refused 1 prompt on each set (error 400, cause not confirmed).
+- What didn't work: cost estimate counted 500 new prompts, real 600. Guard estimate ignored Sonnet's larger input, so a false stop at 42 of 400. Stored failures blocked resume until fixed. A failed answer read back as NaN and would have crashed the judge; the pilot had none to show it.
