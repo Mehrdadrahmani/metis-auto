@@ -46,7 +46,8 @@ def main() -> None:
         n = len(pilot_gen) * N_PILOT
         rows.append((f"Pilot pointwise: {judge}", n, n * judge_cost(judge, 1)))
         n = len(non_anchor) * N_PILOT * J
-        rows.append((f"Pilot pairwise: {judge}", n, n * judge_cost(judge, 2)))
+        if judge == "jev":  # D-093: terra judges the pilot pointwise only
+            rows.append((f"Pilot pairwise: {judge}", n, n * judge_cost(judge, 2)))
     pilot = sum(r[2] for r in rows)
     for m in candidates:
         rows.append((f"Main generation: {m}", main_new, main_new * call_cost(models[m], t_in, T_OUT)))
@@ -76,7 +77,7 @@ def main() -> None:
         f"| Main judging, pairwise (gpt-5.6-terra) | {n_pair} | {pair:.2f} |",
         f"| Re-judge 5% | {int(0.05 * n_point)} | {rejudge:.2f} |",
         "",
-        f"**Pilot with both judges: ${pilot:.2f}.** Main generation: ${gen_main:.2f}.",
+        f"**Pilot (terra pointwise, jev both): ${pilot:.2f}.** Main generation: ${gen_main:.2f}.",
         "",
         (
             f"Total, pointwise path: ${pilot + gen_main + point + rejudge:.2f}. "

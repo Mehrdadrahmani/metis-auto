@@ -10,7 +10,6 @@ Assumptions: T_in = 2871 (eligible prompts (chars / 3)), T_out = 300, judge outp
 | Pilot generation: claude-sonnet-5-5 | 100 | 0.96 |
 | Pilot generation: deepseek-v4-pro | 100 | 0.27 |
 | Pilot pointwise: judge | 500 | 5.03 |
-| Pilot pairwise: judge | 800 | 8.57 |
 | Pilot pointwise: jev | 500 | 0.08 |
 | Pilot pairwise: jev | 800 | 0.15 |
 | Main generation: deepseek-v4-flash | 600 | 0.40 |
@@ -21,6 +20,6 @@ Assumptions: T_in = 2871 (eligible prompts (chars / 3)), T_out = 300, judge outp
 | Main judging, pairwise (gpt-5.6-terra) | 3600 | 38.58 |
 | Re-judge 5% | 120 | 1.21 |
 
-**Pilot with both judges: $15.28.** Main generation: $7.06.
+**Pilot (terra pointwise, jev both): $6.71.** Main generation: $7.06.
 
-Total, pointwise path: $47.68. Total, pairwise path: $62.12. Cap: $60.
+Total, pointwise path: $39.11. Total, pairwise path: $53.55. Cap: $60.

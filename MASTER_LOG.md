@@ -99,6 +99,10 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-088 | 2026-11-02 | **Near-duplicates are kept (owner).** Replaces the 0.95 removal in D-075 and D-079: K-means fits on all train prompts (179,185 on the current split). Exact duplicates are still removed. Frequent messages now weigh more in the clusters. K limit, stability and cluster names need a rerun in WP-07 | O | WP-07, WP-08 |
 | D-089 | 2026-11-02 | **K limit is now 9 (owner).** Replaces K ≤ 11 in D-079: after D-088, mean ARI is 0.99 or higher to K = 9, then 0.89 at K = 10 and 0.85 at K = 11 (three fits each). All of 3 to 20 are still scored and reported, only K ≤ 9 can win (`router.k_ship_max: 9`) | O | WP-14 |
 | D-090 | 2026-11-02 | No S1 rules bug exists on record: the STATUS and CHECKPOINT note came from the D-068 risk line, `rules.py` is unchanged since S1 and its tests pass. Note removed. WP-08 cluster names must be redone on the D-088 clusters. PLAN §7 high is exceeded (WP-07 acceptance not met), decide at Gate 1 | A | WP-08 |
+| D-091 | 2026-11-02 | **Val stays 400 for now (owner); size decided after the pilot, at Gate 2.** A larger val adds sessions from train and never changes `n_val`, because that would redraw test. Owner also chose local Qwen3-8B for a topic sample per cluster | O | WP-08, WP-11 |
+| D-092 | 2026-11-02 | K = 8 cluster names kept for now (owner), marked as based on local Qwen3-8B topics (500 train prompts per cluster, 23 min, $0): `configs/cluster_names.yaml`. Other K need new names if chosen in WP-14 | O | WP-08, WP-14 |
+| D-093 | 2026-11-02 | **Pilot: gpt-5.6-terra pointwise only for now (owner), jev-latest both methods (DEV-13, narrows spec "method = both" and D-083).** Saves $8.57; pilot estimate $6.71. Terra pairwise can be added later, answers are cached. Method comparison uses jev. WP-09, WP-11 updated | O | WP-09, WP-11 |
+| D-094 | 2026-11-02 | **Gate 1 passed (owner).** Pilot limit $10 in `configs/budget.yaml`; gen_main, judge_main, cache_labels and live stay $0 until Gate 2, then set from measured costs. Pointwise stays the planned path | O | WP-09, WP-11 |
 | D-078 | 2026-11-01 | Bot clusters kept as a later test, not in the main pipeline. Experiment in `experiments/bot_clusters/` (elbow K = 13, silhouette 0.28, ARI 0.82). Owner idea: a bot term in task difficulty; test in WP-14 at $0 (would be DEV-12). Owner also moved WP-08 part B ahead of WP-04, 06, 07 (changes D-068) | O | WP-08 |
 | D-077 | 2026-11-01 | **Owner changed the data rule:** the agent may read anything in the data and results, including `instructions`, RAG context and generated answers. Replaces D-067 and D-073. Agent's handling: read through `metis.data.redact` so keys stay masked; test stays sealed under AGENTS.md §6; data text stays out of git, `results/`, `report/`. AGENTS.md §4 and CLAUDE.md updated | O | WP-08 |
 | D-076 | 2026-11-01 | Agent decision, to report to the owner: first run drew sessions equally and missed the all-traffic target (val 28.5% business support against about 16% of eligible prompts). Draw changed to **each eligible prompt equally likely**; sessions stay in one split, max 3 per session. Seed unchanged. Judged on val vs eligible; test labels and text not used | P | WP-08 |
@@ -131,9 +135,13 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | Date | Stage | WP | Approved | Spent | Calls | Note |
 |---|---|---|---|---|---|---|
 | 2026-10-20 | – | planning | $0 | $0.00 | 0 | Planning estimate: ~$25 (pointwise path) / ~$35 (pairwise), PLAN §7 |
+| 2026-11-02 | pilot | WP-09 | $10 | $0.00 | 0 | Gate 1 (D-094). Estimate $6.71. Other stages $0 until Gate 2 |
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · WP-08 closed, Gate 1 passed
+- Cluster names for K = 8 from local Qwen3-8B (`scripts/s5_topics.py`, 23 min, $0). Budget memo from `scripts/budget_memo.py`. Terra pairwise left out of the pilot (D-093). Pilot limit $10 (D-094). Tests 262 passed. Cost $0.
 
 ### 2026-11-02 · WP-07 dry run, clusters on all train, K limit 9
 - D-088 applied: near-duplicate step removed from S4 and S5 scripts. K 3 to 20 and stability rerun on 179,185 train prompts (old results in `runs/s5/old_near_dedup/`). Stable to K = 9 only, so K limit 9 (D-089).

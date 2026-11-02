@@ -67,3 +67,6 @@ Finish the current step, `/handoff` with "next: WP-11 step n", stop.
 
 ## Added by D-087
 Report judge-human agreement by group: with or without retrieved context, short or long instructions, instructions cut or not. Groups are small, so these are warning signs with n and CI, not decisions. List the disagreements and read terra's reasons (Jev gives none). Jev scores are not whole numbers (1 + 2.25 × level), so the τ sweep compares with >=.
+
+## Added by D-093
+Pairwise was judged by jev only, so pointwise vs pairwise is compared with jev (DEV-13). If pairwise wins and terra is the better pointwise judge, add terra pairwise on the pilot (about $8.57, ask first) before choosing it for the main run.

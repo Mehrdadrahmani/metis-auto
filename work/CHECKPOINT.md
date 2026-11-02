@@ -78,10 +78,10 @@ Split and clusters rerun (D-080, D-088). No S1 rules bug exists (D-090).
 - ☑ 5. Split on all traffic, test sealed (DEV-11, D-076)
 - ☑ 6. Embedder nano, Qdrant, near-duplicates at 0.95
 - ☑ 7. K-means K 3 to 20, stability
-- ◐ ⏸ 8. Cluster names: draft, owner reviews after WP-07
-- ◐ ⏸ ⛔ 9. Budget memo: draft; final needs WP-04 prices; then Gate 1
-- ☐ 10. Update later WPs if a PLAN §6 row triggers
-- ☐ WP-08 report
+- ☑ ⏸ 8. Cluster names: K = 8 from Qwen3-8B (D-092)
+- ☑ ⏸ ⛔ 9. Budget memo; Gate 1 passed (D-094)
+- ☑ 10. Update later WPs if a PLAN §6 row triggers
+- ☑ WP-08 report
 
 ## WP-09 Pilot run 💲
 

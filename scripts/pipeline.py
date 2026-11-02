@@ -115,7 +115,7 @@ def stage_s6(cfg: dict) -> dict:
 def stage_s7(cfg: dict) -> dict:
     p = DRY / "s1/prompts.parquet"
     sh("scripts/s7_judge.py", "--prompts", p, "--s6", DRY / "s6", "--out", DRY / "s7", "--set", "pilot",
-       "--stage", "pilot", "--judge", "judge")  # fmt: skip
+       "--stage", "pilot", "--judge", "judge", "--method", "pointwise")  # fmt: skip (D-093)
     sh("scripts/s7_judge.py", "--prompts", p, "--s6", DRY / "s6", "--out", DRY / "s7", "--set", "pilot",
        "--stage", "pilot", "--judge", "jev")  # fmt: skip
     sh("scripts/s7_judge.py", "--prompts", p, "--s6", DRY / "s6", "--out", DRY / "s7", "--set", "val",

@@ -1,11 +1,11 @@
-# WP-09: Pilot run (first paid stage, ~$6)
+# WP-09: Pilot run (first paid stage, ~$7, limit $10)
 
 > **Paste prompt (fallback):** "Read STATUS.md, AGENTS.md and work/WP-09-pilot-run.md; follow the session
 > protocol."
 
 | Phase | Model | Size | Needs owner | Cost | Depends on | Unblocks |
 |---|---|---|---|---|---|---|
-| 3 | default (Opus 5.5) | ~120k | **"go"** with the estimate | ~$6 (approved amount from Gate 1) | Gate 1 | WP-10 |
+| 3 | default (Opus 5.5) | ~120k | **"go"** with the estimate | ~$7 (limit $10, Gate 1) | Gate 1 | WP-10 |
 
 ## Context
 The slim pilot (PLAN M8, DEV-3): the 4 candidates answer the 100 pilot val prompts; the judge grades
@@ -62,3 +62,6 @@ Runs resume from the cache: stop at a checkpoint, `/handoff` with "next: WP-09 s
 
 ## Added by D-087
 Before the batch, with the owner's "go", send one call per model and judge, including Jev. Check that each route answers, that `reasoning_tokens` is 0 or small, that usage is returned, and that Sonnet accepts `thinking: between_tools`. All params in `configs/gen_config.yaml` and `judge_config.yaml` are unverified. Commands: `scripts/s6_generate.py --set pilot --stage pilot`, `scripts/s7_judge.py --set pilot --stage pilot --judge judge`, then `--judge jev`. Set `approved_usd.pilot` in `configs/budget.yaml` first. The pilot estimate is $15.28, not ~$6.
+
+## Added by D-093
+Owner: gpt-5.6-terra judges the pilot **pointwise only**; jev-latest does pointwise and pairwise. Run `s7_judge.py --judge judge --method pointwise` and `--judge jev --method both`. Calls: 500 terra, 1,300 jev. Limit from Gate 1; estimate $6.71 (`results/budget_memo.md`). Lines above about "both ways" and the ~$6 are replaced by this. The noise sample's pairwise items use jev. Terra pairwise can be added later for about $8.57; the answers are cached.

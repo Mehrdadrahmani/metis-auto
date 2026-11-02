@@ -15,7 +15,7 @@ Diagram: `diagrams/07-roadmap.drawio` (`.png`, `.pdf`).
 Phase 0 Setup            WP-00
 Phase 1 Free build       WP-01 → WP-02 → WP-03 · WP-04 · WP-05 · WP-06 → WP-07        ($0)
 Phase 2 Real data in     [full data] → WP-08 → ⛔G1 budget                               ($0)
-Phase 3 Small pilot      WP-09$ → WP-10👤 → WP-11 → ⛔G2 judge                           (~$6)
+Phase 3 Small pilot      WP-09$ → WP-10👤 → WP-11 → ⛔G2 judge                           (~$7)
 Phase 4 Main build       WP-12$ → WP-13$ → WP-14 → ⛔G3 tag pre-test                     (~$17–27)
 Phase 5 Gateway          WP-15 → WP-16 → WP-17 (decision) → WP-18   alongside phases 2–4 ($0–1)
 Phase 6 Final test       WP-19$                                                          (~$1.5)
@@ -37,7 +37,7 @@ Phase 7 Report, release  WP-20 → WP-21                                        
 | ☑ | **WP-05** Router core + evaluation library | 1 | S5, S8 (pointwise + BT), S9 (R = 20), S10, S11 metrics, baselines (ZeroRouter, K-NN, logistic), bootstrap/McNemar/κ, tested on synthetic data with a planted answer. Report: `work/reports/WP-05-report.md` | default | 250k | – | – | 00 | 07, 14 |
 | ☑ | **WP-06** Generation + judge pipeline (mocked) | 1 | S6/S7 runners, judge templates (A1/A2 extended), robust JSON parsing, labeling tool (blind, randomized) | default | 200k | 👤 10-min tool test on 5 sample items | – | 01, 04 | 07, 09 |
 | ☑ | **WP-07** End-to-end dry run | 1 | Whole S1–S12 on the sample with a mock LLM; artifact produced; rerun = 100% cache hits; no key in any outgoing request | default | 150k | – | – | 02–06 | 08 |
-| ☐ | **WP-08** Full data in | 2 | Data card, S1–S5 on real data, splits locked, clusters named, **budget memo** | default | 200k | 👤 provide data; **⛔ Gate 1** approve budget | – | data, 07 | 09, 12 |
+| ☑ | **WP-08** Full data in | 2 | Data card, S1–S5 on real data, splits locked, clusters named, **budget memo** | default | 200k | 👤 provide data; **⛔ Gate 1** approve budget | – | data, 07 | 09, 12 |
 | ☐ | **WP-09** Pilot run | 3 | 4 models × 100 pilot prompts; pointwise + pairwise judging; labeling sheet | default | 120k | 👤 "go" | **~$6** | G1 | 10 |
 | ☐ | **WP-10** Owner labels | 3 | 100 calibration items (`human_pass`, `human_pref`) + 20 re-labels later | – (owner) | – | 👤 **~3.5 h** | – | 09 | 11 |
 | ☐ | **WP-11** Pilot decision | 3 | Agreement + κ, τ, separability, bias + noise checks; choose method; update WP-13 | default | 150k | 👤 **⛔ Gate 2** | (~$2 if rubric revised) | 10 | 12, 13 |

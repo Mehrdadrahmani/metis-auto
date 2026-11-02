@@ -1,37 +1,45 @@
-# Budget memo (DRAFT, not Gate 1)
+# Budget memo for Gate 1
 
-Simulated from token statistics; no paid call made. Gate 1 needs the WP-04 estimator and confirmed
-Metis AI prices. Candidate prices: public list prices (`configs/models.yaml`, `verified: false`).
-Judge price: unknown; planning range $0.002 to $0.006 per call at 1,640 input tokens, scaled here by
-input size because the judge sees instructions and context (DEV-5).
+Simulated from formulas and measured token statistics; no paid call yet. Metis prices of 2026-11-01, no prompt-cache discount, DeepSeek peak-hour doubling not included. Sizes: val 400, test 300, pilot 100. Mean input 2,871 tokens (chars / 3, n = 206,729 eligible prompts).
 
-Token inputs (measured): val mean 2,781 estimated input tokens (n = 400, 3 chars per token);
-planning value 1,640. Output mean 286, median 129 (billing, n = 254,048 replies, before the 1,024 cap).
-Billing input mean 4,439 covers all traffic, including excluded workflow turns; used as the high case.
-Test tokens were not opened; val stands in for them.
+**Mid total: pointwise $41.61, pairwise $56.05. Cap $60. Line for action $45 (PLAN section 6).**
+These include cache labels and the live run, which `results/cost_estimate_v1.md` leaves out.
 
-| Case | T_in | Judge $/call |
-|---|---|---|
-| Low | 1,640 | 0.0020 |
-| Mid | 2,800 | 0.0068 |
-| High | 4,439 | 0.0162 |
+## Cost per stage
 
-| Item | Calls | Low | Mid | High |
-|---|---|---|---|---|
-| Generation: deepseek-v4-flash | 700 | $0.22 | $0.33 | $0.49 |
-| Generation: gpt-5.6-luna | 700 | $0.47 | $0.63 | $0.86 |
-| Generation: gemini-3.5-flash-lite | 700 | $0.84 | $1.09 | $1.43 |
-| Generation: claude-sonnet-5-5 | 700 | $4.30 | $5.92 | $8.22 |
-| **Generation total** | 2,800 | **$5.8** | **$8.0** | **$11.0** |
-| Pilot pairwise extra | 600 | $1.2 | $4.1 | $9.7 |
-| Main judging, pointwise | 2,800 | $5.6 | $19.0 | $45.4 |
-| Re-judge 5% | 140 | $0.3 | $1.0 | $2.3 |
-| Cache labels (planning value) | ~300 | $0 | $1.0 | $1.8 |
-| Live latency run (planning value) | ~250 | $0.8 | $1.5 | $2.5 |
-| **Total, pointwise path** | ~7,100 | **$13** | **$35** | **$73** |
+Low: median answer 129 tokens. Mid: 300 tokens. High: input 4,439 tokens (billing mean, all traffic).
 
-Pairwise path, mid case: about $43 (generation $8.0, pilot pointwise $2.7, 4,200 pairwise calls $28.6,
-re-judge, cache labels and live run $3.5).
+| Stage | Low | Mid | High |
+|---|---:|---:|---:|
+| Pilot: 5 models; terra pointwise, jev both (D-093) | $6.24 | $6.71 | $9.07 |
+| Main generation (600 prompts) | $5.68 | $7.06 | $9.59 |
+| Main judging, pointwise (terra) | $23.23 | $24.13 | $32.41 |
+| Main judging, pairwise (terra) | $35.87 | $38.58 | $51.00 |
+| Re-judge 5% | $1.16 | $1.21 | $1.62 |
+| Cache labels (WP-17, planning) | $0.00 | $1.00 | $1.80 |
+| Live run (WP-19, planning) | $0.80 | $1.50 | $2.50 |
+| Rubric revision (only if Gate 2 fails) | $0.00 | $0.00 | $2.50 |
+| **Total, pointwise** | **$37.11** | **$41.61** | **$59.49** |
+| **Total, pairwise** | **$49.75** | **$56.05** | **$78.08** |
 
-The high case passes the $60 cap. Before Gate 1: confirm the judge price; decide a cap on judge input
-tokens. Generation is cached and paid once; the pilot's answers are reused.
+PLAN section 7 high: pointwise $39, pairwise $54. The mid case is above both. The main reason is the judge: mean input is 2,871 tokens against 1,640 planned, at $2.20 / $13.20 per million.
+
+## Ways to cut (mid case)
+
+| Option | Saves | Cost to the project |
+|---|---:|---|
+| jev-latest passes the pilot and judges the main run, pointwise | $23.73 | None if it agrees with the owner; known only at Gate 2 |
+| Leave deepseek-v4-pro out of the pilot | $1.33 | That option (D-083) is not tested |
+| Drop the 5% re-judge | $1.21 | No judge noise check (PLAN section 6 allows it) |
+| Cap judge input at 4,000 tokens (cuts 18% of prompts) | $6.67 | Judge sees less context on those prompts |
+| Cap judge input at 2,500 tokens (cuts 27% of prompts) | $8.72 | Same, on many more prompts |
+
+With jev as main judge: about $17.88 in total, pointwise. Instructions alone do not drive cost: the 6,000-token cut on them saves $0.
+
+## Recommendation
+
+1. Keep the pointwise path as the plan. Pairwise with terra can be added to the pilot later for about $8.57 (answers are cached).
+2. **Approve only the pilot now, with a $10 limit** (mid $6.71, high $9.07). It buys the real prices, token counts and the judge answer.
+3. Keep gen_main, judge_main, cache_labels and live at $0 until Gate 2, then set them from measured costs.
+4. If the first 20 real pilot calls cost over twice the estimate, the run stops by itself.
+5. Even if the pilot uses the whole limit, $50 is left. The rest of the pointwise path with terra needs about $34.90, and pairwise with terra about $49.34, which fits but was never tested with terra (D-093).

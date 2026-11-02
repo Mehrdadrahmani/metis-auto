@@ -2,7 +2,7 @@
 # Every stage stays at 0 until the owner says "go" for that stage.
 hard_cap_usd: 60
 approved_usd:
-  pilot: 0
+  pilot: 10            # Gate 1, D-094; other stages wait for Gate 2
   gen_main: 0
   judge_main: 0
   cache_labels: 0
