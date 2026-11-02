@@ -2,13 +2,13 @@
 Updated: 2026-11-02 · validation done, team branch
 
 ## Now
-- WP-12 and WP-13: **validation done, test left** (D-109). Gate 2 failed by one item, owner went ahead (D-105). About $12.64 spent
+- WP-12 done. WP-13: **validation done, test left** (D-109). Gate 2 failed by one item, owner went ahead (D-105). About $18.76 spent
 - Branch `TakRoute` holds this work, for the team. Team repo push waits for the owner
 - Judge: pointwise jev with history, τ = 7, `configs/judge_choice.yaml`. Val stays 400 (D-108). K limit 9 (D-089). K = 8 names from Qwen3-8B (D-092)
 - Model: default (Opus 5.5)
 
 ## Exact next step
-Recommended first (free, no test data): the WP-14 early check, router against ZeroRouter and single models on validation. Then test answers: add the test set to `s6_generate.py` (D-087), raise `gen_main` to about $14 at a "go", about $5.80, then judging about $0.30.
+WP-13 test judging: let `s7_judge.py` take the test set with `.sealed` outputs, write `labels_test.sealed.parquet`, show about $0.30, wait for "go". Then WP-14, starting with the free router check on validation.
 
 ## Validation results (`results/s6_stats.md`, `results/s7_stats.md`; n = 400)
 - Pass at 7: Sonnet 65.2%, DeepSeek 64.9%, Luna 61.2%, Gemini 53.9%. All pass 41%, all fail 21%, best possible 79%
@@ -44,8 +44,8 @@ Recommended first (free, no test data): the WP-14 early check, router against Ze
 - GitHub secret scanning not available (Q-022); HF "xet" stalls, use `scripts/fetch_model.py`
 
 ## Money
-- Spent about $12.64 of cap $60.00. Approved: pilot $10, gen_main $8, judge_main $1
-- Rest: about $9 (test answers $5.80, Jev $0.30, cache labels and live run $2.50). Total about $21.30. Each stage needs a "go"
+- Spent about $18.76 of cap $60.00. Approved: pilot $10, gen_main $14, judge_main $1
+- Rest: about $3 (Jev test $0.30, cache labels and live run $2.50). Total about $21.60. Each stage needs a "go"
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
 - D-113 Team branch `TakRoute`

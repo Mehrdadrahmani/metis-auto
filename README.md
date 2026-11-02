@@ -3,9 +3,9 @@
 An LLM router for Persian-first chatbot traffic. It tries to send each message to the cheapest model
 that is good enough, using the UniRoute method (ICLR 2026). Rahnema College 2026 course project.
 
-> **Status, 2026-11-02: in progress.** Validation answers and judge labels are done. The router has
-> **not** been tested on real data yet, the gateway is not built, and the test set has not been
-> answered. Live status: [`STATUS.md`](STATUS.md).
+> **Status, 2026-11-02: in progress.** Answers are done, and validation labels are done. The router has
+> **not** been tested on real data yet, the gateway is not built, and test answers have not been
+> judged. Live status: [`STATUS.md`](STATUS.md).
 
 **Reading this as an AI agent?** Go to [For AI agents](#for-ai-agents).
 
@@ -76,13 +76,13 @@ A plain walkthrough is in [`PROJECT.md`](PROJECT.md). Deliberate changes are lis
 | Data, splits, embeddings, clusters (WP-01 to WP-08) | Done |
 | Router and evaluation library, on synthetic data (WP-05) | Done |
 | Pilot and judge choice (WP-09 to WP-11) | Done, Gate 2 missed by one item |
-| Generation (WP-12) | Validation done, 300 test prompts left |
+| Generation (WP-12) | Done, test answers sealed |
 | Judging (WP-13) | Validation done, test left |
 | Fingerprints, settings, freeze (WP-14) | Not started |
 | Gateway, cache, replay, dashboard (WP-15 to WP-18) | Not started |
 | Final evaluation, report, release (WP-19 to WP-21) | Not started |
 
-Full route: [`ROADMAP.md`](ROADMAP.md). Spent about $12.64 of the $60 cap; about $21.30 expected in
+Full route: [`ROADMAP.md`](ROADMAP.md). Spent about $18.76 of the $60 cap; about $21.60 expected in
 total.
 
 ## Quick start

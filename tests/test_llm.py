@@ -137,14 +137,14 @@ def test_shipped_config_allows_only_approved_stages(cache):
     assert cfg["hard_cap_usd"] == 60
     assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live"}
     assert cfg["approved_usd"]["pilot"] == 10
-    assert cfg["approved_usd"]["gen_main"] == 8
+    assert cfg["approved_usd"]["gen_main"] == 14
     assert cfg["approved_usd"]["judge_main"] == 1
     budget = Budget(cache, cfg, MODELS)
     budget.guard("pilot", 0.0001)
     with pytest.raises(BudgetRefused):
         budget.guard("pilot", 10.01)
     with pytest.raises(BudgetRefused):
-        budget.guard("gen_main", 8.01)
+        budget.guard("gen_main", 14.01)
     with pytest.raises(BudgetRefused):
         budget.guard("judge_main", 1.01)
     for locked in ("cache_labels", "live"):
