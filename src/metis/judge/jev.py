@@ -22,6 +22,7 @@ from metis.llm.client import (
     CONNECT_TIMEOUT_S,
     MAX_ATTEMPTS,
     TOTAL_TIMEOUT_S,
+    AccountBlocked,
     CallFailed,
     ModelNotReadyError,
     NoPermitError,
@@ -116,6 +117,10 @@ def complete(
                 )
             # Provider errors can echo the prompt: keep the class only.
             except Exception as exc:  # noqa: BLE001
+                reply = getattr(exc, "response", None)
+                code, body = getattr(reply, "status_code", None), getattr(reply, "text", "")
+                if client.account_problem(code, body):
+                    raise AccountBlocked(_failure_kind(exc)) from None
                 raise CallFailed(_failure_kind(exc)) from None
         finish(
             {

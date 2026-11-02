@@ -109,6 +109,11 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-106 | 2026-11-02 | Main judging is pointwise only, narrowing D-101. Terra stays out: without history it ties jev on AUC (0.727 both) with κ 0.27 against 0.36 at τ = 7; about 13 times the cost | O | WP-13 |
 | D-107 | 2026-11-02 | Sonnet stays candidate and anchor, deepseek-v4-pro not adopted (closes D-082): mean score gap -0.29 (CI -0.53 to -0.04, n = 100), pairwise 0.282. Owner declined local Qwen3-8B as a candidate | O | WP-12 |
 | D-108 | 2026-11-02 | Val stays 400 (owner, closes D-091). Growing later reuses cached answers and judgments if the configs stay the same, about $2 per 100 new prompts; compare the Jev version first | O | WP-12, WP-14 |
+| D-109 | 2026-11-02 | Validation first: test generation and judging wait for a separate "go" (owner). `s6_generate.py` still cannot select test | O | WP-12 |
+| D-110 | 2026-11-02 | Bad key or empty balance stops a paid run at once and stores nothing, so a rerun resumes. Stopped runs write only `.partial` tables. `--retry-failed` retries stored failures | A | WP-12 |
+| D-111 | 2026-11-02 | Sonnet's guard estimate set to the measured $0.0175 per call (`--est-usd`) after a false cost stop; the 2× rule unchanged (owner OK) | O | WP-12 |
+| D-112 | 2026-11-02 | Validation labels: score < 7 is a loss, failed answer keeps score 1, the one prompt Jev refused (400) has no labels | A | WP-13 |
+| D-113 | 2026-11-02 | Team branch `metis-auto-v2` with README and `.env.example` (owner) | O | – |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -152,9 +157,18 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-02 | pilot | WP-09 | $10 | $0.00 | 0 | Gate 1 (D-094). Estimate $6.71. Other stages $0 until Gate 2 |
 | 2026-11-02 | pilot | WP-09 | $10 | $6.29 | 2,361 | Dashboard figure (D-100). Ledger $5.87. Sonnet $1.75, deepseek-v4-pro $0.28, luna $0.08, flash $0.07, gemini $0.04, terra $3.42, jev $0.23 |
 | 2026-11-02 | pilot | WP-11 | $10 | about $6.60 | 3,638 | Jev re-judge with history, ledger $0.29, 1,277 new calls. Total ledger $6.16; dashboard figure + re-judge. 23 failed 401 calls at $0 |
-| | **Total** | | | **$0.00** | **0** | |
+| 2026-11-02 | gen_main | WP-12 | $8 | $5.76 | 1,233 | Validation only. Sonnet $5.17, luna $0.26, flash $0.20, gemini $0.13. 3 failed tries, all one Sonnet prompt |
+| 2026-11-02 | judge_main | WP-13 | $1 | $0.28 | 1,247 | Validation only, Jev, 80 repeat calls included. 8 failed tries, all the one refused prompt |
+| | **Total** | | | **about $12.64** | | Ledger $12.21 + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · Validation generated and judged, team branch
+- WP-12 and WP-13 run on validation only (D-109). Generation $5.76, 1,599 of 1,600 answers. Judging $0.28, 1,595 scored, repeat check n = 80 mean gap 0.147.
+- Pass rates at 7: Sonnet 65.2%, DeepSeek 64.9%, Luna 61.2%, Gemini 53.9% (n = 400). All pass 41%, all fail 21%, best possible 79%. Routing still untested.
+- Bugs fixed: stored failures blocked resume (D-110); a failed answer loaded as NaN crashed the judge; Jev had no account stop. Budget test updated for the new limits.
+- `cost_estimate_v2` counted 500 new prompts, the real number is 600. Corrected total about $21.30.
+- `graphify update .` refused to overwrite (saved semantic nodes missing), so the graph is behind the code. History scan clean before sharing (46 commits). Team branch made (D-113).
 
 ### 2026-11-02 · WP-11 pilot decision, Gate 2
 - Gate 2 failed by one item: pointwise jev with history, τ = 7, agreement 0.74 (line 0.75), κ 0.431 (n = 100, Opus labels). Pairwise κ 0.285, position consistency 0.738. Separability 0.333 at K = 1, 0.111 at K = 3.

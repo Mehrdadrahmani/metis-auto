@@ -17,6 +17,7 @@ from metis.llm import client
 from metis.llm.budget import Budget, BudgetRefused, call_cost
 from metis.llm.callcache import CallCache, cache_key, get_or_call
 from metis.llm.client import (
+    AccountBlocked,
     CallFailed,
     ModelNotReadyError,
     NoPermitError,
@@ -130,17 +131,23 @@ def test_failed_call_retried_only_on_flag(cache):
 # Budget --------------------------------------------------------------------------------------
 
 
-def test_shipped_config_allows_only_the_approved_pilot(cache):
-    """Gate 1 (D-094): the pilot has its limit, every other stage is refused until Gate 2."""
+def test_shipped_config_allows_only_approved_stages(cache):
+    """Pilot (D-094) and generation (owner "go", WP-12) have limits; the rest are refused."""
     cfg = load_config("budget")
     assert cfg["hard_cap_usd"] == 60
     assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live"}
     assert cfg["approved_usd"]["pilot"] == 10
+    assert cfg["approved_usd"]["gen_main"] == 8
+    assert cfg["approved_usd"]["judge_main"] == 1
     budget = Budget(cache, cfg, MODELS)
     budget.guard("pilot", 0.0001)
     with pytest.raises(BudgetRefused):
         budget.guard("pilot", 10.01)
-    for stage in ("gen_main", "judge_main", "cache_labels", "live"):
+    with pytest.raises(BudgetRefused):
+        budget.guard("gen_main", 8.01)
+    with pytest.raises(BudgetRefused):
+        budget.guard("judge_main", 1.01)
+    for stage in ("cache_labels", "live"):
         with pytest.raises(BudgetRefused):
             budget.guard(stage, 0.0001)
 
@@ -414,6 +421,38 @@ def test_resume_after_crash_at_item_37(cache, concurrency):
                        concurrency=concurrency)
     assert send.calls == 60
     assert (report.new_calls, report.cache_hits, report.done) == (60 - paid, paid, 60)
+
+
+def test_empty_balance_stops_stores_nothing_and_resumes(cache):
+    budget, send = Budget(cache, config(1), MODELS), Sender()
+    blocked = {"on": False}
+
+    def fn(i):
+        if blocked["on"] or i == 10:
+            blocked["on"] = True
+            raise AccountBlocked("AuthenticationError:401")
+        return call(cache, budget, send, f"p{i}", estimate=0.002)
+
+    report = run_batch("pilot", range(30), fn, LIMITS, concurrency=1)
+    assert report.stopped and "account" in report.stopped_reason
+    assert (report.done, send.calls) == (10, 10)
+    blocked["on"] = None
+    again = run_batch(
+        "pilot", range(30),
+        lambda i: call(cache, budget, send, f"p{i}", estimate=0.002), LIMITS, concurrency=1,
+    )
+    assert not again.stopped
+    assert (again.cache_hits, again.new_calls, send.calls) == (10, 20, 30)
+
+
+@pytest.mark.parametrize("code,text,expected", [
+    (401, "bad key", True), (402, "", True), (403, "", True),
+    (429, "insufficient_quota", True), (429, "slow down", False), (500, "balance", False),
+])
+def test_account_problem_detection(code, text, expected):
+    exc = Exception(text)
+    exc.status_code = code
+    assert client._is_account_problem(exc) is expected
 
 
 def test_stops_on_failures(cache):

@@ -1,13 +1,18 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-02 · by session WP-11 close
+Updated: 2026-11-02 · validation done, team branch
 
 ## Now
-- Current WP: **WP-12 Generation val + test**. WP-11 done. Gate 2 failed by one item, owner went ahead on record (D-105). About $6.60 spent
+- WP-12 and WP-13: **validation done, test left** (D-109). Gate 2 failed by one item, owner went ahead (D-105). About $12.64 spent
+- Branch `metis-auto-v2` holds this work, for the team. Team repo push waits for the owner
 - Judge: pointwise jev with history, τ = 7, `configs/judge_choice.yaml`. Val stays 400 (D-108). K limit 9 (D-089). K = 8 names from Qwen3-8B (D-092)
 - Model: default (Opus 5.5)
 
 ## Exact next step
-`/start`, `work/WP-12-generation.md`. First fix the pre-check in `scripts/s6_generate.py` so it prices only work not yet done (D-097, as in s7). Then show the estimate, about $9.70, and wait for "go".
+Recommended first (free, no test data): the WP-14 early check, router against ZeroRouter and single models on validation. Then test answers: add the test set to `s6_generate.py` (D-087), raise `gen_main` to about $14 at a "go", about $5.80, then judging about $0.30.
+
+## Validation results (`results/s6_stats.md`, `results/s7_stats.md`; n = 400)
+- Pass at 7: Sonnet 65.2%, DeepSeek 64.9%, Luna 61.2%, Gemini 53.9%. All pass 41%, all fail 21%, best possible 79%
+- 1 Sonnet answer failed, 1 prompt refused by Jev. Repeat check n = 80, mean gap 0.147
 
 ## Models (D-080, D-082, D-107; `configs/models.yaml`)
 - Candidates: deepseek-v4-flash, gpt-5.6-luna, gemini-2.5-flash-lite (holdout), claude-sonnet-5-5 (anchor)
@@ -21,11 +26,12 @@ Updated: 2026-11-02 · by session WP-11 close
 ## Waiting on the owner
 - Replace the Metis key again when possible: the new one was pasted in chat too (D-104). Replace the Hugging Face token too
 - Share with colleagues: `qdrant/share/*.snapshot` (948 MB) + `docker-compose.yml`, `configs/pipeline.yaml`, `embed_full.json`. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids
-- Chunking long messages over ~2,048 tokens (weighted mean of pieces): asked, not answered
+- Chunking long messages over ~2,048 tokens: owner says no new token limit yet (2026-11-02); revisit later
 - D-071 defaults to confirm: 11 long messages cut; hidden memory block left in place
 
 ## Blockers / open issues
-- `s6_generate.py` pre-check still prices cached work (D-097): first job in WP-12
+- `graphify update .` refuses to overwrite (saved semantic nodes missing): graph is behind the code
+- The exact Metis error for an empty balance is unknown; generic failure stop is the backup (D-110)
 - Reasoning tokens are not reported for Sonnet, DeepSeek and Gemini, so the guard cannot see them; Sonnet's chars per token fit its input ratio
 - Failed calls book $0, but a provider may bill them. Run one paid process at a time
 - Val vs test differ on Persian share (0.132) and no-description bots (0.115), over the 0.1 limit: judged chance; no redraw
@@ -38,10 +44,15 @@ Updated: 2026-11-02 · by session WP-11 close
 - GitHub secret scanning not available (Q-022); HF "xet" stalls, use `scripts/fetch_model.py`
 
 ## Money
-- Spent about $6.60 of cap $60.00 (dashboard $6.29 + re-judge $0.29 by ledger; D-100). Approved so far: pilot $10.
-- Rest: about $13 (generation $9.70, Jev about $0.60, cache labels and live run $2.50). Each stage needs a "go".
+- Spent about $12.64 of cap $60.00. Approved: pilot $10, gen_main $8, judge_main $1
+- Rest: about $9 (test answers $5.80, Jev $0.30, cache labels and live run $2.50). Total about $21.30. Each stage needs a "go"
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-113 Team branch `metis-auto-v2`
+- D-112 Val labels, refused prompt unlabeled
+- D-111 Sonnet estimate from measured price
+- D-110 Account stop and resume
+- D-109 Validation first, test waits
 - D-108 Val stays 400
 - D-107 Sonnet stays; no deepseek-v4-pro, no Qwen
 - D-106 Main judging pointwise only; terra out
@@ -49,8 +60,3 @@ Updated: 2026-11-02 · by session WP-11 close
 - D-104 `tpsg-` key pattern; new key in `.env`
 - D-103 Pilot re-judged by Jev with history
 - D-102 Chat history to the judge from now on
-- D-101 Terra dropped; Jev keeps pointwise and pairwise
-- D-100 Real pilot spend $6.29
-- D-098 Opus labels, not human (DEV-14)
-- D-097 s7 pre-check prices only work not yet done
-- D-096 Pilot run on the old Metis key (owner)

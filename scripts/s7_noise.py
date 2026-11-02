@@ -3,6 +3,7 @@
 Usage: uv run python scripts/s7_noise.py --set pilot --stage pilot
 Pointwise: 20 items for terra and jev. Pairwise: 20 items for jev (D-093). Prints aggregates only.
 Compares with the first judgments in runs/s7; writes runs/pilot/noise_*.parquet and a manifest.
+WP-13: --stage judge_main --out runs/s7 re-judges 5% of the shipped judge's items (pointwise jev).
 """
 
 from __future__ import annotations
@@ -23,14 +24,17 @@ from metis.llm.callcache import CallCache
 from metis.llm.runner import run_batch
 
 SALT = "-noise1"
+MAIN_SALT = "-noise2"  # a new salt, so no pilot repeat comes back from the cache
 N = 20
+MAIN_SHARE = 0.05
 JOBS = (("pointwise", "judge"), ("pointwise", "jev"), ("pairwise", "jev"))
+MAIN_JOBS = (("pointwise", "jev"),)
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--set", dest="which", choices=st.SETS, required=True)
-    ap.add_argument("--stage", choices=("pilot",), required=True)
+    ap.add_argument("--stage", choices=("pilot", "judge_main"), required=True)
     ap.add_argument("--prompts", type=Path, default=Path("runs/s1/prompts.parquet"))
     ap.add_argument("--s6", type=Path, default=Path("runs/s6"))
     ap.add_argument("--s7", type=Path, default=Path("runs/s7"))
@@ -39,21 +43,24 @@ def main() -> int:
 
     start = time.perf_counter()
     base = render.judge_config()
-    cfg = {**base, "judge_config_id": base["judge_config_id"] + SALT}
+    main_run = args.stage == "judge_main"
+    salt = MAIN_SALT if main_run else SALT
+    cfg = {**base, "judge_config_id": base["judge_config_id"] + salt}
     cache = CallCache()
     budget = Budget(cache)
     answers = pd.read_parquet(args.s6 / f"responses_{args.which}.parquet")
-    text = {(a.prompt_id, a.model_id): a.text for a in answers.itertuples()}
+    text = {(a.prompt_id, a.model_id): a.text if isinstance(a.text, str) else None
+            for a in answers.itertuples()}
     rows = st.load_rows(args.prompts, sorted(answers["prompt_id"].unique()))
     rng = random.Random(base["seed"])
     summary, stopped = {}, False
 
-    for method, judge in JOBS:
+    for method, judge in MAIN_JOBS if main_run else JOBS:
         first = pd.read_parquet(args.s7 / f"{method}_{judge}_{args.which}.parquet")
         first = first[first["status"] == "ok"]
         keys = ["prompt_id", "model_id"] + (["order"] if method == "pairwise" else [])
         items = sorted(first[keys].itertuples(index=False, name=None))
-        items = rng.sample(items, N)
+        items = rng.sample(items, round(MAIN_SHARE * len(items)) if main_run else N)
         cost = call_cost(budget.models[judge], 4000, 150)
         run = JudgeRun(cache, budget, args.stage, judge, cfg, cost)
         records = []

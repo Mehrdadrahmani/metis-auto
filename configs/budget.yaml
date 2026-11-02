@@ -3,8 +3,8 @@
 hard_cap_usd: 60
 approved_usd:
   pilot: 10            # Gate 1, D-094; other stages wait for Gate 2
-  gen_main: 0
-  judge_main: 0
+  gen_main: 8          # owner "go" 2026-11-02, val only, estimate $5.82
+  judge_main: 1        # owner "judge" 2026-11-02, val only, estimate $0.30
   cache_labels: 0
   live: 0
 # Automatic stops in run_batch (AGENTS.md §5).

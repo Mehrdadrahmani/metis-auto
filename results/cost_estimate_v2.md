@@ -1,5 +1,7 @@
 # Cost estimate v2 (measured from the pilot)
 
+**Correction 2026-11-02:** the prompt count below is wrong. New prompts are 600 (300 val + 300 test), not 500. Measured validation generation was $5.76, so all generation is about $11.60, not $9.70.
+
 Simulated from measured cost per call, n = 100 pilot prompts. Sizes: val 400, test 300, pilot 100 reused. Assumes the pilot prompts are like the rest. No confidence interval yet.
 
 | Item | Memo, mid | Measured basis | New estimate |

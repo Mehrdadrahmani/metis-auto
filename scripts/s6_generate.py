@@ -2,11 +2,16 @@
 
 Usage: METIS_MOCK=1 uv run python scripts/s6_generate.py --set pilot --stage pilot
 A real run needs an approved stage in configs/budget.yaml. Prints counts and dollars only.
+
+Every answer is saved to the call cache as it arrives. After any stop, run the same command again:
+saved answers come back free. Add --retry-failed to also retry calls stored as failed.
+A stopped run writes responses_<set>.partial.parquet and resume_<set>.json, never the final table.
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 from pathlib import Path
@@ -16,7 +21,7 @@ import pandas as pd
 from metis.config import load_config
 from metis.llm import stage as st
 from metis.llm.budget import Budget, call_cost
-from metis.llm.callcache import CallCache, get_or_call
+from metis.llm.callcache import CallCache, cache_key, get_or_call
 from metis.llm.client import complete, is_mock
 from metis.llm.messages import build_messages, gen_params
 from metis.llm.runner import run_batch
@@ -31,6 +36,10 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=Path("runs/s6"))
     ap.add_argument("--limit", type=int)
     ap.add_argument("--concurrency", type=int, default=4)
+    ap.add_argument("--retry-failed", action="store_true", help="retry calls stored as failed")
+    ap.add_argument("--est-usd", action="append", default=[], metavar="MODEL=USD",
+                    help="measured cost per call, replaces the token-based estimate for that model")
+    ap.add_argument("--estimate-only", action="store_true", help="print calls left and $, send nothing")
     args = ap.parse_args()
 
     start = time.perf_counter()
@@ -49,19 +58,41 @@ def main() -> int:
     ]
     order = st.cheapest_first(budget.models, wanted)
     costs = {m: call_cost(budget.models[m], t_in, st.T_OUT) for m in order}
+    for pair in args.est_usd:
+        model_id, usd = pair.split("=")
+        if model_id not in costs:
+            raise ValueError(f"unknown model {model_id}")
+        costs[model_id] = float(usd)
+    def messages_for(pid: str) -> list[dict]:
+        r = rows[pid]
+        return build_messages(r["instructions"], r["text"], r["history"], r["rag_context"])
+
+    def calls_left(model_id: str) -> int:
+        """Cached answers are free: the pre-check prices only what is left (D-097)."""
+        spec, params = budget.models[model_id], gen_params(model_id, cfg)
+        keys = (cache_key(model_id, spec.get("api_name"), messages_for(p), params, cfg["_id"]) for p in ids)
+        found = [cache.get(k) for k in keys]
+        return sum(f is None or (args.retry_failed and f.status != "ok") for f in found)
+
+    left = {m: calls_left(m) for m in order}
+    to_pay = sum(costs[m] * n for m, n in left.items())
+    print(f"calls left {sum(left.values())} of {len(ids) * len(order)}: {left}; "
+          f"token-based estimate ${to_pay:.2f}", flush=True)
+    if args.estimate_only:
+        cache.close()
+        return 0
     if not is_mock():
-        budget.check(args.stage, sum(costs.values()) * len(ids))
+        budget.check(args.stage, to_pay)
 
     records, reports = [], {}
     for model_id in order:
         params = gen_params(model_id, cfg)
 
         def one(pid: str, model_id=model_id, params=params):
-            r = rows[pid]
-            messages = build_messages(r["instructions"], r["text"], r["history"], r["rag_context"])
+            messages = messages_for(pid)
             result = get_or_call(
                 cache, budget, args.stage, model_id, messages, params, cfg["_id"],
-                costs[model_id], complete, prompt_id=pid,
+                costs[model_id], complete, retry_failed=args.retry_failed, prompt_id=pid,
             )
             config_id = cfg["_id"]
             for retry in retries:  # same limits for all models
@@ -72,7 +103,7 @@ def main() -> int:
                 result = get_or_call(
                     cache, budget, args.stage, model_id, messages,
                     gen_params(model_id, cfg, retry["max_tokens"]), config_id,
-                    costs[model_id] * 3, complete, prompt_id=pid,
+                    costs[model_id] * 3, complete, retry_failed=args.retry_failed, prompt_id=pid,
                 )
             resp = result.response
             ok = result.status == "ok" and bool(resp and resp.text.strip())
@@ -96,11 +127,32 @@ def main() -> int:
             print(f"STOPPED {model_id}: {report.stopped_reason}")
             break
 
+    stopped = next(((m, r) for m, r in reports.items() if r.stopped), None)
     args.out.mkdir(parents=True, exist_ok=True)
-    table = pd.DataFrame(records).sort_values(["prompt_id", "model_id"], ignore_index=True)
-    table.to_parquet(args.out / f"responses_{args.which}.parquet", index=False)  # sorted: threads race
+    final = args.out / f"responses_{args.which}.parquet"
+    partial = args.out / f"responses_{args.which}.partial.parquet"
+    resume = args.out / f"resume_{args.which}.json"
+    # Sorted because threads race. A stopped run never writes the table S7 reads.
+    columns = ["prompt_id", "model_id"]
+    table = pd.DataFrame(records, columns=None if records else columns).sort_values(columns, ignore_index=True)
+    table.to_parquet(partial if stopped else final, index=False)
+    if stopped:
+        resume.write_text(json.dumps({
+            "stopped_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "model": stopped[0], "reason": stopped[1].stopped_reason,
+            "answers_saved_this_run": sum(r["status"] == "ok" for r in records),
+            "done_per_model": {m: r.done for m, r in reports.items()},
+            "resume_with": f"uv run python scripts/s6_generate.py --set {args.which} "
+                           f"--stage {args.stage} --retry-failed "
+                           f"{' '.join(f'--est-usd {e}' for e in args.est_usd)}".strip(),
+        }, indent=2) + "\n", encoding="utf-8")
+        print(f"Saved. To resume: see {resume}")
+    else:
+        partial.unlink(missing_ok=True)
+        resume.unlink(missing_ok=True)
     st.write_manifest(args.out / f"manifest_{args.which}.json", ids, {
         "stage": args.stage, "gen_config_id": cfg["_id"], "mock": is_mock(),
+        "complete": stopped is None,
         "models": order, "records": len(records),
         "new_calls": sum(r.new_calls for r in reports.values()),
         "cost_usd": sum(r.cost_usd for r in reports.values()),

@@ -31,6 +31,7 @@ _RECORD_LOCK = threading.Lock()
 CONNECT_TIMEOUT_S = 5.0  # PLAN E4
 TOTAL_TIMEOUT_S = 60.0
 MAX_ATTEMPTS = 2  # first try + 1 retry with jitter on 429/5xx
+QUOTA_WORDS = ("quota", "insufficient", "balance", "credit", "billing")  # a 429 that waiting won't fix
 
 
 class OutgoingSecretError(RuntimeError):
@@ -47,6 +48,14 @@ class ModelNotReadyError(RuntimeError):
 
 class CallFailed(RuntimeError):
     """The provider failed after retries. Carries a short kind, never content."""
+
+    def __init__(self, kind: str):
+        super().__init__(kind)
+        self.kind = kind
+
+
+class AccountBlocked(RuntimeError):
+    """The key or balance is the problem, not this prompt: stop, store nothing, resume later."""
 
     def __init__(self, kind: str):
         super().__init__(kind)
@@ -140,6 +149,17 @@ def _mock_response(model_id: str, messages: list[dict[str, Any]], gen: dict[str,
     )
 
 
+def account_problem(code: int | None, body: str) -> bool:
+    """Bad or expired key, or no money left. Only a yes/no leaves this function."""
+    if code in (401, 402, 403):
+        return True
+    return code == 429 and any(word in body.lower() for word in QUOTA_WORDS)
+
+
+def _is_account_problem(exc: BaseException) -> bool:
+    return account_problem(getattr(exc, "status_code", None), str(exc))
+
+
 def _is_retryable(exc: BaseException) -> bool:
     code = getattr(exc, "status_code", None)
     return code == 429 or (isinstance(code, int) and code >= 500)
@@ -227,6 +247,8 @@ def complete(
                 raw = _send(api_name, api_path, messages, gen)
             # Provider errors can echo the prompt: keep the class only.
             except Exception as exc:  # noqa: BLE001
+                if _is_account_problem(exc):
+                    raise AccountBlocked(_failure_kind(exc)) from None
                 raise CallFailed(_failure_kind(exc)) from None
             response = _parse(raw, (time.perf_counter() - start) * 1000, api_name)
         finish(

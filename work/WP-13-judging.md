@@ -55,3 +55,6 @@ Judge = Jev, pointwise and pairwise; no terra. Add chat history to the Jev form 
 
 ## Added by WP-11 (D-105, D-106)
 Pairwise is not run. WP-12 must not change the 4 candidates (D-107). Compare the returned Jev version with jev-1.14.0.
+
+## State 2026-11-02 (D-112)
+Validation done: `runs/s7/pointwise_jev_val.parquet`, `labels_val.parquet`, `results/s7_stats.md`, $0.28. Left: test (about $0.30), written to the sealed labels file. `s7_stats.py` is validation only: never run stats on test. `s7_noise.py --stage judge_main` is the 5% repeat.

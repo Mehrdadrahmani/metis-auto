@@ -50,3 +50,6 @@ The runner checkpoints every 25 items: stop, `/handoff` with "next: WP-12 step 2
 
 ## Added by WP-11 (D-107, D-108)
 First fix the whole-batch pre-check in `s6_generate.py` (D-097). Candidates stay the 4, val stays 400; deepseek-v4-pro is not generated.
+
+## State 2026-11-02 (D-109, D-110, D-111)
+Validation done: 1,599 of 1,600, $5.76. Left: add the test set (D-087), raise `gen_main` to about $14 at a new "go", run about $5.80, then `--est-usd claude-sonnet-5-5=0.0175`. Test `model_version` against this run: deepseek returns `deepseek-flash`.

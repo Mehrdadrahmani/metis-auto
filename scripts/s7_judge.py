@@ -36,6 +36,7 @@ def main() -> int:
     ap.add_argument("--s6", type=Path, default=Path("runs/s6"))
     ap.add_argument("--out", type=Path, default=Path("runs/s7"))
     ap.add_argument("--concurrency", type=int, default=4)
+    ap.add_argument("--retry-failed", action="store_true", help="retry calls stored as failed")
     args = ap.parse_args()
 
     start = time.perf_counter()
@@ -46,7 +47,9 @@ def main() -> int:
     answers = pd.read_parquet(args.s6 / f"responses_{args.which}.parquet")
     ids = sorted(answers["prompt_id"].unique())
     rows = st.load_rows(args.prompts, ids)
-    text = {(a.prompt_id, a.model_id): a.text for a in answers.itertuples()}
+    # A failed generation has no text; parquet may hand it back as NaN, which is truthy.
+    text = {(a.prompt_id, a.model_id): a.text if isinstance(a.text, str) else None
+            for a in answers.itertuples()}
     t_in = sum(r["est_tokens_in"] for r in rows.values()) / len(rows)
     models = st.cheapest_first(budget.models, sorted(answers["model_id"].unique()))
     anchor = cfg["anchor"]
@@ -71,7 +74,7 @@ def main() -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     stopped, summary = False, {}
     for method, items, cost in tasks:
-        run = JudgeRun(cache, budget, args.stage, args.judge, cfg, cost)
+        run = JudgeRun(cache, budget, args.stage, args.judge, cfg, cost, args.retry_failed)
         records = []
 
         def one(item, method=method, run=run, records=records):
@@ -93,7 +96,10 @@ def main() -> int:
         name = f"{method}_{args.judge}_{args.which}"
         keys = [c for c in ("prompt_id", "model_id", "order") if records and c in records[0]]
         table = pd.DataFrame(records).sort_values(keys, ignore_index=True)  # threads race
-        table.to_parquet(args.out / f"{name}.parquet", index=False)
+        # A stopped run never writes the table later stages read. Rerun the command to resume.
+        table.to_parquet(args.out / f"{name}{'.partial' if report.stopped else ''}.parquet", index=False)
+        if not report.stopped:
+            (args.out / f"{name}.partial.parquet").unlink(missing_ok=True)
         by_status = pd.Series([r["status"] for r in records]).value_counts().to_dict()
         summary[method] = {"records": len(records), "status": by_status,
                            "new_calls": report.new_calls, "cost_usd": report.cost_usd}
@@ -106,7 +112,7 @@ def main() -> int:
             break
 
     st.write_manifest(args.out / f"manifest_{args.judge}_{args.which}.json", ids, {
-        "stage": args.stage, "judge": args.judge, "mock": is_mock(),
+        "stage": args.stage, "judge": args.judge, "mock": is_mock(), "complete": not stopped,
         "judge_config_id": cfg["judge_config_id"], "seed": cfg["seed"], "summary": summary,
         "seconds": round(time.perf_counter() - start, 2),
     })

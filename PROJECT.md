@@ -6,7 +6,7 @@ is enough.
 ## 1. The idea
 
 Chatbot platforms pay very different prices for different AI models: a strong model (here
-claude-sonnet-4-6) costs ~20–30× a cheap one, while most messages are simple. **Metis-Auto** is a
+claude-sonnet-5-5) costs ~20–30× a cheap one, while most messages are simple. **Metis-Auto** is a
 "virtual model": a gateway that sends each message to the **cheapest model that is good enough for
 this kind of message**, without losing quality. Around it: a semantic cache, a backup when a model
 fails, a step up to a stronger model when an answer looks bad, and traces plus a dashboard. This is
@@ -101,7 +101,7 @@ asks.
 
 | Term | Meaning |
 |---|---|
-| Anchor | The strong model (claude-sonnet-4-6) whose answers are the reference in pairwise grading |
+| Anchor | The strong model (claude-sonnet-5-5) whose answers are the reference in pairwise grading |
 | Calibration set (cal) | 100 (prompt, model) items labeled by the owner to check the judge and choose τ |
 | Cascade / escalation | Retry or move to a stronger model when an answer fails the checks |
 | Circuit breaker | Temporarily stop calling a model that keeps failing |

@@ -3,6 +3,7 @@
 ``fn(item)`` must go through ``get_or_call``, so finished items come back from the cache and a
 rerun pays only for what is missing. Safe to kill. Prints counts and dollars only.
 Budget refusals, key-guard refusals and crashes propagate and stop the batch at once.
+An empty balance or dead key stops it cleanly: nothing is stored for that item, so a rerun resumes.
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from metis.llm.callcache import ROOT, CallResult
+from metis.llm.client import AccountBlocked
 from metis.obs import tracking
 
 
@@ -107,7 +109,11 @@ async def _run(
             item = next(pending, None)
             if item is None:
                 return
-            result = await asyncio.to_thread(fn, item)
+            try:
+                result = await asyncio.to_thread(fn, item)
+            except AccountBlocked as exc:
+                report.stopped_reason = report.stopped_reason or f"account: {exc.kind}"
+                return
             _add(report, result)
             report.stopped_reason = report.stopped_reason or anomaly(report, limits, est_cost)
             if report.done % checkpoint_every == 0:

@@ -23,6 +23,7 @@ class JudgeRun:
     judge_id: str
     cfg: dict[str, Any]
     estimate_usd: float
+    retry_failed: bool = False
 
     @property
     def is_jev(self) -> bool:
@@ -46,7 +47,8 @@ def ask(
     for suffix in ("", RETRY_SUFFIX):
         result = get_or_call(
             run.cache, run.budget, run.stage, run.judge_id, messages, gen,
-            config + suffix, run.estimate_usd, send, prompt_id=prompt_id,
+            config + suffix, run.estimate_usd, send, retry_failed=run.retry_failed,
+            prompt_id=prompt_id,
         )
         if result.status != "ok":
             return result, None
