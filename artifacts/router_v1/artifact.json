@@ -1,0 +1,58 @@
+{
+  "anchor": null,
+  "build_date": "2026-11-03",
+  "cluster_names": [
+    "Short fragments",
+    "Account and tech support",
+    "Relationships and emotions",
+    "Humanities and religion",
+    "Science and maths",
+    "Payments and finance",
+    "General short chat",
+    "Health and medicine"
+  ],
+  "embedder_id": "nano",
+  "files": {
+    "c_hat": "2c8023c494d677365619ef171dd0d06947abd3a49ba21db637c12412a7d87d32",
+    "centroids": "7ca8319491a83cf6f42dca4df0ef261cdf6a119903acd8f7211c8a73fd548f60",
+    "counts": "4dd88f28da64e482110cdca51a1079786d03ac17fefe0383ef6088e4bec25c0b",
+    "psi": "f919ec8ef846c5a230cad4981d07c1d88ddf1b76dd2464df38be30ebe7762d64"
+  },
+  "hashes": {
+    "gen_config": "fca2b649cc8d",
+    "judge_config": "356e63e52245",
+    "val_set": "26a02d6a429b"
+  },
+  "k_star": 8,
+  "lam": 0.5150678076168121,
+  "lambda_mode": "quality-out-of-fold",
+  "lambda_target": 0.6541353383458647,
+  "method": "point",
+  "models": [
+    "deepseek-v4-flash",
+    "gpt-5.6-luna",
+    "gemini-2.5-flash-lite",
+    "claude-sonnet-5-5"
+  ],
+  "prices": {
+    "claude-sonnet-5-5": {
+      "in": 2.2,
+      "out": 11.0
+    },
+    "deepseek-v4-flash": {
+      "in": 0.165,
+      "out": 0.66
+    },
+    "gemini-2.5-flash-lite": {
+      "in": 0.11,
+      "out": 0.44
+    },
+    "gpt-5.6-luna": {
+      "in": 0.22,
+      "out": 1.32
+    }
+  },
+  "router_type": "uniroute",
+  "schema_version": 1,
+  "tau": 7.0
+}

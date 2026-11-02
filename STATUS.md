@@ -2,14 +2,14 @@
 Updated: 2026-11-03 · WP-14 mid (handoff 3)
 
 ## Now
-- Current WP: **WP-14 Fingerprints, settings, freeze**. Val grown to 800 (D-115). Test answers and labels sealed, unread. About $28.07 spent
+- Current WP: **WP-15 Gateway core**. WP-14 closed, `pre-test` tagged. Val grown to 800 (D-115). Test answers and labels sealed, unread. About $28.07 spent
 - Branch `TakRoute`, remotes `origin` (owner) and `team`
 - Judge: pointwise jev with history, τ = 7. Pairwise on val 800 is a second view only (D-116)
-- Router: K = 8 by owner (D-117), K = 4 by the rule as comparison. λ open (D-118 proposal). Nothing frozen, no `pre-test` tag
+- Router: K = 8 by owner (D-117), K = 4 by the rule as comparison. λ open (D-118 proposal). Frozen: K = 8 λ 0.5151 (`artifacts/router_v1`), K = 4 λ 0.04954
 - Model: default (Opus 5.5)
 
 ## Exact next step
-`/start`, then WP-14: sealed-file guard, artifact (`router/artifact.py`, `artifacts/router_v1/`), draft `results/eval_protocol.md`, charts. Then Gate 3 and on through WP-21 under D-119 (owner consent, all stops approved, wait out usage limits). Deck after WP-16, updated at the end. Khayyam runs after the main work (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
+WP-15 gateway, then through WP-21 under D-119 (owner consent, all stops approved, wait out usage limits). Deck after WP-16, updated at the end. Khayyam runs after the main work (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
 
 ## Validation results (`results/router_check_val.md`, `select_k.md`, `ladder_val.md`, `lambda_val.md`; n = 798)
 - Pass at 7: Sonnet 66.2%, DeepSeek 65.4%, Luna 61.5%, Gemini 53.5%. Perfect router 79.4%
