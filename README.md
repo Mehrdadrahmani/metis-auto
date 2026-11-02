@@ -22,6 +22,8 @@ Final test: 299 sealed prompts, opened once after the router and protocol were f
 - Judge labels are noisy (5% of 60 repeats flipped pass or fail) and pilot agreement missed its line (0.74 vs 0.75, Opus labels, not human).
 - **Semantic cache:** no threshold met the 2% wrong-hit target. At 0.97 about 10% of meaning hits were judged wrong (95% CI 5.5% to 17.4%). See `results/cache_threshold.md`.
 
+**Check on true answers (Khayyam, n = 1,100):** UniRoute beat ZeroRouter on area by 0.020 (95% CI 0.001 to 0.044), but at the chosen λ scored 55.0% vs 56.2% for the best single model. See `results/khayyam/README.md`.
+
 ## How it works
 
 ```text
@@ -37,7 +39,7 @@ The router artifact is `artifacts/router_v1/` (K = 8, λ = 0.5151). Secrets are 
 |---|---:|
 | Gateway overhead, real embedder | p50 23 ms, p95 72 ms |
 | One model down | 0 failed requests in tests and replay |
-| Unit tests | see `uv run pytest` |
+| Real latency, 50 messages | TakRouter p90 10.6 s, Sonnet 18.1 s |
 
 ## Quick start
 

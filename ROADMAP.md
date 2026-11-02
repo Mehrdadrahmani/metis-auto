@@ -44,11 +44,11 @@ Phase 7 Report, release  WP-20 → WP-21                                        
 | ☑ | **WP-12** Generation val + test | 4 | Remaining answers for 400 val + 300 test (pilot reused); cheap models first | default | 100k | 👤 "go" | **~$7** | G2 | 13 |
 | ☑ | **WP-13** Judging | 4 | Chosen method on all val + test + 5% re-judge | default | 100k | 👤 "go" | **~$10 / ~$20** | 12 | 14 |
 | ☑ | **WP-14** Fingerprints, settings, freeze | 4 | Ψ (Eq. 12), K by deferral-curve area, λ, baselines for comparison, holdout demo, artifact v1, evaluation protocol, **tag `pre-test`** | default | 250k | 👤 approve shipped router (+ DEV-1 if traits win) | – | 05, 13 | 18, 19 |
-| ☐ | **WP-15** Gateway core | 5 | FastAPI OpenAI-compatible service, rules, router (mock artifact first), LiteLLM calls, failover + breaker, traces, fault-injection tests | default | 250k | – | – | 02, 03, 04 | 16, 17 |
-| ☐ | **WP-16** Checks, escalation, latency | 5 | G6 checks + repair + escalation, stickiness option, latency measurement | default | 150k | – | – | 15 | 18 |
-| ☐ | **WP-17** Semantic cache | 5 | **Decision point first** (threshold method), then exact + meaning cache with safety rules | default | 150k | 👤 decide method | ≤ $1 | 15 (+08 for real pairs) | 18 |
-| ☐ | **WP-18** Replay + dashboard | 5 | Replay simulator on stored answers + measured latencies; metrics; dashboard | default | 200k | – | – | 14, 16, 17 | 19 |
-| ☐ | **WP-19** Final evaluation | 6 | Open the test set once; protocol analyses; ladder + production; replay; small live latency run | default | 250k | 👤 "go" for live run | **~$1.5** | G3, 18 | 20 |
+| ☑ | **WP-15** Gateway core | 5 | FastAPI OpenAI-compatible service, rules, router (mock artifact first), LiteLLM calls, failover + breaker, traces, fault-injection tests | default | 250k | – | – | 02, 03, 04 | 16, 17 |
+| ☑ | **WP-16** Checks, escalation, latency | 5 | G6 checks + repair + escalation, stickiness option, latency measurement | default | 150k | – | – | 15 | 18 |
+| ☑ | **WP-17** Semantic cache | 5 | **Decision point first** (threshold method), then exact + meaning cache with safety rules | default | 150k | 👤 decide method | ≤ $1 | 15 (+08 for real pairs) | 18 |
+| ☑ | **WP-18** Replay + dashboard | 5 | Replay simulator on stored answers + measured latencies; metrics; dashboard | default | 200k | – | – | 14, 16, 17 | 19 |
+| ☑ | **WP-19** Final evaluation | 6 | Open the test set once; protocol analyses; ladder + production; replay; small live latency run | default | 250k | 👤 "go" for live run | **~$1.5** | G3, 18 | 20 |
 | ☐ | **WP-20** Report + presentation | 7 | Report with CIs and limitations, draw.io figures, dashboard + MLflow screenshots, optional pricing model | default | 200k | 👤 review | – | 19 | 21 |
 | ☐ | **WP-21** Reproducibility + release | 7 | Fresh clone rerun from caches ($0), secret scan, README, tag `v1.0` | default | 100k | – | – | 20 | – |
 

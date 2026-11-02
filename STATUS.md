@@ -2,14 +2,14 @@
 Updated: 2026-11-03 · WP-14 mid (handoff 3)
 
 ## Now
-- Current WP: **WP-15 Gateway core**. WP-14 closed, `pre-test` tagged. Val grown to 800 (D-115). Test answers and labels sealed, unread. About $28.07 spent
+- Current WP: **WP-20 Report review**. WP-14 to WP-19 and Khayyam done. Test opened once (n = 299). About $29.59 spent
 - Branch `TakRoute`, remotes `origin` (owner) and `team`
 - Judge: pointwise jev with history, τ = 7. Pairwise on val 800 is a second view only (D-116)
 - Router: K = 8 by owner (D-117), K = 4 by the rule as comparison. λ open (D-118 proposal). Frozen: K = 8 λ 0.5151 (`artifacts/router_v1`), K = 4 λ 0.04954
 - Model: default (Opus 5.5)
 
 ## Exact next step
-WP-15 gateway, then through WP-21 under D-119 (owner consent, all stops approved, wait out usage limits). Deck after WP-16, updated at the end. Khayyam runs after the main work (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
+Owner reviews `report/REPORT.md`, the site (`TAKROUTER_FAKE_EMBED=1 uv run uvicorn metis.gateway.app:app`, never seen in a browser) and the deck. Then WP-20: fresh-session review, draw.io figures, MLflow screenshots; WP-21: fresh-clone rerun, tag `v1.0`.
 
 ## Validation results (`results/router_check_val.md`, `select_k.md`, `ladder_val.md`, `lambda_val.md`; n = 798)
 - Pass at 7: Sonnet 66.2%, DeepSeek 65.4%, Luna 61.5%, Gemini 53.5%. Perfect router 79.4%
@@ -30,9 +30,8 @@ WP-15 gateway, then through WP-21 under D-119 (owner consent, all stops approved
 - Report must state the miss, the Opus labels, and that the wrong-prompt test and 20 re-labels were not done
 
 ## Waiting on the owner
-- Gate 3: approve router (K, λ, DEV-16), protocol with always-DeepSeek as a main comparison, then `pre-test`
-- Replace all Metis keys: both spares were pasted in chat. One spare is in `.env`, the original ran out. Replace the Hugging Face token too
-- "go" for WP-17 cache labels (≤ $1) and WP-19 live run (~$1.50)
+- Read `results/eval_protocol.md`: frozen by consent D-119 without your reading it
+- Metis: 2 keys used up tonight or earlier; the spare from chat paid for the end of Khayyam (`METIS_API_KEY_SPARE` in `.env`). Rotate it, it was pasted in chat. Replace the Hugging Face token too
 - Share with colleagues: `qdrant/share/*.snapshot` + `docker-compose.yml`, `configs/pipeline.yaml`, `embed_full.json`. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids
 - K = 4 cluster names stale (D-088) if K = 4 ships. D-071 defaults to confirm
 
@@ -46,14 +45,13 @@ WP-15 gateway, then through WP-21 under D-119 (owner consent, all stops approved
 - GPU runs out of memory on the longest messages: use `--device cpu`. HF "xet" stalls: use `scripts/fetch_model.py`
 
 ## Money
-- Spent about $28.07 of cap $60. Approved: pilot $10, gen_main $21.50, judge_main $3
-- Rest planned: about $2.50 (cache labels, live run), plus Khayyam limit $5. All approved by D-119
+- Spent about $29.59 of cap $60
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-124 Khayyam: area gain over ZeroRouter
+- D-123 Name TakRouter
+- D-122 Replay settings
+- D-121 Cache θ 0.97, 10% wrong hits
+- D-120 λ frozen
 - D-119 Overnight consent, all WPs
 - D-118 λ out of fold, proposed (DEV-16)
-- D-117 K = 8 by owner, K = 4 comparison
-- D-116 Pairwise on val 800, second view
-- D-115 Val 800 from train sessions (DEV-15)
-- D-114 WP-14 protocol notes
-- D-113 Team branch `TakRoute`

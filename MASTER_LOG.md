@@ -124,6 +124,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-121 | 2026-11-03 | Cache: AI-grader method (agent choice under D-119). No θ met ≤ 2% wrong hits; WP-17 fallback θ = 0.97, 10.0% wrong hits (5.5% to 17.4%), report it. One routing vector reused, text-matching gain too small | A | WP-17 |
 | D-122 | 2026-11-03 | Replay settings pinned before test: K = 8, cache on, checks on, stickiness off (no change on val), per `configs/gateway.yaml` | A | WP-18 |
 | D-123 | 2026-11-03 | Product name **TakRouter** (owner). Internal package stays `metis`; both `takrouter` and `metis-auto` route | O | all |
+| D-124 | 2026-11-03 | Khayyam run done (owner go, D-119): UniRoute K = 7 beats ZeroRouter on area +0.020 (0.001 to 0.044), not the best single model at chosen λ. Metis key ran out mid-run; owner spare key used | O | Khayyam |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -174,10 +175,15 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-03 | gen_main | WP-14 | $21.50 | $7.54 | 1,600 | Val +400, owner "go" (D-115), estimate $7.86. Sonnet about $6.74. Key ran out once (402), resumed with spare key. Stopped once at the old $20 limit |
 | 2026-11-03 | judge_main | WP-14 | $3 | $0.42 | 1,717 | Val +400 pointwise jev + repeats. 2x cost stop after 52 calls was a few long prompts; final about $0.00024 per call |
 | 2026-11-03 | cache_labels | WP-17 | $1 | $0.06 | 700 | Cache pairs, consent D-119 |
+| 2026-11-03 | live | WP-19 | $1.50 | $0.99 | 300 | Consent D-119 |
+| 2026-11-03 | khayyam | Q-023 | $5 | $0.47 | 6,000 | Owner go, D-119 |
 | 2026-11-03 | judge_main | WP-14 | $3 | $1.05 | 4,092 | Pairwise jev on val 800 (D-116), estimate $1.15 to $1.50 |
 | | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-03 · Overnight: WP-15 to WP-19, site, deck, Khayyam (Opus)
+- Gateway, cache, replay, final test (n = 299), live run, site, README, report draft, Persian deck, Khayyam. Test opened once. First live router row redone (cached calls). WP-20 review, draw.io figures and WP-21 fresh-clone rerun not done; no `v1.0` tag. Site not seen in a browser. Spent $1.52 tonight, total about $29.59.
 
 ### 2026-11-03 · WP-14 close (Opus, overnight)
 - Sealed guard, artifacts v1 (K = 8, K = 4), frozen λ, protocol, report; tag `pre-test`. Tests 276 passed. $0.

@@ -54,8 +54,12 @@ def load() -> pd.DataFrame:
 
 
 def parse(text: str | None) -> str | None:
-    m = re.search(r"[1-4]", (text or "").translate(DIGITS))
-    return m.group(0) if m else None
+    text = (text or "").translate(DIGITS)
+    named = re.findall(r"(?:گزینه|پاسخ|option)\D{0,12}([1-4])", text, re.IGNORECASE)
+    if named:
+        return named[-1]  # a short reasoning may come first; the conclusion is last
+    found = re.findall(r"[1-4]", text)
+    return found[-1] if found else None
 
 
 def main() -> None:
@@ -86,18 +90,18 @@ def main() -> None:
     results: dict[tuple[str, str], dict] = {}
 
     for model in MODELS:  # cheapest first
-        params = gen_params(model, cfg, 64)
-        price = call_cost(budget.models[model], 350, 16)
+        params = gen_params(model, cfg, 300)
+        price = call_cost(budget.models[model], 350, 150)
 
         def one(i, model=model, params=params, price=price):
             row = df.iloc[i]
             messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": f"{row.q}\n{row.options}"}]
             r = get_or_call(cache, budget, "khayyam", model, messages, params, "khayyam-v1", price, complete, prompt_id=row.id)
             if r.status == "ok":
-                results[(row.id, model)] = {"text": r.response.text, "t_in": r.response.tokens_in, "t_out": r.response.tokens_out, "ms": r.response.latency_ms}
+                results[(row.id, model)] = {"text": r.response.text, "t_in": r.response.tokens_in, "t_out": r.response.tokens_out, "ms": r.response.latency_ms, "cut": r.response.finish_reason == "length"}
             return r
 
-        report = run_batch(f"khayyam_{model}", [int(i) for i in labeled], one, budget.config["anomalies"], 8, est_cost_per_call=price, params={})
+        report = run_batch(f"khayyam_{model}", [int(i) for i in labeled], one, {**budget.config["anomalies"], "max_truncation_rate": 0.5}, 8, est_cost_per_call=price, params={})
         print(model, "cost", round(report.cost_usd, 3), "failed", report.failed_new, "stop", report.stopped_reason, flush=True)
         if report.stopped:
             raise SystemExit(f"stopped: {report.stopped_reason}")
@@ -110,7 +114,7 @@ def main() -> None:
         t_in[j], t_out[j] = np.mean([g["t_in"] for g in got]), np.mean([g["t_out"] for g in got])
         for i in labeled:
             r = results.get((ids[i], m))
-            loss[i, j] = 0.0 if r and parse(r["text"]) == df.key.iloc[i] else 1.0
+            loss[i, j] = 0.0 if r and not r["cut"] and parse(r["text"]) == df.key.iloc[i] else 1.0  # a cut answer gave no answer
     c_hat = normalize_costs([call_cost(budget.models[m], t_in[j], t_out[j]) for j, m in enumerate(MODELS)])
 
     router = load_config("pipeline")["router"]
@@ -148,7 +152,7 @@ def main() -> None:
     pa = bootstrap(lambda i: area(*sweep(lt[i], psi, c_hat, lams, Lt[i]), c_min, c_max) - area(*zero.curve(None, None, Lt[i]), c_min, c_max), np.arange(len(test)), 500, SEED)
     data = {"models": MODELS, "accuracy_test": {m: float(1 - Lt[:, j].mean()) for j, m in enumerate(MODELS)}, "c_hat": c_hat.tolist(), "k_scores": scores, "k_star": k_star,
             "area_router": a_router, "area_zero": a_zero, "area_gain": pa.estimate, "area_gain_ci": [pa.low, pa.high], "lambda": lam, "router_acc": float(routed.mean()), "router_cost": float(c_hat[pick].mean()),
-            "best": MODELS[best], "best_cost": float(c_hat[best]), "diff_vs_best": d.estimate, "diff_ci": [d.low, d.high], "shares": (np.bincount(pick, minlength=4) / len(pick)).tolist(), "spent": cache.spent_usd("khayyam")}
+            "best": MODELS[best], "best_cost": float(c_hat[best]), "diff_vs_best": d.estimate, "diff_ci": [d.low, d.high], "shares": (np.bincount(pick, minlength=4) / len(pick)).tolist(), "spent": cache.spent_usd("khayyam"), "cut_share": {m: float(np.mean([results[(ids[i], m)]["cut"] for i in test if (ids[i], m) in results])) for m in MODELS}}
     Path("results/khayyam").mkdir(exist_ok=True)
     Path("results/khayyam/khayyam.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
     print(json.dumps(data, indent=1))

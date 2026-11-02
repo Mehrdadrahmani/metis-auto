@@ -27,7 +27,8 @@ Live run, 50 validation messages per row: TakRouter p50 4.84 s, p90 10.60 s; Son
 ## 7. Economics
 Measured test cost per 1,000 messages: $0.69 vs $16.32 for Sonnet. At that gap, 1 million messages cost about $690 vs $16,320, before cache and retries, and at list prices without DeepSeek's peak doubling.
 
-KHAYYAM_SECTION
+## 7b. Khayyam check
+On 1,100 Khayyam questions with true answers (`results/khayyam/README.md`), UniRoute K = 7 beat ZeroRouter on area by 0.020 (95% CI 0.001 to 0.044). At the chosen λ it scored 55.0% vs 56.2% for the best single model (-2.6 to +0.3 points). This is the only place routing by cluster showed a gain, and it suggests noisy judge labels may hide some value, though it does not prove that.
 
 ## 8. Limitations
 One judge with imperfect agreement. 299 test prompts. Four models and one aggregator, so a real provider outage was simulated. Almost no code in the data. Test and validation differ in Persian share. Cache quality and live cost at scale are unproven. The site was never viewed in a browser. Report figures in draw.io and MLflow screenshots from WP-20 are not done.
