@@ -1,6 +1,6 @@
 # Metis AI capabilities
 
-Checked 2026-11-01 with model-list requests (no generation).
+Checked 2026-11-02 with model-list requests (no generation).
 Base URL: `https://api.metisai.ir`. Model ids listed: 213. HTTP by route: {'openai': 200, 'deepseek': 200, 'anthropic': 200, 'google': 200}.
 
 | Wanted | Matching ids |

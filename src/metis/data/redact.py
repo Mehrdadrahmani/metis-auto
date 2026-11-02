@@ -23,6 +23,7 @@ _RULES: list[tuple[str, re.Pattern[str]]] = [
     ("anthropic", re.compile(r"sk-ant-[A-Za-z0-9_-]{10,}")),
     ("openai", re.compile(r"(?<![A-Za-z0-9])sk-[A-Za-z0-9_-]{10,}")),
     ("google", re.compile(r"AIza[0-9A-Za-z_-]{20,}")),
+    ("metis", re.compile(r"tpsg-[A-Za-z0-9_-]{10,}")),
     ("github", re.compile(r"(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})")),
     ("slack", re.compile(r"xox[abprs]-[A-Za-z0-9-]{10,}")),
     ("aws", re.compile(r"(?<![A-Z0-9])AKIA[0-9A-Z]{16}(?![A-Z0-9])")),

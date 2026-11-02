@@ -103,6 +103,8 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-092 | 2026-11-02 | K = 8 cluster names kept for now (owner), marked as based on local Qwen3-8B topics (500 train prompts per cluster, 23 min, $0): `configs/cluster_names.yaml`. Other K need new names if chosen in WP-14 | O | WP-08, WP-14 |
 | D-093 | 2026-11-02 | **Pilot: gpt-5.6-terra pointwise only for now (owner), jev-latest both methods (DEV-13, narrows spec "method = both" and D-083).** Saves $8.57; pilot estimate $6.71. Terra pairwise can be added later, answers are cached. Method comparison uses jev. WP-09, WP-11 updated | O | WP-09, WP-11 |
 | D-094 | 2026-11-02 | **Gate 1 passed (owner).** Pilot limit $10 in `configs/budget.yaml`; gen_main, judge_main, cache_labels and live stay $0 until Gate 2, then set from measured costs. Pointwise stays the planned path | O | WP-09, WP-11 |
+| D-103 | 2026-11-02 | Pilot re-judged by Jev with chat history, pointwise and pairwise (owner). $0.29 by ledger. Results in `runs/s7_history/`; old ones kept in `runs/s7/`. Use the history results from now on | O | WP-11 |
+| D-104 | 2026-11-02 | `tpsg-` key pattern added to `metis.data.redact`. New Metis key in `.env`, also pasted in chat; owner to replace it again when possible | A | src/metis/data/redact.py |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -145,9 +147,13 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-10-20 | – | planning | $0 | $0.00 | 0 | Planning estimate: ~$25 (pointwise path) / ~$35 (pairwise), PLAN §7 |
 | 2026-11-02 | pilot | WP-09 | $10 | $0.00 | 0 | Gate 1 (D-094). Estimate $6.71. Other stages $0 until Gate 2 |
 | 2026-11-02 | pilot | WP-09 | $10 | $6.29 | 2,361 | Dashboard figure (D-100). Ledger $5.87. Sonnet $1.75, deepseek-v4-pro $0.28, luna $0.08, flash $0.07, gemini $0.04, terra $3.42, jev $0.23 |
+| 2026-11-02 | pilot | WP-11 | $10 | about $6.60 | 3,638 | Jev re-judge with history, ledger $0.29, 1,277 new calls. Total ledger $6.16; dashboard figure + re-judge. 23 failed 401 calls at $0 |
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · Jev re-judge with history
+- Against Opus labels at pass mark 7: agreement 0.68 to 0.74, kappa 0.36 to 0.43. Pairwise agreement 0.647 (n = 68) to 0.736 (n = 72). Position consistency 0.755 to 0.738. Mean score 6.81 to 7.40, so pass marks must be set again. Decisions D-103, D-104.
 
 ### 2026-11-02 · Pilot close: dashboard $6.29, judge plan
 - Decisions D-100 to D-102. Free preview of routing on the pilot: router level with ZeroRouter, within noise (`report/NOTES.md`).

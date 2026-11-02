@@ -163,3 +163,6 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - At pass mark 7, prompts with history (n = 80): terra 0.675, jev 0.688. Without (n = 19): 0.632 both.
 - Routing preview, 300 half splits of the pilot, 4 candidates, K = 3 and 8: area difference against ZeroRouter between -0.016 and +0.002, 5-95% ranges include 0. QNC favoured ZeroRouter in 7 of 8 rows. About 6 prompts per cluster at K = 8, so noise dominates.
 - Dashboard $6.29 against ledger $5.87 (7% gap).
+
+## Jev with chat history (measured, pilot, against Opus labels, n = 100)
+- Pointwise at pass mark 7: agreement 0.68 to 0.74, kappa 0.36 to 0.43. Marks 6 to 7.5 now give 0.72 to 0.74. Pairwise agreement 0.647 (n = 68) to 0.736 (n = 72). Position consistency fell from 0.755 to 0.738 (n = 400); B 441, A 289, tie 70. Mean score 6.81 to 7.40. Spearman old against new 0.749. The earlier split by history did not predict this gain. Rater saw history too, so part of the gain may be shared input.

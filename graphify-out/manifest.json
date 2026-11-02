@@ -252,9 +252,9 @@
     "semantic_hash": "75a015f5657a512c1758ab303c9bf509"
   },
   "MASTER_LOG.md": {
-    "mtime": 1793623022.6406152,
-    "seen": 1793623024.337832,
-    "ast_hash": "6ba118229f135ca4ae44de53305f06d9",
+    "mtime": 1793624093.9656484,
+    "seen": 1793624130.587989,
+    "ast_hash": "9acb8d50cdb11fe6b9952daa45bab6f6",
     "semantic_hash": ""
   },
   "PLAN.md": {
@@ -288,9 +288,9 @@
     "semantic_hash": "f518c7a52d7cbb99a373161293d12a86"
   },
   "STATUS.md": {
-    "mtime": 1793623022.6410236,
-    "seen": 1793623024.337837,
-    "ast_hash": "3acfdd676d91796aad0fd4c6fe675582",
+    "mtime": 1793624093.966795,
+    "seen": 1793624130.587994,
+    "ast_hash": "10fd3344a364c37c561df2be2ca37426",
     "semantic_hash": ""
   },
   "ref/PLANNING-REQUEST.md": {
@@ -342,9 +342,9 @@
     "semantic_hash": "62f2aac03613424b31f58a99e945e22d"
   },
   "report/NOTES.md": {
-    "mtime": 1793620927.5342877,
-    "seen": 1793623024.337845,
-    "ast_hash": "cd8319178f0ecacdd3663e51f08f5d80",
+    "mtime": 1793624093.9658651,
+    "seen": 1793624130.5880032,
+    "ast_hash": "8a6c0d56b6fcd5f4148952dc602e613e",
     "semantic_hash": ""
   },
   "work/WP-00-bootstrap.md": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "work/WP-11-pilot-decision.md": {
-    "mtime": 1793620927.534233,
-    "seen": 1793623024.337876,
-    "ast_hash": "4e4ca19782cf504ba8313dda0271ffe6",
+    "mtime": 1793624093.966018,
+    "seen": 1793624130.588033,
+    "ast_hash": "9d750e97bfe5e67a136528b7a009f391",
     "semantic_hash": ""
   },
   "work/WP-12-generation.md": {
@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "work/WP-13-judging.md": {
-    "mtime": 1793554396.508434,
-    "seen": 1793617595.662973,
-    "ast_hash": "c191aa329358d59268c90d7ab87be742",
+    "mtime": 1793624093.9665055,
+    "seen": 1793624130.588035,
+    "ast_hash": "4ee095df1e83654a34cd266a3b32f116",
     "semantic_hash": ""
   },
   "work/WP-14-fingerprints-freeze.md": {
@@ -1290,15 +1290,15 @@
     "semantic_hash": ""
   },
   "src/metis/judge/templates/pairwise.txt": {
-    "mtime": 1793548434.5106542,
-    "seen": 1793548463.191253,
-    "ast_hash": "892a0ca52a4baf11fa115804bf4b5a69",
+    "mtime": 1793624329.790594,
+    "seen": 1793624412.3097758,
+    "ast_hash": "1a9bbb9397eb535bb064c6d0a5539bf2",
     "semantic_hash": ""
   },
   "src/metis/judge/templates/pointwise.txt": {
-    "mtime": 1793548434.4959464,
-    "seen": 1793548463.191254,
-    "ast_hash": "51d3ce88f55b8912f126662d65feb664",
+    "mtime": 1793624329.7902608,
+    "seen": 1793624412.3097768,
+    "ast_hash": "5be34323d2f13074e4915d0e2d8546f8",
     "semantic_hash": ""
   },
   "configs/judge_config.yaml": {
@@ -1374,15 +1374,15 @@
     "semantic_hash": ""
   },
   "src/metis/judge/render.py": {
-    "mtime": 1793553784.0947163,
-    "seen": 1793617595.662868,
-    "ast_hash": "64f73a75ae71872117ba518ae568d8b0",
+    "mtime": 1793624329.790865,
+    "seen": 1793624412.309712,
+    "ast_hash": "c35a28bd712532579d5a0e45045be421",
     "semantic_hash": ""
   },
   "src/metis/labeling/build.py": {
-    "mtime": 1793622240.9978368,
-    "seen": 1793623024.3377972,
-    "ast_hash": "d658e89e4647046c8b532bfd51314ac3",
+    "mtime": 1793624329.7910562,
+    "seen": 1793624412.3097138,
+    "ast_hash": "37764f73d4debc8cc6e5b7fac3fd4fba",
     "semantic_hash": ""
   },
   "src/metis/labeling/ingest.py": {
@@ -1404,9 +1404,9 @@
     "semantic_hash": ""
   },
   "tests/test_judge.py": {
-    "mtime": 1793622241.00404,
-    "seen": 1793623024.337816,
-    "ast_hash": "66573782efee5e83b0381202a00ce168",
+    "mtime": 1793624329.7913377,
+    "seen": 1793624412.3097332,
+    "ast_hash": "04d7d4c026552864560a3bd66dd02809",
     "semantic_hash": ""
   },
   "results/cost_estimate_v1.md": {
@@ -1479,6 +1479,12 @@
     "mtime": 1793620927.534487,
     "seen": 1793623024.337894,
     "ast_hash": "67b90cb1d6338c93d77a2f2260f6b77b",
+    "semantic_hash": ""
+  },
+  "work/reports/WP-10-report.md": {
+    "mtime": 1793624093.9666462,
+    "seen": 1793624130.588053,
+    "ast_hash": "72a94e1e6386fcc587da8538d59f082d",
     "semantic_hash": ""
   }
 }

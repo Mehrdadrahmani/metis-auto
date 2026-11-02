@@ -76,3 +76,6 @@ Jev pairwise position consistency was 0.755 (n = 400), under the Gate 2 line of 
 
 ## Added by D-098 to D-102
 Reference labels: `runs/labeling/opus/opus_labels.parquet` (Opus, not human; columns `opus_pass`, `opus_pref`; 57 notes). Terra is dropped for the main run; choose how Jev is used, both methods stay. Start with the items where Jev and the labels disagree. Each full Jev pointwise pass costs about $0.08. Decide whether to re-judge the pilot with history (about $0.25): pilot judgments lack history, later ones have it, and fingerprints should not mix the two.
+
+## Added by D-103
+Use `runs/s7_history/` for Jev, not `runs/s7/`. Pass marks must be set again: scores rose by about 0.6.
