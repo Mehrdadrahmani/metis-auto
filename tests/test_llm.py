@@ -130,12 +130,17 @@ def test_failed_call_retried_only_on_flag(cache):
 # Budget --------------------------------------------------------------------------------------
 
 
-def test_shipped_config_refuses_every_real_call(cache):
+def test_shipped_config_allows_only_the_approved_pilot(cache):
+    """Gate 1 (D-094): the pilot has its limit, every other stage is refused until Gate 2."""
     cfg = load_config("budget")
     assert cfg["hard_cap_usd"] == 60
     assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live"}
+    assert cfg["approved_usd"]["pilot"] == 10
     budget = Budget(cache, cfg, MODELS)
-    for stage in cfg["approved_usd"]:
+    budget.guard("pilot", 0.0001)
+    with pytest.raises(BudgetRefused):
+        budget.guard("pilot", 10.01)
+    for stage in ("gen_main", "judge_main", "cache_labels", "live"):
         with pytest.raises(BudgetRefused):
             budget.guard(stage, 0.0001)
 
