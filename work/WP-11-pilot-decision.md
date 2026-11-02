@@ -73,3 +73,6 @@ Pairwise was judged by jev only, so pointwise vs pairwise is compared with jev (
 
 ## Added by WP-09
 Jev pairwise position consistency was 0.755 (n = 400), under the Gate 2 line of 0.80, and B was chosen 443 times against A 291. Pointwise is unaffected by order. Jev probabilities are kept in `raw_output`, and may give a softer pairwise score. Test-retest: `runs/pilot/noise_*`, summary in `results/pilot_run_stats.md`. Costs: `results/cost_estimate_v2.md`. `s6_generate.py` still has the whole-batch pre-check (D-097): fix before WP-12. jev-latest returned jev-1.14.0 in the pilot: compare the version in the main run.
+
+## Added by D-098 to D-102
+Reference labels: `runs/labeling/opus/opus_labels.parquet` (Opus, not human; columns `opus_pass`, `opus_pref`; 57 notes). Terra is dropped for the main run; choose how Jev is used, both methods stay. Start with the items where Jev and the labels disagree. Each full Jev pointwise pass costs about $0.08. Decide whether to re-judge the pilot with history (about $0.25): pilot judgments lack history, later ones have it, and fingerprints should not mix the two.

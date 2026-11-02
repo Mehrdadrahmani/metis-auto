@@ -155,3 +155,11 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Jev chose position B 443 times against A 291; position consistency 0.755 (n = 400 pairs). Spearman terra against jev 0.709 (n = 499).
 - Test-retest, n = 20: terra exact 0.65, within 1 point 1.00; jev mean gap 0.108; jev pairwise same verdict 1.00.
 - Cache-key lesson: editing a hashed config would have re-paid all answers, so later passes use their own config files.
+
+## WP-10 Opus labels and routing preview (measured, pilot, not final)
+- Labels by Claude Opus, not human (D-098, DEV-14): 10 fresh agents, 100 items, blind, Answer 1 chosen 50, Answer 2 chosen 46, tie 4.
+- Acceptable: luna 0.70 (n = 33), flash 0.71 (n = 34), gemini 0.45 (n = 33), Sonnet 0.82 (n = 100). Sonnet preferred 72 of 96 non-ties. Same model family as the rater.
+- Judges against the labels: terra best agreement 0.677, best kappa 0.328; jev best agreement 0.697, best kappa 0.355, pass marks chosen on the same labels. Jev pairwise agreement 0.647 (n = 68).
+- At pass mark 7, prompts with history (n = 80): terra 0.675, jev 0.688. Without (n = 19): 0.632 both.
+- Routing preview, 300 half splits of the pilot, 4 candidates, K = 3 and 8: area difference against ZeroRouter between -0.016 and +0.002, 5-95% ranges include 0. QNC favoured ZeroRouter in 7 of 8 rows. About 6 prompts per cluster at K = 8, so noise dominates.
+- Dashboard $6.29 against ledger $5.87 (7% gap).

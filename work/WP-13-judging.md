@@ -49,3 +49,6 @@ Stop at a checkpoint, `/handoff` with "next: WP-13 step 2 (resume)", stop.
 
 ## Added by D-087
 `scripts/s7_judge.py` has no 5% re-judge yet. Add it with its own `config_id` suffix, so the cache does not return the first answer.
+
+## Added by D-101, D-102
+Judge = Jev, pointwise and pairwise; no terra. Add chat history to the Jev form first (`render.py`, `{history}` slot, same turns as generation). New judge config id, so the cache starts fresh for judgments. Estimate about $1 for 500 new prompts. Set `approved_usd.judge_main` after Gate 2. Add cache-write cost to the estimate, or use a 7% margin.
