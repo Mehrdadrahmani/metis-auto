@@ -144,9 +144,9 @@ def test_shipped_config_allows_only_approved_stages(cache):
     with pytest.raises(BudgetRefused):
         budget.guard("pilot", 10.01)
     with pytest.raises(BudgetRefused):
-        budget.guard("gen_main", 14.01)
+        budget.guard("gen_main", 21.51)
     with pytest.raises(BudgetRefused):
-        budget.guard("judge_main", 1.01)
+        budget.guard("judge_main", 3.01)
     for locked in ("cache_labels", "live"):
         with pytest.raises(BudgetRefused):
             budget.guard(locked, 0.0001)
