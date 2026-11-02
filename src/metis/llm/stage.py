@@ -1,7 +1,7 @@
 """Shared parts of the paid stage scripts S6 and S7 (WP-06 step 6).
 
-There is no way to select the test set here: WP-12 adds it, reading the sealed ids only inside
-the batch, never printing them.
+The test ids are read from `test_ids.sealed` only inside a batch and are never printed. Test output
+files carry `.sealed` in their name (AGENTS.md section 6).
 """
 
 from __future__ import annotations
@@ -16,17 +16,26 @@ import pyarrow.parquet as pq
 from metis.data.split import ids_sha256
 
 T_OUT = 300  # PLAN 7.2, mean answer tokens
-SETS = ("pilot", "val")
+SETS = ("pilot", "val", "test")
+OPEN_SETS = ("pilot", "val")  # sets that may be judged or analysed here
 TEXT_COLUMNS = ("text", "instructions", "history", "rag_context", "est_tokens_in")
 
 
 def select_ids(split_path: Path, which: str, limit: int | None = None) -> list[str]:
     if which not in SETS:
         raise ValueError(f"unknown set {which}")
+    if which == "test":
+        ids = sorted(json.loads((split_path.parent / "test_ids.sealed").read_text(encoding="utf-8")))
+        return ids[:limit] if limit else ids
     df = pd.read_parquet(split_path, columns=["prompt_id", "split", "in_pilot"])
     picked = df[df["in_pilot"]] if which == "pilot" else df[df["split"] == "val"]
     ids = sorted(picked["prompt_id"])
     return ids[:limit] if limit else ids
+
+
+def file_tag(which: str) -> str:
+    """Name part of output files: test files are marked sealed."""
+    return "test.sealed" if which == "test" else which
 
 
 def _as_list(value: Any) -> list[Any]:

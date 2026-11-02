@@ -28,7 +28,7 @@ TEMPLATE_TOKENS = 500  # the template's own text
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", dest="which", choices=st.SETS, required=True)
+    ap.add_argument("--set", dest="which", choices=st.OPEN_SETS, required=True)
     ap.add_argument("--stage", choices=("pilot", "judge_main"), required=True)
     ap.add_argument("--judge", choices=("judge", "jev"), required=True)
     ap.add_argument("--method", choices=("pointwise", "pairwise", "both"), default="both")

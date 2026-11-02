@@ -33,7 +33,7 @@ MAIN_JOBS = (("pointwise", "jev"),)
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", dest="which", choices=st.SETS, required=True)
+    ap.add_argument("--set", dest="which", choices=st.OPEN_SETS, required=True)
     ap.add_argument("--stage", choices=("pilot", "judge_main"), required=True)
     ap.add_argument("--prompts", type=Path, default=Path("runs/s1/prompts.parquet"))
     ap.add_argument("--s6", type=Path, default=Path("runs/s6"))

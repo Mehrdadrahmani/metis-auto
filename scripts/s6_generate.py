@@ -129,9 +129,10 @@ def main() -> int:
 
     stopped = next(((m, r) for m, r in reports.items() if r.stopped), None)
     args.out.mkdir(parents=True, exist_ok=True)
-    final = args.out / f"responses_{args.which}.parquet"
-    partial = args.out / f"responses_{args.which}.partial.parquet"
-    resume = args.out / f"resume_{args.which}.json"
+    tag = st.file_tag(args.which)
+    final = args.out / f"responses_{tag}.parquet"
+    partial = args.out / f"responses_{tag}.partial.parquet"
+    resume = args.out / f"resume_{tag}.json"
     # Sorted because threads race. A stopped run never writes the table S7 reads.
     columns = ["prompt_id", "model_id"]
     table = pd.DataFrame(records, columns=None if records else columns).sort_values(columns, ignore_index=True)
@@ -150,7 +151,7 @@ def main() -> int:
     else:
         partial.unlink(missing_ok=True)
         resume.unlink(missing_ok=True)
-    st.write_manifest(args.out / f"manifest_{args.which}.json", ids, {
+    st.write_manifest(args.out / f"manifest_{tag}.json", ids, {
         "stage": args.stage, "gen_config_id": cfg["_id"], "mock": is_mock(),
         "complete": stopped is None,
         "models": order, "records": len(records),

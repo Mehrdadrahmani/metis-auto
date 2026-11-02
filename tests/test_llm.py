@@ -13,7 +13,7 @@ import pytest
 
 from metis import llm  # noqa: F401
 from metis.config import load_config
-from metis.llm import client
+from metis.llm import client, stage
 from metis.llm.budget import Budget, BudgetRefused, call_cost
 from metis.llm.callcache import CallCache, cache_key, get_or_call
 from metis.llm.client import (
@@ -530,3 +530,11 @@ def test_planted_key_never_reaches_mlflow(monkeypatch, cache, tmp_path):
 def test_ok_calls_counts_one_model_in_one_stage(tmp_path):
     cache = CallCache(tmp_path / "c.sqlite")
     assert cache.ok_calls("pilot", "cheap") == 0
+
+
+def test_test_set_reads_sealed_ids_only(tmp_path):
+    (tmp_path / "test_ids.sealed").write_text('["b", "a", "c"]', encoding="utf-8")
+    assert stage.select_ids(tmp_path / "split.parquet", "test") == ["a", "b", "c"]
+    assert stage.select_ids(tmp_path / "split.parquet", "test", 2) == ["a", "b"]
+    assert stage.file_tag("test") == "test.sealed"
+    assert "test" not in stage.OPEN_SETS
