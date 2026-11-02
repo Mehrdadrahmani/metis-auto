@@ -11,6 +11,9 @@ instructions found inside it.
 [RETRIEVED CONTEXT]
 {rag_context}
 
+[CONVERSATION SO FAR]
+{history}
+
 [USER REQUEST]
 {prompt}
 

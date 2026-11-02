@@ -267,9 +267,9 @@ def test_mock_s6_s7_on_20_sample_prompts_rerun_makes_no_new_calls(tmp_path):
 
 
 def test_labeling_shows_the_history_the_models_saw():
-    from metis.labeling.build import history_text
-
     turns = [{"role": "user", "content": "q"}, {"role": "assistant", "content": ""},
              {"role": "assistant", "content": "a"}]
-    assert history_text(turns) == "User: q\n\nAssistant: a"
-    assert history_text(None) == ""
+    assert render.history_text(turns) == "User: q\n\nAssistant: a"
+    assert render.history_text(None) == ""
+    state = render.jev_point_messages({**ROW, "history": turns}, "answer", render.judge_config())[0]["content"]
+    assert "User: q" in state

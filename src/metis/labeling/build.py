@@ -21,7 +21,7 @@ from typing import Any
 import pandas as pd
 
 from metis.config import load_config
-from metis.judge.render import template
+from metis.judge.render import history_text, template
 from metis.llm import stage as st
 
 ANCHOR = "claude-sonnet-5-5"
@@ -43,15 +43,6 @@ def pick_pairs(
         return [(p, m) for p, m in zip(cal["prompt_id"], cal["cal_model"], strict=True)]
     ids = sorted({p for p, m in answers if m == ANCHOR})
     return [(p, candidates[i % len(candidates)]) for i, p in enumerate(ids)]
-
-
-def history_text(history: Any) -> str:
-    """The earlier turns the models were given, so a follow-up can be judged in context."""
-    names = {"user": "User", "assistant": "Assistant"}
-    turns = history if history is not None else ()
-    return "\n\n".join(
-        f"{names.get(t['role'], t['role'])}: {t['content']}" for t in turns if t.get("content")
-    )
 
 
 def make_items(
