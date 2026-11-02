@@ -11,7 +11,7 @@ we pay for the main build (Gate 2). You are on the critical path: try to finish 
 WP-09.
 
 ## What to do
-1. Open `metis-auto/runs/labeling/cal_<date>.html` in a browser (works offline).
+1. Open `metis-auto/runs/labeling/cal_2026-11-02.html` in a browser (works offline). Not `cal_2026-11-01.html`: that was the 5-item tool test.
 2. Read the guideline box once. For each item:
    - **Acceptable?** "Would a demanding user accept this answer without asking again?" Yes/No.
      Judge for *this chatbot*: if its instructions say "only answer about our product", a good general
@@ -21,7 +21,7 @@ WP-09.
    - Note (optional): one line if something is odd (e.g. "question unclear").
 3. Don't look for which model wrote what (names are hidden; don't guess). Take a break every ~30 items.
 4. When done, click **Export CSV** and save it as `metis-auto/runs/labeling/cal_labels.csv`.
-5. Two or more days later, do the 20-item re-label file the same way → `relabel_labels.csv`.
+5. Two or more days later, do the 20-item re-label file the same way → `relabel_labels.csv`. It is built from your exported CSV, so ask for it then: `labeling.build --relabel runs/labeling/cal_labels.csv --key runs/labeling/cal_2026-11-02.key.json`.
 6. Start a session and type `/start` (the next WP is WP-11).
 
 ## If something is wrong

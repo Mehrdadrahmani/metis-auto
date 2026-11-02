@@ -103,6 +103,9 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-092 | 2026-11-02 | K = 8 cluster names kept for now (owner), marked as based on local Qwen3-8B topics (500 train prompts per cluster, 23 min, $0): `configs/cluster_names.yaml`. Other K need new names if chosen in WP-14 | O | WP-08, WP-14 |
 | D-093 | 2026-11-02 | **Pilot: gpt-5.6-terra pointwise only for now (owner), jev-latest both methods (DEV-13, narrows spec "method = both" and D-083).** Saves $8.57; pilot estimate $6.71. Terra pairwise can be added later, answers are cached. Method comparison uses jev. WP-09, WP-11 updated | O | WP-09, WP-11 |
 | D-094 | 2026-11-02 | **Gate 1 passed (owner).** Pilot limit $10 in `configs/budget.yaml`; gen_main, judge_main, cache_labels and live stay $0 until Gate 2, then set from measured costs. Pointwise stays the planned path | O | WP-09, WP-11 |
+| D-095 | 2026-11-02 | **Answer limit raised in steps (owner).** 1,024 cut 9 of 100 Sonnet answers, 1 to 3 for the others, because Sonnet fits about 1.5 chars per token here against 2.4 to 3. s6 now redoes only cut answers at 2,048 (`configs/gen_retry.yaml`), then 4,096 (`gen_retry_2.yaml`), same limits for all models. `gen_config.yaml` unchanged: its hash is in the cache key. Applies to the main run too | O | scripts/s6_generate.py |
+| D-096 | 2026-11-02 | Owner chose to run the pilot on the old Metis key, the one pasted in chat. Still to be replaced | O | STATUS |
+| D-097 | 2026-11-02 | `s7_judge.py` pre-check prices only work not yet done: it refused a 2-call rerun at the $10 limit by counting 500 cached calls. Limit unchanged, per-call guard unchanged. `s6_generate.py` still has the old pre-check | A | scripts/s7_judge.py |
 | D-078 | 2026-11-01 | Bot clusters kept as a later test, not in the main pipeline. Experiment in `experiments/bot_clusters/` (elbow K = 13, silhouette 0.28, ARI 0.82). Owner idea: a bot term in task difficulty; test in WP-14 at $0 (would be DEV-12). Owner also moved WP-08 part B ahead of WP-04, 06, 07 (changes D-068) | O | WP-08 |
 | D-077 | 2026-11-01 | **Owner changed the data rule:** the agent may read anything in the data and results, including `instructions`, RAG context and generated answers. Replaces D-067 and D-073. Agent's handling: read through `metis.data.redact` so keys stay masked; test stays sealed under AGENTS.md §6; data text stays out of git, `results/`, `report/`. AGENTS.md §4 and CLAUDE.md updated | O | WP-08 |
 | D-076 | 2026-11-01 | Agent decision, to report to the owner: first run drew sessions equally and missed the all-traffic target (val 28.5% business support against about 16% of eligible prompts). Draw changed to **each eligible prompt equally likely**; sessions stay in one split, max 3 per session. Seed unchanged. Judged on val vs eligible; test labels and text not used | P | WP-08 |
@@ -136,9 +139,17 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 |---|---|---|---|---|---|---|
 | 2026-10-20 | – | planning | $0 | $0.00 | 0 | Planning estimate: ~$25 (pointwise path) / ~$35 (pairwise), PLAN §7 |
 | 2026-11-02 | pilot | WP-09 | $10 | $0.00 | 0 | Gate 1 (D-094). Estimate $6.71. Other stages $0 until Gate 2 |
+| 2026-11-02 | pilot | WP-09 | $10 | $5.87 | 2,361 | Sonnet $1.75, deepseek-v4-pro $0.28, luna $0.08, flash $0.07, gemini $0.04, terra $3.42, jev $0.23. Failed calls 0. Compare with the Metis invoice |
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · WP-09 pilot run, first paid stage ($5.87)
+- 500 answers, 499 terra pointwise, 500 jev pointwise, 800 jev pairwise, 60 test-retest calls. Stats: `results/pilot_run_stats.md`. Estimates: `results/cost_estimate_v2.md`.
+- Every route worked, including Jev and Google. Usage returned by all. Only luna and terra report reasoning tokens.
+- Jev pairwise position consistency 0.755, under the Gate 2 line of 0.80. Spearman terra against jev 0.709.
+- Files: `configs/gen_retry*.yaml`, `scripts/s7_noise.py`, `scripts/s6_generate.py`, `scripts/s7_judge.py`, `src/metis/llm/{messages,callcache}.py`, tests. Tests 264 pass.
+- Decisions D-095 to D-097.
 
 ### 2026-11-02 · WP-08 closed, Gate 1 passed
 - Cluster names for K = 8 from local Qwen3-8B (`scripts/s5_topics.py`, 23 min, $0). Budget memo from `scripts/budget_memo.py`. Terra pairwise left out of the pilot (D-093). Pilot limit $10 (D-094). Tests 262 passed. Cost $0.

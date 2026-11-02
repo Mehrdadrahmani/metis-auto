@@ -486,3 +486,8 @@ def test_planted_key_never_reaches_mlflow(monkeypatch, cache, tmp_path):
     assert b"REDACTED" in store  # the traces really were written
     assert re.search(rb"sk-[A-Za-z0-9_-]{10,}", store) is None
     assert FAKE_KEY.encode() not in store
+
+
+def test_ok_calls_counts_one_model_in_one_stage(tmp_path):
+    cache = CallCache(tmp_path / "c.sqlite")
+    assert cache.ok_calls("pilot", "cheap") == 0

@@ -70,3 +70,6 @@ Report judge-human agreement by group: with or without retrieved context, short 
 
 ## Added by D-093
 Pairwise was judged by jev only, so pointwise vs pairwise is compared with jev (DEV-13). If pairwise wins and terra is the better pointwise judge, add terra pairwise on the pilot (about $8.57, ask first) before choosing it for the main run.
+
+## Added by WP-09
+Jev pairwise position consistency was 0.755 (n = 400), under the Gate 2 line of 0.80, and B was chosen 443 times against A 291. Pointwise is unaffected by order. Jev probabilities are kept in `raw_output`, and may give a softer pairwise score. Test-retest: `runs/pilot/noise_*`, summary in `results/pilot_run_stats.md`. Costs: `results/cost_estimate_v2.md`. `s6_generate.py` still has the whole-batch pre-check (D-097): fix before WP-12. jev-latest returned jev-1.14.0 in the pilot: compare the version in the main run.

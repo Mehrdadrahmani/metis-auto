@@ -1,0 +1,5 @@
+# Second pass for answers cut at the limit (owner, WP-09). id = hash of this file.
+# Kept apart from gen_config.yaml: its hash is in the cache key, so editing it would re-pay every
+# answer. claude-sonnet-5-5 fits about 1.5 chars per token on this data, the others 2.4 to 3, so
+# 1,024 was a much tighter limit for the anchor. Same limit for every model.
+max_tokens: 2048

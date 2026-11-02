@@ -126,6 +126,11 @@ class CallCache:
         with self._lock:
             return float(self._db.execute(sql, args).fetchone()[0])
 
+    def ok_calls(self, stage: str, model_id: str) -> int:
+        sql = "SELECT COUNT(*) FROM ledger WHERE stage = ? AND model_id = ? AND status = 'ok'"
+        with self._lock:
+            return int(self._db.execute(sql, (stage, model_id)).fetchone()[0])
+
     def ledger_rows(self) -> list[dict[str, Any]]:
         sql = (
             "SELECT stage, COUNT(*) calls, SUM(status != 'ok') failed, SUM(tokens_in) tokens_in,"

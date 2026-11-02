@@ -63,7 +63,10 @@ def main() -> int:
         random.Random(cfg["seed"]).shuffle(items)
         tasks.append(("pairwise", items, price(2)))
     if not is_mock():
-        budget.check(args.stage, sum(len(items) * cost for _, items, cost in tasks))
+        # Cached items are free: the pre-check prices only what is left. Each call is still guarded.
+        count = sum(len(items) for _, items, _ in tasks)
+        left = max(0, count - cache.ok_calls(args.stage, args.judge)) / count
+        budget.check(args.stage, left * sum(len(items) * cost for _, items, cost in tasks))
 
     args.out.mkdir(parents=True, exist_ok=True)
     stopped, summary = False, {}

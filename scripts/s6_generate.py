@@ -35,6 +35,7 @@ def main() -> int:
 
     start = time.perf_counter()
     cfg = load_config("gen_config")
+    retries = [load_config("gen_retry"), load_config("gen_retry_2")]  # rising limits, cut answers only
     cache = CallCache()
     budget = Budget(cache)
     limits = budget.config["anomalies"]
@@ -62,10 +63,21 @@ def main() -> int:
                 cache, budget, args.stage, model_id, messages, params, cfg["_id"],
                 costs[model_id], complete, prompt_id=pid,
             )
+            config_id = cfg["_id"]
+            for retry in retries:  # same limits for all models
+                if not (result.status == "ok" and result.response
+                        and result.response.finish_reason == "length"):
+                    break
+                config_id = retry["_id"]
+                result = get_or_call(
+                    cache, budget, args.stage, model_id, messages,
+                    gen_params(model_id, cfg, retry["max_tokens"]), config_id,
+                    costs[model_id] * 3, complete, prompt_id=pid,
+                )
             resp = result.response
             ok = result.status == "ok" and bool(resp and resp.text.strip())
             records.append({
-                "prompt_id": pid, "model_id": model_id, "gen_config_id": cfg["_id"],
+                "prompt_id": pid, "model_id": model_id, "gen_config_id": config_id,
                 "text": resp.text if ok else None,
                 "tokens_in": resp.tokens_in if resp else 0,
                 "tokens_out": resp.tokens_out if resp else 0,

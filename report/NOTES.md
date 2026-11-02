@@ -148,3 +148,10 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Leak test first proved nothing: the pilot and all stored eligible prompts hold no key patterns. With 13,720 fake keys planted across all fields, 0 of 4,802 requests carried one.
 - Keeping near-duplicates (measured, n_train = 179,185) moved the stability drop from K = 12 to K = 10: mean ARI 0.99 or higher to K = 9, 0.89 at K = 10, 0.85 at K = 11 (three fits). K limit now 9. Silhouette 0.07 to 0.12.
 - Limit: changing `n_val` would redraw test, because both use one random sequence. A larger val must add sessions from train.
+
+## WP-09 pilot (measured, n = 100 prompts)
+- $5.87 of $10, 2,361 calls, 0 failed.
+- A shared token limit is not a shared length limit: Sonnet fits about 1.5 chars per token on this mostly Persian data, others 2.4 to 3. At 1,024, 9% of Sonnet answers were cut against 1 to 3% for others. This would have biased the anchor. Fixed by rising limits on cut answers only (D-095).
+- Jev chose position B 443 times against A 291; position consistency 0.755 (n = 400 pairs). Spearman terra against jev 0.709 (n = 499).
+- Test-retest, n = 20: terra exact 0.65, within 1 point 1.00; jev mean gap 0.108; jev pairwise same verdict 1.00.
+- Cache-key lesson: editing a hashed config would have re-paid all answers, so later passes use their own config files.

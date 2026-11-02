@@ -1,0 +1,3 @@
+# Third pass: answers still cut at gen_retry.yaml's limit (owner, WP-09). id = hash of this file.
+# Separate file for the same reason as gen_retry.yaml: its hash is in the cache key.
+max_tokens: 4096

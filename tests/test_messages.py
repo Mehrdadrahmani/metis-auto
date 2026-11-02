@@ -105,3 +105,11 @@ def test_openai_uses_the_renamed_length_param():
 def test_unknown_model_fails():
     with pytest.raises(KeyError):
         gen_params("nope", load_config("gen_config"))
+
+
+def test_retry_limit_keeps_each_models_param_name():
+    cfg = load_config("gen_config")
+    assert gen_params("claude-sonnet-5-5", cfg, 2048)["max_tokens"] == 2048
+    params = gen_params("gpt-5.6-luna", cfg, 2048)
+    assert params["max_completion_tokens"] == 2048 and "max_tokens" not in params
+    assert gen_params("gpt-5.6-luna", cfg)["max_completion_tokens"] == 1024  # first pass unchanged

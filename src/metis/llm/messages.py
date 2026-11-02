@@ -46,10 +46,15 @@ def build_messages(
     return redact_messages([*messages, *turns, {"role": "user", "content": user_text}])
 
 
-def gen_params(model_id: str, cfg: dict[str, Any]) -> dict[str, Any]:
-    """Provider parameters for one model from ``configs/gen_config.yaml``."""
+def gen_params(model_id: str, cfg: dict[str, Any], max_tokens: int | None = None) -> dict[str, Any]:
+    """Provider parameters for one model from ``configs/gen_config.yaml``.
+
+    ``max_tokens`` overrides the common limit, for the second pass on cut answers.
+    """
     rule = cfg["models"][model_id]  # KeyError on purpose: every model must be listed
     params = dict(cfg["common"])
+    if max_tokens is not None:
+        params["max_tokens"] = max_tokens
     for old, new in rule.get("rename", {}).items():
         params[new] = params.pop(old)
     return {**params, **rule.get("add", {})}
