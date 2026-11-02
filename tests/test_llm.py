@@ -147,7 +147,7 @@ def test_shipped_config_allows_only_approved_stages(cache):
         budget.guard("gen_main", 21.51)
     with pytest.raises(BudgetRefused):
         budget.guard("judge_main", 3.01)
-    for locked in ("cache_labels", "live"):
+    for locked in ("cache_labels", "live", "khayyam"):
         with pytest.raises(BudgetRefused):
             budget.guard(locked, 0.0001)
 
