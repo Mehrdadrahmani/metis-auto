@@ -174,7 +174,7 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 ## 5. Log (newest first)
 
 ### 2026-11-03 · WP-14: signal tests
-- `scripts/s11_signal_tests.py`, `results/signal_tests.md`: bot groups (D-078) and simple features show no clear gain, $0. `scripts/s12_input_test.py` written, run stopped by owner, no result yet. Committed test fix after a commit that had one failing test.
+- `scripts/s11_signal_tests.py`, `results/signal_tests.md`: bot groups (D-078) and simple features show no clear gain, $0. `scripts/s12_input_test.py`, `results/representation_test.md`: previous-message input gives small area changes, no gain over DeepSeek at low cost, $0. Committed test fix after a commit that had one failing test.
 
 ### 2026-11-03 · WP-14: val 800, K = 8 luck exposed, pairwise
 - Free router check first: on val 400, K = 8 looked +1.3 points over ZeroRouter (CI -1.0 to +3.6). Owner grew val to 800 (D-115). Cost $9.01 this session.

@@ -9,7 +9,7 @@ Updated: 2026-11-03 · WP-14 mid (handoff 2)
 - Model: default (Opus 5.5)
 
 ## Exact next step
-`/start`, then WP-14: run `uv run python scripts/s12_input_test.py` (D-069; written, stopped before it finished, slow on CPU). Then sealed-file guard, artifact (`router/artifact.py`, `artifacts/router_v1/`), draft `results/eval_protocol.md`, charts. **Stop before `git tag pre-test`: owner approves.** Owner's overnight list: all free WPs, visuals, pitch deck. Khayyam run waits for "go khayyam" (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
+`/start`, then WP-14: sealed-file guard, artifact (`router/artifact.py`, `artifacts/router_v1/`), draft `results/eval_protocol.md`, charts. **Stop before `git tag pre-test`: owner approves.** Owner's overnight list: all free WPs, visuals, pitch deck. Khayyam run waits for "go khayyam" (no Sonnet; Gemini, DeepSeek flash, Luna, deepseek-v4-pro; 400 val + 1,100 test, $2 to $4, limit $5; true answers, no judge).
 
 ## Validation results (`results/router_check_val.md`, `select_k.md`, `ladder_val.md`, `lambda_val.md`; n = 798)
 - Pass at 7: Sonnet 66.2%, DeepSeek 65.4%, Luna 61.5%, Gemini 53.5%. Perfect router 79.4%
@@ -17,6 +17,7 @@ Updated: 2026-11-03 · WP-14 mid (handoff 2)
 - Cheap setting, unseen: K = 8 65.4% at cost 0.042; DeepSeek 65.4% at 0.041. K = 4 at λ 0.03: 66.9% at 0.417
 - K = 8 fitted on old 400, scored on new 400: -2.0 points vs DeepSeek (-4.2 to 0.0)
 - Signals (`results/signal_tests.md`): bot groups, RAG, language, length: none clearly beats K = 1 or chance; none beats DeepSeek at low cost. D-078 not shipped
+- Inputs (`results/representation_test.md`, D-069): hybrid area K = 8 0.6562, K = 4 0.6672; T = 2 K = 4 0.6651; small, none beats DeepSeek at low cost. Input stays current message
 - Pairwise, 0.5 = equal to Sonnet: DeepSeek 0.403, Luna 0.409, Gemini 0.176; Sonnet wins 40% to 21% over DeepSeek. Position consistency 0.753
 - 2 prompts refused by Jev, 1 Sonnet answer failed. Repeat check n = 160, mean gap 0.119
 
