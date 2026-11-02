@@ -157,8 +157,8 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-02 | pilot | WP-09 | $10 | $0.00 | 0 | Gate 1 (D-094). Estimate $6.71. Other stages $0 until Gate 2 |
 | 2026-11-02 | pilot | WP-09 | $10 | $6.29 | 2,361 | Dashboard figure (D-100). Ledger $5.87. Sonnet $1.75, deepseek-v4-pro $0.28, luna $0.08, flash $0.07, gemini $0.04, terra $3.42, jev $0.23 |
 | 2026-11-02 | pilot | WP-11 | $10 | about $6.60 | 3,638 | Jev re-judge with history, ledger $0.29, 1,277 new calls. Total ledger $6.16; dashboard figure + re-judge. 23 failed 401 calls at $0 |
-| 2026-11-02 | gen_main | WP-12 | $8 | $5.76 | 1,233 | Validation only. Sonnet $5.17, luna $0.26, flash $0.20, gemini $0.13. 3 failed tries, all one Sonnet prompt |
-| 2026-11-02 | judge_main | WP-13 | $1 | $0.28 | 1,247 | Validation only, Jev, 80 repeat calls included. 8 failed tries, all the one refused prompt |
+| 2026-11-02 | gen_main | WP-12 | $8 | $5.76 | 1,234 | Validation only. Sonnet $5.17, luna $0.26, flash $0.20, gemini $0.13. 3 failed tries, all one Sonnet prompt |
+| 2026-11-02 | judge_main | WP-13 | $1 | $0.28 | 1,251 | Validation only, Jev, 80 repeat calls included. 8 failed tries, all the one refused prompt |
 | | **Total** | | | **about $12.64** | | Ledger $12.21 + dashboard gap (D-100) |
 
 ## 5. Log (newest first)

@@ -58,5 +58,3 @@ Recommended first (free, no test data): the WP-14 early check, router against Ze
 - D-106 Main judging pointwise only; terra out
 - D-105 Gate 2 failed by one item, owner went ahead on record
 - D-104 `tpsg-` key pattern; new key in `.env`
-- D-103 Pilot re-judged by Jev with history
-- D-102 Chat history to the judge from now on
