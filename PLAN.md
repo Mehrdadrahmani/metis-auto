@@ -250,6 +250,8 @@ files, logs a decision in `MASTER_LOG.md`, and updates `ROADMAP.md` if order or 
 
 ## 7. Budget
 
+> **Update 2026-11-02 (WP-07):** the current estimate is above the high column below: pointwise $47.68, pairwise $62.12 (`results/cost_estimate_v1.md`). Decide at Gate 1.
+
 ### 7.1 Formulas (spec §9, adapted)
 
 Let N = 4 models, N_val = 400, N_te = 300, M = N_val + N_te = 700, P = 100 pilot prompts (⊂ val),

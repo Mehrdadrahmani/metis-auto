@@ -20,7 +20,7 @@
     }
   },
   "config_ids": {
-    "pipeline": "758635c0204c"
+    "pipeline": "43464f0fa3ae"
   },
   "counts_by_split": {
     "train": 179185,
@@ -31,7 +31,7 @@
   "pilot": 100,
   "cal_per_model": {
     "deepseek-v4-flash": 34,
-    "gemini-3.5-flash-lite": 33,
+    "gemini-2.5-flash-lite": 33,
     "gpt-5.6-luna": 33
   },
   "counts_split_stratum_lang": [
@@ -125,7 +125,7 @@
     "val": "e18ac4d23d1085753fc461cdaa2ae4f28039593bfdcd7151e0a74ebf6d48d600",
     "test": "82608911dabb03d06543659574f2e8004c79656f627cbb374844abdabb94613f",
     "pilot": "2a04fdc96a697a228f7dd6684dc2023eb4aee6ca6bb9b7b21e6374ee7d36bb9e",
-    "cal": "9172d118f770962254c7e21886c922ef2496cd8d085eaa5dc0fe830390e211cd"
+    "cal": "9d1507f59363b6fb2a59e22b1b58171b6cedef0f9c483e95ae9eba1c52ec9c3f"
   },
   "similarity": {
     "val_vs_test": {
@@ -269,6 +269,6 @@
   },
   "sizes_section": "s2",
   "input": "runs/s1/prompts.parquet",
-  "duration_s": 1.94,
+  "duration_s": 1.43,
   "cost_usd": 0.0
 }

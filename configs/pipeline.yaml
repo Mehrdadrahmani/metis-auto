@@ -25,7 +25,7 @@ router:                             # S5, S8-S10 (WP-05); paper settings, PLAN M
   alpha_pair: 2                     # virtual ties, spec S8-PW
   select_k_repeats: 20              # DEV-6
   k_max: 20                         # DEV-10 (owner); paper rule N_val/50 would give 8
-  k_ship_max: 11                    # D-079: 12..20 are scored and reported, only K <= 11 can win
+  k_ship_max: 9                     # D-079, D-089: 10..20 are scored and reported, only K <= 9 can win
   lambda_n: 60
   lambda_low: 0.001
   lambda_high: 100.0

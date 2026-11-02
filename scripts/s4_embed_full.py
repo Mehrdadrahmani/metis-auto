@@ -1,14 +1,13 @@
-"""S4: embed all eligible prompts with the chosen model, load Qdrant, mark near-duplicates (WP-08).
+"""S4: embed all eligible prompts with the chosen model, load Qdrant (WP-08).
 
 Usage: uv run python scripts/s4_embed_full.py embed      (resumable, safe to kill)
        uv run python scripts/s4_embed_full.py embed --device cpu   (longest messages: GPU runs out)
        uv run python scripts/s4_embed_full.py set-split  (Qdrant split payload only, no embedding)
-       uv run python scripts/s4_embed_full.py near-dups  (train only)
 
 The sealed test ids are never opened: prompts are chosen by eligibility flags. Rows in
 split.parquet get their split as payload; every other prompt is stored as `unassigned`.
 Chunks run shortest text first, so the rare very long messages come last.
-Writes runs/s4/full/<model>/part-*.npz, near_dups.parquet, results/wp08_full_data/embed_full.json.
+Writes runs/s4/full/<model>/part-*.npz, results/wp08_full_data/embed_full.json.
 """
 
 from __future__ import annotations
@@ -29,8 +28,6 @@ from metis.embed.store import DEFAULT_URL, VectorStore
 
 ROOT = Path(__file__).resolve().parents[1]
 CHUNK = 2000
-NEAR_DUP_COSINE = 0.95
-NEAR_DUP_BLOCK = 2000
 
 
 def load_table() -> pd.DataFrame:
@@ -118,43 +115,9 @@ def run_set_split(cfg: dict) -> None:
     print(cand["name"], counts)
 
 
-def run_near_dups(out: Path) -> None:
-    """Exact cosine search inside train, earliest id kept. Same result as an exact Qdrant search,
-    and far faster in memory for 200k vectors."""
-    t0 = time.perf_counter()
-    ids, vecs = [], []
-    for p in sorted(out.glob("part-*.npz")):
-        with np.load(p) as z:
-            ids.append(z["ids"])
-            vecs.append(z["vecs"])
-    ids, vecs = np.concatenate(ids), np.concatenate(vecs)
-    split = pd.read_parquet(ROOT / "runs/s2/split.parquet", columns=["prompt_id", "split"])
-    train = set(split.loc[split["split"] == "train", "prompt_id"])
-    keep_rows = np.array([i in train for i in ids])
-    ids, x = ids[keep_rows], vecs[keep_rows]
-    order = np.argsort(ids)
-    ids, x = ids[order], x[order]
-    keep = np.ones(len(ids), dtype=bool)
-    for b in range(0, len(ids), NEAR_DUP_BLOCK):
-        e = min(b + NEAR_DUP_BLOCK, len(ids))
-        sims = x[b:e] @ x[:e].T
-        for r in range(e - b):
-            near = np.flatnonzero(sims[r, : b + r] > NEAR_DUP_COSINE)
-            keep[b + r] = not keep[near].any()
-    dup = ids[~keep]
-    pd.DataFrame({"prompt_id": dup}).to_parquet(out / "near_dups.parquet", index=False)
-    res = ROOT / "results/wp08_full_data/embed_full.json"
-    manifest = json.loads(res.read_text(encoding="utf-8"))
-    manifest["near_dups"] = {"train": len(ids), "removed": len(dup), "kept": int(keep.sum()),
-                             "cosine": NEAR_DUP_COSINE,
-                             "duration_s": round(time.perf_counter() - t0, 1)}  # fmt: skip
-    res.write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
-    print(json.dumps(manifest["near_dups"]))
-
-
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("step", choices=["embed", "set-split", "near-dups"])
+    ap.add_argument("step", choices=["embed", "set-split"])
     ap.add_argument("--device", help="override s4.device, e.g. cpu for the longest messages")
     a = ap.parse_args()
     cfg = load_config("pipeline")
@@ -162,10 +125,8 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     if a.step == "embed":
         run_embed(cfg, out, a.device)
-    elif a.step == "set-split":
-        run_set_split(cfg)
     else:
-        run_near_dups(out)
+        run_set_split(cfg)
 
 
 if __name__ == "__main__":

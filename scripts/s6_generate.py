@@ -85,7 +85,8 @@ def main() -> int:
             break
 
     args.out.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(records).to_parquet(args.out / f"responses_{args.which}.parquet", index=False)
+    table = pd.DataFrame(records).sort_values(["prompt_id", "model_id"], ignore_index=True)
+    table.to_parquet(args.out / f"responses_{args.which}.parquet", index=False)  # sorted: threads race
     st.write_manifest(args.out / f"manifest_{args.which}.json", ids, {
         "stage": args.stage, "gen_config_id": cfg["_id"], "mock": is_mock(),
         "models": order, "records": len(records),

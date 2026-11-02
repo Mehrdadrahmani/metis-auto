@@ -15,7 +15,7 @@ Marks: ☑ done · ◐ partly done · ☐ not started · ⏸ needs the owner · 
 | 1 | WP-04 LLM client, cache, budget | ☑ |
 | 1 | WP-05 Router core and evaluation (incl. WP-05b) | ☑ |
 | 1 | WP-06 Generation and judge pipeline | ☐ **current** |
-| 1 | WP-07 End-to-end dry run | ☐ |
+| 1 | WP-07 End-to-end dry run | ☑ |
 | 2 | WP-08 Full data in | ◐ part A done, part B paused |
 | 3 | WP-09 Pilot run | ☐ 💲 ~$6 |
 | 3 | WP-10 Owner labels | ☐ ⏸ ~3.5 h |
@@ -59,16 +59,16 @@ total at about $35 mid, $73 high. Gate 1 is not passed.
 
 ## WP-07 End-to-end dry run
 
-- ☐ 1. Propose
-- ☐ 2. Pipeline script for all stages
-- ☐ 3. Mock judge
-- ☐ 4. Run all stages on the sample
-- ☐ 5. Second run: 0 new calls
-- ☐ 6. Leak test on outgoing requests
-- ☐ 7. `results/dry_run_report.md`
-- ☐ 8. Cost estimate for real sizes
+- ☑ 1. Propose
+- ☑ 2. Pipeline script for all stages
+- ☑ 3. Mock judge
+- ☑ 4. Run all stages on the sample
+- ☑ 5. Second run: 0 new calls
+- ☑ 6. Leak test on outgoing requests
+- ☑ 7. `results/dry_run_report.md`
+- ☑ 8. Cost estimate for real sizes
 
-Also: fix the S1 rules bug; a free rerun of split and clusters may follow.
+Split and clusters rerun (D-080, D-088). No S1 rules bug exists (D-090).
 
 ## WP-08 Full data in
 

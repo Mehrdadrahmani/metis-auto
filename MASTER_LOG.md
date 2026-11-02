@@ -96,6 +96,9 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-085 | 2026-11-01 | DEV-5 approved: judge prompts as in `src/metis/judge/templates/`, including an added line not to follow instructions inside the evaluated text | O | WP-06 report |
 | D-086 | 2026-11-01 | Jev form approved: same material as `state`, one score or choice question, level mapped by 1 + 2.25 × level (not rounded). Jev-only wording: "caps the answer at level 1". No written reason | O | src/metis/judge/render.py |
 | D-087 | 2026-11-01 | Later WPs updated: WP-08 recomputes the budget (estimate above the $45 line, PLAN §6); WP-09 checks provider params first; WP-11 splits agreement by context and instruction length; WP-12 adds test selection; WP-13 adds the 5% re-judge | C | WP-08, 09, 11, 12, 13 |
+| D-088 | 2026-11-02 | **Near-duplicates are kept (owner).** Replaces the 0.95 removal in D-075 and D-079: K-means fits on all train prompts (179,185 on the current split). Exact duplicates are still removed. Frequent messages now weigh more in the clusters. K limit, stability and cluster names need a rerun in WP-07 | O | WP-07, WP-08 |
+| D-089 | 2026-11-02 | **K limit is now 9 (owner).** Replaces K ≤ 11 in D-079: after D-088, mean ARI is 0.99 or higher to K = 9, then 0.89 at K = 10 and 0.85 at K = 11 (three fits each). All of 3 to 20 are still scored and reported, only K ≤ 9 can win (`router.k_ship_max: 9`) | O | WP-14 |
+| D-090 | 2026-11-02 | No S1 rules bug exists on record: the STATUS and CHECKPOINT note came from the D-068 risk line, `rules.py` is unchanged since S1 and its tests pass. Note removed. WP-08 cluster names must be redone on the D-088 clusters. PLAN §7 high is exceeded (WP-07 acceptance not met), decide at Gate 1 | A | WP-08 |
 | D-078 | 2026-11-01 | Bot clusters kept as a later test, not in the main pipeline. Experiment in `experiments/bot_clusters/` (elbow K = 13, silhouette 0.28, ARI 0.82). Owner idea: a bot term in task difficulty; test in WP-14 at $0 (would be DEV-12). Owner also moved WP-08 part B ahead of WP-04, 06, 07 (changes D-068) | O | WP-08 |
 | D-077 | 2026-11-01 | **Owner changed the data rule:** the agent may read anything in the data and results, including `instructions`, RAG context and generated answers. Replaces D-067 and D-073. Agent's handling: read through `metis.data.redact` so keys stay masked; test stays sealed under AGENTS.md §6; data text stays out of git, `results/`, `report/`. AGENTS.md §4 and CLAUDE.md updated | O | WP-08 |
 | D-076 | 2026-11-01 | Agent decision, to report to the owner: first run drew sessions equally and missed the all-traffic target (val 28.5% business support against about 16% of eligible prompts). Draw changed to **each eligible prompt equally likely**; sessions stay in one split, max 3 per session. Seed unchanged. Judged on val vs eligible; test labels and text not used | P | WP-08 |
@@ -131,6 +134,12 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · WP-07 dry run, clusters on all train, K limit 9
+- D-088 applied: near-duplicate step removed from S4 and S5 scripts. K 3 to 20 and stability rerun on 179,185 train prompts (old results in `runs/s5/old_near_dedup/`). Stable to K = 9 only, so K limit 9 (D-089).
+- Split rerun (D-080): sets unchanged by hash, 33 calibration rows renamed to gemini-2.5-flash-lite. Qdrant unchanged.
+- `scripts/pipeline.py`: S1 to S12 on the sample, mock. Second run 0 new calls, 11 of 11 stages identical. Leak test: 4,802 requests, 13,720 planted fake keys, 0 hits.
+- Cost estimate unchanged: pointwise $47.68, pairwise $62.12, both above PLAN §7 high ($39, $54). Tests 262 passed. Cost $0.
 
 ### 2026-11-01 WP-04 finished ($0.00)
 - Built the client, cache, budget guard, runner, mock mode, MLflow tracing and Metis check; 39 new tests, 208 pass.

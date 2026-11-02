@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sqlite3
 import threading
 import time
@@ -35,6 +36,8 @@ CREATE TABLE IF NOT EXISTS ledger (
 
 
 def default_path() -> Path:
+    if is_mock() and os.environ.get("METIS_MOCK_CACHE"):  # dry run: its own cache, never the paid one
+        return Path(os.environ["METIS_MOCK_CACHE"])
     return ROOT / "cache" / ("llm_calls.mock.sqlite" if is_mock() else "llm_calls.sqlite")
 
 

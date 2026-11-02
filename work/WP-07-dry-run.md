@@ -62,3 +62,6 @@ in the dry run, for example {1, 2, 3}, and say so in its report.
 
 ## Added by D-080
 Rerun the split (free): `runs/s2` and `results/split_manifest.json` still name gemini-3.5-flash-lite as a calibration model. Prompt sets should not change; check that with the manifest hashes. Do not open sealed test ids.
+
+## Added by D-088
+Near-duplicates are no longer removed from train. When the split is rerun, fit K-means on all train prompts: stop using `near_dups.parquet` in `scripts/s5_stability.py` and any other reader, and drop the `near-dups` step from `scripts/s4_embed_full.py`. Exact duplicates stay removed. Rerun K 3 to 20 and stability, and report whether the K ≤ 11 limit (D-079) still holds. This is free. The owner reviewed 81 sample pairs at `runs/near_dup_view/sample.html` first.

@@ -43,8 +43,7 @@ def main() -> None:
             vecs.append(z["vecs"])
     ids, vecs = np.concatenate(ids), np.concatenate(vecs)
     split = pd.read_parquet(ROOT / "runs/s2/split.parquet", columns=["prompt_id", "split"])
-    dups = set(pd.read_parquet(out / "near_dups.parquet")["prompt_id"])
-    train = set(split.loc[split["split"] == "train", "prompt_id"]) - dups
+    train = set(split.loc[split["split"] == "train", "prompt_id"])
     x = vecs[np.array([i in train for i in ids])]
     by_k = json.loads((ROOT / "results/wp08_full_data/clusters_by_k.json").read_text("utf-8"))
     res = ROOT / "results/wp08_full_data/cluster_stability.json"

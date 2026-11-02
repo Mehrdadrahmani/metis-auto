@@ -13,6 +13,7 @@ import json
 import math
 import os
 import random
+import threading
 import time
 from dataclasses import asdict, dataclass, field
 from typing import Any
@@ -26,6 +27,7 @@ from metis.obs import tracking
 MOCK_MEAN_OUT = 174  # mean output tokens in mock mode (WP-04 step 8)
 MOCK_SIGMA = 0.6
 MOCK_JUDGE_OUT = 120  # WP-06: judge replies in mock mode
+_RECORD_LOCK = threading.Lock()
 CONNECT_TIMEOUT_S = 5.0  # PLAN E4
 TOTAL_TIMEOUT_S = 60.0
 MAX_ATTEMPTS = 2  # first try + 1 retry with jitter on 429/5xx
@@ -96,7 +98,17 @@ def check_outgoing(messages: list[dict[str, Any]], prompt_id: str | None = None)
         raise OutgoingSecretError(f"prompt_id={prompt_id} kinds={sorted(kinds)}")
 
 
+def _record_mock(model_id: str, messages: list[dict[str, Any]]) -> None:
+    """Leak test (WP-07): keep the exact outgoing request in a git-ignored file."""
+    path = os.environ.get("METIS_MOCK_RECORD")
+    if path:
+        line = json.dumps({"model": model_id, "messages": messages}, ensure_ascii=False) + "\n"
+        with _RECORD_LOCK, open(path, "a", encoding="utf-8") as f:
+            f.write(line)
+
+
 def _mock_response(model_id: str, messages: list[dict[str, Any]], gen: dict[str, Any]) -> Response:
+    _record_mock(model_id, messages)
     seed_text = repr((model_id, messages, sorted(gen.items())))
     seed = int.from_bytes(hashlib.sha256(seed_text.encode("utf-8")).digest()[:8], "big")
     rng = random.Random(seed)

@@ -2,7 +2,7 @@
 
 Usage: uv run python scripts/s5_cluster_view.py   (resumable: a finished K is skipped)
 
-Fits on train minus near-duplicates; val is only assigned, to show prompts per cluster. Test is
+Fits on all train prompts (D-088); val is only assigned, to show prompts per cluster. Test is
 never used. Writes runs/cluster_view/
 (index.html, k_XX.html; git-ignored, redacted train prompts), runs/s5/view/k_XX.npz and
 results/wp08_full_data/clusters_by_k.json (numbers only).
@@ -87,8 +87,7 @@ def main() -> None:
     out = ROOT / "runs/s4/full" / cfg["s4"]["choice"]
     ids, vecs = load_vectors(out)
     split = pd.read_parquet(ROOT / "runs/s2/split.parquet", columns=["prompt_id", "split"])
-    dups = set(pd.read_parquet(out / "near_dups.parquet")["prompt_id"])
-    train_ids = set(split.loc[split["split"] == "train", "prompt_id"]) - dups
+    train_ids = set(split.loc[split["split"] == "train", "prompt_id"])
     val_ids = set(split.loc[split["split"] == "val", "prompt_id"])
     tr = np.array([i in train_ids for i in ids])
     va = np.array([i in val_ids for i in ids])

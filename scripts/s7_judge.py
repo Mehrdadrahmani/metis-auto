@@ -88,7 +88,9 @@ def main() -> int:
             est_cost_per_call=cost, params={"judge_config_id": cfg["judge_config_id"]},
         )
         name = f"{method}_{args.judge}_{args.which}"
-        pd.DataFrame(records).to_parquet(args.out / f"{name}.parquet", index=False)
+        keys = [c for c in ("prompt_id", "model_id", "order") if records and c in records[0]]
+        table = pd.DataFrame(records).sort_values(keys, ignore_index=True)  # threads race
+        table.to_parquet(args.out / f"{name}.parquet", index=False)
         by_status = pd.Series([r["status"] for r in records]).value_counts().to_dict()
         summary[method] = {"records": len(records), "status": by_status,
                            "new_calls": report.new_calls, "cost_usd": report.cost_usd}

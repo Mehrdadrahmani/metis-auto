@@ -50,7 +50,7 @@ nobody looks at test prompts or test labels until WP-19.
    `configs/pipeline.yaml` `s4.choice`; log D-xxx. Then embed train + val + test (`embed_input`) with
    the chosen model (`clustering` adapter, merged) → `runs/s4/` + Qdrant collection (payload
    ids/numbers only). Near-duplicate
-   removal inside train via Qdrant search (cosine > 0.95, keep one); report counts.
+   removal inside train via Qdrant search (cosine > 0.95, keep one); report counts. **Dropped by D-088: near-duplicates are kept.**
 7. S5: K-means on train for K ∈ {3…20} (+ K = 1; DEV-10, D-072); assign val and test to the nearest centroid; report
    cluster sizes (train/val/test) per K (paper-faithful: no K is dropped; small clusters flagged).
 8. Cluster naming: write `runs/s5/clusters_K<k>.html` (10 random redacted **train** prompts per
@@ -89,3 +89,6 @@ Finish the current step, `/handoff` with "next: WP-08 step n", stop. Never leave
 
 ## Added by D-087 (WP-06 cost estimate)
 `results/cost_estimate_v1.md` (simulated, T_in 2,871): pointwise $47.68, pairwise $62.12, pilot with both judges $15.28. Pointwise is above $45, so PLAN §6 applies. Before Gate 1, rerun `scripts/estimate_costs.py` with the 6,000-token cut applied, then choose from: shorter judge input, drop the re-judge, use one judge in the pilot, smaller val.
+
+## Added by D-090
+Step 8: the draft names were made on the old clusters. Redo them on `runs/cluster_view/`. Only K <= 9 can ship (D-089).

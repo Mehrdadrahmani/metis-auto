@@ -50,7 +50,7 @@ MLflow run in experiment `router-selection` (params: method, K, α, λ, config i
 QNC, quality, cost; plots as artifacts), so the owner can compare them in the UI. Validation only:
 nothing from the test set is logged before `pre-test`.
 
-> **Update 2026-11-01 (D-079):** step 3: score all K in 3..20, but K* is the highest score among K ≤ `router.k_ship_max` (11).
+> **Update 2026-11-01 (D-079):** step 3: score all K in 3..20, but K* is the highest score among K ≤ `router.k_ship_max` (9, D-089).
 
 ## Later test: bot clusters as a difficulty term (owner idea, D-078; $0, same labels)
 After the main steps and before Gate 3, compare the shipped setup with:

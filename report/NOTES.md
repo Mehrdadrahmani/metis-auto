@@ -139,3 +139,12 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Cost estimate (simulated, mean input 2,871 tokens against 1,640 planned): pointwise $47.68, pairwise $62.12, cap $60. Longer prompts and judge price drive the rise.
 - Jev has no free-text prompt or reasons, so the two pilot judges differ in form as well as in model (D-086).
 - Agreement is measured overall; 100 labels cannot validate the judge per chatbot.
+
+- Near-duplicates at 0.95 removed 29.4% of train, and most removed messages over 10 characters had different text from their match (sample n = 200 per length group). Owner chose to keep them (D-088); frequent messages now weigh more in the clusters.
+
+## WP-07 (mock dry run, sample; numbers below are plumbing, not quality)
+
+- S1 to S12 run from one command. Second run: 0 new calls, 11 of 11 stages identical.
+- Leak test first proved nothing: the pilot and all stored eligible prompts hold no key patterns. With 13,720 fake keys planted across all fields, 0 of 4,802 requests carried one.
+- Keeping near-duplicates (measured, n_train = 179,185) moved the stability drop from K = 12 to K = 10: mean ARI 0.99 or higher to K = 9, 0.89 at K = 10, 0.85 at K = 11 (three fits). K limit now 9. Silhouette 0.07 to 0.12.
+- Limit: changing `n_val` would redraw test, because both use one random sequence. A larger val must add sessions from train.
