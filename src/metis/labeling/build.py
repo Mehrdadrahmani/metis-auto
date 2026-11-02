@@ -45,6 +45,15 @@ def pick_pairs(
     return [(p, candidates[i % len(candidates)]) for i, p in enumerate(ids)]
 
 
+def history_text(history: Any) -> str:
+    """The earlier turns the models were given, so a follow-up can be judged in context."""
+    names = {"user": "User", "assistant": "Assistant"}
+    turns = history if history is not None else ()
+    return "\n\n".join(
+        f"{names.get(t['role'], t['role'])}: {t['content']}" for t in turns if t.get("content")
+    )
+
+
 def make_items(
     pairs: list[tuple[str, str]],
     rows: dict[str, dict[str, Any]],
@@ -65,6 +74,7 @@ def make_items(
             "id": item_id,
             "instructions": r.get("instructions") or "",
             "context": "\n\n".join(str(c) for c in r.get("rag_context") or [] if c),
+            "history": history_text(r.get("history")),
             "user": r["text"],
             "answer": candidate,
             "left": candidate if left_is_h else anchor,

@@ -103,6 +103,8 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-092 | 2026-11-02 | K = 8 cluster names kept for now (owner), marked as based on local Qwen3-8B topics (500 train prompts per cluster, 23 min, $0): `configs/cluster_names.yaml`. Other K need new names if chosen in WP-14 | O | WP-08, WP-14 |
 | D-093 | 2026-11-02 | **Pilot: gpt-5.6-terra pointwise only for now (owner), jev-latest both methods (DEV-13, narrows spec "method = both" and D-083).** Saves $8.57; pilot estimate $6.71. Terra pairwise can be added later, answers are cached. Method comparison uses jev. WP-09, WP-11 updated | O | WP-09, WP-11 |
 | D-094 | 2026-11-02 | **Gate 1 passed (owner).** Pilot limit $10 in `configs/budget.yaml`; gen_main, judge_main, cache_labels and live stay $0 until Gate 2, then set from measured costs. Pointwise stays the planned path | O | WP-09, WP-11 |
+| D-098 | 2026-11-02 | **Owner: labels by Claude Opus instead of the owner (DEV-14, replaces WP-10).** Owner has no time. 10 fresh Opus agents rated 100 items blind (Answer 1/2, re-shuffled, no key or score files). Stored as `runs/labeling/opus/opus_labels.parquet`, rater `claude-opus-5-5`, never as `human_labels`. Not a human check; report must say so. Conflict: Sonnet is the same family as the rater. No test data | O | WP-10, WP-11 |
+| D-099 | 2026-11-02 | Labeling page shows chat history (81 of 100 prompts have it). Owner prefers judges with history too (would replace D-046, DEV-9); re-judge held, owner said not yet. Estimate $3.63, 81 prompts only | O | src/metis/labeling, WP-11 |
 | D-095 | 2026-11-02 | **Answer limit raised in steps (owner).** 1,024 cut 9 of 100 Sonnet answers, 1 to 3 for the others, because Sonnet fits about 1.5 chars per token here against 2.4 to 3. s6 now redoes only cut answers at 2,048 (`configs/gen_retry.yaml`), then 4,096 (`gen_retry_2.yaml`), same limits for all models. `gen_config.yaml` unchanged: its hash is in the cache key. Applies to the main run too | O | scripts/s6_generate.py |
 | D-096 | 2026-11-02 | Owner chose to run the pilot on the old Metis key, the one pasted in chat. Still to be replaced | O | STATUS |
 | D-097 | 2026-11-02 | `s7_judge.py` pre-check prices only work not yet done: it refused a 2-call rerun at the $10 limit by counting 500 cached calls. Limit unchanged, per-call guard unchanged. `s6_generate.py` still has the old pre-check | A | scripts/s7_judge.py |
@@ -143,6 +145,9 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **$0.00** | **0** | |
 
 ## 5. Log (newest first)
+
+### 2026-11-02 · WP-10 done by Opus labels, no spend
+- Page history fix, blind Opus labels (D-098, D-099). Local only: `runs/labeling/opus/`. No API charge.
 
 ### 2026-11-02 · WP-09 pilot run, first paid stage ($5.87)
 - 500 answers, 499 terra pointwise, 500 jev pointwise, 800 jev pairwise, 60 test-retest calls. Stats: `results/pilot_run_stats.md`. Estimates: `results/cost_estimate_v2.md`.

@@ -2,12 +2,12 @@
 Updated: 2026-11-02 · by session WP-09 pilot run
 
 ## Now
-- Current WP: **WP-10 Owner labels** (human work). WP-09 done, $5.87 spent of the $10 pilot limit
+- Current WP: **WP-11 Pilot decision**. WP-10 done with Opus labels, not human (D-098, DEV-14). $5.87 spent by ledger, dashboard not checked
 - All stages except the pilot stay at $0 until Gate 2. K limit 9 (D-089). K = 8 names from Qwen3-8B (D-092). Val 400 until after the pilot (D-091).
 - Model: default (Opus 5.5)
 
 ## Exact next step
-Owner labels `runs/labeling/cal_2026-11-02.html` (100 items, ~3 h, `work/WP-10-*.md`), exports `runs/labeling/cal_labels.csv`. Not `cal_2026-11-01.html` (tool test). At least 2 days later: build and do the 20 re-labels with `labeling.build --relabel`. Then `/start`, `work/WP-11-pilot-decision.md` step 1.
+Owner decides on the re-judge with chat history (D-099, estimate $3.63) and sends the Metis dashboard total. Then `/start`, `work/WP-11-pilot-decision.md` step 1, with `runs/labeling/opus/opus_labels.parquet` as reference. Label quality so far: both judges under the Gate 2 line against Opus labels.
 
 ## Models (D-080, D-082, D-083; `configs/models.yaml`)
 - Candidates: deepseek-v4-flash, gpt-5.6-luna, gemini-2.5-flash-lite (holdout), claude-sonnet-5-5 (anchor)
@@ -20,7 +20,7 @@ Owner labels `runs/labeling/cal_2026-11-02.html` (100 items, ~3 h, `work/WP-10-*
 - Costs differ over 25% from the memo: generation about $9.70 (up 37%), terra judging about $13.30 (down 45%), `results/cost_estimate_v2.md`
 
 ## Waiting on the owner
-- Labels (WP-10)
+- Re-judge with history: decide (D-099)
 - Replace the Metis key: the old one, pasted in chat, is still in use (D-096). Replace the Hugging Face token too
 - Check the Metis dashboard and compare its charge with the ledger, $5.87
 - Share with colleagues: `qdrant/share/*.snapshot` (948 MB) + `docker-compose.yml`, `configs/pipeline.yaml`, `embed_full.json`. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids

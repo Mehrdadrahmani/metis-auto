@@ -46,6 +46,7 @@ progress{width:100%}
 
 <details class="card"><summary>Chatbot instructions</summary><div class="text scroll" id="instructions"></div></details>
 <details class="card" id="ctxbox"><summary>Retrieved context</summary><div class="text scroll" id="context"></div></details>
+<details class="card" id="histbox" open><summary>Chat so far (earlier turns, what the models saw)</summary><div class="text scroll" id="history"></div></details>
 <section class="card"><div class="label">User message</div><div class="text" id="user"></div></section>
 
 <section class="card">
@@ -90,8 +91,9 @@ function show() {
   $("where").textContent = `${at + 1} / ${items.length} · done ${items.filter(i => done(i.id)).length}`;
   $("bar").max = items.length;
   $("bar").value = items.filter(i => done(i.id)).length;
-  for (const k of ["instructions", "context", "user", "answer", "left", "right"]) $(k).textContent = it[k];
+  for (const k of ["instructions", "context", "history", "user", "answer", "left", "right"]) $(k).textContent = it[k] || "";
   $("ctxbox").style.display = it.context ? "" : "none";
+  $("histbox").style.display = it.history ? "" : "none";
   $("note").value = l.note || "";
   document.querySelectorAll("[data-pass]").forEach(b => b.classList.toggle("on", b.dataset.pass === l.pass));
   document.querySelectorAll("[data-pref]").forEach(b => b.classList.toggle("on", b.dataset.pref === l.pref));
