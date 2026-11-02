@@ -3,7 +3,7 @@ Updated: 2026-11-02 · validation done, team branch
 
 ## Now
 - WP-12 and WP-13: **validation done, test left** (D-109). Gate 2 failed by one item, owner went ahead (D-105). About $12.64 spent
-- Branch `metis-auto-v2` holds this work, for the team. Team repo push waits for the owner
+- Branch `TakRoute` holds this work, for the team. Team repo push waits for the owner
 - Judge: pointwise jev with history, τ = 7, `configs/judge_choice.yaml`. Val stays 400 (D-108). K limit 9 (D-089). K = 8 names from Qwen3-8B (D-092)
 - Model: default (Opus 5.5)
 
@@ -48,7 +48,7 @@ Recommended first (free, no test data): the WP-14 early check, router against Ze
 - Rest: about $9 (test answers $5.80, Jev $0.30, cache labels and live run $2.50). Total about $21.30. Each stage needs a "go"
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
-- D-113 Team branch `metis-auto-v2`
+- D-113 Team branch `TakRoute`
 - D-112 Val labels, refused prompt unlabeled
 - D-111 Sonnet estimate from measured price
 - D-110 Account stop and resume

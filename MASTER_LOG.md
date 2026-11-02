@@ -113,7 +113,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-110 | 2026-11-02 | Bad key or empty balance stops a paid run at once and stores nothing, so a rerun resumes. Stopped runs write only `.partial` tables. `--retry-failed` retries stored failures | A | WP-12 |
 | D-111 | 2026-11-02 | Sonnet's guard estimate set to the measured $0.0175 per call (`--est-usd`) after a false cost stop; the 2× rule unchanged (owner OK) | O | WP-12 |
 | D-112 | 2026-11-02 | Validation labels: score < 7 is a loss, failed answer keeps score 1, the one prompt Jev refused (400) has no labels | A | WP-13 |
-| D-113 | 2026-11-02 | Team branch `metis-auto-v2` with README and `.env.example` (owner) | O | – |
+| D-113 | 2026-11-02 | Team branch `TakRoute` with README and `.env.example` (owner) | O | – |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |

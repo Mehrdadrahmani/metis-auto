@@ -92,7 +92,7 @@ a while the first time.
 
 ```bash
 git clone <this repo> && cd <this repo>
-git checkout metis-auto-v2
+git checkout TakRoute
 git config core.hooksPath .githooks   # turns on the secret scan: do this before your first commit
 uv sync
 uv run pytest -q
