@@ -208,3 +208,21 @@ def test_khayyam_demo_is_separate():
     assert s["key"] in "1234" and len(s["models"]) == len(info["models"]) and s["router"]["trace"]["cluster"] == s["cluster"]
     assert client.get("/khayyam").status_code == 200
     assert Path("artifacts/router_khayyam/artifact.json").read_text().count("Question") == 0  # numbers and names only
+
+
+def test_khayyam_chat_asks_own_question():
+    from metis import khayyam as kh
+
+    if not (kh.ARTIFACT / "artifact.json").exists():
+        pytest.skip("needs the local Khayyam build (scripts/khayyam_build.py)")
+    client, _ = site()
+    body = {"question": "کدام عدد اول است؟", "choices": ["۴", "۶", "۷", "۹"]}
+    assert client.post("/v1/khayyam/ask", json=body).status_code == 401  # sign in first
+    signup(client, "kh@x.io")
+    out = client.post("/v1/khayyam/ask", json=body).json()
+    assert out["live"] is False and out["model"] in out["trace"]["scores"]  # mock provider in tests
+    assert out["trace"]["cluster"] is not None
+    cheap = client.post("/v1/khayyam/ask", json=body | {"lam": 100}).json()
+    assert cheap["trace"]["lam"] == 100
+    assert client.post("/v1/khayyam/ask", json=body | {"choices": ["a", "b", "c"]}).status_code == 422
+    assert client.get("/khayyam/chat").status_code == 200

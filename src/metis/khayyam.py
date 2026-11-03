@@ -104,8 +104,9 @@ class KhayyamReplay:
         return Reply(r.text or "", int(r.t_in), int(r.t_out), "length" if r.cut else "stop", float(r.ms or 0))
 
 
-def build_gateway(embed=None, live: bool = False):
-    """A gateway with the Khayyam router only. Replay answers stored questions; live calls Metis."""
+def build_gateway(embed=None, live: bool = False, provider=None):
+    """A gateway with the Khayyam router only. Replay answers stored questions; live calls Metis;
+    `provider` overrides both (tests, mock mode)."""
     from metis.config import load_config
     from metis.gateway.app import hash_embedder
     from metis.gateway.pipeline import Gateway
@@ -118,7 +119,8 @@ def build_gateway(embed=None, live: bool = False):
     demo = pd.read_parquet(DEMO) if DEMO.exists() else pd.DataFrame(columns=["id", "model", "text", "t_in", "t_out", "cut", "ms"])
     cfg = load_config("gateway") | {"cache": {"enabled": False}, "stickiness": {"enabled": False},
                                     "checks": {"enabled": True, "max_escalations": 2, "min_lang_chars": 10_000}}
-    provider = LiveProvider("product") if live else KhayyamReplay(demo)
+    if provider is None:
+        provider = LiveProvider("product") if live else KhayyamReplay(demo)
     return Gateway(artifact, provider, embed or hash_embedder(artifact.centroids.shape[1]), cfg, load_models(),
                    TraceStore(ROOT / "runs/gateway/khayyam_traces.sqlite"), None)
 

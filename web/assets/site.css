@@ -132,3 +132,9 @@ section{padding:12px 0}
   .page-head h1{font-size:27px}
   .langbtn .lt{display:none}
 }
+
+/* section sub-menu */
+.subnav{display:flex;gap:4px;flex-wrap:wrap;margin:18px 0 0;border-bottom:1px solid var(--line)}
+.subnav a{padding:8px 14px;font-size:14px;font-weight:600;color:var(--ink2);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px}
+.subnav a.on{color:var(--ink);border-bottom-color:var(--violet)}
+.subnav a:hover{color:var(--ink)}

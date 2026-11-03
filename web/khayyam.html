@@ -62,7 +62,7 @@ table.subj td:first-child,table.subj th:first-child{text-align:start}
   <div class="two">
     <div class="card chart" id="chartcard"><h3 data-i18n="c_curve"></h3><p class="muted" style="font-size:12.5px;margin:0 0 6px" data-i18n="c_curve_p"></p>
       <div class="legend" id="legend"></div><svg id="curve" role="img"></svg><div class="tip" id="tip"></div></div>
-    <div class="card"><h3 data-i18n="c_subj"></h3><p class="muted" style="font-size:12.5px;margin:0 0 8px" data-i18n="c_subj_p"></p>
+    <div class="card" id="subjects"><h3 data-i18n="c_subj"></h3><p class="muted" style="font-size:12.5px;margin:0 0 8px" data-i18n="c_subj_p"></p>
       <div class="scroll-x"><table class="t subj" id="subj"></table></div></div>
   </div>
 
@@ -112,6 +112,7 @@ TR.dict({
         honest: (r, b, bm, g) => `At the setting chosen on the validation questions the router scores ${r} and the best single model (${bm}) ${b}. Over the whole cost-accuracy curve, clustering beat the router without clusters by ${g}, with a confidence range above zero. The subjects really differ: DeepSeek is better at maths and physics, Luna at biology and humanities, Gemini at Persian literature. Small clusters (chemistry has 24 validation questions) can still lead to a wrong pick; a bigger validation set fixes that. Khayyam's licence is academic only.` },
 });
 const $ = (id) => document.getElementById(id);
+TR.subnav([["/khayyam", "kh_over"], ["/khayyam/chat", "kh_chat"], ["/khayyam#subjects", "kh_subj"]]);
 let info = null, stops = [], lam = null, mode = "chosen", last = null;
 const COLORS = ["#c98500", "#4d6bfe", "#10a37f", "#1d3fb8", "#d97757", "#8a5cf6", "#e05297"];
 const color = (m, i) => TR.MODELS[m]?.color || (m === "deepseek-v4-pro" ? "#1d3fb8" : COLORS[(i + 4) % COLORS.length]);

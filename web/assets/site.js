@@ -8,7 +8,7 @@
   const D = {
     fa: {
       dir: "rtl", other: "English",
-      nav_home: "خانه", nav_chat: "گفتگو", nav_compare: "مقایسه", nav_khayyam: "آزمون خیام", nav_learn: "آموزش", nav_docs: "توسعه‌دهندگان",
+      nav_home: "خانه", nav_chat: "گفتگو", nav_compare: "مقایسه", nav_khayyam: "آزمون خیام", kh_over: "نمای کلی", kh_chat: "گفتگو با خیام", kh_subj: "موضوع‌ها", nav_learn: "آموزش", nav_docs: "توسعه‌دهندگان",
       nav_dashboard: "داشبورد", nav_pricing: "قیمت‌ها", nav_how: "چطور کار می‌کند",
       login: "ورود", signup: "ثبت‌نام", logout: "خروج", account: "حساب کاربری", models: "مدیریت مدل‌ها",
       dashboard: "داشبورد", theme: "تغییر پوسته", menu: "منو", admin: "مدیر",
@@ -17,7 +17,7 @@
     },
     en: {
       dir: "ltr", other: "فارسی",
-      nav_home: "Home", nav_chat: "Chat", nav_compare: "Compare", nav_khayyam: "Khayyam exams", nav_learn: "Tutorials", nav_docs: "Developers",
+      nav_home: "Home", nav_chat: "Chat", nav_compare: "Compare", nav_khayyam: "Khayyam exams", kh_over: "Overview", kh_chat: "Khayyam chat", kh_subj: "Subjects", nav_learn: "Tutorials", nav_docs: "Developers",
       nav_dashboard: "Dashboard", nav_pricing: "Pricing", nav_how: "How it works",
       login: "Sign in", signup: "Sign up", logout: "Sign out", account: "Account", models: "Manage models",
       dashboard: "Dashboard", theme: "Toggle theme", menu: "Menu", admin: "admin",
@@ -78,12 +78,22 @@
   const MARK = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6l3-6 3 12 2-6h2"/></svg>`;
   TR.MARK = MARK;
 
+  // Sub-menu of a section, e.g. TR.subnav([["/khayyam", "kh_over"], ["/khayyam/chat", "kh_chat"], ["/khayyam#subjects", "kh_subj"]])
+  TR.subnav = (items) => {
+    const here = location.pathname.replace(/\/$/, "");
+    const n = document.createElement("nav"); n.className = "subnav";
+    n.innerHTML = items.map(([p, k]) => `<a href="${p}" data-i18n="${k}" class="${p === here ? "on" : ""}"></a>`).join("");
+    document.querySelector("main").prepend(n);
+    for (const a of n.children) a.textContent = TR.t(a.dataset.i18n);
+    return n;
+  };
+
   function header() {
     const h = document.createElement("header"); h.className = "site-head";
     const here = location.pathname.replace(/\/$/, "") || "/";
     h.innerHTML = `<div class="wrap bar">
       <a class="logo" href="/"><span class="mark">${MARK}</span>TakRouter</a>
-      <nav class="nav" id="nav">${NAV.map(([p, k]) => `<a href="${p}" data-i18n="${k}" class="${p === here ? "on" : ""}"></a>`).join("")}</nav>
+      <nav class="nav" id="nav">${NAV.map(([p, k]) => `<a href="${p}" data-i18n="${k}" class="${p === here || (p !== "/" && here.startsWith(p + "/")) ? "on" : ""}"></a>`).join("")}</nav>
       <div class="head-tools">
         <button class="langbtn" id="langbtn" aria-label="Language / زبان"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="lt" id="langtxt"></span></button>
         <button class="iconbtn" id="themebtn" data-i18n-title="theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>

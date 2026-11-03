@@ -197,3 +197,4 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Adding a model needs only its Psi column on the 798 val prompts (UniRoute); the onboarding code reproduces the 4 shipped columns and c_hat exactly. Estimate for a DeepSeek-priced model: ~$0.85.
 - Khayyam per subject (test n = 1,100, true answers): DeepSeek flash best on maths (49%) and physics (59%), Luna on biology (68%) and humanities mix (65%), Gemini on Persian literature (53%). Small clusters mislead (chemistry, 24 val prompts: Gemini picked, 35% on test vs 55%).
 - Khayyam through its gateway (replay): 55.5% (offline 55.0%; checks escalated cut answers), 0 failed; Luna down: 54.3%, 0 failed.
+- Khayyam chat (D-128): users can type their own exam question; the Khayyam router picks the model live. Demo only, not part of any measured number.

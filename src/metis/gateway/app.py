@@ -44,7 +44,7 @@ COOKIE = "tr_session"
 PAGES = {"/": "home.html", "/chat": "chat.html", "/compare": "compare.html", "/learn": "learn.html",
          "/docs": "docs.html", "/dashboard": "dashboard.html", "/pricing": "pricing.html", "/how": "how.html",
          "/login": "login.html", "/account": "account.html", "/models": "models.html", "/results": "index.html",
-         "/khayyam": "khayyam.html"}
+         "/khayyam": "khayyam.html", "/khayyam/chat": "khayyam_chat.html"}
 
 
 class Completion(BaseModel):
@@ -52,6 +52,12 @@ class Completion(BaseModel):
     messages: list[dict[str, Any]]
     metadata: dict[str, Any] | None = None
     response_format: dict[str, Any] | None = None
+
+
+class KhayyamAsk(BaseModel):
+    question: str
+    choices: list[str]
+    lam: float | None = None
 
 
 class Credentials(BaseModel):
@@ -162,7 +168,8 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
         """None: no personal limit (admin, or no accounts)."""
         if user is None or user.is_admin:
             return None
-        return user.credit_usd - gw().traces.spent(user.id)
+        kh = state.get("kh_live")
+        return user.credit_usd - gw().traces.spent(user.id) - (kh.traces.spent(user.id) if kh is not None else 0.0)
 
     def budget_left() -> float | None:
         g = gw()
@@ -557,6 +564,54 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
                            "trace": trace_view(out)},
                 "models": [{"model": r.model, "answer": r.answer, "correct": bool(r.correct), "cut": bool(r.cut), "usd": float(r.usd),
                             "ms": None if r.ms is None or r.ms != r.ms else float(r.ms)} for r in rows.itertuples()]}
+
+    def kh_live() -> Gateway:
+        """The Khayyam router answering new questions: live Metis calls (stage `product`) when the
+        site runs live, else the mock provider. Same vector as khayyam_run.py: the question body,
+        first 2,000 characters, not normalized."""
+        from metis import khayyam as kh
+
+        with lock:
+            if state.get("kh_live") is None:
+                if not (kh.ARTIFACT / "artifact.json").exists():
+                    raise HTTPException(503, "khayyam demo not built: run scripts/khayyam_build.py")
+                g = gw()
+                provider = (LiveProvider(PRODUCT_STAGE) if isinstance(g.provider, LiveProvider)
+                            else MockProvider(g.cfg["mock"]["latency_ms"]))
+                state["kh_live"] = kh.build_gateway(embed=g.embed, provider=provider)
+                if g.cfg["traces"]["path"] == ":memory:":
+                    state["kh_live"].traces = TraceStore(":memory:")  # tests: keep the real trace file clean
+        return state["kh_live"]
+
+    @api.post("/v1/khayyam/ask")
+    def kh_ask(body: KhayyamAsk, user: User | None = Depends(chat_user)) -> JSONResponse:
+        """A question the user types, with its 4 options, through the Khayyam router."""
+        from metis import khayyam as kh
+
+        q = body.question.strip()
+        choices = [c.strip() for c in body.choices]
+        if not q or len(choices) != 4 or not all(choices):
+            raise HTTPException(422, "a question and exactly 4 non-empty options are needed")
+        if len(q) > 4000 or any(len(c) > 1000 for c in choices):
+            raise HTTPException(422, "question or option too long")
+        if body.lam is not None and body.lam < 0:
+            raise HTTPException(422, "lam must be >= 0")
+        gate = spend_gate(user)
+        if gate is not None:
+            return gate
+        g = kh_live()
+        options = "\n".join(f"{i + 1}) {t}" for i, t in enumerate(choices))
+        req = ChatRequest([{"role": "system", "content": kh.SYSTEM}, {"role": "user", "content": f"{q}\n{options}"}],
+                          "takrouter", "khayyam", None, vector=g.embed(q[:2000]), lam=body.lam,
+                          user_id=user.id if user else None)
+        out = g.handle(req)
+        status = out.trace["status"]
+        if status == "all_failed" and any(a.get("reason") == "budget" for a in out.attempts):
+            return error(402, "budget_exhausted", "the spending limit of this service is reached")
+        if status in ("all_failed", "no_model"):
+            return error(503, "service_unavailable", "no model is available")
+        return JSONResponse({"model": out.model, "answer": kh.parse(out.text), "text": out.text,
+                             "live": isinstance(g.provider, LiveProvider), "trace": trace_view(out)})
 
     # -------------------------------------------------------------------- pages
     if WEB.exists():
