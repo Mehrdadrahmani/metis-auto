@@ -187,6 +187,9 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-11-03 · Merge preview + live merge prompt
+- Local repo ../takrouter-merged (both routers, toggle, mock/replay, $0). Wrote work/MERGE_LIVE_PROMPT.md. Found 636 demo answers in the real cache (owner decision pending). Removed my own test account, 2 trace rows and 1 cache row from the real files. Cost $0.
+
 ### 2026-11-03 · Team PR #16: whole project into the team repo
 - Owner asked to put the whole project into Farzaneh's repo as a PR and write one merge prompt. Branch `takrouter-full` on `team` = `team/develop` + our history under `takrouter/` (unrelated-history subtree merge, 71 owner commits kept) + `TAKROUTER_MERGE_PROMPT.md`. Added-files secret scan 0 hits. PR https://github.com/farzanenadem/Metis/pull/16. Cost $0.
 

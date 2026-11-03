@@ -25,6 +25,11 @@ Updated: 2026-11-03 · WP-21 started (handoff 6)
 - Guard for step 2 done: `METIS_ASSERT_NO_NEW_CALLS=1` makes `get_or_call` (`src/metis/llm/callcache.py`) raise `NewCallRefused` on a cache miss; test `test_replay_mode_refuses_new_calls`. Tests 319 pass
 - ⚠ TEAM repo `farzanenadem/Metis` (not ours) has chatbot data with live `Bearer` keys in history: commits f430621 (develop, `evaluation/data/sample_golden_set.jsonl`), 732eb91 + 1bcb798 (branch add-evaluation-test, `data/goldenset/*`). Owner to tell the team: rotate those keys, purge history
 
+## Merge preview (this session)
+- Local-only repo `../takrouter-merged` (no remote, commit 3fbc212): team router `POST /route` (port 8100, replay rule) + TakRouter gateway `metadata.router` toggle (port 8001, mock). Tested: TakRouter→deepseek, Team→gemini-2.5-flash
+- Live merge prompt for Farzaneh: `work/MERGE_LIVE_PROMPT.md` (not yet pushed to PR #16)
+- ⚠ Real `runs/gateway/cache.sqlite` holds 636 fake demo answers (space `default|…`, `answer LIKE 'پاسخ نمایشی%'`), from older mock runs: owner to approve deleting them; then make mock mode use its own cache
+
 ## Exact next step
 0. WP-21 step 2: fresh clone to scratchpad, copy data/ + cache/, `uv sync`, re-run the stages that make the reported numbers with `METIS_ASSERT_NO_NEW_CALLS=1` (s6/s7 replay from cache, s9, s10, s12, eval_test) and compare result hashes; then steps 4 (README), 5 (budget close, archive log), 6 (tag v1.0, push). Khayyam-chat upgrade plan (merge into chat.html, optional options) waits after that
 1. Owner check: run live (`TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000`), open /khayyam/chat, ask 1–2 questions (fraction of a cent each); check the sub-menu in fa/en and on a phone width
