@@ -1,8 +1,8 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-03 · product session (handoff 5, Khayyam chat)
+Updated: 2026-11-03 · WP-21 started (handoff 6)
 
 ## Now
-- Current WP: **WP-20 Report review** (paused for the product work below). WP-14 to WP-19 and Khayyam done. Test opened once (n = 299)
+- Current WP: **WP-21 Release** (owner: "just go for wp21"; WP-20 report review still open, skipped by owner choice). Test opened once (n = 299)
 - Branch `TakRoute`, remotes `origin` (owner) and `team`. Team PR #15 open (`farzanenadem/Metis`, branch `uniroute-fix-lambda` into `develop`)
 - Router: K = 8 λ 0.5151 (`artifacts/router_v1`). Judge jev pointwise τ = 7. Model: default (Opus 5.5)
 
@@ -19,7 +19,13 @@ Updated: 2026-11-03 · product session (handoff 5, Khayyam chat)
 - Khayyam sub-menu (overview · Khayyam chat · subjects) and page **/khayyam/chat** (`web/khayyam_chat.html`): type a question + 4 options → `POST /v1/khayyam/ask` (`kh_live()` in `src/metis/gateway/app.py`) → Khayyam router → live model (stage `product`) or mock. Sign-in needed; spend counts against user credit. "Example question" button fills from a stored test question ($0)
 - Tests: 318 pass (new `test_khayyam_chat_asks_own_question`, mock). NOT yet tried live or in a browser
 
+## WP-21 progress
+- Step 1 OK (owner). Step 3 done: secret scan of all history of TakRoute, main, origin/* = 0 hits (one `password={tail}` is a fake test value); results/ and report/ hold no message text
+- Guard for step 2 done: `METIS_ASSERT_NO_NEW_CALLS=1` makes `get_or_call` (`src/metis/llm/callcache.py`) raise `NewCallRefused` on a cache miss; test `test_replay_mode_refuses_new_calls`. Tests 319 pass
+- ⚠ TEAM repo `farzanenadem/Metis` (not ours) has chatbot data with live `Bearer` keys in history: commits f430621 (develop, `evaluation/data/sample_golden_set.jsonl`), 732eb91 + 1bcb798 (branch add-evaluation-test, `data/goldenset/*`). Owner to tell the team: rotate those keys, purge history
+
 ## Exact next step
+0. WP-21 step 2: fresh clone to scratchpad, copy data/ + cache/, `uv sync`, re-run the stages that make the reported numbers with `METIS_ASSERT_NO_NEW_CALLS=1` (s6/s7 replay from cache, s9, s10, s12, eval_test) and compare result hashes; then steps 4 (README), 5 (budget close, archive log), 6 (tag v1.0, push). Khayyam-chat upgrade plan (merge into chat.html, optional options) waits after that
 1. Owner check: run live (`TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000`), open /khayyam/chat, ask 1–2 questions (fraction of a cent each); check the sub-menu in fa/en and on a phone width
 2. Wait for owner "go": add **gpt-5.2 + gemini-2.5-flash** to Khayyam (1,500 answers each; ~$4.60 expected, $8.70 max; one test call each first). Needs entries in `configs/models.yaml` + `configs/gen_config.yaml` (gpt-5.2: rename max_tokens→max_completion_tokens, reasoning_effort none), stage `khayyam` approved +$9, then `scripts/khayyam_run.py`-style answering and `scripts/khayyam_build.py --models gpt-5.2,gemini-2.5-flash`
 3. Then WP-20 / WP-21 as planned

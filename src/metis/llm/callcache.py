@@ -140,6 +140,10 @@ class CallCache:
             return [dict(r) for r in self._db.execute(sql).fetchall()]
 
 
+class NewCallRefused(RuntimeError):
+    """A paid call was needed while replay-only mode (METIS_ASSERT_NO_NEW_CALLS=1) is on."""
+
+
 def get_or_call(
     cache: CallCache,
     budget: Any,
@@ -166,6 +170,8 @@ def get_or_call(
     if found is not None and (found.status == "ok" or not retry_failed):
         return found
 
+    if os.environ.get("METIS_ASSERT_NO_NEW_CALLS") == "1":  # WP-21 replay: every answer must come from the cache
+        raise NewCallRefused(f"cache miss for {model_id} (stage {stage}) while METIS_ASSERT_NO_NEW_CALLS=1")
     permit = budget.guard(stage, estimate_usd)
     try:
         try:

@@ -97,6 +97,18 @@ def test_key_is_stable_and_sensitive():
     assert a != cache_key("m", "n", msgs(), {"a": 1, "b": 2}, "c2")
 
 
+def test_replay_mode_refuses_new_calls(cache, monkeypatch):
+    from metis.llm.callcache import NewCallRefused
+
+    budget, send = Budget(cache, config(1), MODELS), Sender()
+    call(cache, budget, send)  # stored before replay mode
+    monkeypatch.setenv("METIS_ASSERT_NO_NEW_CALLS", "1")
+    assert call(cache, budget, send).from_cache  # stored answers still come back
+    with pytest.raises(NewCallRefused):
+        call(cache, budget, send, text="never asked before")
+    assert send.calls == 1
+
+
 def test_mock_and_real_keys_differ(monkeypatch):
     real = cache_key("m", "n", msgs(), {}, "c")
     monkeypatch.setenv("METIS_MOCK", "1")

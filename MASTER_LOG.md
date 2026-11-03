@@ -187,6 +187,11 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-11-03 · WP-21 start: replay guard, history secret scan
+- Owner: "just go for wp21" (WP-20 left open). Added `METIS_ASSERT_NO_NEW_CALLS` guard (`NewCallRefused`) + test; tests 319 pass.
+- Secret scan, own branches' full history: 0 hits. Team repo history has live keys in data files (commits f430621, 732eb91, 1bcb798, by teammates): reported to owner.
+- Next: WP-21 step 2 reproduction in a fresh clone. Cost $0.
+
 ### 2026-11-03 · Khayyam chat page (D-128)
 - New: `POST /v1/khayyam/ask` (`src/metis/gateway/app.py`, `kh_live()`), `metis.khayyam.build_gateway(provider=…)`, page `web/khayyam_chat.html` (/khayyam/chat), shared `TR.subnav` in `web/assets/site.js` + `.subnav` CSS, sub-menu on /khayyam (subjects anchor `#subjects`), main nav stays on "Khayyam" for /khayyam/*. "Example question" fills the form from `/v1/khayyam/sample` ($0).
 - Test `test_khayyam_chat_asks_own_question` (mock). Tests 318 pass. Not yet tried live or in a browser. Cost $0.
