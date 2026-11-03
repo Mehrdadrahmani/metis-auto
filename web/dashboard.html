@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.bar-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:3px}
+.seg button{border:0;background:none;padding:5px 12px;border-radius:8px;font-weight:600;font-size:13px;color:var(--ink2)}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.tile small{color:var(--muted);font-size:12.5px}
+.tile b{display:block;font-size:26px;font-weight:800;letter-spacing:-.4px;margin-top:2px}
+.tile span{font-size:12.5px;color:var(--ink2)}
+.charts{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-top:14px}
+.chart{position:relative}
+.chart svg{width:100%;height:220px;display:block;direction:ltr}  /* coordinates are laid out by hand */
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--ink2);margin-bottom:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:3px;border-radius:2px;vertical-align:middle;margin-inline-end:6px}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:9px;white-space:nowrap;opacity:0;transition:opacity .1s;z-index:5}
+.mix .r{display:grid;grid-template-columns:150px 1fr 70px;gap:10px;align-items:center;font-size:13px;margin:10px 0}
+.mix .bar{height:10px;border-radius:99px;background:var(--chip);overflow:hidden}
+.mix .bar i{display:block;height:100%;border-radius:99px}
+.status-row{display:flex;gap:8px;flex-wrap:wrap}
+.empty-st{padding:40px;text-align:center;color:var(--muted)}
+@media (max-width:860px){.tiles{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+  <div class="bar-top">
+    <div class="seg" id="days"><button data-d="7">7</button><button data-d="30" class="on">30</button><button data-d="90">90</button></div>
+    <span class="muted" style="font-size:13px" data-i18n="daysl"></span>
+    <div class="seg hide" id="scope"><button data-s="me" class="on" data-i18n="mine"></button><button data-s="all" data-i18n="all"></button></div>
+  </div>
+  <div class="tiles">
+    <div class="tile"><small data-i18n="t_req"></small><b id="v_req">—</b><span id="v_req2"></span></div>
+    <div class="tile"><small data-i18n="t_cost"></small><b id="v_cost">—</b><span id="v_cost2"></span></div>
+    <div class="tile"><small data-i18n="t_saved"></small><b id="v_saved">—</b><span id="v_saved2"></span></div>
+    <div class="tile"><small data-i18n="t_lat"></small><b id="v_lat">—</b><span id="v_lat2"></span></div>
+  </div>
+  <div class="charts">
+    <div class="card chart" id="c1"><h3 data-i18n="c_cost"></h3>
+      <div class="legend"><span><i style="background:#9933ff"></i><span data-i18n="l_cost"></span></span><span><i style="background:#d97757"></i><span data-i18n="l_prem"></span></span></div>
+      <svg id="svg1" role="img"></svg><div class="tip" id="tip1"></div></div>
+    <div class="card"><h3 data-i18n="c_mix"></h3><div class="mix" id="mix"></div></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3 data-i18n="c_status"></h3><p class="muted" style="font-size:13px;margin:0 0 10px" data-i18n="c_status_p"></p><div class="status-row" id="breakers"></div></div>
+    <div class="card"><h3 data-i18n="c_credit"></h3><div id="credit"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3 data-i18n="c_table"></h3><div class="scroll-x"><table class="t" id="tbl"></table></div></div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "داشبورد", title: "مصرف و صرفه‌جویی", lead: "هر چه از TakRouter استفاده کرده‌اید، به عدد. فقط عدد ثبت می‌شود، نه متن پیام‌ها.",
+        daysl: "روز اخیر", mine: "مصرف من", all: "همه‌ی کاربران",
+        t_req: "پیام‌ها", t_cost: "هزینه", t_saved: "صرفه‌جویی", t_lat: "زمان پاسخ (میانه)",
+        req2: (c) => `${c} از حافظه`, cost2: (p) => `به‌جای ${p} با Claude Sonnet`, saved2: (p) => `${p} کمتر`, lat2: (p) => `۹۰٪ زیر ${p}`,
+        c_cost: "هزینه‌ی روزانه", l_cost: "هزینه با TakRouter", l_prem: "اگر همه به Claude Sonnet می‌رفت", c_mix: "پاسخ‌ها به تفکیک مدل",
+        c_status: "وضعیت مدل‌ها", c_status_p: "اگر مدلی پشت سر هم خطا بدهد، موقتاً کنار گذاشته می‌شود و پیام‌ها به مدل بعدی می‌روند.",
+        closed: "فعال", open: "موقتاً قطع", half_open: "در حال آزمایش",
+        c_credit: "اعتبار", credit_left: "اعتبار شما", unlimited: "نامحدود (مدیر)", svc: "سقف کل سرویس", svc_v: (l, a) => `${l} باقی از ${a}`, demo: "حالت نمایشی: هزینه‌ای خرج نمی‌شود.",
+        c_table: "روز به روز", d_day: "روز", d_req: "پیام", d_cost: "هزینه", d_prem: "معادل Sonnet", none: "هنوز پیامی نفرستاده‌اید.", sec: (s) => s + " ثانیه" },
+  en: { kick: "Dashboard", title: "Usage and savings", lead: "Everything you used TakRouter for, in numbers. Only numbers are recorded, never message text.",
+        daysl: "recent days", mine: "My usage", all: "All users",
+        t_req: "Messages", t_cost: "Cost", t_saved: "Saved", t_lat: "Response time (median)",
+        req2: (c) => `${c} from cache`, cost2: (p) => `instead of ${p} with Claude Sonnet`, saved2: (p) => `${p} less`, lat2: (p) => `90% under ${p}`,
+        c_cost: "Daily cost", l_cost: "Cost with TakRouter", l_prem: "If everything went to Claude Sonnet", c_mix: "Answers by model",
+        c_status: "Model status", c_status_p: "A model that keeps failing is set aside for a while and messages go to the next one.",
+        closed: "up", open: "temporarily down", half_open: "testing",
+        c_credit: "Credit", credit_left: "Your credit", unlimited: "unlimited (admin)", svc: "Service limit", svc_v: (l, a) => `${l} left of ${a}`, demo: "Demo mode: nothing is spent.",
+        c_table: "Day by day", d_day: "Day", d_req: "Messages", d_cost: "Cost", d_prem: "Sonnet equivalent", none: "You have not sent any messages yet.", sec: (s) => s + " s" },
+});
+const $ = (id) => document.getElementById(id);
+let days = 30, scope = "me", data = null;
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs) { const e = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; }
+function chart() {
+  const svg = $("svg1"); svg.innerHTML = ""; const rows = data?.days || [];
+  if (!rows.length) { svg.innerHTML = ""; return; }
+  const W = svg.clientWidth || 600, H = 220, pt = 10, pb = 26;
+  const rtl = document.documentElement.dir === "rtl";
+  const pl = rtl ? 10 : 56, pr = rtl ? 56 : 10;  // the value axis sits on the reading side
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const max = Math.max(...rows.map((r) => Math.max(r.cost_usd, r.premium_usd)), 1e-6);
+  const n = rows.length, step = (W - pl - pr) / n, bw = Math.max(4, Math.min(28, step - 6));
+  const x = (i) => rtl ? W - pr - (i + .5) * step : pl + (i + .5) * step;
+  const y = (v) => pt + (H - pt - pb) * (1 - v / max);
+  for (let k = 0; k <= 3; k++) {
+    const v = max * k / 3, yy = y(v);
+    svg.append(svgEl("line", {x1: pl, x2: W - pr, y1: yy, y2: yy, stroke: "var(--line)", "stroke-width": 1}));
+    const tx = svgEl("text", {x: rtl ? W - 4 : 4, y: yy + 4, "font-size": 11, fill: "var(--muted)", "text-anchor": rtl ? "end" : "start"}); tx.textContent = "$" + v.toFixed(v < .01 ? 4 : 3); svg.append(tx);
+  }
+  let path = "";
+  rows.forEach((r, i) => {
+    const h = Math.max(1, H - pb - y(r.cost_usd));
+    const b = svgEl("rect", {x: x(i) - bw / 2, y: H - pb - h, width: bw, height: h, rx: 4, fill: "#9933ff"}); svg.append(b);
+    path += (i ? "L" : "M") + x(i) + "," + y(r.premium_usd);
+    const hit = svgEl("rect", {x: x(i) - step / 2, y: pt, width: step, height: H - pt - pb, fill: "transparent"});
+    hit.addEventListener("mousemove", (e) => { const tip = $("tip1"); tip.textContent = `${r.day} · ${TR.usd(r.cost_usd)} / ${TR.usd(r.premium_usd)} · ${TR.num(r.requests)}`;
+      const box = $("c1").getBoundingClientRect(); tip.style.left = (e.clientX - box.left + 10) + "px"; tip.style.top = (e.clientY - box.top - 30) + "px"; tip.style.opacity = 1; });
+    hit.addEventListener("mouseleave", () => $("tip1").style.opacity = 0);
+    svg.append(hit);
+    if (n <= 14 || i % Math.ceil(n / 7) === 0) { const tx = svgEl("text", {x: x(i), y: H - 8, "font-size": 10.5, fill: "var(--muted)", "text-anchor": "middle"}); tx.textContent = r.day.slice(5); svg.append(tx); }
+  });
+  svg.append(svgEl("path", {d: path, fill: "none", stroke: "#d97757", "stroke-width": 2, "stroke-dasharray": "5 4"}));
+  rows.forEach((r, i) => svg.append(svgEl("circle", {cx: x(i), cy: y(r.premium_usd), r: 3.5, fill: "#d97757", stroke: "var(--panel)", "stroke-width": 2})));
+}
+function draw() {
+  if (!data) return;
+  const saved = Math.max(0, data.premium_usd - data.cost_usd);
+  $("v_req").textContent = TR.num(data.requests);
+  $("v_req2").textContent = TR.t("req2", TR.num(data.cache_hits));
+  $("v_cost").textContent = TR.usd(data.cost_usd);
+  $("v_cost2").textContent = TR.t("cost2", TR.usd(data.premium_usd));
+  $("v_saved").textContent = TR.usd(saved);
+  $("v_saved2").textContent = data.premium_usd > 0 ? TR.t("saved2", TR.pct(saved / data.premium_usd)) : "";
+  $("v_lat").textContent = data.latency_p50_ms ? TR.t("sec", TR.num(data.latency_p50_ms / 1000, 1)) : "—";
+  $("v_lat2").textContent = data.latency_p90_ms ? TR.t("lat2", TR.t("sec", TR.num(data.latency_p90_ms / 1000, 1))) : "";
+  chart();
+  const mix = Object.entries(data.mix || {}).filter(([m]) => m !== "compare").sort((a, b) => b[1] - a[1]);
+  const tot = mix.reduce((s, [, v]) => s + v, 0) || 1;
+  $("mix").innerHTML = mix.length ? "" : `<div class="empty-st">${TR.t("none")}</div>`;
+  for (const [m, v] of mix) {
+    const info = TR.model(m), r = document.createElement("div"); r.className = "r";
+    r.innerHTML = `<span class="ltr"></span><span class="bar"><i style="width:${v / tot * 100}%;background:${info.color}"></i></span><span>${TR.pct(v / tot)}</span>`;
+    r.firstChild.textContent = info.name; $("mix").append(r);
+  }
+  $("breakers").innerHTML = "";
+  for (const [m, s] of Object.entries(data.breakers || {})) {
+    const tg = document.createElement("span"); tg.className = "tag " + (s === "closed" ? "ok" : s === "open" ? "err" : "warn");
+    tg.innerHTML = `<i class="sw" style="background:${TR.model(m).color}"></i>`; tg.append(`${TR.model(m).name} · ${TR.t(s)}`); $("breakers").append(tg);
+  }
+  const b = data.budget || {};
+  $("credit").innerHTML = `<table class="t"><tr><td>${TR.t("credit_left")}</td><td><b>${data.credit_left_usd == null ? TR.t("unlimited") : TR.usd(Math.max(0, data.credit_left_usd))}</b></td></tr>
+    <tr><td>${TR.t("svc")}</td><td>${b.live ? TR.t("svc_v", TR.usd(b.left_usd), TR.usd(b.approved_usd)) : TR.t("demo")}</td></tr></table>`;
+  const rows = [...(data.days || [])].reverse();
+  $("tbl").innerHTML = rows.length ? `<tr><th>${TR.t("d_day")}</th><th>${TR.t("d_req")}</th><th>${TR.t("d_cost")}</th><th>${TR.t("d_prem")}</th></tr>` +
+    rows.map((r) => `<tr><td class="ltr">${r.day}</td><td>${TR.num(r.requests)}</td><td>${TR.usd(r.cost_usd)}</td><td>${TR.usd(r.premium_usd)}</td></tr>`).join("")
+    : `<tr><td class="muted">${TR.t("none")}</td></tr>`;
+}
+async function load() { try { data = await TR.api(`/v1/usage?days=${days}&scope=${scope}`); draw(); } catch {} }
+for (const b of $("days").children) b.onclick = () => { days = +b.dataset.d; for (const x of $("days").children) x.classList.toggle("on", x === b); load(); };
+for (const b of $("scope").children) b.onclick = () => { scope = b.dataset.s; for (const x of $("scope").children) x.classList.toggle("on", x === b); load(); };
+TR.onLang(draw); addEventListener("resize", chart);
+TR.requireLogin().then((me) => { if (me.role === "admin") $("scope").classList.remove("hide"); load(); });
+</script>
+</body>
+</html>

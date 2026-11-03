@@ -8,6 +8,7 @@ approved_usd:
   cache_labels: 0      # done, $0.06 of $1 (D-119); locked again
   live: 0              # done, $0.99 of $1.50 (D-119); locked again
   khayyam: 0           # done, $0.47 of $5 (D-119); locked again
+  product: 3           # chat app on live models (owner 2026-11-03, D-125: "use my api token")
 # Automatic stops in run_batch (AGENTS.md §5).
 anomalies:
   min_calls: 20            # rate checks start after this many new calls

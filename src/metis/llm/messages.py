@@ -51,7 +51,13 @@ def gen_params(model_id: str, cfg: dict[str, Any], max_tokens: int | None = None
 
     ``max_tokens`` overrides the common limit, for the second pass on cut answers.
     """
-    rule = cfg["models"][model_id]  # KeyError on purpose: every model must be listed
+    rule = cfg["models"].get(model_id)
+    if rule is None:  # a model added from the developer page carries its own rule
+        from metis.llm.client import load_models
+
+        rule = load_models().get(model_id, {}).get("gen")
+    if rule is None:
+        raise KeyError(model_id)  # on purpose: every model must be listed
     params = dict(cfg["common"])
     if max_tokens is not None:
         params["max_tokens"] = max_tokens

@@ -51,7 +51,17 @@ uv run pytest                                  # no keys or data needed
 TAKROUTER_FAKE_EMBED=1 uv run uvicorn metis.gateway.app:app --port 8000
 ```
 
-Open `http://localhost:8000` for the site. That command needs no keys or model files: the provider is a mock, answers are placeholders, and a fake embedder replaces Jina, so **routing in this mode is not real**. For real routing, download the embedder (`scripts/fetch_model.py`) and drop `TAKROUTER_FAKE_EMBED`. For real answers, set `provider: live` in `configs/gateway.yaml` and put `METIS_BASE_URL` and `METIS_API_KEY` in `.env`, with an approved `live` budget.
+Open `http://localhost:8000` for the chat app (`/results` has the evaluation page). That command needs no keys or model files: the provider is a mock, answers are placeholders, and a fake embedder replaces Jina, so **routing in this mode is not real**.
+
+**The real product** (live models, real routing):
+
+```bash
+uv run python scripts/fetch_model.py               # once: the Jina nano embedder
+# .env: METIS_BASE_URL and METIS_API_KEY (never commit it)
+TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000
+```
+
+The chat app at `/` is in Persian and English (the button at the bottom of the sidebar, or `?lang=en`). For each answer it shows the model, the cost, the time and the saving against Claude Sonnet, and "Why this model?" opens the topic it detected and each model's quality and price on that topic. Economy / Balanced / Best quality set λ to 3 / 0.515 / 0; the settings button opens a slider over every λ where a topic changes model, a fixed-model option and a system prompt. Live spending goes through the budget guard under stage `product` in `configs/budget.yaml` ($3 approved, D-125); when it is used up the API answers 402 and the app says so. Endpoints: `GET /v1/router?lam=`, `GET /v1/budget`, and `metadata.lambda` on `/v1/chat/completions`.
 
 ```python
 from openai import OpenAI

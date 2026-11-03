@@ -84,8 +84,14 @@ class LiveProvider:
         clean = redact_messages(messages)
         params = gen_params(model, self.gen)
         chars = sum(len(str(m.get("content", ""))) for m in clean)
+        from metis.llm.budget import BudgetRefused
+
         estimate = call_cost(self.budget.models[model], chars // 3 + 1, 300)
-        result = get_or_call(self.cache, self.budget, self.stage, model, clean, params, self.run_id, estimate, self.send, prompt_id=context.get("prompt_id"))
+        try:
+            result = get_or_call(self.cache, self.budget, self.stage, model, clean, params, self.run_id, estimate, self.send,
+                                 prompt_id=context.get("prompt_id"))
+        except BudgetRefused:
+            raise ProviderError("budget") from None
         if result.status != "ok" or result.response is None:
             raise ProviderError(result.error_kind or "call_failed")
         r = result.response

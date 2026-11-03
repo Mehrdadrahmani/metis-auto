@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.calc{display:grid;grid-template-columns:1fr 1.2fr;gap:18px}
+.calc .range{width:100%;accent-color:var(--violet)}
+.val{font-weight:800;font-size:15px}
+.seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:8px;font-weight:600;font-size:13px;color:var(--ink2)}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.big{font-size:40px;font-weight:800;letter-spacing:-.8px;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.2}
+.rows .r{display:grid;grid-template-columns:170px 1fr 90px;gap:10px;align-items:center;margin:10px 0;font-size:14px}
+.rows .bar{height:12px;border-radius:99px;background:var(--chip);overflow:hidden}
+.rows .bar i{display:block;height:100%;border-radius:99px}
+.rows .r.us{font-weight:800}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.plan h3{font-size:18px}
+.plan .p{font-size:26px;font-weight:800;margin:6px 0 10px}
+.plan ul{padding-inline-start:18px;margin:0 0 14px;color:var(--ink2);font-size:14px}
+.plan.hl{border:2px solid var(--violet)}
+@media (max-width:860px){.calc,.plans{grid-template-columns:1fr}.rows .r{grid-template-columns:120px 1fr 80px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+
+  <div class="calc">
+    <div class="card">
+      <h3 data-i18n="c_t"></h3>
+      <div class="field"><label><span data-i18n="msgs"></span> · <span class="val" id="v_msgs"></span></label><input class="range" type="range" id="msgs" min="0" max="20" value="10"></div>
+      <div class="field"><label><span data-i18n="tin"></span> · <span class="val" id="v_tin"></span></label><input class="range" type="range" id="tin" min="50" max="8000" step="50" value="400"></div>
+      <div class="field"><label><span data-i18n="tout"></span> · <span class="val" id="v_tout"></span></label><input class="range" type="range" id="tout" min="50" max="2000" step="50" value="300"></div>
+      <div class="field"><label data-i18n="mode"></label><div class="seg" id="modes"><button data-m="eco" data-i18n="eco"></button><button data-m="bal" class="on" data-i18n="bal"></button><button data-m="best" data-i18n="best"></button></div></div>
+      <p class="muted" style="font-size:12.5px;margin:0" data-i18n="how"></p>
+    </div>
+    <div class="card">
+      <small class="muted" data-i18n="monthly"></small>
+      <div class="big" id="ours">—</div>
+      <div id="vs" style="margin-bottom:12px;color:var(--ink2)"></div>
+      <div class="rows" id="rows"></div>
+    </div>
+  </div>
+
+  <h2 style="font-size:24px;margin:44px 0 14px" data-i18n="plans_t"></h2>
+  <div class="plans">
+    <div class="card plan"><h3 data-i18n="p1"></h3><div class="p" data-i18n="p1p"></div><ul><li data-i18n="p1a"></li><li data-i18n="p1b"></li><li data-i18n="p1c"></li></ul><a class="btn ghost" href="/login?mode=signup" data-i18n="p1btn"></a></div>
+    <div class="card plan hl"><h3 data-i18n="p2"></h3><div class="p" data-i18n="p2p"></div><ul><li data-i18n="p2a"></li><li data-i18n="p2b"></li><li data-i18n="p2c"></li></ul><a class="btn primary" href="/docs" data-i18n="p2btn"></a></div>
+    <div class="card plan"><h3 data-i18n="p3"></h3><div class="p" data-i18n="p3p"></div><ul><li data-i18n="p3a"></li><li data-i18n="p3b"></li><li data-i18n="p3c"></li></ul><a class="btn ghost" href="/learn#self-host" data-i18n="p3btn"></a></div>
+  </div>
+
+  <h2 style="font-size:24px;margin:44px 0 14px" data-i18n="prices_t"></h2>
+  <div class="card scroll-x"><table class="t" id="prices"></table><p class="muted" style="font-size:12.5px;margin:10px 0 0" data-i18n="prices_n"></p></div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "قیمت‌ها", title: "فقط قیمت مدل‌ها را می‌پردازید", lead: "TakRouter برای هر پیام مدل ارزان‌تری را انتخاب می‌کند که در آن موضوع به همان کیفیت می‌رسد. ببینید برای کار شما چقدر می‌شود.",
+        c_t: "ماشین‌حساب صرفه‌جویی", msgs: "پیام در ماه", tin: "طول پیام ورودی (توکن)", tout: "طول پاسخ (توکن)", mode: "حالت",
+        eco: "اقتصادی", bal: "متعادل", best: "بهترین کیفیت",
+        how: "برآورد: سهم هر موضوع در پیام‌های واقعی × قیمت مدلی که TakRouter در آن موضوع انتخاب می‌کند. عددهای واقعی به پیام‌های شما بستگی دارد.",
+        monthly: "هزینه‌ی ماهانه با TakRouter", vs: (p, s) => `به‌جای ${p} با Claude Sonnet، یعنی ${s} صرفه‌جویی`,
+        plans_t: "طرح‌ها", p1: "شروع", p1p: "رایگان", p1a: "اعتبار اولیه برای امتحان", p1b: "گفتگو، مقایسه و داشبورد", p1c: "همه‌ی آموزش‌ها", p1btn: "ساخت حساب",
+        p2: "پرداخت به اندازه‌ی مصرف", p2p: "قیمت مدل‌ها", p2a: "بدون کارمزد اضافه", p2b: "کلید API و سازگاری با OpenAI", p2c: "مسیر تصمیم و گزارش مصرف", p2btn: "راهنمای API",
+        p3: "روی سرور خودتان", p3p: "رایگان", p3a: "کد و مسیریاب کامل", p3b: "کلید Metis خودتان", p3c: "افزودن مدل تازه", p3btn: "آموزش نصب",
+        prices_t: "قیمت هر مدل", m: "مدل", pin: "ورودی ($ / ۱ میلیون توکن)", pout: "خروجی ($ / ۱ میلیون توکن)", rel: "قیمت هر پیام نسبت به Sonnet",
+        prices_n: "قیمت‌های Metis AI. هر میلیون توکن حدود ۷۵۰ هزار کلمه‌ی انگلیسی است.", k: (n) => n + " هزار", mm: (n) => n + " میلیون" },
+  en: { kick: "Pricing", title: "You pay only the models' prices", lead: "For each message TakRouter picks the cheaper model that reaches the same quality on that topic. See what it means for your volume.",
+        c_t: "Savings calculator", msgs: "Messages per month", tin: "Input length (tokens)", tout: "Answer length (tokens)", mode: "Mode",
+        eco: "Economy", bal: "Balanced", best: "Best quality",
+        how: "Estimate: each topic's share of real messages × the price of the model TakRouter picks on it. Real numbers depend on your messages.",
+        monthly: "Monthly cost with TakRouter", vs: (p, s) => `instead of ${p} with Claude Sonnet: ${s} saved`,
+        plans_t: "Plans", p1: "Starter", p1p: "Free", p1a: "Starter credit to try it", p1b: "Chat, compare and dashboard", p1c: "All tutorials", p1btn: "Create account",
+        p2: "Pay as you go", p2p: "Model prices", p2a: "No extra fee", p2b: "API keys, OpenAI-compatible", p2c: "Decision trace and usage reports", p2btn: "API guide",
+        p3: "Self-hosted", p3p: "Free", p3a: "The full code and router", p3b: "Your own Metis key", p3c: "Add new models", p3btn: "Install guide",
+        prices_t: "Price of each model", m: "Model", pin: "Input ($ / 1M tokens)", pout: "Output ($ / 1M tokens)", rel: "Price per message vs Sonnet",
+        prices_n: "Metis AI prices. One million tokens is about 750,000 English words.", k: (n) => n + "k", mm: (n) => n + "M" },
+});
+const $ = (id) => document.getElementById(id);
+const STEPS = [100, 200, 500, 1e3, 2e3, 5e3, 1e4, 2e4, 5e4, 1e5, 2e5, 5e5, 1e6, 2e6, 5e6, 1e7, 2e7, 5e7, 1e8, 2e8, 5e8];
+const MODE = {best: 0, eco: 3, bal: null};
+let mode = "bal", info = null;
+function fmtN(n) { return n >= 1e6 ? TR.t("mm", TR.num(n / 1e6)) : n >= 1e3 ? TR.t("k", TR.num(n / 1e3)) : TR.num(n); }
+async function load() {
+  info = await TR.api("/v1/router" + (MODE[mode] == null ? "" : `?lam=${MODE[mode]}`)).catch(() => null);
+  draw();
+}
+function draw() {
+  if (!info) return;
+  const n = STEPS[+$("msgs").value], tin = +$("tin").value, tout = +$("tout").value;
+  $("v_msgs").textContent = fmtN(n); $("v_tin").textContent = TR.num(tin); $("v_tout").textContent = TR.num(tout);
+  const price = Object.fromEntries(info.models.map((m) => [m.id, (tin * m.price_in + tout * m.price_out) / 1e6]));
+  const total = info.clusters.reduce((s, c) => s + c.n_val, 0);
+  const ours = info.clusters.reduce((s, c) => s + c.n_val / total * price[c.pick], 0) * n;
+  const sonnet = price["claude-sonnet-5-5"] * n;
+  $("ours").textContent = TR.usd(ours);
+  $("vs").textContent = TR.t("vs", TR.usd(sonnet), TR.pct(1 - ours / sonnet));
+  const rows = [["takrouter", ours], ...info.models.map((m) => [m.id, price[m.id] * n])].sort((a, b) => a[1] - b[1]);
+  const max = Math.max(...rows.map((r) => r[1]));
+  $("rows").innerHTML = "";
+  for (const [id, v] of rows) {
+    const us = id === "takrouter", m = us ? {name: "TakRouter", color: "#9933ff"} : TR.model(id);
+    const r = document.createElement("div"); r.className = "r" + (us ? " us" : "");
+    r.innerHTML = `<span class="ltr"></span><span class="bar"><i style="width:${Math.max(.6, v / max * 100)}%;background:${us ? "var(--brand)" : m.color}"></i></span><span>${TR.usd(v)}</span>`;
+    r.firstChild.textContent = m.name; $("rows").append(r);
+  }
+  $("prices").innerHTML = `<tr><th>${TR.t("m")}</th><th>${TR.t("pin")}</th><th>${TR.t("pout")}</th><th>${TR.t("rel")}</th></tr>` +
+    info.models.map((m) => `<tr><td class="ltr"><i class="sw" style="background:${TR.model(m.id).color}"></i> ${TR.model(m.id).name}</td><td>$${m.price_in}</td><td>$${m.price_out}</td><td>${TR.pct(m.relative_cost)}</td></tr>`).join("");
+}
+for (const id of ["msgs", "tin", "tout"]) $(id).addEventListener("input", draw);
+for (const b of $("modes").children) b.onclick = () => { mode = b.dataset.m; for (const x of $("modes").children) x.classList.toggle("on", x === b); load(); };
+TR.onLang(draw);
+load();
+</script>
+</body>
+</html>

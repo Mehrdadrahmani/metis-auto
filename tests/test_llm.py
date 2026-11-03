@@ -135,7 +135,7 @@ def test_shipped_config_allows_only_approved_stages(cache):
     """Pilot (D-094) and generation (owner "go", WP-12) have limits; the rest are refused."""
     cfg = load_config("budget")
     assert cfg["hard_cap_usd"] == 60
-    assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live", "khayyam"}
+    assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live", "khayyam", "product"}
     assert cfg["approved_usd"]["pilot"] == 10
     assert cfg["approved_usd"]["gen_main"] == 21.5
     assert cfg["approved_usd"]["judge_main"] == 3

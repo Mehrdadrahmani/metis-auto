@@ -125,6 +125,9 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-122 | 2026-11-03 | Replay settings pinned before test: K = 8, cache on, checks on, stickiness off (no change on val), per `configs/gateway.yaml` | A | WP-18 |
 | D-123 | 2026-11-03 | Product name **TakRouter** (owner). Internal package stays `metis`; both `takrouter` and `metis-auto` route | O | all |
 | D-124 | 2026-11-03 | Khayyam run done (owner go, D-119): UniRoute K = 7 beats ZeroRouter on area +0.020 (0.001 to 0.044), not the best single model at chosen λ. Metis key ran out mid-run; owner spare key used | O | Khayyam |
+| D-125 | 2026-11-03 | Customer chat app on live models (owner: "use my api token", "a real product", "both English and Persian"): `/` is the chat app, `/results` the evaluation page; new budget stage `product` $3; per-request λ; 402 when the stage is used up | O | Product |
+| D-126 | 2026-11-03 | Website with 11 pages (home, chat, compare, tutorials, developers, dashboard, pricing, how, login, account, models) in Persian and English; accounts (first sign-up is admin, scrypt passwords, per-user credit $0.50 default), API keys, optional decision trace, admin page to add a model the UniRoute way (798 val prompts + jev, stage `add_model` approved per run; activation writes artifacts/router_live) | O | Product |
+| D-127 | 2026-11-03 | Khayyam exam demo kept separate from the chatbot router (owner: "different tab… dont merge it with the real data"): own artifact `artifacts/router_khayyam` (K = 7, λ 21, from stored answers, $0), own replay gateway and traces, page /khayyam. Two more models (gpt-5.2, gemini-2.5-flash) proposed, waiting for go | O | Khayyam |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -178,9 +181,22 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-03 | live | WP-19 | $1.50 | $0.99 | 300 | Consent D-119 |
 | 2026-11-03 | khayyam | Q-023 | $5 | $0.47 | 6,000 | Owner go, D-119 |
 | 2026-11-03 | judge_main | WP-14 | $3 | $1.05 | 4,092 | Pairwise jev on val 800 (D-116), estimate $1.15 to $1.50 |
+| 2026-11-03 | product | D-125 | $3 | $0.0134 | ~10 | Chat app smoke test (3 calls by the agent) and the owner's own chats |
 | | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-03 · Website, accounts, add-a-model, Khayyam demo (D-126, D-127)
+- 12-page bilingual site on shared `web/assets/site.{css,js}`; accounts (`metis.gateway.auth`), API keys, credit, optional trace (`pipeline.trace_view`), usage (`TraceStore.usage`), compare (`/v1/compare`), `/docs` freed from FastAPI (now `/api-docs`).
+- `metis.onboard`: add a model the UniRoute way (798 val + jev, stage `add_model` approved per run, `artifacts/router_live`). Reproduces the shipped fingerprints and costs exactly; mock run on 10 prompts OK. Bug found and fixed: lock re-entry deadlock on /v1/models.
+- `metis.khayyam` + `scripts/khayyam_build.py` ($0): separate Khayyam router, replay gateway, page /khayyam. Per-subject test accuracy: DeepSeek flash best at maths/physics, Luna at biology/humanities, Gemini at literature. Gateway replay 55.5%, 0 failed; Luna outage 54.3%, 0 failed.
+- Tests 317 pass. No new paid stage; product spend $0.0134 in total.
+
+### 2026-11-03 · TakRouter chat app (D-125), team PR #15
+- Chat app `web/app.html` at `/`: Persian and English (switch, `?lang=`), Economy / Balanced / Best quality (λ 3 / 0.515 / 0), slider over the λ breakpoints, fixed-model option, system prompt, per-answer model, cost, time, saving vs Sonnet, "Why this model?". Results page moved to `/results`.
+- Backend: `TAKROUTER_PROVIDER=live` uses `LiveProvider("product")`; `metadata.lambda`; `GET /v1/router`, `GET /v1/budget`; budget refusal is a 402. New `metis.router.explain`. Tests 305 pass.
+- Live smoke test with the real jina embedder: 3 calls, $0.0056. Screenshots seen in Persian and English.
+- Team repo PR #15 (`uniroute-fix-lambda` into `develop`): UniRoute on the vector it was fitted on (100% same cluster vs 36%), peft, Luna and Sonnet 5.5 as uniroute-only, λ slider. Out-of-fold: cache vector routes as well as the clustering vector when refitted (area 0.6547 vs 0.6535).
 
 ### 2026-11-03 · Overnight: WP-15 to WP-19, site, deck, Khayyam (Opus)
 - Gateway, cache, replay, final test (n = 299), live run, site, README, report draft, Persian deck, Khayyam. Test opened once. First live router row redone (cached calls). WP-20 review, draw.io figures and WP-21 fresh-clone rerun not done; no `v1.0` tag. Site not seen in a browser. Spent $1.52 tonight, total about $29.59.

@@ -17,7 +17,8 @@ FA = "سلام، لطفا درباره سفر به شیراز راهنمایی �
 
 
 def make(provider=None, **over):
-    cfg = load_config("gateway") | {"fake_embedder": True, "lam": None} | over
+    cfg = load_config("gateway") | {"fake_embedder": True, "lam": None, "use_live_artifact": False,
+                                    "auth": {"required": False, "path": ":memory:"}} | over
     cfg.pop("lam")
     cfg["traces"] = {"path": ":memory:"}
     gw = build_gateway(cfg, provider=provider or MockProvider())
@@ -156,3 +157,43 @@ def test_gateway_cache_hit_second_time_and_no_cross_bot():
 ])
 def test_cache_policy(text, first, why):
     assert is_cacheable(text, first)[1] == why
+
+
+# Chat app (D-125): lambda per request, router and budget endpoints, pages -----------------------
+def test_lambda_per_request_moves_the_choice():
+    gw = make(cache={"enabled": False})
+    humanities = list(gw.artifact.meta.cluster_names).index("Humanities and religion")
+    gw.embed = lambda text: gw.artifact.centroids[humanities]
+    picked = {lam: gw.handle(req(lam=lam)).model for lam in (0.0, None, 100.0)}
+    assert picked == {0.0: "claude-sonnet-5-5", None: "gpt-5.6-luna", 100.0: "gemini-2.5-flash-lite"}
+
+
+def test_chat_app_endpoints_and_pages():
+    gw = make(cache={"enabled": False})
+    client = TestClient(create_app(gw))
+    info = client.get("/v1/router", params={"lam": 0}).json()
+    assert info["lambda"] == 0 and len(info["clusters"]) == gw.artifact.meta.k_star
+    assert info["breakpoints"][:3] == [0.009929, 0.027051, 0.044601]
+    assert all(m["price_in"] and m["price_out"] for m in info["models"])
+    assert client.get("/v1/router", params={"lam": -1}).status_code == 422
+    assert client.get("/v1/budget").json() == {"live": False}
+    assert client.get("/health").json()["live"] is False
+    body = {"messages": [{"role": "user", "content": FA}], "metadata": {"lambda": 0}}
+    r = client.post("/v1/chat/completions", json=body).json()["takrouter"]
+    assert r["lam"] == 0 and r["cluster_name"] and r["chosen"] and r["tried"]
+    bad = {"messages": [{"role": "user", "content": FA}], "metadata": {"lambda": -0.5}}
+    assert client.post("/v1/chat/completions", json=bad).status_code == 422
+    assert "TakRouter" in client.get("/").text and "site.js" in client.get("/").text
+    assert client.get("/results").status_code == 200
+
+
+def test_budget_refusal_is_a_clear_402():
+    from metis.gateway.failover import ProviderError
+
+    class Broke:
+        def call(self, model, messages, context):
+            raise ProviderError("budget")
+
+    gw = make(provider=Broke(), cache={"enabled": False})
+    r = TestClient(create_app(gw)).post("/v1/chat/completions", json={"messages": [{"role": "user", "content": FA}]})
+    assert r.status_code == 402 and r.json()["error"]["type"] == "budget_exhausted"

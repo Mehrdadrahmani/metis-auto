@@ -191,3 +191,9 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - K-NN ties (0.6636). Area gain over ZeroRouter +0.009, near Headlines in the paper (+0.009).
 - Pairwise on 797 prompts: Sonnet beats DeepSeek 40% to 21% both-orders. Pass-rate parity does not mean quality parity. Length not controlled (471 vs 254 tokens out).
 - Train was the only safe pool for more val: `none` holds test-session leftovers.
+
+## Product session (2026-11-03, D-125 to D-127)
+- Live chat app routes real traffic: 3 smoke calls, $0.0056; balanced λ sends 7 of 8 clusters to DeepSeek because Sonnet's lead (≤ 8 points, 2 clusters) is worth less than its 25× price.
+- Adding a model needs only its Psi column on the 798 val prompts (UniRoute); the onboarding code reproduces the 4 shipped columns and c_hat exactly. Estimate for a DeepSeek-priced model: ~$0.85.
+- Khayyam per subject (test n = 1,100, true answers): DeepSeek flash best on maths (49%) and physics (59%), Luna on biology (68%) and humanities mix (65%), Gemini on Persian literature (53%). Small clusters mislead (chemistry, 24 val prompts: Gemini picked, 35% on test vs 55%).
+- Khayyam through its gateway (replay): 55.5% (offline 55.0%; checks escalated cut answers), 0 failed; Luna down: 54.3%, 0 failed.

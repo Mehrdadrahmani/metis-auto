@@ -43,6 +43,8 @@ class ChatRequest:
     widget_click: bool = False
     uses_rag: bool = False
     context_hash: str | None = None
+    lam: float | None = None  # lambda for this request; None uses the gateway's (the chat page's slider)
+    user_id: int | None = None  # the signed-in account, for usage and credit
     prompt_id: str | None = None  # replay only
     route_text: str | None = None  # replay only: text as it was embedded offline
     vector: np.ndarray | None = None  # replay only: stored vector
@@ -87,17 +89,29 @@ class Gateway:
         self.breakers = {m: Breaker(b.get("failures", 3), b.get("window_s", 60), b.get("open_s", 30)) for m in artifact.meta.models}
         self.session_model: dict[str, str] = {}
 
+    def swap(self, artifact: RouterArtifact, models: dict[str, dict[str, Any]]) -> None:
+        """Serve a new artifact (a model was added or removed). Lambda, cache and traces stay."""
+        b = self.cfg.get("breaker", {})
+        self.breakers = {m: self.breakers.get(m) or Breaker(b.get("failures", 3), b.get("window_s", 60), b.get("open_s", 30))
+                         for m in artifact.meta.models}
+        self.models, self.artifact, self.router = models, artifact, artifact.router()
+        if hasattr(self.provider, "budget"):
+            self.provider.budget.models = models  # the live provider prices calls from this table
+
     # G1
-    def available(self, req: ChatRequest, text_chars: int) -> list[str]:
+    def available(self, req: ChatRequest, text_chars: int, dropped: dict[str, str] | None = None) -> list[str]:
+        """Models that can take this request; ``dropped`` collects why the others cannot."""
         tokens = estimate_tokens("x" * text_chars)
         out = []
         for m in self.artifact.meta.models:
             info = self.models.get(m, {})
-            if req.has_image and not info.get("vision"):
-                continue
-            if not fits_context(m, tokens) or not self.breakers[m].available():
-                continue
-            out.append(m)
+            why = ("no_vision" if req.has_image and not info.get("vision") else
+                   "too_long" if not fits_context(m, tokens) else
+                   "breaker_open" if not self.breakers[m].available() else None)
+            if why is None:
+                out.append(m)
+            elif dropped is not None:
+                dropped[m] = why
         return out
 
     def cost(self, model: str, reply: Reply) -> float:
@@ -161,7 +175,7 @@ class Gateway:
         return model, reply, escalations
 
     def choose(self, req: ChatRequest, vec: np.ndarray, available: list[str]):
-        decision = route(vec, available, self.router, self.lam)
+        decision = route(vec, available, self.router, self.lam if req.lam is None else req.lam)
         order = list(decision.ranking)
         stick = self.cfg.get("stickiness", {})
         previous = self.session_model.get(req.session or "")
@@ -181,6 +195,7 @@ class Gateway:
         text = req.route_text if req.route_text is not None else user_text(req.messages)
         lang = lang_tag(text)
         row = {"request_id": rid, "ts": self.clock(), "session_id": req.session, "chatbot": req.chatbot, "lang": lang,
+               "user_id": req.user_id, "rag": req.uses_rag, "image": req.has_image, "dropped": {},
                "artifact": self.artifact.meta.hashes.get("val_set"), "escalations": 0, "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0}
 
         def finish(result: ChatResult, status: str, cache: str, extra_ms: float = 0.0) -> ChatResult:
@@ -189,6 +204,7 @@ class Gateway:
                        tried=[a["model"] for a in result.attempts], cluster=result.cluster, served_by=result.model)
             self.traces.add(row)
             result.trace = row
+            row["attempts"] = result.attempts
             return result
 
         mark = time.perf_counter()
@@ -200,7 +216,8 @@ class Gateway:
                 raise ValueError("unknown model")
             available = [req.model]
         else:
-            available = self.available(req, sum(len(str(m.get("content", ""))) for m in req.messages))
+            available = self.available(req, sum(len(str(m.get("content", ""))) for m in req.messages), row["dropped"])
+        row["available"] = available
         mark = lap("rules", mark)
         if not available:
             return finish(ChatResult("", None, None), "no_model", "skip")
@@ -229,7 +246,8 @@ class Gateway:
 
         decision, order = self.choose(req, vec, available)
         mark = lap("route", mark)
-        row.update(chosen=order[0], scores=decision.scores)
+        row.update(chosen=order[0], scores=decision.scores, lam=self.lam if req.lam is None else req.lam,
+                   cluster_name=self.artifact.meta.cluster_names[decision.cluster])
         psi = {m: float(self.router.psi[decision.cluster, self.router.models.index(m)]) for m in order}
         context = {"prompt_id": req.prompt_id, "psi": psi, "cluster": decision.cluster}
         attempts: list[dict[str, Any]] = []
@@ -258,4 +276,15 @@ def openai_response(result: ChatResult) -> dict[str, Any]:
     return {"id": f"chatcmpl-{t['request_id']}", "object": "chat.completion", "created": int(t["ts"]), "model": result.model or "takrouter",
             "choices": [{"index": 0, "message": {"role": "assistant", "content": result.text}, "finish_reason": "stop"}],
             "usage": {"prompt_tokens": t["tokens_in"], "completion_tokens": t["tokens_out"], "total_tokens": t["tokens_in"] + t["tokens_out"]},
-            "takrouter": json.loads(json.dumps({k: t.get(k) for k in ("cluster", "scores", "cache", "escalations", "cost_usd", "status")}))}
+            "takrouter": json.loads(json.dumps({k: t.get(k) for k in (
+                "cluster", "cluster_name", "lam", "scores", "chosen", "served_by", "tried", "reasons", "cache",
+                "escalations", "cost_usd", "latency_ms", "overhead_ms", "status")}))}
+
+
+def trace_view(result: ChatResult) -> dict[str, Any]:
+    """Every step of one request, for the chat page's optional trace. Ids and numbers only."""
+    t = result.trace
+    keys = ("request_id", "available", "dropped", "rag", "image", "lang", "cache", "cluster", "cluster_name", "lam",
+            "scores", "chosen", "served_by", "attempts", "reasons", "escalations", "stage_ms", "overhead_ms",
+            "latency_ms", "cost_usd", "status")
+    return json.loads(json.dumps({k: t.get(k) for k in keys}, default=float))

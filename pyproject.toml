@@ -41,6 +41,10 @@ line-length = 100
 target-version = "py311"
 src = ["src", "tests"]
 
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI dependencies are declared as defaults by design.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Header"]
+
 [dependency-groups]
 dev = [
     "matplotlib>=3.11.2",

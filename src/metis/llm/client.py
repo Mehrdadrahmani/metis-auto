@@ -91,8 +91,18 @@ def is_mock() -> bool:
     return os.environ.get("METIS_MOCK", "0") == "1"
 
 
+ADDED_MODELS = "models_added"  # configs/models_added.yaml: models added from the developer page
+
+
 def load_models(config_dir: Any = None) -> dict[str, dict[str, Any]]:
-    return {m["id"]: m for m in load_config("models", config_dir)["models"]}
+    """configs/models.yaml, plus the models added from the developer page (never replacing one)."""
+    models = {m["id"]: m for m in load_config("models", config_dir)["models"]}
+    from metis.config import CONFIG_DIR
+
+    if ((config_dir or CONFIG_DIR) / f"{ADDED_MODELS}.yaml").exists():
+        for m in load_config(ADDED_MODELS, config_dir).get("models") or []:
+            models.setdefault(m["id"], m)
+    return models
 
 
 def redact_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:

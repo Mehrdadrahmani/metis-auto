@@ -1,57 +1,49 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-03 · WP-14 mid (handoff 3)
+Updated: 2026-11-03 · product session (handoff 4)
 
 ## Now
-- Current WP: **WP-20 Report review**. WP-14 to WP-19 and Khayyam done. Test opened once (n = 299). About $29.59 spent
-- Branch `TakRoute`, remotes `origin` (owner) and `team`
-- Judge: pointwise jev with history, τ = 7. Pairwise on val 800 is a second view only (D-116)
-- Router: K = 8 by owner (D-117), K = 4 by the rule as comparison. λ open (D-118 proposal). Frozen: K = 8 λ 0.5151 (`artifacts/router_v1`), K = 4 λ 0.04954
-- Model: default (Opus 5.5)
+- Current WP: **WP-20 Report review** (paused for the product work below). WP-14 to WP-19 and Khayyam done. Test opened once (n = 299)
+- Branch `TakRoute`, remotes `origin` (owner) and `team`. Team PR #15 open (`farzanenadem/Metis`, branch `uniroute-fix-lambda` into `develop`)
+- Router: K = 8 λ 0.5151 (`artifacts/router_v1`). Judge jev pointwise τ = 7. Model: default (Opus 5.5)
+
+## Product built this session (D-125, D-126, D-127)
+- Site, 12 pages, Persian/English (`web/*.html`, shared `web/assets/site.{css,js}`): / home, /chat, /compare, /khayyam, /learn, /docs, /dashboard, /pricing, /how, /login, /account, /models (admin), /results
+- Run live: `TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000` (real jina embedder, LiveProvider stage `product` $3)
+- Accounts `metis.gateway.auth` (runs/gateway/users.sqlite): first sign-up = admin (the owner signed up); user credit $0.50 default; API keys `tk-…`
+- Optional decision trace (`metadata.trace`, per-user pref). Per-request λ (`metadata.lambda`). 402 on credit/budget
+- Add a model (`metis.onboard`, /models): register → test call → estimate → admin approves → 798 val + jev → Psi column → activate (`artifacts/router_live`). Mock run on 10 prompts OK; fingerprints of the 4 shipped models reproduce exactly. No live add yet
+- Khayyam demo (`metis.khayyam`, `scripts/khayyam_build.py`, $0 from stored answers): own artifact `artifacts/router_khayyam` (K = 7, λ 21), own gateway (replay of stored answers) and traces. Gateway replay: 55.5% acc, 0 failed; Luna outage 54.3%, 0 failed
+- Tests: 317 pass
 
 ## Exact next step
-Owner reviews `report/REPORT.md`, the site (`TAKROUTER_FAKE_EMBED=1 uv run uvicorn metis.gateway.app:app`, never seen in a browser) and the deck. Then WP-20: fresh-session review, draw.io figures, MLflow screenshots; WP-21: fresh-clone rerun, tag `v1.0`.
+1. Khayyam: give it its own menu (sub-nav: overview, Khayyam chat, subjects) and a **Khayyam chat** page: owner types an exam question + 4 options → Khayyam router (live, stage `product`, real jina vector of the question body, no normalize as in `khayyam_run.py`). Add endpoint `POST /v1/khayyam/ask` in `src/metis/gateway/app.py` next to `kh_sample`; live gateway = `metis.khayyam.build_gateway(embed=…, live=True)`
+2. Wait for owner "go": add **gpt-5.2 + gemini-2.5-flash** to Khayyam (1,500 answers each; ~$4.60 expected, $8.70 max; one test call each first). Needs entries in `configs/models.yaml` + `configs/gen_config.yaml` (gpt-5.2: rename max_tokens→max_completion_tokens, reasoning_effort none), stage `khayyam` approved +$9, then `scripts/khayyam_run.py`-style answering and `scripts/khayyam_build.py --models gpt-5.2,gemini-2.5-flash`
+3. Then WP-20 / WP-21 as planned
 
-## Validation results (`results/router_check_val.md`, `select_k.md`, `ladder_val.md`, `lambda_val.md`; n = 798)
-- Pass at 7: Sonnet 66.2%, DeepSeek 65.4%, Luna 61.5%, Gemini 53.5%. Perfect router 79.4%
-- Area: K = 4 0.6634, K = 3 0.6629, K = 1 and ZeroRouter 0.6545, K = 8 0.6522, K-NN 0.6636, logistic 0.6532
-- Cheap setting, unseen: K = 8 65.4% at cost 0.042; DeepSeek 65.4% at 0.041. K = 4 at λ 0.03: 66.9% at 0.417
-- K = 8 fitted on old 400, scored on new 400: -2.0 points vs DeepSeek (-4.2 to 0.0)
-- Signals (`results/signal_tests.md`): bot groups, RAG, language, length: none clearly beats K = 1 or chance; none beats DeepSeek at low cost. D-078 not shipped
-- Inputs (`results/representation_test.md`, D-069): hybrid area K = 8 0.6562, K = 4 0.6672; T = 2 K = 4 0.6651; small, none beats DeepSeek at low cost. Input stays current message
-- Pairwise, 0.5 = equal to Sonnet: DeepSeek 0.403, Luna 0.409, Gemini 0.176; Sonnet wins 40% to 21% over DeepSeek. Position consistency 0.753
-- 2 prompts refused by Jev, 1 Sonnet answer failed. Repeat check n = 160, mean gap 0.119
-
-## Models (D-080, D-082, D-107; `configs/models.yaml`)
-- Candidates: deepseek-v4-flash, gpt-5.6-luna, gemini-2.5-flash-lite (holdout), claude-sonnet-5-5 (anchor)
-- Judge: jev-latest. Keep judge config id 356e63e52245: do not edit `judge_config.yaml` or the templates
-
-## Gate 2 numbers (`results/pilot_decision.md`; n = 100, Opus labels, not human)
-- Pointwise: agreement 0.74 (line 0.75), kappa 0.431, AUC 0.79. Pairwise: kappa 0.285
-- Report must state the miss, the Opus labels, and that the wrong-prompt test and 20 re-labels were not done
+## Owner discussions (not decided)
+- Validation 2,000 (+1,200 prompts) with Sonnet replaced: proposed gpt-5.2 (~$27 total) or gpt-4.1; Luna may beat gemini-2.5-flash. A new sealed test would be needed for a clean score
+- More clusters: val area falls after K = 4 (`results/select_k.md`); more labels first
 
 ## Waiting on the owner
-- Read `results/eval_protocol.md`: frozen by consent D-119 without your reading it
-- Metis: 2 keys used up tonight or earlier; the spare from chat paid for the end of Khayyam (`METIS_API_KEY_SPARE` in `.env`). Rotate it, it was pasted in chat. Replace the Hugging Face token too
-- Share with colleagues: `qdrant/share/*.snapshot` + `docker-compose.yml`, `configs/pipeline.yaml`, `embed_full.json`. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids
-- K = 4 cluster names stale (D-088) if K = 4 ships. D-071 defaults to confirm
+- Read `results/eval_protocol.md` (frozen by consent D-119)
+- Rotate the Metis key pasted in chat (`METIS_API_KEY_SPARE`) and the Hugging Face token
+- Check in a browser: /account and /models in English (headless screenshots timed out there; Persian versions fine)
+- Team PR #15 review/merge by Farzaneh (credits the owner as contributor once on `main`)
 
 ## Blockers / open issues
 - `graphify update .` refuses to overwrite (saved semantic nodes missing): graph is behind the code
-- Qdrant still has the old train/val payload for 391 moved sessions: refresh before K-NN or gateway use
+- Qdrant still has the old train/val payload for 391 moved sessions
 - Failed calls book $0, but a provider may bill them. Run one paid process at a time
-- Router on val shows no gain over DeepSeek at low cost: report plainly (P6)
-- Val vs test differ on Persian share and no-description bots; judged chance. Almost no code in the data
-- Length bias not tested on pairwise at 800
-- GPU runs out of memory on the longest messages: use `--device cpu`. HF "xet" stalls: use `scripts/fetch_model.py`
+- Router on chatbot data shows no gain over DeepSeek at low cost: report plainly (P6)
+- Site runs only on this Mac; no hosting, no payments. Khayyam licence: academic only (no question text in git)
+- Team worktree at the scratchpad (`git worktree list`): remove with `git worktree remove` when PR #15 is merged
 
 ## Money
-- Spent about $29.59 of cap $60
+- Spent about $30.06 of cap $60 (product $0.0134 this session; add_model $0)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
+- D-127 Khayyam demo: separate router, gateway and page
+- D-126 Website with accounts, trace, add-a-model
+- D-125 Live chat app, stage `product` $3
 - D-124 Khayyam: area gain over ZeroRouter
 - D-123 Name TakRouter
-- D-122 Replay settings
-- D-121 Cache θ 0.97, 10% wrong hits
-- D-120 λ frozen
-- D-119 Overnight consent, all WPs
-- D-118 λ out of fold, proposed (DEV-16)

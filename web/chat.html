@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="/web/assets/site.js"></script>
+<style>
+html,body{height:100%}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+.site-head{flex:none}
+.app{flex:1;display:grid;grid-template-columns:270px 1fr;min-height:0}
+.side{background:var(--bg2);border-inline-end:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.newchat{margin:14px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);font-weight:600}
+.newchat:hover{border-color:var(--violet);color:var(--violet-ink)}
+.list{flex:1;overflow:auto;padding:0 10px}
+.list h6{margin:6px 8px;font-size:12px;color:var(--muted);font-weight:600}
+.conv{display:flex;align-items:center;gap:4px;width:100%;padding:8px 10px;border-radius:10px;color:var(--ink2);font-size:14px;cursor:pointer}
+.conv span{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.conv:hover{background:var(--chip)}
+.conv.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.conv button{opacity:0;border:0;background:none;color:var(--muted);padding:0 3px;font-size:13px}
+.conv:hover button{opacity:1}
+.sidefoot{padding:12px 14px 14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.save{border-radius:14px;padding:12px 14px;background:var(--panel);border:1px solid var(--line)}
+.save small{display:block;color:var(--muted);font-size:12px}
+.save strong{font-size:22px;font-weight:800;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.save .sub{font-size:12px;color:var(--ink2)}
+.credit{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
+
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.top{display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.modes{display:flex;background:var(--chip);border-radius:12px;padding:3px;gap:2px}
+.modes button{border:0;background:none;padding:6px 14px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink2);white-space:nowrap}
+.modes button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.spacer{flex:1}
+.status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2);padding:5px 10px;border-radius:99px;background:var(--chip);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.live{background:#1fbf75;box-shadow:0 0 0 3px rgba(31,191,117,.2)}.dot.demo{background:#f0a020}
+.adv{position:relative}
+.pop{position:absolute;top:42px;inset-inline-start:0;width:330px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px;z-index:20;display:none}
+.pop.open{display:block}
+.pop h4{margin:0 0 4px;font-size:14px}
+.pop p{margin:0 0 10px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.pop label.l{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+.range{width:100%;accent-color:var(--violet)}
+.rangeends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+.scroll{flex:1;overflow:auto}
+.thread{max-width:800px;margin:0 auto;padding:26px 20px 12px}
+.empty{max-width:720px;margin:7vh auto 0;padding:0 20px;text-align:center}
+.empty .mark{width:56px;height:56px;border-radius:18px;margin:0 auto 18px}
+.empty .mark svg{width:30px;height:30px}
+.empty h1{margin:0 0 6px;font-size:30px;font-weight:800;letter-spacing:-.4px}
+.empty p{margin:0 auto 26px;color:var(--ink2);max-width:520px}
+.sugs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sug{text-align:start;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.sug:hover{border-color:var(--violet)}
+.sug b{font-size:14px;font-weight:600}.sug span{font-size:12.5px;color:var(--muted)}
+
+.msg{display:flex;margin:0 0 22px}
+.bubble{background:var(--user);padding:10px 16px;border-radius:18px;border-end-start-radius:6px;max-width:85%;white-space:pre-wrap;word-wrap:break-word}
+.msg.bot{gap:12px;align-items:flex-start}
+.avatar{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;margin-top:2px}
+.body{flex:1;min-width:0}
+.answer{word-wrap:break-word}
+.answer p{margin:0 0 10px}
+.answer :is(ul,ol){margin:0 0 10px;padding-inline-start:22px}
+.answer h1,.answer h2,.answer h3{font-size:16px;margin:14px 0 6px}
+.answer pre{background:#16132a;color:#ecebf5;padding:12px 14px;border-radius:12px;overflow:auto;direction:ltr;text-align:left;font-size:13px}
+.answer pre code{background:none;padding:0;color:inherit}
+.answer table{border-collapse:collapse;margin:0 0 10px;font-size:14px}
+.answer th,.answer td{border:1px solid var(--line2);padding:4px 10px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:99px;background:var(--chip);color:var(--ink2);border:0}
+.chip.good{background:var(--okbg);color:var(--ok);font-weight:600}.chip.warn{background:var(--warnbg);color:var(--warn)}
+button.chip:hover{color:var(--violet-ink)}
+.acts{display:flex;gap:2px;margin-top:6px}
+.acts button{border:0;background:none;color:var(--muted);font-size:12.5px;padding:3px 7px;border-radius:7px}
+.acts button:hover{background:var(--chip);color:var(--violet-ink)}
+.panel{margin-top:10px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--panel);font-size:13px}
+.panel table{width:100%;border-collapse:collapse}
+.panel td{padding:5px 4px;border-top:1px solid var(--line);vertical-align:middle}
+.panel tr.pick td{font-weight:700}
+.bar{height:6px;border-radius:99px;background:var(--chip);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;border-radius:99px}
+.note{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.6}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;padding:7px 0;border-top:1px solid var(--line);align-items:start}
+.tl li:first-child{border-top:0}
+.tl .n{width:24px;height:24px;border-radius:8px;background:var(--soft);color:var(--violet-ink);display:grid;place-items:center;font-size:11px;font-weight:800}
+.tl b{display:block;font-size:13px}
+.tl span.d{color:var(--ink2);font-size:12.5px}
+.tl .ms{color:var(--muted);font-size:12px;white-space:nowrap}
+.errbox{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:12px;font-size:14px}
+.typing{display:inline-flex;gap:4px;padding:10px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:b 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+.composer{padding:10px 20px 16px}
+.sys{max-width:800px;margin:0 auto 8px}
+.sys textarea{width:100%;border:1px dashed var(--line2);border-radius:12px;background:var(--bg2);padding:8px 12px;font-size:13px;resize:vertical;min-height:44px}
+.box{max-width:800px;margin:0 auto;border:1px solid var(--line2);border-radius:20px;background:var(--panel);box-shadow:var(--shadow);padding:10px;display:flex;align-items:flex-end;gap:8px}
+.box:focus-within{border-color:var(--violet)}
+.box textarea{flex:1;border:0;outline:0;resize:none;background:none;max-height:200px;min-height:26px;padding:4px 6px;line-height:1.7}
+.send{width:38px;height:38px;border-radius:12px;border:0;background:var(--brand);color:#fff;display:grid;place-items:center;flex:none}
+.send:disabled{opacity:.35;cursor:default}
+.send svg{width:18px;height:18px}
+html[dir="rtl"] .send.go svg{transform:scaleX(-1)}
+.hint{max-width:800px;margin:8px auto 0;text-align:center;font-size:12px;color:var(--muted)}
+.sidebtn{display:none}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;inset-block:64px 0;inset-inline-start:0;width:280px;z-index:40;display:none;box-shadow:var(--shadow)}
+  .side.open{display:flex}
+  .sidebtn{display:grid}
+  .sugs{grid-template-columns:1fr}
+  .thread,.composer{padding-inline:14px}
+  .pop{width:min(330px,calc(100vw - 28px))}
+}
+</style>
+</head>
+<body data-footer="0">
+<div class="app">
+  <aside class="side" id="side">
+    <button class="newchat" id="newchat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="newChat"></span></button>
+    <div class="list" id="list"></div>
+    <div class="sidefoot">
+      <div class="save"><small data-i18n="savedTitle"></small><strong id="saved">—</strong><div class="sub" id="savedsub"></div></div>
+      <div class="credit"><span data-i18n="credit"></span><b id="credit">—</b></div>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <button class="iconbtn sidebtn" id="sidebtn" data-i18n-title="chats"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg></button>
+      <div class="modes" id="modes"><button data-mode="eco" data-i18n="eco"></button><button data-mode="bal" class="on" data-i18n="bal"></button><button data-mode="best" data-i18n="best"></button></div>
+      <div class="adv">
+        <button class="iconbtn" id="advbtn" data-i18n-title="advanced"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
+        <div class="pop" id="pop">
+          <h4 data-i18n="routingTitle"></h4><p data-i18n="routingHelp"></p>
+          <label class="l" for="lam" data-i18n="slider"></label>
+          <input class="range" type="range" id="lam" min="0" max="10" step="1">
+          <div class="rangeends"><span data-i18n="best"></span><span id="lamval"></span><span data-i18n="cheapest"></span></div>
+          <label class="l" for="force" data-i18n="model"></label>
+          <select id="force" class="input"></select>
+          <label class="l"><span class="switch"><input type="checkbox" id="sysbox"><span data-i18n="system"></span></span></label>
+        </div>
+      </div>
+      <label class="switch" title=""><input type="checkbox" id="tracebox"><span data-i18n="traceToggle"></span></label>
+      <div class="spacer"></div>
+      <div class="status" id="status"><span class="dot"></span><span class="txt"></span></div>
+    </div>
+    <div class="scroll" id="scroll"><div id="thread"></div></div>
+    <div class="composer">
+      <div class="sys hide" id="sys"><textarea id="systext" data-i18n-placeholder="sysPlaceholder"></textarea></div>
+      <form class="box" id="form">
+        <textarea id="input" rows="1" data-i18n-placeholder="placeholder"></textarea>
+        <button class="send go" id="send" type="submit" data-i18n-title="send" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+      <div class="hint" data-i18n="hint"></div>
+    </div>
+  </main>
+</div>
+<script>
+TR.dict({
+  fa: {
+    newChat: "گفتگوی جدید", chats: "گفتگوها", untitled: "گفتگوی جدید", del: "حذف", rename: "تغییر نام", renameAsk: "نام تازه‌ی گفتگو:",
+    savedTitle: "صرفه‌جویی شما در این گفتگو", savedVs: "نسبت به ارسال همه‌چیز به Claude Sonnet",
+    savedSub: (n, c, p) => `${n} پاسخ، هزینه ${c} به‌جای ${p}`, credit: "اعتبار باقی‌مانده", unlimited: "نامحدود",
+    advanced: "تنظیمات پیشرفته", send: "ارسال", stop: "توقف",
+    eco: "اقتصادی", bal: "متعادل", best: "بهترین کیفیت", cheapest: "کمترین هزینه",
+    routingTitle: "تنظیمات مسیریابی",
+    routingHelp: "TakRouter برای هر پیام موضوعش را تشخیص می‌دهد و مدلی را انتخاب می‌کند که در آن موضوع بهترین تعادل کیفیت و قیمت را داشته است.",
+    slider: "کیفیت یا صرفه‌جویی", model: "مدل", auto: "خودکار (TakRouter)", only: (m) => "فقط " + m,
+    system: "دستور سیستمی (شخصیت دستیار)", sysPlaceholder: "مثلاً: تو دستیار پشتیبانی یک فروشگاه اینترنتی هستی. کوتاه و مودبانه جواب بده.",
+    traceToggle: "نمایش مسیر تصمیم",
+    placeholder: "پیام خود را بنویسید…", hint: "TakRouter هر پیام را به مناسب‌ترین مدل می‌فرستد. پاسخ‌ها ممکن است خطا داشته باشند.",
+    connecting: "در حال اتصال…", live: "متصل به مدل‌های واقعی", demo: "حالت نمایشی", offline: "سرور در دسترس نیست",
+    hello: (n) => n ? `سلام ${n}، چه کمکی از دستم برمی‌آید؟` : "چه کمکی از دستم برمی‌آید؟",
+    intro: "هر پیام شما به مدلی می‌رود که در آن موضوع بهترین نتیجه را با کمترین هزینه داده است.",
+    suggestions: [["برنامه سفر", "یک برنامه سه روزه برای سفر به شیراز پیشنهاد بده"], ["کد", "یک تابع پایتون بنویس که اول بودن یک عدد را بررسی کند"],
+                  ["پشتیبانی", "پولم از کارت کم شده ولی سفارشم ثبت نشده، چه کار کنم؟"], ["ادبیات", "این بیت حافظ را ساده توضیح بده: «دوش دیدم که ملائک در میخانه زدند»"]],
+    choosing: "در حال انتخاب بهترین مدل…", seconds: (s) => s + " ثانیه",
+    cached: "از حافظه، فوری", cheaper: (p) => p + " ارزان‌تر از Claude Sonnet",
+    escalated: "برای کیفیت بهتر به مدل قوی‌تر سپرده شد", failover: "مدل اول در دسترس نبود؛ جایگزین پاسخ داد",
+    why: "چرا این مدل؟", trace: "مسیر تصمیم", copy: "کپی", regen: "دوباره", better: "دوباره با بهترین کیفیت",
+    whyTopic: (t) => `موضوع تشخیص‌داده‌شده: ${t}. کیفیت هر مدل در این موضوع (سهم پاسخ‌های قبول‌شده در آزمون ما) و قیمت نسبی آن:`,
+    ofPrice: (p) => p + " قیمت", whyNote: "قیمت نسبت به Claude Sonnet است. «بهترین کیفیت» قیمت را تقریباً نادیده می‌گیرد.",
+    tr_rules: "مدل‌های مجاز", tr_rules_d: (a, d) => `${a} مدل مجاز` + (d ? `؛ کنار گذاشته: ${d}` : ""),
+    tr_embed: "درک پیام", tr_embed_d: "پیام به بردار معنایی تبدیل شد (فقط پیام فعلی).",
+    tr_cache: "حافظه (کش)", tr_rag: "منابع بازیابی‌شده (RAG)", tr_rag_d: (r) => r ? "این درخواست متن بازیابی‌شده داشت." : "این درخواست متن بازیابی‌شده نداشت.",
+    tr_route: "انتخاب مدل", tr_route_d: (t, l, m) => `موضوع: ${t} · λ = ${l} · انتخاب: ${m}`,
+    tr_call: "فراخوانی مدل", tr_check: "بررسی پاسخ", tr_check_ok: "پاسخ همه‌ی بررسی‌ها را گذراند.",
+    tr_check_bad: (r) => "مشکل: " + r, tr_total: "جمع",
+    cache_hit: "پاسخ از حافظه آمد.", cache_miss: "در حافظه نبود؛ مدل پاسخ داد.", cache_skip: (w) => "حافظه استفاده نشد: " + w,
+    why_skip: {personal: "اطلاعات شخصی", time: "وابسته به زمان", history: "به پیام قبلی اشاره دارد", image: "تصویر دارد", rag: "منابع دارد", ok: "—"},
+    drop: {no_vision: "تصویر نمی‌خواند", too_long: "پیام طولانی است", breaker_open: "موقتاً قطع"},
+    ok_call: (m, s, c) => `${m} · ${s} · ${c}`, fail_call: (m, r) => `${m} · ناموفق (${r})`,
+    err402: "اعتبار شما تمام شده است. از مدیر بخواهید اعتبار را افزایش دهد.", err402b: "سقف هزینه‌ی سرویس پر شده است.",
+    err503: "هیچ مدلی در این لحظه پاسخ نداد. چند لحظه بعد دوباره امتحان کنید.", err: "خطا: ", stopped: "متوقف شد.",
+  },
+  en: {
+    newChat: "New chat", chats: "Chats", untitled: "New chat", del: "Delete", rename: "Rename", renameAsk: "New name for this chat:",
+    savedTitle: "You saved in this chat", savedVs: "compared with sending everything to Claude Sonnet",
+    savedSub: (n, c, p) => `${n} answers, ${c} instead of ${p}`, credit: "Credit left", unlimited: "unlimited",
+    advanced: "Advanced settings", send: "Send", stop: "Stop",
+    eco: "Economy", bal: "Balanced", best: "Best quality", cheapest: "Lowest cost",
+    routingTitle: "Routing settings",
+    routingHelp: "TakRouter detects the topic of each message and picks the model with the best balance of quality and price on that topic.",
+    slider: "Quality or savings", model: "Model", auto: "Automatic (TakRouter)", only: (m) => m + " only",
+    system: "System prompt (assistant persona)", sysPlaceholder: "e.g. You are the support assistant of an online shop. Answer briefly and politely.",
+    traceToggle: "Show decision trace",
+    placeholder: "Write a message…", hint: "TakRouter sends each message to the most suitable model. Answers can contain mistakes.",
+    connecting: "Connecting…", live: "Connected to live models", demo: "Demo mode", offline: "Server not reachable",
+    hello: (n) => n ? `Hi ${n}, how can I help?` : "How can I help you today?",
+    intro: "Each message goes to the model that gave the best results on its topic for the lowest cost.",
+    suggestions: [["Trip plan", "Suggest a three-day itinerary for a trip to Shiraz"], ["Code", "Write a Python function that checks whether a number is prime"],
+                  ["Support", "Money left my card but my order was not placed. What should I do?"], ["Explain", "Explain the difference between weather and climate in simple words"]],
+    choosing: "Picking the best model…", seconds: (s) => s + " s",
+    cached: "From memory, instant", cheaper: (p) => p + " cheaper than Claude Sonnet",
+    escalated: "Handed to a stronger model for quality", failover: "First model unavailable; a backup answered",
+    why: "Why this model?", trace: "Decision trace", copy: "Copy", regen: "Regenerate", better: "Retry with best quality",
+    whyTopic: (t) => `Detected topic: ${t}. Each model's quality on this topic (share of answers that passed in our evaluation) and its relative price:`,
+    ofPrice: (p) => p + " of the price", whyNote: "Prices are relative to Claude Sonnet. \"Best quality\" almost ignores price.",
+    tr_rules: "Allowed models", tr_rules_d: (a, d) => `${a} models allowed` + (d ? `; left out: ${d}` : ""),
+    tr_embed: "Understanding", tr_embed_d: "The message was turned into a meaning vector (current message only).",
+    tr_cache: "Cache", tr_rag: "Retrieved context (RAG)", tr_rag_d: (r) => r ? "This request carried retrieved context." : "This request carried no retrieved context.",
+    tr_route: "Model choice", tr_route_d: (t, l, m) => `Topic: ${t} · λ = ${l} · chosen: ${m}`,
+    tr_call: "Model call", tr_check: "Answer checks", tr_check_ok: "The answer passed every check.",
+    tr_check_bad: (r) => "Problem: " + r, tr_total: "Total",
+    cache_hit: "The answer came from the cache.", cache_miss: "Not in the cache; a model answered.", cache_skip: (w) => "Cache not used: " + w,
+    why_skip: {personal: "personal data", time: "time-sensitive", history: "refers to an earlier message", image: "has an image", rag: "has retrieved context", ok: "—"},
+    drop: {no_vision: "cannot read images", too_long: "message too long", breaker_open: "temporarily down"},
+    ok_call: (m, s, c) => `${m} · ${s} · ${c}`, fail_call: (m, r) => `${m} · failed (${r})`,
+    err402: "Your credit is used up. Ask the administrator for more.", err402b: "This service has reached its spending limit.",
+    err503: "No model answered right now. Please try again in a moment.", err: "Error: ", stopped: "Stopped.",
+  },
+});
+const $ = (id) => document.getElementById(id);
+const t = TR.t;
+const PREMIUM = "claude-sonnet-5-5";
+let me = null, convs = [], current = null, router = null, stops = [], lam = null, busy = null, health;
+const key = (k) => `${k}.${me?.id ?? "anon"}`;
+const conv = () => convs.find((c) => c.id === current);
+const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+function save() { TR.store.set(key("convs"), convs.slice(0, 60)); TR.store.set(key("current"), current); }
+function md(text) {
+  if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(text, {breaks: true}));
+  const d = document.createElement("div"); d.textContent = text; return d.innerHTML.replace(/\n/g, "<br>");
+}
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function text(tag, cls, s) { const e = el(tag, cls); e.textContent = s; return e; }
+
+function renderList() {
+  const list = $("list"); list.innerHTML = "";
+  if (convs.length) list.append(text("h6", null, t("chats")));
+  for (const c of convs) {
+    const b = el("div", "conv" + (c.id === current ? " on" : ""));
+    b.append(text("span", null, c.title || t("untitled")));
+    const rn = text("button", null, "✎"); rn.title = t("rename");
+    rn.onclick = (e) => { e.stopPropagation(); const n = prompt(t("renameAsk"), c.title || ""); if (n != null) { c.title = n.trim().slice(0, 60); save(); renderList(); } };
+    const x = text("button", null, "×"); x.title = t("del");
+    x.onclick = (e) => { e.stopPropagation(); convs = convs.filter((k) => k.id !== c.id); if (current === c.id) current = convs[0]?.id || null; save(); renderAll(); };
+    b.append(rn, x);
+    b.onclick = () => { current = c.id; save(); renderAll(); $("side").classList.remove("open"); };
+    list.append(b);
+  }
+}
+function renderThread() {
+  const th = $("thread"); th.innerHTML = "";
+  const c = conv();
+  if (!c || !c.messages.length) { th.append(emptyState()); return; }
+  const wrap = el("div", "thread");
+  c.messages.forEach((m, i) => wrap.append(m.role === "user" ? userMsg(m) : botMsg(m, i)));
+  th.append(wrap);
+  $("scroll").scrollTop = $("scroll").scrollHeight;
+}
+function emptyState() {
+  const e = el("div", "empty", `<div class="mark">${TR.MARK}</div>`);
+  e.append(text("h1", null, t("hello", me?.name)), text("p", null, t("intro")));
+  const g = el("div", "sugs");
+  for (const [title, q] of t("suggestions")) {
+    const s = el("button", "sug"); s.type = "button"; s.append(text("b", null, title), text("span", null, q));
+    s.onclick = () => { $("input").value = q; send(); }; g.append(s);
+  }
+  e.append(g); return e;
+}
+function userMsg(m) { const w = el("div", "msg user"); w.append(text("div", "bubble", m.content)); return w; }
+function avatar(model) { const m = TR.model(model); const a = text("div", "avatar", model ? m.short : "TR"); a.style.background = model ? m.color : "#9933ff"; return a; }
+function botMsg(m, i) {
+  const w = el("div", "msg bot"); w.append(avatar(m.meta?.model));
+  const body = el("div", "body");
+  if (m.error) { body.append(text("div", "errbox", m.error)); w.append(body); return w; }
+  body.append(el("div", "answer", md(m.content)));
+  if (m.meta) {
+    body.append(metaRow(m.meta, body));
+    const acts = el("div", "acts");
+    const cp = text("button", null, t("copy")); cp.onclick = () => TR.copy(m.content);
+    const rg = text("button", null, t("regen")); rg.onclick = () => regenerate(i, null);
+    const bq = text("button", null, t("better")); bq.onclick = () => regenerate(i, 0);
+    acts.append(cp, rg, bq); body.append(acts);
+  }
+  w.append(body); return w;
+}
+function metaRow(meta, body) {
+  const row = el("div", "meta");
+  const info = TR.model(meta.model);
+  const mc = el("span", "chip", `<i class="sw" style="background:${info.color}"></i>`); mc.append(text("span", "ltr", info.name)); row.append(mc);
+  if (String(meta.cache || "").startsWith("hit")) row.append(text("span", "chip good", t("cached")));
+  row.append(text("span", "chip", TR.usd(meta.cost)));
+  if (meta.seconds != null) row.append(text("span", "chip", t("seconds", TR.num(meta.seconds, 1))));
+  if (meta.saved != null && meta.saved > 0.005) row.append(text("span", "chip good", t("cheaper", TR.pct(meta.saved))));
+  if (meta.escalations) row.append(text("span", "chip warn", t("escalated")));
+  else if (meta.tried && meta.tried.length > 1) row.append(text("span", "chip warn", t("failover")));
+  if (meta.cluster != null) {
+    const why = text("button", "chip", t("why")); why.type = "button";
+    why.onclick = () => togglePanel(body, "why", () => whyPanel(meta)); row.append(why);
+  }
+  if (meta.trace && $("tracebox").checked) {  // the trace is an option: nothing of it shows while it is off
+    const tb = text("button", "chip", t("trace")); tb.type = "button";
+    tb.onclick = () => togglePanel(body, "trace", () => tracePanel(meta.trace)); row.append(tb);
+    queueMicrotask(() => togglePanel(body, "trace", () => tracePanel(meta.trace), true));
+  }
+  return row;
+}
+function togglePanel(body, kind, make, open) {
+  const old = body.querySelector(`.panel[data-k="${kind}"]`);
+  if (old) { if (!open) old.remove(); return; }
+  const p = make(); p.dataset.k = kind; body.append(p);
+}
+function whyPanel(meta) {
+  const box = el("div", "panel");
+  const cl = router?.clusters?.[meta.cluster]; if (!cl) return box;
+  box.append(text("div", "muted", t("whyTopic", TR.topic(meta.cluster, cl.name))));
+  const tbl = el("table");
+  for (const [id, q] of Object.entries(cl.pass_rate).sort((a, b) => b[1] - a[1])) {
+    const info = TR.model(id), rel = router.models.find((m) => m.id === id)?.relative_cost;
+    const tr = el("tr", id === meta.chosen ? "pick" : "");
+    tr.innerHTML = `<td></td><td style="width:38%"><div class="bar"><i style="width:${Math.round(q * 100)}%;background:${info.color}"></i></div></td><td>${TR.pct(q)}</td><td>${rel == null ? "" : t("ofPrice", TR.pct(Math.max(.01, rel)))}</td>`;
+    tr.firstChild.textContent = (id === meta.chosen ? "✓ " : "") + info.name; tr.firstChild.className = "ltr";
+    tbl.append(tr);
+  }
+  box.append(tbl, text("div", "note", t("whyNote"))); return box;
+}
+function tracePanel(tr) {
+  const box = el("div", "panel"); const ol = el("ol", "tl");
+  const ms = (k) => tr.stage_ms?.[k] != null ? TR.num(tr.stage_ms[k], 1) + " ms" : "";
+  const add = (title, desc, right) => { const li = el("li"); li.append(text("span", "n", TR.num(ol.children.length + 1)));
+    const mid = el("div"); mid.append(text("b", null, title), text("span", "d", desc)); li.append(mid, text("span", "ms", right || "")); ol.append(li); };
+  const dropped = Object.entries(tr.dropped || {}).map(([m, w]) => `${TR.model(m).name} (${t("drop")[w] || w})`).join("، ");
+  add(t("tr_rules"), t("tr_rules_d", TR.num((tr.available || []).length), dropped), ms("rules"));
+  add(t("tr_embed"), t("tr_embed_d"), ms("embed"));
+  const c = String(tr.cache || "");
+  add(t("tr_cache"), c.startsWith("hit") ? t("cache_hit") : c === "miss" ? t("cache_miss") : t("cache_skip", t("why_skip")[c.replace("skip_", "")] || c), ms("cache"));
+  add(t("tr_rag"), t("tr_rag_d", tr.rag));
+  if (tr.cluster != null) {
+    const scores = Object.entries(tr.scores || {}).sort((a, b) => a[1] - b[1]).map(([m, s]) => `${TR.model(m).name} ${TR.num(s, 3)}`).join(" · ");
+    add(t("tr_route"), t("tr_route_d", TR.topic(tr.cluster, tr.cluster_name), TR.num(tr.lam, 4), TR.model(tr.chosen).name) + "\n" + scores, ms("route"));
+  }
+  for (const a of tr.attempts || []) add(t("tr_call"), a.ok ? t("ok_call", TR.model(a.model).name, t("seconds", TR.num((a.latency_ms || 0) / 1000, 1)), TR.usd(a.cost)) : t("fail_call", TR.model(a.model).name, a.reason), "");
+  add(t("tr_check"), (tr.reasons || []).length ? t("tr_check_bad", tr.reasons.join(", ")) : t("tr_check_ok"), "");
+  add(t("tr_total"), `${TR.usd(tr.cost_usd)} · ${t("seconds", TR.num((tr.latency_ms || 0) / 1000, 1))}`, ms("call"));
+  for (const d of ol.querySelectorAll(".d")) d.style.whiteSpace = "pre-line";
+  box.append(ol); return box;
+}
+function renderSavings() {
+  let cost = 0, premium = 0, n = 0;
+  for (const m of conv()?.messages || []) if (m.meta) { cost += m.meta.cost || 0; premium += m.meta.premium || 0; n++; }
+  if (!n || premium <= 0) { $("saved").textContent = "—"; $("savedsub").textContent = t("savedVs"); return; }
+  $("saved").textContent = TR.pct(Math.max(0, 1 - cost / premium));
+  $("savedsub").textContent = t("savedSub", TR.num(n), TR.usd(cost), TR.usd(premium));
+}
+async function refreshCredit() {
+  try { const r = await TR.api("/auth/me"); $("credit").textContent = r.credit_left_usd == null ? t("unlimited") : TR.usd(Math.max(0, r.credit_left_usd)); } catch {}
+}
+function renderStatus() {
+  const [cls, k] = health === undefined ? ["", "connecting"] : health === null ? ["", "offline"] : health.live ? ["live", "live"] : ["demo", "demo"];
+  $("status").innerHTML = `<span class="dot ${cls}"></span><span class="txt"></span>`; $("status").lastChild.textContent = t(k);
+}
+function renderAll() { renderList(); renderThread(); renderSavings(); }
+
+const MODE_LAMBDA = {best: 0, eco: 3};
+function setMode(mode) {
+  for (const b of $("modes").children) b.classList.toggle("on", b.dataset.mode === mode);
+  lam = mode === "bal" ? router?.default_lambda ?? null : MODE_LAMBDA[mode]; syncSlider(); TR.store.set("mode", mode);
+}
+function syncSlider() {
+  if (!stops.length) return;
+  let i = stops.findIndex((s) => s >= (lam ?? 0) - 1e-9); if (i < 0) i = stops.length - 1;
+  $("lam").value = i; $("lamval").textContent = "λ = " + (lam ?? 0);
+}
+function fillForce() {
+  const f = $("force"), keep = f.value || "takrouter"; f.innerHTML = "";
+  const o = el("option"); o.value = "takrouter"; o.textContent = t("auto"); f.append(o);
+  for (const m of router?.models || []) { const x = el("option"); x.value = m.id; x.textContent = t("only", TR.model(m.id).name); f.append(x); }
+  f.value = keep;
+}
+
+async function send(textIn, opts = {}) {
+  const q = (textIn ?? $("input").value).trim();
+  if (!q || busy) return;
+  if (!conv()) { const c = {id: uid(), title: "", messages: []}; convs.unshift(c); current = c.id; }
+  const c = conv();
+  if (!c.title) c.title = q.slice(0, 40);
+  if (!opts.again) c.messages.push({role: "user", content: q});
+  if (textIn == null) $("input").value = "";
+  autosize(); save(); renderAll();
+  const wrap = $("thread").querySelector(".thread");
+  const pending = el("div", "msg bot"); pending.append(avatar(null));
+  const pb = el("div", "body", `<div class="typing"><i></i><i></i><i></i></div>`); pb.append(text("div", "muted", t("choosing")));
+  pending.append(pb); wrap.append(pending); $("scroll").scrollTop = $("scroll").scrollHeight;
+  const messages = [];
+  const sys = $("sysbox").checked ? $("systext").value.trim() : "";
+  if (sys) messages.push({role: "system", content: sys});
+  for (const m of c.messages) if (!m.error) messages.push({role: m.role, content: m.content});
+  const forced = $("force").value;
+  const useLam = opts.lam !== undefined ? opts.lam : lam;
+  const ctrl = new AbortController(); busy = ctrl; updateSend();
+  const t0 = performance.now();
+  try {
+    const data = await TR.api("/v1/chat/completions", {method: "POST", signal: ctrl.signal,
+      headers: {"x-metis-session": c.id, "x-metis-chatbot": "takrouter-web"},
+      body: {model: forced, messages, metadata: {...(forced === "takrouter" && useLam != null ? {lambda: useLam} : {}), trace: true}}});
+    const tr = data.takrouter || {}, usage = data.usage || {};
+    const p = router?.models?.find((m) => m.id === PREMIUM);
+    const premium = p ? ((usage.prompt_tokens || 0) * p.price_in + (usage.completion_tokens || 0) * p.price_out) / 1e6 : null;
+    const cost = tr.cost_usd ?? 0;
+    c.messages.push({role: "assistant", content: data.choices?.[0]?.message?.content || "", meta: {
+      model: data.model, chosen: tr.chosen, cluster: tr.cluster, cost, premium, saved: premium ? 1 - cost / premium : null,
+      seconds: (performance.now() - t0) / 1000, cache: tr.cache, escalations: tr.escalations, tried: tr.tried, trace: tr.trace}});
+  } catch (e) {
+    const msg = e.name === "AbortError" ? t("stopped") : e.status === 402 ? (e.data?.error?.type === "credit_exhausted" ? t("err402") : t("err402b"))
+              : e.status === 503 ? t("err503") : e.status ? t("err") + e.message : t("err_net");
+    c.messages.push({role: "assistant", content: "", error: msg});
+  }
+  busy = null; save(); renderAll(); updateSend(); refreshCredit();
+}
+function regenerate(i, lamOverride) {
+  const c = conv(); if (!c || busy) return;
+  c.messages.splice(i, 1); save(); renderAll();
+  send(c.messages[i - 1]?.content, {again: true, lam: lamOverride === null ? undefined : lamOverride});
+}
+function autosize() { const i = $("input"); i.style.height = "auto"; i.style.height = Math.min(200, i.scrollHeight) + "px"; }
+function updateSend() {
+  const s = $("send");
+  if (busy) { s.disabled = false; s.classList.remove("go"); s.title = t("stop"); s.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>`; }
+  else { s.classList.add("go"); s.title = t("send"); s.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`; s.disabled = !$("input").value.trim(); }
+}
+$("input").addEventListener("input", () => { autosize(); updateSend(); });
+$("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); } });
+$("form").addEventListener("submit", (e) => { e.preventDefault(); if (busy) busy.abort(); else send(); });
+$("newchat").onclick = () => { current = null; save(); renderAll(); $("input").focus(); };
+for (const b of $("modes").children) b.onclick = () => setMode(b.dataset.mode);
+$("lam").addEventListener("input", (e) => {
+  lam = stops[+e.target.value]; $("lamval").textContent = "λ = " + lam;
+  const named = lam === 0 ? "best" : lam === router?.default_lambda ? "bal" : lam === 3 ? "eco" : null;
+  for (const b of $("modes").children) b.classList.toggle("on", b.dataset.mode === named);
+});
+$("advbtn").onclick = (e) => { e.stopPropagation(); $("pop").classList.toggle("open"); };
+$("pop").onclick = (e) => e.stopPropagation();
+document.addEventListener("click", () => $("pop").classList.remove("open"));
+$("sysbox").onchange = () => $("sys").classList.toggle("hide", !$("sysbox").checked);
+$("force").onchange = () => { $("modes").style.opacity = $("force").value === "takrouter" ? 1 : .4; };
+$("sidebtn").onclick = () => $("side").classList.toggle("open");
+$("tracebox").onchange = async () => {
+  try { await TR.api("/auth/me", {method: "PATCH", body: {prefs: {show_trace: $("tracebox").checked}}}); } catch {}
+  renderThread();
+};
+TR.onLang(() => { renderAll(); renderStatus(); fillForce(); updateSend(); refreshCredit(); });
+
+(async () => {
+  me = await TR.requireLogin();
+  convs = TR.store.get(key("convs"), []); current = TR.store.get(key("current"), null);
+  $("tracebox").checked = !!me.prefs?.show_trace;
+  try { health = await TR.api("/health"); } catch { health = null; }
+  try {
+    router = await TR.api("/v1/router");
+    const s = new Set([0, router.default_lambda, 3, ...router.breakpoints.filter((b) => b < 20)]);
+    for (const b of router.breakpoints) if (b < 20) s.add(+(b * 1.02).toFixed(4));
+    stops = [...s].map((x) => +(+x).toFixed(4)).sort((a, b) => a - b); $("lam").max = stops.length - 1;
+  } catch {}
+  setMode(TR.store.get("mode", "bal")); fillForce(); renderAll(); renderStatus(); updateSend(); refreshCredit();
+  const pre = new URLSearchParams(location.search).get("q");
+  if (pre) { $("input").value = pre; autosize(); updateSend(); }
+})();
+</script>
+</body>
+</html>
