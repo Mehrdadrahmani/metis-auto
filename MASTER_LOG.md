@@ -187,6 +187,9 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-11-03 · Demo answers removed from the live cache
+- Owner: "delete them". 635 mock answers (`پاسخ نمایشی…`, space `default|…`) deleted from runs/gateway/cache.sqlite; 4 real entries kept; backup kept locally. Preview switched to live on 8001 after its own demo cache served fake answers (same bug). Cost $0.
+
 ### 2026-11-03 · Merge preview + live merge prompt
 - Local repo ../takrouter-merged (both routers, toggle, mock/replay, $0). Wrote work/MERGE_LIVE_PROMPT.md. Found 636 demo answers in the real cache (owner decision pending). Removed my own test account, 2 trace rows and 1 cache row from the real files. Cost $0.
 

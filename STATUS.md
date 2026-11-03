@@ -28,7 +28,7 @@ Updated: 2026-11-03 · WP-21 started (handoff 6)
 ## Merge preview (this session)
 - Local-only repo `../takrouter-merged` (no remote, commit 3fbc212): team router `POST /route` (port 8100, replay rule) + TakRouter gateway `metadata.router` toggle (port 8001, mock). Tested: TakRouter→deepseek, Team→gemini-2.5-flash
 - Live merge prompt for Farzaneh: `work/MERGE_LIVE_PROMPT.md` (not yet pushed to PR #16)
-- ⚠ Real `runs/gateway/cache.sqlite` holds 636 fake demo answers (space `default|…`, `answer LIKE 'پاسخ نمایشی%'`), from older mock runs: owner to approve deleting them; then make mock mode use its own cache
+- Real cache cleaned (owner OK): 635 demo answers deleted, 4 real kept; backup `runs/gateway/cache.before-demo-cleanup.sqlite`. Still to do in code: mock mode must never write the live cache. Live site on 8000 is OFF; live preview runs on 8001 (team router 8100)
 
 ## Exact next step
 0. WP-21 step 2: fresh clone to scratchpad, copy data/ + cache/, `uv sync`, re-run the stages that make the reported numbers with `METIS_ASSERT_NO_NEW_CALLS=1` (s6/s7 replay from cache, s9, s10, s12, eval_test) and compare result hashes; then steps 4 (README), 5 (budget close, archive log), 6 (tag v1.0, push). Khayyam-chat upgrade plan (merge into chat.html, optional options) waits after that
