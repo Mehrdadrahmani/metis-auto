@@ -20,8 +20,13 @@ the result: real model answers, real routing by both routers.
      a budget guard, a semantic cache, failover and traces.
    - Its website is `takrouter/web/` (Persian/English).
    - Read `takrouter/README.md`, `takrouter/AGENTS.md` §4–§6 and `TAKROUTER_MERGE_PROMPT.md` first.
-3. A working local preview of this merge exists (commit `3fbc212`, made by Mehrdad). Follow the same
-   design, plus the fixes listed below.
+3. PR #16 already contains a working **preview** of this merge (commit `3fbc212`):
+   - `POST /route` in `ui/src/api.py`;
+   - the adapter `takrouter/src/metis/team_router/`;
+   - `metadata.router` in the gateway;
+   - the chat toggle.
+
+   It runs in replay/mock mode. Build on it, make it live, and add the fixes listed below.
 
 **Step 0: git (do first, then stop and show me)**
 - Merge PR #16 into `develop` with **"Create a merge commit"**: `git merge --no-ff takrouter-full`.
