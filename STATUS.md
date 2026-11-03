@@ -3,6 +3,7 @@ Updated: 2026-11-03 · WP-21 started (handoff 6)
 
 ## Now
 - Current WP: **WP-21 Release** (owner: "just go for wp21"; WP-20 report review still open, skipped by owner choice). Test opened once (n = 299)
+- Team PR #16 open (`farzanenadem/Metis`, branch `takrouter-full` → `develop`): whole project under `takrouter/` with history + `TAKROUTER_MERGE_PROMPT.md` (Farzaneh merges with a merge commit, then runs the prompt: one site, Router TakRouter | Team toggle)
 - Branch `TakRoute`, remotes `origin` (owner) and `team`. Team PR #15 open (`farzanenadem/Metis`, branch `uniroute-fix-lambda` into `develop`)
 - Router: K = 8 λ 0.5151 (`artifacts/router_v1`). Judge jev pointwise τ = 7. Model: default (Opus 5.5)
 

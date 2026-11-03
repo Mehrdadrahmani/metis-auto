@@ -187,6 +187,9 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ## 5. Log (newest first)
 
+### 2026-11-03 · Team PR #16: whole project into the team repo
+- Owner asked to put the whole project into Farzaneh's repo as a PR and write one merge prompt. Branch `takrouter-full` on `team` = `team/develop` + our history under `takrouter/` (unrelated-history subtree merge, 71 owner commits kept) + `TAKROUTER_MERGE_PROMPT.md`. Added-files secret scan 0 hits. PR https://github.com/farzanenadem/Metis/pull/16. Cost $0.
+
 ### 2026-11-03 · WP-21 start: replay guard, history secret scan
 - Owner: "just go for wp21" (WP-20 left open). Added `METIS_ASSERT_NO_NEW_CALLS` guard (`NewCallRefused`) + test; tests 319 pass.
 - Secret scan, own branches' full history: 0 hits. Team repo history has live keys in data files (commits f430621, 732eb91, 1bcb798, by teammates): reported to owner.
