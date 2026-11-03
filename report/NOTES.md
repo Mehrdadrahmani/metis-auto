@@ -198,3 +198,4 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Khayyam per subject (test n = 1,100, true answers): DeepSeek flash best on maths (49%) and physics (59%), Luna on biology (68%) and humanities mix (65%), Gemini on Persian literature (53%). Small clusters mislead (chemistry, 24 val prompts: Gemini picked, 35% on test vs 55%).
 - Khayyam through its gateway (replay): 55.5% (offline 55.0%; checks escalated cut answers), 0 failed; Luna down: 54.3%, 0 failed.
 - Khayyam chat (D-128): users can type their own exam question; the Khayyam router picks the model live. Demo only, not part of any measured number.
+- Team merge (D-128b): both routers on one site via a decide-only team service; demo answers leaking into a live semantic cache was a real bug (635 rows), fix pending in code.

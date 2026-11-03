@@ -129,6 +129,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-126 | 2026-11-03 | Website with 11 pages (home, chat, compare, tutorials, developers, dashboard, pricing, how, login, account, models) in Persian and English; accounts (first sign-up is admin, scrypt passwords, per-user credit $0.50 default), API keys, optional decision trace, admin page to add a model the UniRoute way (798 val prompts + jev, stage `add_model` approved per run; activation writes artifacts/router_live) | O | Product |
 | D-127 | 2026-11-03 | Khayyam exam demo kept separate from the chatbot router (owner: "different tab… dont merge it with the real data"): own artifact `artifacts/router_khayyam` (K = 7, λ 21, from stored answers, $0), own replay gateway and traces, page /khayyam. Two more models (gpt-5.2, gemini-2.5-flash) proposed, waiting for go | O | Khayyam |
 | D-128 | 2026-11-03 | Khayyam gets its own sub-menu (overview, Khayyam chat, subjects) and a live chat page /khayyam/chat (owner: "khayyam test should have a chat option too"): `POST /v1/khayyam/ask`, question + 4 options → Khayyam router → live model (stage `product`) or mock; vector = jina of the question body[:2000], not normalized (as khayyam_run.py); sign-in required; spend counts against user credit. Typed questions never used in evaluation | O | Khayyam |
+| D-128b | 2026-11-03 | Team merge: our project goes into the team repo as PR #16 (`takrouter-full` → `develop`, merge commit, history kept), team router becomes a decide-only service (`POST /route`, port 8100) behind TakRouter's gateway, one website with a TakRouter / Team toggle; live merge done by Farzaneh via `MERGE_LIVE_PROMPT.md` | O | Team |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -186,6 +187,9 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-03 · Handoff 7
+- PR #16 now holds the preview (3fbc212) and MERGE_LIVE_PROMPT.md (f6f07ee). Preview runs live on 8001; preview demo-cache served fake answers after the switch to live, fixed by clearing runs/preview/cache.sqlite and restarting. Main site restarted live on 8000. Tests 319 pass. Product spend $0.0139 total.
 
 ### 2026-11-03 · Demo answers removed from the live cache
 - Owner: "delete them". 635 mock answers (`پاسخ نمایشی…`, space `default|…`) deleted from runs/gateway/cache.sqlite; 4 real entries kept; backup kept locally. Preview switched to live on 8001 after its own demo cache served fake answers (same bug). Cost $0.

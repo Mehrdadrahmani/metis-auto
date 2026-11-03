@@ -1,5 +1,5 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-03 · WP-21 started (handoff 6)
+Updated: 2026-11-03 · WP-21 + team merge (handoff 7)
 
 ## Now
 - Current WP: **WP-21 Release** (owner: "just go for wp21"; WP-20 report review still open, skipped by owner choice). Test opened once (n = 299)
@@ -27,7 +27,8 @@ Updated: 2026-11-03 · WP-21 started (handoff 6)
 
 ## Merge preview (this session)
 - Local-only repo `../takrouter-merged` (no remote, commit 3fbc212): team router `POST /route` (port 8100, replay rule) + TakRouter gateway `metadata.router` toggle (port 8001, mock). Tested: TakRouter→deepseek, Team→gemini-2.5-flash
-- Live merge prompt for Farzaneh: `work/MERGE_LIVE_PROMPT.md` (not yet pushed to PR #16)
+- Live merge prompt `MERGE_LIVE_PROMPT.md` + preview code are IN PR #16 (head f6f07ee, mergeable); owner sends Farzaneh the message: merge `takrouter-full` → `develop` with a merge commit, then run the prompt
+- Running now: main live site :8000, live merge preview :8001 (`../takrouter-merged/takrouter`), team router :8100 (`../takrouter-merged`). Both live sites share one budget ledger
 - Real cache cleaned (owner OK): 635 demo answers deleted, 4 real kept; backup `runs/gateway/cache.before-demo-cleanup.sqlite`. Still to do in code: mock mode must never write the live cache. Live site on 8000 is OFF; live preview runs on 8001 (team router 8100)
 
 ## Exact next step
@@ -55,7 +56,7 @@ Updated: 2026-11-03 · WP-21 started (handoff 6)
 - Team worktree at the scratchpad (`git worktree list`): remove with `git worktree remove` when PR #15 is merged
 
 ## Money
-- Spent about $30.06 of cap $60 (product $0.0134 this session; add_model $0)
+- Spent about $30.06 of cap $60 (product stage $0.0139 so far, incl. live preview tests)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
 - D-127 Khayyam demo: separate router, gateway and page
