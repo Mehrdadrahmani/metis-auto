@@ -12,7 +12,8 @@ Updated: 2026-11-04 · deck feedback session (handoff 10)
   (one idea each); storytelling weak; misses many Antler + JPMorgan tips
 - Tips file (local, git-ignored): `deck/v2/sources/pitch_tips.md`. JPMorgan checklist saved. Antler
   (https://www.antler.co/blog/pre-seed-pitch-deck) NOT saved: site refused automated reads -> ask owner
-  to paste it into that file (or into chat)
+  to paste it into that file (or into chat). Also HBS NVC template PDF saved there
+  (`hbs_nvc_pitch_template.pdf`, 16 slides), text not extracted yet (no PDF tool; download timed out)
 - Next session: (1) read pitch_tips.md; (2) write a tip-by-tip checklist + slide-by-slide story outline
   (problem+urgency/why now, product+UVP, market TAM/SAM/SOM, team/why us, traction/demand evidence,
   competition matrix (no blue ocean), revenue model + GTM, milestones/timeline, clear ask + use of
