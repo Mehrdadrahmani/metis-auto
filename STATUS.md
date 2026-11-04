@@ -14,7 +14,9 @@ Updated: 2026-11-04 · deck feedback session (handoff 10)
   (https://www.antler.co/blog/pre-seed-pitch-deck) NOT saved: site refused automated reads -> ask owner
   to paste it into that file (or into chat). Also HBS NVC template PDF saved there
   (`hbs_nvc_pitch_template.pdf`, 16 slides), text not extracted yet (no PDF tool; download timed out)
-- Next session: (1) read pitch_tips.md; (2) write a tip-by-tip checklist + slide-by-slide story outline
+- Owner task (verbatim intent): review last deck + whole project, do FULL market research (web), build
+  slides following HBS + JPMorgan rules. Use subagents for research to save context.
+- Next session: (1) read pitch_tips.md, extract HBS PDF text; (2) write a tip-by-tip checklist + slide-by-slide story outline
   (problem+urgency/why now, product+UVP, market TAM/SAM/SOM, team/why us, traction/demand evidence,
   competition matrix (no blue ocean), revenue model + GTM, milestones/timeline, clear ask + use of
   funds; then technical part); ⏸ owner OK; (3) rebuild slides + new slide-sized diagrams; $0
