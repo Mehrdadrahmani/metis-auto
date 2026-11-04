@@ -1,5 +1,5 @@
 <section id="t3rule" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:30px">
-<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">Backup · Routing rule</p>
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T3 · Routing rule</p>
 <h2 style="font-size:60px;font-weight:800;line-height:1.12;letter-spacing:-1px">Lowest error plus weighted cost wins</h2>
 <div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;padding:20px;display:flex;justify-content:center">
 <img src="/_blob/5d29dc1642b72a86a986b147b9277e4f" alt="h star of x equals the argmin over models h of Psi of the topic of x for h plus lambda times the normalized cost c hat of h" style="width:1100px;height:120px;object-fit:contain">
@@ -11,6 +11,6 @@
 <tr><td>Gemini Lite</td><td style="text-align:right">0.323</td><td style="text-align:right">0.013</td><td style="text-align:right">0.336</td></tr>
 <tr><td>Claude Sonnet</td><td style="text-align:right">0.215</td><td style="text-align:right">0.515</td><td style="text-align:right">0.730</td></tr>
 </table>
-<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[14] Shipped router, from validation only: K = 8, λ = 0.515; ĉ = cost scaled so Sonnet = 1</p>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[7] Shipped router, from validation only: K = 8, λ = 0.515; ĉ = cost scaled so Sonnet = 1</p>
 <aside>Step three, the rule from the UniRoute paper. A message is embedded and assigned to its nearest topic k; for every model h we add its error in that topic to lambda times its normalised cost, and the smallest score wins. In health and medicine, DeepSeek and Sonnet have the same error, 21.5%, but Sonnet’s cost term is 0.515 against 0.021, so DeepSeek wins clearly. Lambda is the dial between quality and cost; the website’s Economy, Balanced and Best quality modes move it. It was chosen out of fold on validation so the router does not fall below always-DeepSeek.</aside>
 </section>

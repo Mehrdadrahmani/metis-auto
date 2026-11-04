@@ -1,5 +1,5 @@
 <section id="t2psi" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:24px">
-<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">Backup · Score table Ψ</p>
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T2 · Fingerprints Ψ</p>
 <h2 style="font-size:60px;font-weight:800;line-height:1.12;letter-spacing:-1px">Each model gets an error score per topic</h2>
 <div style="display:flex;flex-direction:row;gap:40px;align-items:center">
 <div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:14px">
@@ -7,10 +7,10 @@
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:30px">
 <img src="/_blob/0a348e0050d4b8161d077779b2b0dd59" alt="Psi k of h equals the average of the loss l of x and h over the validation prompts V k in topic k" style="width:560px;height:120px;object-fit:contain">
-<p style="font-size:28px;line-height:1.4">ℓ = 1 if the judge’s score is below 7, else 0 <span style="color:#7a22e0">[14]</span></p>
+<p style="font-size:28px;line-height:1.4">ℓ = 1 if the judge’s score is below 7, else 0 <span style="color:#7a22e0">[7]</span></p>
 <p style="font-size:28px;line-height:1.4">Boxed: the router’s pick per topic</p>
 </div>
 </div>
-<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[14] Our validation set, n = 798; AI judge, pointwise, pass ≥ 7; topics hold 58 to 187 prompts</p>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[7] Our validation set, n = 798; AI judge, pointwise, pass ≥ 7; topics hold 58 to 187 prompts</p>
 <aside>Step two. The fingerprint Psi of a model in topic k is its average loss there: the share of its answers the judge failed, on validation only. The heat map is the shipped router’s table. Sonnet often matches DeepSeek’s error but costs 24 times more, so DeepSeek is picked in seven topics and Luna in one.</aside>
 </section>
