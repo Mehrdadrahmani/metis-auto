@@ -1,0 +1,19 @@
+/* RTL/LTR add-on for the TakRouter pages (served by Node.js). Changes only how mixed text is ordered,
+   not the design: each paragraph of user or model text takes its direction from its own first letter. */
+
+/* Chat (chat.html), compare columns (compare.html), Khayyam chat (khayyam_chat.html), results chat (index.html) */
+.bubble,
+.answer :is(p, li, h1, h2, h3, h4, blockquote, td, th),
+.answer > :not(pre):not(ul):not(ol):not(table):not(div),
+.col .b :is(p, li, h1, h2, h3, h4, blockquote, td, th),
+.q, .opt, .raw {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+/* Text boxes: their direction is set by rtl-fix.js (dir="rtl"/"ltr" from the first letter typed).
+   Not "unicode-bidi: plaintext": in Safari it stops the cursor from moving while typing Persian. */
+textarea[dir], input[dir] { text-align: start; }
+
+/* Code always stays left-to-right */
+.answer pre, .col .b pre, pre.code { direction: ltr; unicode-bidi: isolate; text-align: left; }

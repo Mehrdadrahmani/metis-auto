@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Models · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 18px}
+.steps span{display:flex;align-items:center;gap:8px;font-size:13px;padding:6px 12px;border-radius:99px;background:var(--chip);color:var(--ink2)}
+.steps b{width:20px;height:20px;border-radius:7px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:11px}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.prog{height:10px;border-radius:99px;background:var(--chip);overflow:hidden;margin:8px 0}
+.prog i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .4s}
+.mcard{border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px;background:var(--panel)}
+.mcard .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mcard .hd b{font-size:16px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.fp td,.fp th{text-align:center !important}
+.fp td:first-child,.fp th:first-child{text-align:start !important}
+.fp td.win{font-weight:800;color:var(--violet-ink)}
+.confirm{border:1px solid var(--warn);background:var(--warnbg);border-radius:12px;padding:12px;margin-top:10px;display:none}
+.confirm.show{display:block}
+@media (max-width:860px){.form2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+  <div class="steps"><span><b>1</b><span data-i18n="s1"></span></span><span><b>2</b><span data-i18n="s2"></span></span><span><b>3</b><span data-i18n="s3"></span></span><span><b>4</b><span data-i18n="s4"></span></span><span><b>5</b><span data-i18n="s5"></span></span></div>
+  <div class="notice warn hide" id="demo" data-i18n="demo"></div>
+
+  <h2 style="font-size:20px;margin:24px 0 4px" data-i18n="list_t"></h2>
+  <div id="list"></div>
+
+  <div class="card" style="margin-top:24px">
+    <h3 data-i18n="add_t"></h3><p class="muted" style="font-size:13px;margin:0 0 14px" data-i18n="add_p"></p>
+    <form id="addf" class="form2">
+      <div class="field"><label for="f_id" data-i18n="f_id"></label><input class="input ltr" id="f_id" placeholder="gpt-5.4" required></div>
+      <div class="field"><label for="f_api" data-i18n="f_api"></label><input class="input ltr" id="f_api" placeholder="gpt-5.4"></div>
+      <div class="field"><label for="f_path" data-i18n="f_path"></label><select class="input ltr" id="f_path">
+        <option value="/openai/v1">OpenAI · /openai/v1</option><option value="/api/v1/wrapper/anthropic">Anthropic · /api/v1/wrapper/anthropic</option>
+        <option value="/api/v1/wrapper/google">Google · /api/v1/wrapper/google</option><option value="/deepseek/v1">DeepSeek · /deepseek/v1</option>
+        <option value="/api/v1/wrapper/grok">Grok · /api/v1/wrapper/grok</option></select></div>
+      <div class="field"><label for="f_ctx" data-i18n="f_ctx"></label><input class="input ltr" id="f_ctx" type="number" value="128000"></div>
+      <div class="field"><label for="f_in" data-i18n="f_in"></label><input class="input ltr" id="f_in" type="number" step="0.001" min="0" required></div>
+      <div class="field"><label for="f_out" data-i18n="f_out"></label><input class="input ltr" id="f_out" type="number" step="0.001" min="0" required></div>
+      <div class="field"><label for="f_tok" data-i18n="f_tok"></label><select class="input ltr" id="f_tok"><option value="max_tokens">max_tokens</option><option value="max_completion_tokens">max_completion_tokens (GPT-5)</option></select></div>
+      <div class="field"><label for="f_extra" data-i18n="f_extra"></label><input class="input ltr" id="f_extra" placeholder='{"reasoning_effort": "none"}'></div>
+      <label class="switch" style="margin-bottom:14px"><input type="checkbox" id="f_vis"><span data-i18n="f_vis"></span></label>
+      <div></div>
+      <div class="notice err hide" id="adderr" style="grid-column:1/-1;margin-bottom:10px"></div>
+      <div><button class="btn primary" type="submit" data-i18n="add_btn"></button></div>
+    </form>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "مدیریت مدل‌ها", title: "افزودن مدل تازه به مسیریاب", lead: "به روش UniRoute: مدل تازه روی همان ۷۹۸ پرسش اعتبارسنجی پاسخ می‌دهد، همان داور نمره می‌دهد، و یک ستون به جدول کیفیت هر موضوع اضافه می‌شود. خوشه‌ها و λ دست نمی‌خورند و داده‌ی آزمون مهرشده باز نمی‌شود.",
+        s1: "ثبت مدل", s2: "آزمایش اتصال", s3: "تأیید هزینه", s4: "ارزیابی روی ۷۹۸ پرسش", s5: "روشن کردن در مسیریاب",
+        demo: "سرور در حالت نمایشی است: ارزیابی با پاسخ‌های ساختگی انجام می‌شود و هزینه‌ای ندارد، ولی نتیجه‌اش واقعی نیست.",
+        list_t: "مدل‌ها", add_t: "ثبت مدل تازه", add_p: "مشخصات مدل در Metis AI. قیمت‌ها به دلار برای هر یک میلیون توکن.",
+        f_id: "شناسه", f_api: "نام مدل در Metis", f_path: "مسیر ارائه‌دهنده", f_ctx: "حداکثر طول ورودی (توکن)", f_in: "قیمت ورودی ($/1M)", f_out: "قیمت خروجی ($/1M)",
+        f_tok: "پارامتر طول پاسخ", f_extra: "پارامترهای اضافه (JSON، اختیاری)", f_vis: "تصویر می‌خواند", add_btn: "ثبت مدل",
+        shipped: "اصلی", active: "روشن در مسیریاب", added: "ثبت‌شده", running: "در حال ارزیابی", done: "ارزیابی شده", failed: "ناموفق", stopped: "متوقف شد",
+        pass: (p) => `قبولی ${p}`, price: (i, o) => `$${i} / $${o}`,
+        test: "آزمایش اتصال", test_ok: (ms) => `اتصال برقرار است (${ms} میلی‌ثانیه)`, test_bad: (e) => `اتصال ناموفق: ${e}`,
+        est: (t, g) => `برآورد هزینه‌ی ارزیابی: ${t} (پاسخ‌ها و داوری ۷۹۸ پرسش؛ هر پاسخ حدود ${g})`,
+        approve: "مبلغ تأییدشده ($)", start: "شروع ارزیابی", sure: (a) => `ارزیابی تا سقف ${a} از اعتبار سرویس خرج می‌کند. ادامه می‌دهید؟`, yes: "بله، شروع کن", no: "انصراف",
+        phase_answers: "گرفتن پاسخ‌ها", phase_judging: "داوری پاسخ‌ها", phase_results: "محاسبه‌ی نتیجه", progress: (d, t, c) => `${d} از ${t} · هزینه تا اینجا ${c}`,
+        res_t: "کیفیت در هر موضوع (درصد قبولی روی پرسش‌های اعتبارسنجی)", res_pick: "در حالت متعادل، این مدل در این موضوع‌ها انتخاب می‌شود:", res_none: "در حالت متعادل در هیچ موضوعی انتخاب نمی‌شود؛ در حالت «بهترین کیفیت» یا با λ دیگر شاید.",
+        overall: "کل", activate: "روشن کردن در مسیریاب", deactivate: "خاموش کردن", remove: "حذف", partial: "ارزیابی کامل نیست و نمی‌توان آن را روشن کرد.",
+        errs: {bad_id: "شناسه فقط حروف کوچک انگلیسی، عدد، نقطه و خط تیره.", exists: "این مدل قبلاً وجود دارد.", bad_fields: "مشخصات کامل یا درست نیست."} },
+  en: { kick: "Manage models", title: "Add a new model to the router", lead: "The UniRoute way: the new model answers the same 798 validation questions, the same judge scores them, and one column is added to the per-topic quality table. Clusters and λ stay as they are, and the sealed test data is never opened.",
+        s1: "Register", s2: "Test the connection", s3: "Approve the cost", s4: "Evaluate on 798 questions", s5: "Switch it on",
+        demo: "The server is in demo mode: the evaluation uses placeholder answers and costs nothing, but its result is not real.",
+        list_t: "Models", add_t: "Register a new model", add_p: "The model's details on Metis AI. Prices in USD per million tokens.",
+        f_id: "Id", f_api: "Model name on Metis", f_path: "Provider path", f_ctx: "Max input length (tokens)", f_in: "Input price ($/1M)", f_out: "Output price ($/1M)",
+        f_tok: "Answer length parameter", f_extra: "Extra parameters (JSON, optional)", f_vis: "Reads images", add_btn: "Register model",
+        shipped: "core", active: "on in the router", added: "registered", running: "evaluating", done: "evaluated", failed: "failed", stopped: "stopped",
+        pass: (p) => `pass ${p}`, price: (i, o) => `$${i} / $${o}`,
+        test: "Test connection", test_ok: (ms) => `Connected (${ms} ms)`, test_bad: (e) => `Connection failed: ${e}`,
+        est: (t, g) => `Estimated evaluation cost: ${t} (answers and judging for 798 questions; about ${g} per answer)`,
+        approve: "Approved amount ($)", start: "Start evaluation", sure: (a) => `The evaluation will spend up to ${a} of the service's credit. Continue?`, yes: "Yes, start", no: "Cancel",
+        phase_answers: "Collecting answers", phase_judging: "Judging answers", phase_results: "Computing the result", progress: (d, t, c) => `${d} of ${t} · cost so far ${c}`,
+        res_t: "Quality per topic (pass rate on the validation questions)", res_pick: "In Balanced mode this model would be picked on:", res_none: "In Balanced mode it is not picked on any topic; with Best quality or another λ it may be.",
+        overall: "Overall", activate: "Switch on in the router", deactivate: "Switch off", remove: "Remove", partial: "The evaluation is not complete, so it cannot be switched on.",
+        errs: {bad_id: "Id: lowercase letters, digits, dots and dashes only.", exists: "This model already exists.", bad_fields: "Some details are missing or wrong."} },
+});
+const $ = (id) => document.getElementById(id);
+let data = null, router = null, timer = null, estimates = {};
+function statusOf(m) {
+  if (m.shipped) return ["brand", "shipped"];
+  if (m.active) return ["ok", "active"];
+  const s = m.status?.state;
+  if (s === "running" || s === "queued") return ["warn", "running"];
+  if (s) return [s === "done" ? "ok" : "err", s];
+  return ["", "added"];
+}
+function fpTable(m) {
+  const r = m.result; if (!r || !router) return "";
+  const ids = [...router.models.map((x) => x.id).filter((x) => x !== m.id), m.id];
+  const lam = data.lambda;
+  const cost = Object.fromEntries(router.models.map((x) => [x.id, x.relative_cost])); cost[m.id] = r.c_hat;
+  let h = `<div class="scroll-x" style="margin-top:12px"><b style="font-size:13px">${TR.t("res_t")}</b><table class="t fp"><tr><th></th>${ids.map((i) => `<th class="ltr">${TR.model(i).name}</th>`).join("")}</tr>`;
+  const picks = [];
+  router.clusters.forEach((c, k) => {
+    const q = Object.fromEntries(ids.map((i) => [i, i === m.id ? (r.psi[k] == null ? null : 1 - r.psi[k]) : c.pass_rate[i]]));
+    const scores = ids.map((i) => [i, (1 - (q[i] ?? 0)) + lam * cost[i]]).sort((a, b) => a[1] - b[1] || cost[a[0]] - cost[b[0]]);
+    if (scores[0][0] === m.id) picks.push(TR.topic(k, c.name));
+    const best = Math.max(...ids.map((i) => q[i] ?? -1));
+    h += `<tr><td>${TR.topic(k, c.name)}</td>${ids.map((i) => `<td class="${q[i] === best ? "win" : ""}">${q[i] == null ? "—" : TR.pct(q[i])}</td>`).join("")}</tr>`;
+  });
+  h += `<tr><td><b>${TR.t("overall")}</b></td>${ids.map((i) => `<td><b>${TR.pct(i === m.id ? r.pass_rate : data.shipped_pass_rate[i])}</b></td>`).join("")}</tr></table></div>`;
+  h += `<p style="font-size:13.5px;margin:10px 0 0">${picks.length ? TR.t("res_pick") + " <b>" + picks.join("، ") + "</b>" : TR.t("res_none")}</p>`;
+  return h;
+}
+function card(m) {
+  const [cls, st] = statusOf(m), info = TR.model(m.id);
+  const c = document.createElement("div"); c.className = "mcard";
+  c.innerHTML = `<div class="hd"><i class="sw" style="background:${info.color}"></i><b class="ltr"></b><span class="tag ${cls}">${TR.t(st)}</span>
+    <span class="tag ltr">${TR.t("price", m.price_in, m.price_out)}</span>${m.result?.pass_rate != null ? `<span class="tag">${TR.t("pass", TR.pct(m.result.pass_rate))}</span>` : m.shipped && data.shipped_pass_rate[m.id] != null ? `<span class="tag">${TR.t("pass", TR.pct(data.shipped_pass_rate[m.id]))}</span>` : ""}</div>`;
+  c.querySelector(".hd b").textContent = info.name === m.id ? m.id : `${info.name} (${m.id})`;
+  if (m.shipped) return c;
+  const s = m.status;
+  if (s && (s.state === "running" || s.state === "queued")) {
+    const pct = s.total ? s.done / s.total : 0;
+    c.insertAdjacentHTML("beforeend", `<div style="margin-top:10px;font-size:13px"><b>${TR.t("phase_" + (s.phase || "answers"))}</b> · ${TR.t("progress", TR.num(s.done), TR.num(s.total), TR.usd(s.cost_usd))}</div><div class="prog"><i style="width:${pct * 100}%"></i></div>`);
+    return c;
+  }
+  if (m.result) c.insertAdjacentHTML("beforeend", fpTable(m));
+  const acts = document.createElement("div"); acts.className = "acts"; c.append(acts);
+  const msg = document.createElement("div"); msg.style.cssText = "font-size:13px;margin-top:8px"; c.append(msg);
+  if (m.result && !m.active) {
+    const b = button(TR.t("activate"), "primary"); b.disabled = !m.result.complete;
+    b.onclick = () => act(`/v1/models/${m.id}/activate`); acts.append(b);
+    if (!m.result.complete) msg.textContent = TR.t("partial");
+  }
+  if (m.active) { const b = button(TR.t("deactivate"), "ghost"); b.onclick = () => act(`/v1/models/${m.id}/deactivate`); acts.append(b); }
+  if (!m.active && !m.result) {
+    const tb = button(TR.t("test"), "ghost");
+    tb.onclick = async () => { tb.disabled = true; try { const r = await TR.api(`/v1/models/${m.id}/test`, {method: "POST"}); msg.className = r.ok ? "notice ok" : "notice err"; msg.textContent = r.ok ? TR.t("test_ok", TR.num(r.latency_ms)) : TR.t("test_bad", r.error); } catch (x) { msg.className = "notice err"; msg.textContent = x.message; } tb.disabled = false; };
+    acts.append(tb);
+    const est = estimates[m.id];
+    const amt = document.createElement("input"); amt.className = "input ltr"; amt.type = "number"; amt.step = "0.1"; amt.min = "0"; amt.style.width = "110px";
+    amt.value = est ? Math.ceil(est.total_usd * 1.2 * 10) / 10 : ""; amt.title = TR.t("approve");
+    const lab = document.createElement("span"); lab.className = "muted"; lab.style.fontSize = "13px"; lab.textContent = TR.t("approve");
+    const sb = button(TR.t("start"), "primary");
+    const conf = document.createElement("div"); conf.className = "confirm";
+    sb.onclick = () => { conf.innerHTML = ""; conf.append(TR.t("sure", TR.usd(+amt.value))); const y = button(TR.t("yes"), "primary"), n = button(TR.t("no"), "ghost");
+      y.style.margin = "8px 0 0"; n.style.margin = "8px 8px 0";
+      y.onclick = async () => { conf.classList.remove("show"); try { await TR.api(`/v1/models/${m.id}/evaluate`, {method: "POST", body: {approved_usd: +amt.value}}); load(); } catch (x) { msg.className = "notice err"; msg.textContent = x.message; } };
+      n.onclick = () => conf.classList.remove("show"); conf.append(document.createElement("br"), y, n); conf.classList.add("show"); };
+    acts.append(lab, amt, sb); c.append(conf);
+    if (est) { const e = document.createElement("p"); e.className = "muted"; e.style.cssText = "font-size:13px;margin:8px 0 0"; e.textContent = TR.t("est", TR.usd(est.total_usd), TR.usd(est.gen_per_call)); c.append(e); }
+    else TR.api(`/v1/models/${m.id}/estimate`).then((r) => { estimates[m.id] = r; draw(); }).catch(() => {});
+  }
+  if (!m.active) { const rb = button(TR.t("remove"), "danger"); rb.onclick = async () => { await TR.api(`/v1/models/${m.id}`, {method: "DELETE"}); load(); }; acts.append(rb); }
+  return c;
+}
+function button(text, kind) { const b = document.createElement("button"); b.className = "btn small " + kind; b.type = "button"; b.textContent = text; return b; }
+async function act(path) { try { await TR.api(path, {method: "POST"}); router = await TR.api("/v1/router"); load(); } catch (x) { TR.toast(x.message); } }
+function draw() { if (!data) return; $("list").innerHTML = ""; for (const m of data.models) $("list").append(card(m)); $("demo").classList.toggle("hide", data.live); }
+async function load() {
+  data = await TR.api("/v1/models"); draw();
+  clearTimeout(timer);
+  if (data.models.some((m) => ["running", "queued"].includes(m.status?.state))) timer = setTimeout(load, 2000);
+}
+$("addf").onsubmit = async (e) => {
+  e.preventDefault(); $("adderr").classList.add("hide");
+  let extra = {}; if ($("f_extra").value.trim()) { try { extra = JSON.parse($("f_extra").value); } catch { $("adderr").textContent = TR.t("errs").bad_fields; $("adderr").classList.remove("hide"); return; } }
+  const path = $("f_path").value;
+  const body = {id: $("f_id").value.trim(), api_name: $("f_api").value.trim() || $("f_id").value.trim(), api_path: path,
+    provider: path.includes("anthropic") ? "anthropic" : path.includes("google") ? "google" : path.includes("deepseek") ? "deepseek" : "openai",
+    price_in: +$("f_in").value, price_out: +$("f_out").value, context_window: +$("f_ctx").value, vision: $("f_vis").checked,
+    rename: $("f_tok").value === "max_completion_tokens" ? {max_tokens: "max_completion_tokens"} : {}, add: extra};
+  try { const r = await TR.api("/v1/models", {method: "POST", body}); estimates[r.model.id] = r.estimate; $("addf").reset(); load(); }
+  catch (x) { $("adderr").textContent = TR.t("errs")[x.message] || x.message; $("adderr").classList.remove("hide"); }
+};
+TR.onLang(draw);
+TR.requireLogin().then(async (me) => {
+  if (me.role !== "admin") { location.href = "/"; return; }
+  router = await TR.api("/v1/router"); load();
+});
+</script>
+</body>
+</html>

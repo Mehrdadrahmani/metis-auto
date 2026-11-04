@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TakRouter | مسیریاب هوشمند مدل‌های زبانی</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#9933ff;--blue:#3366ff;--pink:#ff3366;--ink:#17132b;--ink2:#514c6b;--ink3:#7d7893;--bg:#fafaff;--card:#fff;--line:#e8e6f2;--tint:#f3eefe;
+--grad:linear-gradient(120deg,#3366ff,#9933ff 55%,#ff3366);--deepseek:#1e88e5;--luna:#0f9d8a;--gemini:#c98500;--sonnet:#e0245e;--tak:#7a22e0}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#f2f0fa;--ink2:#bab6cf;--ink3:#8f8aa8;--bg:#100d1e;--card:#1a1630;--line:#2e2849;--tint:#231c40;--deepseek:#7c9dff;--luna:#3fc7b3;--gemini:#f0b429;--sonnet:#ff6f94;--tak:#b67bff}}
+:root[data-theme=dark]{--ink:#f2f0fa;--ink2:#bab6cf;--ink3:#8f8aa8;--bg:#100d1e;--card:#1a1630;--line:#2e2849;--tint:#231c40;--deepseek:#7c9dff;--luna:#3fc7b3;--gemini:#f0b429;--sonnet:#ff6f94;--tak:#b67bff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.8 Vazirmatn,Tahoma,sans-serif}
+a{color:inherit}.wrap{max-width:1120px;margin:auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:22px;height:62px}.logo{font-weight:800;font-size:20px;direction:ltr;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav a.l{text-decoration:none;color:var(--ink2);font-size:14px}nav a.l:hover{color:var(--ink)}nav .sp{flex:1}
+#themeBtn{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:9px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer}
+.hero{padding:82px 0 56px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;inset:-40% -10% auto auto;width:640px;height:640px;background:radial-gradient(closest-side,#9933ff33,transparent);pointer-events:none}
+h1{font-size:clamp(32px,5.2vw,54px);line-height:1.25;margin:0 0 18px;font-weight:800;letter-spacing:-.5px}h1 b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(16px,2vw,19px);color:var(--ink2);max-width:680px;margin:0 0 28px}
+.btn{display:inline-block;padding:11px 24px;border-radius:12px;text-decoration:none;font-weight:700;border:0;font-family:inherit;font-size:15px;cursor:pointer}.btn.p{background:var(--grad);color:#fff}.btn.g{border:1px solid var(--line);background:var(--card);color:var(--ink)}
+section{padding:54px 0}h2{font-size:clamp(24px,3vw,32px);margin:0 0 8px;font-weight:800}.sub{color:var(--ink2);margin:0 0 28px;max-width:760px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.tile .v{font-size:32px;font-weight:800;line-height:1.3;direction:ltr;text-align:right}.tile .k{font-size:14px;font-weight:700}.tile .d{font-size:13px;color:var(--ink3);line-height:1.6;margin-top:4px}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}.step{flex:1 1 130px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px}.step b{display:block;font-size:14px}.step span{font-size:12.5px;color:var(--ink3);line-height:1.6;display:block}.step i{font-style:normal;font-size:12px;font-weight:800;color:var(--purple);direction:ltr;display:block}
+table{width:100%;border-collapse:collapse;font-size:14px}th{font-weight:700;color:var(--ink2);text-align:right;border-bottom:1px solid var(--line);padding:8px}td{padding:8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}.ltr{direction:ltr;unicode-bidi:isolate}
+.verdict{display:inline-flex;gap:6px;align-items:center;font-weight:700;font-size:13px;padding:2px 10px;border-radius:99px;background:var(--tint)}
+.note{font-size:13px;color:var(--ink3);margin-top:12px}
+.warn{border-inline-start:4px solid var(--pink);padding:12px 16px;background:var(--tint);border-radius:10px;font-size:15px}
+svg text{font-family:Vazirmatn,Tahoma,sans-serif}#tip{position:fixed;display:none;background:var(--ink);color:var(--bg);font-size:13px;padding:6px 10px;border-radius:8px;pointer-events:none;z-index:9;max-width:260px}
+textarea{width:100%;min-height:92px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;resize:vertical}
+.bar{height:9px;border-radius:0 4px 4px 0;background:var(--tak)}.row{display:grid;grid-template-columns:150px 1fr 54px;gap:8px;align-items:center;font-size:13px}
+.chip{display:inline-block;font-size:12px;padding:0 9px;border-radius:99px;background:var(--tint);margin-inline-end:6px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--ink3)}
+@media (max-width:640px){nav a.l{display:none}.row{grid-template-columns:110px 1fr 46px}}
+</style></head>
+<body>
+<nav><div class="wrap"><span class="logo">TakRouter</span><a class="l" href="#how">چطور کار می‌کند</a><a class="l" href="#results">نتایج</a><a class="l" href="#try">امتحان کنید</a><a class="l" href="#live">مانیتور زنده</a><a class="l" href="#start">شروع</a><span class="sp"></span><button id="themeBtn">تم</button></div></nav>
+<header class="hero"><div class="wrap"><h1>هر پیام، <b>مدل درست</b>،<br>با هزینه‌ای که می‌فهمید.</h1>
+<p class="lead">TakRouter یک درگاه سازگار با OpenAI است که با روش UniRoute برای هر پیام مدل مناسب را انتخاب می‌کند و کش معنایی، بررسی کیفیت، تشدید و جایگزینی خودکار را هم انجام می‌دهد.</p>
+<a class="btn p" href="#try">امتحان کنید</a> <a class="btn g" href="#results">نتایج آزمون</a></div></header>
+<div class="wrap"><div class="grid g4" id="tiles"></div></div>
+<section id="how"><div class="wrap"><h2>مسیر هر درخواست</h2><p class="sub">هفت مرحله، با سربار p95 حدود <span id="ovh">۷۲</span> میلی‌ثانیه بدون زمان خود مدل.</p><div class="flow" id="flow"></div>
+<div class="card" style="margin-top:16px"><b>قلب مسیریاب: UniRoute</b><p style="margin:6px 0 0;color:var(--ink2);font-size:15px">پیام‌ها خوشه‌بندی می‌شوند و هر مدل برای هر خوشه یک «اثر انگشت» نرخ خطا دارد. امتیاز هر مدل این است: <span class="ltr">s(h) = Ψ<sub>k</sub>(h) + λ·ĉ(h)</span>. افزودن مدل تازه فقط یک ردیف به این جدول اضافه می‌کند.</p></div></div></section>
+<section id="results"><div class="wrap"><h2>نتایج روی داده آزمون مهرشده</h2><p class="sub" id="rsub"></p><div class="warn" id="honest"></div>
+<div class="grid g2" style="margin-top:16px"><div class="card"><b>هزینه در برابر کیفیت</b><div id="scatter"></div><div class="note">محور افقی لگاریتمی است. خطوط، بازه اطمینان ۹۵٪ هستند.</div></div>
+<div class="card"><b>معیارهای از پیش ثبت‌شده</b><table id="crit"></table><div class="note">با تأخیر replay از تماس‌های ذخیره‌شده. مقایسه دوم با DeepSeek بعد از دیدن داده اعتبارسنجی به پروتکل اضافه شد، پیش از باز شدن آزمون.</div></div></div>
+<div class="card" style="margin-top:16px;overflow-x:auto"><b>نردبان مسیریاب‌ها</b><table id="ladder"></table></div>
+<div class="grid g2" style="margin-top:16px"><div class="card" style="overflow-x:auto"><b>به تفکیک خوشه (K = 8)</b><table id="clusters"></table></div><div class="card" id="kh"></div></div>
+<div class="card" style="margin-top:16px;overflow-x:auto"><b>تأخیر زنده واقعی</b><table id="livet"></table></div></div></section>
+<section id="try"><div class="wrap"><h2>امتحان کنید</h2><p class="sub">پیام بنویسید تا مسیریاب تصمیمش را نشان دهد. این بخش به درگاه محلی نیاز دارد. در حالت پیش‌فرض پاسخ نمایشی است و هزینه‌ای ندارد.</p>
+<div class="grid g2"><div class="card"><textarea id="msg">یک برنامه سفر سه روزه به شیراز پیشنهاد بده</textarea><div style="margin-top:10px"><button class="btn p" id="send">ارسال</button></div></div><div class="card" id="answer"><span class="note">نتیجه اینجا می‌آید.</span></div></div></div></section>
+<section id="live"><div class="wrap"><h2>مانیتور زنده</h2><p class="sub">شمارنده‌ها از <span class="ltr">/metrics</span> و وضعیت مدل‌ها از <span class="ltr">/health</span>. متن پیام‌ها ذخیره نمی‌شود.</p><div class="grid g2"><div class="card" id="mon"><span class="note">درگاه در دسترس نیست. آن را محلی اجرا کنید.</span></div><div class="card" style="overflow-x:auto"><b>آخرین درخواست‌ها</b><table id="traces"></table></div></div></div></section>
+<section id="start"><div class="wrap"><h2>شروع در یک دقیقه</h2><div class="card ltr" style="direction:ltr;text-align:left;font:13px/1.9 ui-monospace,Menlo,monospace;overflow-x:auto"><pre style="margin:0">TAKROUTER_FAKE_EMBED=1 uv run uvicorn metis.gateway.app:app --port 8000
+# http://localhost:8000
+
+from openai import OpenAI
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="local")
+reply = client.chat.completions.create(model="takrouter", messages=[{"role": "user", "content": "سلام"}])</pre></div></div></section>
+<footer><div class="wrap">TakRouter، پروژه کالج رهنما ۲۰۲۶. هر عدد با n و نوع آن (اندازه‌گیری‌شده یا شبیه‌سازی) همراه است.</div></footer>
+<div id="tip"></div>
+<script>
+const fa=s=>String(s).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]).replace(/\./g,'٫');
+const pc=(x,d=1)=>fa((x*100).toFixed(d))+'٪', $=i=>document.getElementById(i);
+const safe=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NAMES={'deepseek-v4-flash':'DeepSeek','gpt-5.6-luna':'Luna','gemini-2.5-flash-lite':'Gemini','claude-sonnet-5-5':'Sonnet','K = 8':'TakRouter K=8','K = 4':'TakRouter K=4'};
+const VAR={'deepseek-v4-flash':'--deepseek','gpt-5.6-luna':'--luna','gemini-2.5-flash-lite':'--gemini','claude-sonnet-5-5':'--sonnet','K = 8':'--tak','K = 4':'--tak'};
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const stored=(()=>{try{return localStorage.getItem('tak-theme')}catch{return null}})();if(stored)document.documentElement.dataset.theme=stored;
+$('themeBtn').onclick=()=>{const dark=matchMedia('(prefers-color-scheme: dark)').matches,cur=document.documentElement.dataset.theme||(dark?'dark':'light'),n=cur=='dark'?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('tak-theme',n)}catch{}if(window.D)scatter(window.D)};
+const steps=[['G1','قوانین','ویجت، تصویر، طول متن، وضعیت مدل‌ها'],['G2','بردار','فقط پیام فعلی با Jina نانو'],['G3','کش','تطابق دقیق و معنایی با قوانین ایمنی'],['G4','مسیریابی','UniRoute با K و λ فریزشده'],['G5','تماس','جایگزینی خودکار و قطع‌کن مدار'],['G6','بررسی','ترمیم و تشدید تا دو مرحله'],['G7','رهگیری','یک ردیف برای هر درخواست، بدون متن']];
+$('flow').innerHTML=steps.map(s=>`<div class="step"><i>${s[0]}</i><b>${s[1]}</b><span>${s[2]}</span></div>`).join('');
+function tiles(d){const t=d.test,p=t.primary['K = 8 vs Sonnet'],r=t.replay['TakRouter plain'],l=d.live;
+const items=[['کاهش هزینه نسبت به Sonnet',pc(1-p.cost_ratio,0),`اندازه‌گیری‌شده، n=${fa(t.n)}`],['نرخ قبولی',pc(t.pass_rates['K = 8']),`Sonnet ${pc(t.pass_rates['claude-sonnet-5-5'])}، DeepSeek ${pc(t.pass_rates['deepseek-v4-flash'])}`],['تأخیر p90',fa((r.p90/1000).toFixed(1))+' ثانیه',`Sonnet ${fa((t.replay['Always Sonnet'].p90/1000).toFixed(1))} ثانیه، replay`],['در قطعی مدل',pc(t.replay['10-minute outage of DeepSeek'].failed,0)+' خطا','قطعی ۱۰ دقیقه‌ای شبیه‌سازی‌شده']];
+$('tiles').innerHTML=items.map(i=>`<div class="card tile"><div class="k">${i[0]}</div><div class="v">${i[1]}</div><div class="d">${i[2]}</div></div>`).join('')}
+function scatter(d){const t=d.test,keys=['claude-sonnet-5-5','deepseek-v4-flash','gpt-5.6-luna','gemini-2.5-flash-lite','K = 8','K = 4'];
+const W=520,H=300,m={l:46,r:18,t:14,b:40},lg=Math.log10,x0=lg(.3),x1=lg(30),y0=.46,y1=.78;
+const X=c=>m.l+(lg(c)-x0)/(x1-x0)*(W-m.l-m.r),Y=q=>H-m.b-(q-y0)/(y1-y0)*(H-m.t-m.b);
+const se=q=>1.96*Math.sqrt(q*(1-q)/t.n);let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="هزینه در برابر کیفیت" direction="ltr">`;const g=css('--line'),ink=css('--ink3');
+[.5,.6,.7].forEach(q=>{s+=`<line x1="${m.l}" x2="${W-m.r}" y1="${Y(q)}" y2="${Y(q)}" stroke="${g}"/><text x="${m.l-7}" y="${Y(q)+4}" text-anchor="end" font-size="11" fill="${ink}">${pc(q,0)}</text>`});
+[.3,1,3,10,30].forEach(c=>{s+=`<text x="${X(c)}" y="${H-m.b+17}" text-anchor="middle" font-size="11" fill="${ink}">${fa('$'+c)}</text>`});
+s+=`<text x="${(W+m.l)/2}" y="${H-5}" text-anchor="middle" font-size="11.5" fill="${ink}">هزینه برای هر ۱۰۰۰ پیام</text>`;
+const off={'K = 8':[62,-2],'deepseek-v4-flash':[-42,4],'K = 4':[0,-16],'gpt-5.6-luna':[28,20],'gemini-2.5-flash-lite':[6,20],'claude-sonnet-5-5':[-6,20]};
+keys.forEach(k=>{const c=t.usd_1k[k],q=t.pass_rates[k],col=css(VAR[k]),e=se(q),x=X(c),y=Y(q);const tip=`${NAMES[k]}: قبولی ${pc(q)}، هزینه ${fa('$'+c.toFixed(2))} برای هر ۱۰۰۰ پیام`;
+s+=`<g data-tip="${tip}"><line x1="${x}" x2="${x}" y1="${Y(q-e)}" y2="${Y(q+e)}" stroke="${col}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="7" fill="${col}" stroke="${css('--card')}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="17" fill="transparent"/><text x="${x+off[k][0]}" y="${y+off[k][1]}" text-anchor="middle" font-size="12" font-weight="700" fill="${css('--ink')}">${NAMES[k]}</text></g>`});
+$('scatter').innerHTML=s+'</svg>';bindTips()}
+function bindTips(){document.querySelectorAll('[data-tip]').forEach(n=>{n.onmousemove=e=>{const t=$('tip');t.textContent=n.dataset.tip;t.style.display='block';t.style.left=e.clientX+12+'px';t.style.top=e.clientY+12+'px'};n.onmouseleave=()=>$('tip').style.display='none'})}
+function tables(d){const t=d.test,c=t.criteria,p=t.primary['K = 8 vs Sonnet'],q=t.primary['K = 8 vs DeepSeek'],r=t.replay;const ok=b=>`<span class="verdict">${b?'✓ برقرار':'✗ برقرار نیست'}</span>`;
+$('rsub').textContent=`${fa(t.n)} پیام آزمون، مسیریاب و پروتکل پیش از باز شدن با برچسب pre-test قفل شدند. برچسب کیفیت از داور Jev با آستانه ۷ است.`;
+$('honest').innerHTML=`<b>یافته صادقانه:</b> TakRouter با K=8 نسبت به Sonnet حدود ${pc(1-p.cost_ratio,0)} ارزان‌تر است و کیفیتش پایین‌تر نیست، اما از همیشه DeepSeek بهتر نیست (اختلاف ${pc(q.diff)}، بازه ${pc(q.low)} تا ${pc(q.high)}). در این داده DeepSeek به‌تنهایی قوی است و ${t.shares['K = 8'][0]>0?pc(t.shares['K = 8'][0]/t.n,0):''} پیام‌ها هم به آن می‌روند.`;
+$('crit').innerHTML=`<tr><th>معیار</th><th>نتیجه</th><th></th></tr><tr><td>هزینه دست‌کم ۴۰٪ کمتر از Sonnet</td><td>${pc(1-p.cost_ratio)}</td><td>${ok(c.cost_40)}</td></tr><tr><td>کران پایین اختلاف کیفیت ≥ −۵ واحد</td><td>${pc(p.low)}</td><td>${ok(c.noninferior)}</td></tr><tr><td>p90 تأخیر ≤ Sonnet</td><td>${fa((r['TakRouter plain'].p90/1000).toFixed(1))} در برابر ${fa((r['Always Sonnet'].p90/1000).toFixed(1))} ثانیه</td><td>${ok(c.latency)}</td></tr><tr><td>ارزش افزوده بر DeepSeek</td><td>${pc(q.diff)}</td><td>${ok(c.adds_over_deepseek)}</td></tr>`;
+$('ladder').innerHTML='<tr><th>مسیریاب</th><th>مساحت</th><th>تفاوت با K=8 (بازه ۹۵٪)</th></tr>'+t.ladder.filter(l=>l.router!='Always-Sonnet').map(l=>`<tr><td class="ltr">${l.router}</td><td>${fa(l.area.toFixed(3))}</td><td>${l.router=='UniRoute K = 8'?'–':`${fa(l.minus_k8.toFixed(3))} (${fa(l.low.toFixed(3))} تا ${fa(l.high.toFixed(3))})`}</td></tr>`).join('');
+$('clusters').innerHTML='<tr><th>خوشه</th><th>n</th><th>TakRouter</th><th>DeepSeek</th><th>Sonnet</th></tr>'+t.per_cluster.map(k=>`<tr><td class="ltr">${safe(k.name)}</td><td>${fa(k.n)}</td><td>${pc(k.router,0)}</td><td>${pc(k.deepseek,0)}</td><td>${pc(k.sonnet,0)}</td></tr>`).join('');
+const K=d.khayyam;$('kh').innerHTML=K?`<b>آزمون خیام (پاسخ درست واقعی)</b><table><tr><th>مدل</th><th>دقت</th></tr>${K.models.map(m=>`<tr><td class="ltr">${m}</td><td>${pc(K.accuracy_test[m])}</td></tr>`).join('')}<tr><td>TakRouter، K=${fa(K.k_star)}</td><td>${pc(K.router_acc)}</td></tr></table><div class="note">${fa(1100)} پرسش آزمون، بدون داور. تفاوت مساحت با ZeroRouter: ${fa(K.area_gain.toFixed(3))} (${fa(K.area_gain_ci[0].toFixed(3))} تا ${fa(K.area_gain_ci[1].toFixed(3))}).</div>`:'<b>آزمون خیام</b><p class="note">نتیجه هنوز ثبت نشده است.</p>';
+const L=d.live;$('livet').innerHTML=L?'<tr><th>حالت</th><th>n</th><th>p50 ثانیه</th><th>p90 ثانیه</th><th>دلار برای ۱۰۰۰ پیام</th></tr>'+Object.entries(L).map(([k,v])=>`<tr><td class="ltr">${k}</td><td>${fa(v.n)}</td><td>${fa(v.p50.toFixed(2))}</td><td>${fa(v.p90.toFixed(2))}</td><td>${fa(v.usd_1k.toFixed(2))}</td></tr>`).join(''):'<tr><td class="note">هنوز ثبت نشده است.</td></tr>'}
+async function load(){for(const u of ['web/data.json','data.json']){try{const r=await fetch(u);if(r.ok){const d=await r.json();window.D=d;tiles(d);scatter(d);tables(d);return}}catch{}}}
+load();
+$('send').onclick=async()=>{const a=$('answer');a.innerHTML='<span class="note">در حال ارسال…</span>';try{const r=await fetch('/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'takrouter',messages:[{role:'user',content:$('msg').value}]})});const j=await r.json();if(!r.ok)throw 0;const t=j.takrouter,ss=Object.entries(t.scores||{}).sort((x,y)=>x[1]-y[1]),max=Math.max(...ss.map(s=>s[1]),.01);
+a.innerHTML=`<span class="chip ltr">${safe(j.model)}</span><span class="chip">خوشه ${fa(t.cluster??'–')}</span><span class="chip">کش: ${safe(t.cache)}</span><p style="margin:10px 0">${safe(j.choices[0].message.content)}</p><div class="note" style="margin-bottom:6px">امتیاز هر مدل، کمتر بهتر است</div>`+ss.map(([m,v])=>`<div class="row"><span class="ltr">${safe(m)}</span><div class="bar" style="width:${Math.max(3,v/max*100)}%"></div><span>${fa(v.toFixed(2))}</span></div>`).join('')}catch{a.innerHTML='<span class="note">درگاه در دسترس نیست. دستور بخش «شروع» را اجرا کنید.</span>'}};
+async function poll(){try{const [m,h,t]=await Promise.all(['/metrics','/health','/v1/traces?limit=8'].map(u=>fetch(u).then(r=>{if(!r.ok)throw 0;return r.json()})));
+$('mon').innerHTML=`<table><tr><td>درخواست‌ها</td><td>${fa(m.requests)}</td></tr><tr><td>هزینه</td><td>${fa('$'+m.cost_usd.toFixed(4))}</td></tr><tr><td>نرخ کش</td><td>${pc(m.cache_hits)}</td></tr><tr><td>p90</td><td>${fa(Math.round(m.latency_p90))} میلی‌ثانیه</td></tr><tr><td>تأمین‌کننده</td><td class="ltr">${safe(h.provider)}</td></tr></table><div style="margin-top:8px">${Object.entries(h.breakers).map(([k,v])=>`<span class="chip ltr">${safe(k)}: ${safe(v)}</span>`).join('')}</div>`;
+$('traces').innerHTML='<tr><th>مدل</th><th>کش</th><th>وضعیت</th></tr>'+t.map(r=>`<tr><td class="ltr">${safe(r.served_by||'–')}</td><td class="ltr">${safe(r.cache)}</td><td class="ltr">${safe(r.status)}</td></tr>`).join('')}catch{}}
+poll();setInterval(poll,4000);
+</script></body></html>

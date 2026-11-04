@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.cols{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;align-items:start}
+.newkey{background:var(--okbg);border-radius:12px;padding:12px;margin:10px 0;display:none}
+.newkey.show{display:block}
+.newkey code{display:block;word-break:break-all;margin:6px 0;font-size:13px;background:var(--panel)}
+.row-inline{display:flex;gap:8px}
+td input.input{padding:5px 8px;width:110px}
+td select.input{padding:5px 8px;width:auto}
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+#ownkey{margin-top:16px;scroll-margin-top:80px}
+.ok-state{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:var(--chip);margin:0 0 12px;font-size:14px}
+.ok-state .pillx{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px}
+.pillx.good{background:var(--okbg);color:var(--ok)}.pillx.bad{background:var(--errbg);color:var(--err)}.pillx.mid{background:var(--panel);color:var(--ink2)}
+.keyrow{display:flex;gap:8px;flex-wrap:wrap}.keyrow .input{flex:1;min-width:220px}
+.own-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.steps{margin:0 0 12px;padding-inline-start:20px;font-size:13.5px;color:var(--ink2);line-height:1.9}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 id="hello"></h1><p id="who" class="muted"></p></div>
+  <div class="cols">
+    <div class="grid">
+      <div class="card"><h3 data-i18n="profile"></h3>
+        <div class="field"><label for="name" data-i18n="name"></label><div class="row-inline"><input class="input" id="name"><button class="btn ghost small" id="savename" data-i18n="save"></button></div></div>
+        <div class="field"><label data-i18n="credit"></label><b id="credit">—</b><span class="muted" id="spent" style="font-size:13px"></span></div>
+      </div>
+      <div class="card"><h3 data-i18n="prefs"></h3>
+        <label class="switch" style="margin:6px 0 14px"><input type="checkbox" id="trace"><span data-i18n="trace"></span></label>
+        <p class="muted" style="font-size:13px;margin:0 0 14px" data-i18n="trace_p"></p>
+        <div class="field"><label for="plang" data-i18n="lang"></label><select class="input" id="plang"><option value="fa">فارسی</option><option value="en">English</option></select></div>
+      </div>
+    </div>
+    <div class="card"><h3 data-i18n="keys"></h3>
+      <p class="muted" style="font-size:13px;margin:0 0 12px" data-i18n="keys_p"></p>
+      <div class="row-inline"><input class="input" id="keyname" data-i18n-placeholder="keyname"><button class="btn primary small" id="mkkey" data-i18n="newkey"></button></div>
+      <div class="newkey" id="newkey"><b data-i18n="once"></b><code class="ltr" id="keyval"></code><button class="btn ghost small" id="copykey" data-i18n="copy"></button></div>
+      <div class="scroll-x"><table class="t" id="keys" style="margin-top:10px"></table></div>
+    </div>
+  </div>
+  <div class="card" id="ownkey"><h3 data-i18n="own_h"></h3>
+    <p class="muted" style="font-size:13.5px;margin:0 0 10px" data-i18n="own_p"></p>
+    <ol class="steps"><li data-i18n="own_s1"></li><li data-i18n="own_s2"></li><li data-i18n="own_s3"></li></ol>
+    <div class="ok-state" id="ownstate"></div>
+    <div class="keyrow">
+      <input class="input ltr" id="ownval" type="password" autocomplete="off" spellcheck="false" data-i18n-placeholder="own_ph">
+      <button class="btn ghost small" id="ownshow" type="button" data-i18n="show"></button>
+      <button class="btn primary small" id="ownsave" type="button" data-i18n="own_save"></button>
+    </div>
+    <div class="own-actions">
+      <label class="switch"><input type="checkbox" id="ownuse"><span data-i18n="own_use"></span></label>
+      <span class="spacer" style="flex:1"></span>
+      <button class="btn ghost small" id="owntest" type="button" data-i18n="own_test"></button>
+      <button class="btn danger small" id="owndel" type="button" data-i18n="own_del"></button>
+    </div>
+  </div>
+  <div class="card hide" id="admin" style="margin-top:16px"><h3 data-i18n="users"></h3>
+    <p class="muted" style="font-size:13px;margin:0 0 12px" data-i18n="users_p"></p>
+    <div class="scroll-x"><table class="t" id="users"></table></div>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "حساب کاربری", hi: (n) => `سلام ${n}`, profile: "مشخصات", name: "نام", save: "ذخیره", saved: "ذخیره شد",
+        credit: "اعتبار باقی‌مانده", unlimited: "نامحدود (مدیر)", spent: (s) => ` · تا امروز ${s} مصرف شده`,
+        prefs: "ترجیحات", trace: "نمایش مسیر تصمیم در گفتگو", trace_p: "زیر هر پاسخ، مراحل انتخاب مدل را نشان می‌دهد: مدل‌های مجاز، حافظه، منابع، امتیازها، فراخوانی و بررسی.",
+        lang: "زبان", keys: "کلیدهای API", keys_p: "برای وصل کردن برنامه‌ی خودتان. هر کلید فقط یک بار نشان داده می‌شود و مصرفش از اعتبار شما کم می‌شود.",
+        keyname: "نام کلید (مثلاً ربات تلگرام)", newkey: "کلید تازه", once: "این کلید فقط همین یک بار نشان داده می‌شود:",
+        k_name: "نام", k_pre: "شروع", k_made: "ساخته شده", k_used: "آخرین استفاده", del: "حذف", never: "هرگز", none: "هنوز کلیدی نساخته‌اید.",
+        users: "کاربران", users_p: "اعتبار و نقش هر کاربر. مدیران سقف شخصی ندارند؛ سقف کل سرویس در configs/budget.yaml است.",
+        u_email: "ایمیل", u_name: "نام", u_role: "نقش", u_credit: "اعتبار ($)", u_spent: "مصرف", admin: "مدیر", user: "کاربر",
+        own_h: "کلید شخصی Metis AI (اختیاری)",
+        own_p: "اگر خودتان حساب Metis AI دارید، کلیدش را اینجا بگذارید. از آن به بعد گفتگوها و مقایسه‌ها با کلید شما انجام می‌شود: هزینه را مستقیم Metis از حساب شما برمی‌دارد و اعتبار TakRouter شما کم نمی‌شود. مسیریابی هوشمند همان است.",
+        own_s1: "در سایت metisai.ir وارد شوید و از بخش کلیدهای API یک کلید بسازید.",
+        own_s2: "کلید را اینجا بچسبانید و «ذخیره و آزمایش» را بزنید (یک پیام بسیار کوچک، کمتر از یک‌صدم سنت).",
+        own_s3: "کلید رمزگذاری‌شده نگه داشته می‌شود و فقط ۴ حرف آخرش دوباره نشان داده می‌شود. این کلید با «کلیدهای API» بالا فرق دارد: آن‌ها برای وصل کردن برنامه‌ی شما به TakRouter است.",
+        own_ph: "کلید Metis AI خود را بچسبانید", show: "نمایش", hide_: "پنهان", own_save: "ذخیره و آزمایش",
+        own_use: "استفاده از کلید من برای گفتگو", own_test: "آزمایش دوباره", own_del: "حذف کلید",
+        own_none: "کلیدی ثبت نشده است. گفتگوها از اعتبار TakRouter شما استفاده می‌کنند.",
+        own_saved: (tail) => `کلید ثبت شده: …${tail}`, own_ok: "کار می‌کند", own_bad: "پذیرفته نشد", own_untested: "آزمایش نشده",
+        own_unread: "دوباره وارد کنید", own_off: "خاموش", own_testing: "در حال آزمایش…",
+        own_ok_t: "کلید کار می‌کند و از این به بعد استفاده می‌شود.", own_bad_t: "Metis این کلید را نپذیرفت: کلید را بررسی کنید یا موجودی حساب Metis را.",
+        own_net_t: "الان به Metis AI دسترسی نیست؛ کلید ذخیره شد، بعداً دوباره آزمایش کنید.",
+        own_err_bad_provider_key: "این شبیه کلید نیست (حداقل ۱۶ نویسه، بدون فاصله).",
+        own_err_takrouter_key_not_provider_key: "این کلید TakRouter است (tk-…). اینجا کلید Metis AI را بگذارید.",
+        own_deleted: "کلید حذف شد." },
+  en: { kick: "Account", hi: (n) => `Hi ${n}`, profile: "Profile", name: "Name", save: "Save", saved: "Saved",
+        credit: "Credit left", unlimited: "unlimited (admin)", spent: (s) => ` · ${s} used so far`,
+        prefs: "Preferences", trace: "Show the decision trace in chat", trace_p: "Under each answer, shows how the model was chosen: allowed models, cache, retrieved context, scores, call and checks.",
+        lang: "Language", keys: "API keys", keys_p: "To connect your own app. Each key is shown once, and its usage counts against your credit.",
+        keyname: "Key name (e.g. Telegram bot)", newkey: "New key", once: "This key is shown only this once:",
+        k_name: "Name", k_pre: "Starts with", k_made: "Created", k_used: "Last used", del: "Delete", never: "never", none: "No keys yet.",
+        users: "Users", users_p: "Each user's credit and role. Admins have no personal limit; the service limit is in configs/budget.yaml.",
+        u_email: "Email", u_name: "Name", u_role: "Role", u_credit: "Credit ($)", u_spent: "Used", admin: "admin", user: "user",
+        own_h: "Your own Metis AI key (optional)",
+        own_p: "If you have your own Metis AI account, add its key here. Your chats and comparisons then run on your key: Metis bills your account directly and your TakRouter credit is not used. The smart routing stays the same.",
+        own_s1: "Sign in at metisai.ir and create a key under API keys.",
+        own_s2: "Paste it here and press “Save and test” (one tiny message, well under a hundredth of a cent).",
+        own_s3: "The key is stored encrypted and only its last 4 characters are shown again. It is not the same as the “API keys” above: those connect your own app to TakRouter.",
+        own_ph: "Paste your Metis AI key", show: "Show", hide_: "Hide", own_save: "Save and test",
+        own_use: "Use my key for chats", own_test: "Test again", own_del: "Remove key",
+        own_none: "No key saved. Chats use your TakRouter credit.",
+        own_saved: (tail) => `Saved key: …${tail}`, own_ok: "works", own_bad: "refused", own_untested: "not tested",
+        own_unread: "enter it again", own_off: "off", own_testing: "Testing…",
+        own_ok_t: "The key works and will be used from now on.", own_bad_t: "Metis refused this key: check the key or your Metis balance.",
+        own_net_t: "Metis AI can't be reached right now; the key is saved, test it again later.",
+        own_err_bad_provider_key: "That doesn't look like a key (at least 16 characters, no spaces).",
+        own_err_takrouter_key_not_provider_key: "That is a TakRouter key (tk-…). Put your Metis AI key here.",
+        own_deleted: "Key removed." },
+});
+const $ = (id) => document.getElementById(id);
+let me = null, info = null;
+const date = (ts) => ts ? new Date(ts * 1000).toLocaleDateString(TR.lang === "fa" ? "fa-IR" : "en-US") : TR.t("never");
+async function loadMe() { info = await TR.api("/auth/me"); me = info.user; draw(); }
+function draw() {
+  if (!me) return;
+  $("hello").textContent = TR.t("hi", me.name || me.email.split("@")[0]);
+  $("who").textContent = me.email + (me.role === "admin" ? " · " + TR.t("admin") : "");
+  $("name").value = $("name").value || me.name;
+  $("credit").textContent = info.credit_left_usd == null ? TR.t("unlimited") : TR.usd(Math.max(0, info.credit_left_usd));
+  $("spent").textContent = TR.t("spent", TR.usd(info.spent_usd));
+  $("trace").checked = !!me.prefs.show_trace; $("plang").value = TR.lang;
+}
+async function loadKeys(list) {
+  list = list || await TR.api("/auth/keys");
+  $("keys").innerHTML = list.length ? `<tr><th>${TR.t("k_name")}</th><th>${TR.t("k_pre")}</th><th>${TR.t("k_made")}</th><th>${TR.t("k_used")}</th><th></th></tr>` : `<tr><td class="muted">${TR.t("none")}</td></tr>`;
+  for (const k of list) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td></td><td class="ltr"><code></code></td><td>${date(k.created)}</td><td>${date(k.last_used)}</td><td><button class="btn danger small">${TR.t("del")}</button></td>`;
+    tr.children[0].textContent = k.name || "—"; tr.querySelector("code").textContent = k.prefix + "…";
+    tr.querySelector("button").onclick = async () => { await TR.api("/auth/keys/" + k.id, {method: "DELETE"}); loadKeys(); };
+    $("keys").append(tr);
+  }
+}
+async function loadUsers() {
+  const list = await TR.api("/admin/users");
+  $("users").innerHTML = `<tr><th>${TR.t("u_email")}</th><th>${TR.t("u_name")}</th><th>${TR.t("u_role")}</th><th>${TR.t("u_credit")}</th><th>${TR.t("u_spent")}</th></tr>`;
+  for (const u of list) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="ltr"></td><td></td><td><select class="input"><option value="user">${TR.t("user")}</option><option value="admin">${TR.t("admin")}</option></select></td>
+      <td><input class="input ltr" type="number" min="0" step="0.1"></td><td>${TR.usd(u.spent_usd)}</td>`;
+    tr.children[0].textContent = u.email; tr.children[1].textContent = u.name || "—";
+    const sel = tr.querySelector("select"), inp = tr.querySelector("input");
+    sel.value = u.role; inp.value = u.credit_usd; sel.disabled = u.id === me.id;
+    sel.onchange = async () => { await TR.api(`/admin/users/${u.id}`, {method: "PATCH", body: {role: sel.value}}); TR.toast(TR.t("saved")); };
+    inp.onchange = async () => { await TR.api(`/admin/users/${u.id}`, {method: "PATCH", body: {credit_usd: +inp.value}}); TR.toast(TR.t("saved")); };
+    $("users").append(tr);
+  }
+}
+$("savename").onclick = async () => { const r = await TR.api("/auth/me", {method: "PATCH", body: {name: $("name").value}}); me = r.user; TR.me = me; TR.apply(); TR.toast(TR.t("saved")); };
+$("trace").onchange = async () => { const r = await TR.api("/auth/me", {method: "PATCH", body: {prefs: {show_trace: $("trace").checked}}}); me = r.user; TR.toast(TR.t("saved")); };
+$("plang").onchange = async () => { await TR.api("/auth/me", {method: "PATCH", body: {prefs: {lang: $("plang").value}}}); TR.setLang($("plang").value); };
+$("mkkey").onclick = async () => {
+  const r = await TR.api("/auth/keys", {method: "POST", body: {name: $("keyname").value}});
+  $("keyval").textContent = r.key; $("newkey").classList.add("show"); $("keyname").value = ""; loadKeys(r.keys);
+};
+$("copykey").onclick = () => TR.copy($("keyval").textContent);
+
+// ---- own provider key
+let own = {set: false};
+function drawOwn() {
+  const box = $("ownstate"); box.innerHTML = "";
+  const pill = (cls, k) => { const p = document.createElement("span"); p.className = "pillx " + cls; p.textContent = TR.t(k); return p; };
+  if (!own.set) { const s = document.createElement("span"); s.className = "muted"; s.textContent = TR.t("own_none"); box.append(s); }
+  else {
+    const b = document.createElement("b"); b.className = "ltr"; b.textContent = TR.t("own_saved", own.tail); box.append(b);
+    box.append(own.readable === false ? pill("bad", "own_unread") : own.ok === true ? pill("good", "own_ok") : own.ok === false ? pill("bad", "own_bad") : pill("mid", "own_untested"));
+    if (!own.use) box.append(pill("mid", "own_off"));
+  }
+  $("ownuse").checked = !!own.use; $("ownuse").disabled = !own.set;
+  $("owntest").disabled = !own.set; $("owndel").disabled = !own.set;
+}
+async function loadOwn() { own = await TR.api("/auth/provider-key"); drawOwn(); }
+function afterTest(r) {
+  own = {...own, ...r}; drawOwn();
+  const t = r.test; if (!t) return;
+  TR.toast(t.ok ? TR.t("own_ok_t") : t.reason === "own_key_rejected" ? TR.t("own_bad_t") : TR.t("own_net_t"));
+}
+$("ownshow").onclick = () => { const i = $("ownval"); i.type = i.type === "password" ? "text" : "password"; $("ownshow").textContent = TR.t(i.type === "password" ? "show" : "hide_"); };
+$("ownsave").onclick = async () => {
+  const key = $("ownval").value.trim(); if (!key) { $("ownval").focus(); return; }
+  $("ownsave").disabled = true; $("ownsave").textContent = TR.t("own_testing");
+  try {
+    const r = await TR.api("/auth/provider-key", {method: "PUT", body: {key, test: true}});
+    $("ownval").value = ""; $("ownval").type = "password"; $("ownshow").textContent = TR.t("show");
+    own.use = true; afterTest(r);
+  } catch (e) { TR.toast(TR.t("own_err_" + e.message) !== "own_err_" + e.message ? TR.t("own_err_" + e.message) : TR.t("err_net")); }
+  finally { $("ownsave").disabled = false; $("ownsave").textContent = TR.t("own_save"); }
+};
+$("owntest").onclick = async () => {
+  $("owntest").disabled = true; $("owntest").textContent = TR.t("own_testing");
+  try { afterTest(await TR.api("/auth/provider-key/test", {method: "POST"})); } catch { TR.toast(TR.t("err_net")); }
+  finally { $("owntest").textContent = TR.t("own_test"); drawOwn(); }
+};
+$("owndel").onclick = async () => { await TR.api("/auth/provider-key", {method: "DELETE"}); own = {set: false, use: own.use}; drawOwn(); TR.toast(TR.t("own_deleted")); };
+$("ownuse").onchange = async () => {
+  await TR.api("/auth/me", {method: "PATCH", body: {prefs: {use_own_key: $("ownuse").checked}}}); own.use = $("ownuse").checked; drawOwn(); TR.toast(TR.t("saved"));
+};
+TR.onLang(() => { draw(); drawOwn(); if (me) { loadKeys(); if (me.role === "admin") loadUsers(); } });
+TR.requireLogin().then(async () => { await loadMe(); loadKeys(); loadOwn(); if (location.hash === "#ownkey") $("ownkey").scrollIntoView(); if (me.role === "admin") { $("admin").classList.remove("hide"); loadUsers(); } });
+</script>
+</body>
+</html>
