@@ -20,7 +20,7 @@ from metis.gateway.cache import SemanticCache
 from metis.gateway.cache_policy import is_cacheable
 from metis.gateway.checks import HINTS, check_answer
 from metis.gateway.failover import Breaker, ProviderError
-from metis.gateway.providers import Provider, Reply
+from metis.gateway.providers import OWN_KEY_REJECTED, Provider, Reply
 from metis.gateway.traces import TraceStore
 from metis.router.artifact import RouterArtifact
 from metis.router.route import route
@@ -45,6 +45,8 @@ class ChatRequest:
     context_hash: str | None = None
     lam: float | None = None  # lambda for this request; None uses the gateway's (the chat page's slider)
     user_id: int | None = None  # the signed-in account, for usage and credit
+    api_key: str | None = field(default=None, repr=False)  # the user's own provider key; never stored
+    on_delta: Callable[[str | None], None] | None = field(default=None, repr=False)  # streaming: text pieces, None = start over
     prompt_id: str | None = None  # replay only
     route_text: str | None = None  # replay only: text as it was embedded offline
     vector: np.ndarray | None = None  # replay only: stored vector
@@ -127,12 +129,17 @@ class Gateway:
             breaker = self.breakers[model]
             if not breaker.available():
                 continue
+            if context.get("on_delta") and attempts:  # streaming: a retry, repair or backup model starts over
+                context["on_delta"](None)
             breaker.before_call()
             try:
                 reply = self.provider.call(model, messages, context)
             except ProviderError as exc:
-                breaker.failure()
                 attempts.append({"model": model, "ok": False, "reason": exc.kind})
+                if exc.kind == OWN_KEY_REJECTED:  # the user's key, not the model: other models won't help
+                    breaker.probing = False  # not the model's fault: the breaker (shared by all users) is untouched
+                    raise NoModelAvailable from None
+                breaker.failure()
                 continue
             breaker.success()
             attempts.append({"model": model, "ok": True, "cost": self.cost(model, reply), "latency_ms": reply.latency_ms,
@@ -196,6 +203,7 @@ class Gateway:
         lang = lang_tag(text)
         row = {"request_id": rid, "ts": self.clock(), "session_id": req.session, "chatbot": req.chatbot, "lang": lang,
                "user_id": req.user_id, "rag": req.uses_rag, "image": req.has_image, "dropped": {},
+               "billing": "own_key" if req.api_key else "service",
                "artifact": self.artifact.meta.hashes.get("val_set"), "escalations": 0, "tokens_in": 0, "tokens_out": 0, "cost_usd": 0.0}
 
         def finish(result: ChatResult, status: str, cache: str, extra_ms: float = 0.0) -> ChatResult:
@@ -250,6 +258,12 @@ class Gateway:
                    cluster_name=self.artifact.meta.cluster_names[decision.cluster])
         psi = {m: float(self.router.psi[decision.cluster, self.router.models.index(m)]) for m in order}
         context = {"prompt_id": req.prompt_id, "psi": psi, "cluster": decision.cluster}
+        if req.api_key:
+            context["api_key"] = req.api_key
+        if req.on_delta:
+            context["on_delta"] = req.on_delta
+            if self.cfg.get("mock_stream_pause_s"):
+                context["mock_pause_s"] = self.cfg["mock_stream_pause_s"]
         attempts: list[dict[str, Any]] = []
         reasons: list[str] = []
         try:

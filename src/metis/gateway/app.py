@@ -20,7 +20,7 @@ from typing import Any
 
 import numpy as np
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -30,7 +30,7 @@ from metis.gateway.auth import Accounts, AuthError, User
 from metis.gateway.cache import SemanticCache
 from metis.gateway.failover import ProviderError
 from metis.gateway.pipeline import ChatRequest, Gateway, openai_response, trace_view, user_text
-from metis.gateway.providers import LiveProvider, MockProvider
+from metis.gateway.providers import OWN_KEY_REJECTED, LiveProvider, MockProvider
 from metis.gateway.traces import TraceStore
 from metis.llm.client import load_models
 from metis.router.artifact import load_artifact
@@ -52,6 +52,7 @@ class Completion(BaseModel):
     messages: list[dict[str, Any]]
     metadata: dict[str, Any] | None = None
     response_format: dict[str, Any] | None = None
+    stream: bool = False  # OpenAI-style server-sent events: text pieces first, the full result (cost, trace) last
 
 
 class KhayyamAsk(BaseModel):
@@ -178,7 +179,15 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
         b = g.provider.budget
         return float(b.config["approved_usd"].get(PRODUCT_STAGE, 0)) - b.cache.spent_usd(PRODUCT_STAGE)
 
-    def spend_gate(user: User | None) -> JSONResponse | None:
+    def own_key(user: User | None) -> str | None:
+        """The user's own provider key, when they stored one and have it switched on."""
+        if user is None or not {**user.prefs}.get("use_own_key", True):
+            return None
+        return accts().provider_key(user)
+
+    def spend_gate(user: User | None, own: str | None = None) -> JSONResponse | None:
+        if own:  # the user pays the provider directly: neither our budget nor their credit is used
+            return None
         left = budget_left()
         if left is not None and left <= 0.001:
             return error(402, "budget_exhausted", "the spending limit of this service is reached")
@@ -221,7 +230,8 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
             return {"user": None, "has_users": bool(accts().users()), "auth_required": auth_required()}
         left = credit_left(user)
         return {"user": user.public(), "spent_usd": round(gw().traces.spent(user.id), 5),
-                "credit_left_usd": None if left is None else round(left, 5), "auth_required": auth_required()}
+                "credit_left_usd": None if left is None else round(left, 5), "auth_required": auth_required(),
+                "own_key": accts().provider_key_info(user)}
 
     @api.patch("/auth/me")
     def update_me(body: dict[str, Any], user: User = Depends(signed_in)) -> dict[str, Any]:
@@ -238,6 +248,42 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
     @api.delete("/auth/keys/{key_id}")
     def drop_key(key_id: str, user: User = Depends(signed_in)) -> dict[str, Any]:
         return {"deleted": accts().delete_key(user, key_id)}
+
+    # ---------------------------------------------- own provider key (BYOK)
+    @api.get("/auth/provider-key")
+    def provider_key_info(user: User = Depends(signed_in)) -> dict[str, Any]:
+        return {**accts().provider_key_info(user), "use": bool({**user.prefs}.get("use_own_key", True))}
+
+    @api.put("/auth/provider-key")
+    def provider_key_set(body: dict[str, Any], user: User = Depends(signed_in)) -> dict[str, Any]:
+        try:
+            info = accts().set_provider_key(user, str(body.get("key") or ""))
+        except AuthError as exc:
+            raise HTTPException(400, str(exc)) from None
+        if body.get("test"):
+            info = provider_key_test(user)
+        return info
+
+    @api.delete("/auth/provider-key")
+    def provider_key_drop(user: User = Depends(signed_in)) -> dict[str, Any]:
+        return {"deleted": accts().delete_provider_key(user)}
+
+    @api.post("/auth/provider-key/test")
+    def provider_key_test(user: User = Depends(signed_in)) -> dict[str, Any]:
+        """One tiny call with the user's key to the cheapest model (the user's provider bills it, < $0.0001)."""
+        key = accts().provider_key(user)
+        if key is None:
+            raise HTTPException(400, "no_provider_key")
+        g = gw()
+        cheapest = min(g.artifact.meta.models, key=lambda m: g.models.get(m, {}).get("price_out") or 1e9)
+        try:
+            g.provider.call(cheapest, [{"role": "user", "content": "Reply with the single word OK."}], {"api_key": key})
+            ok, reason = True, None
+        except ProviderError as exc:
+            ok, reason = False, exc.kind
+        if reason is None or reason == OWN_KEY_REJECTED:  # a network problem says nothing about the key
+            accts().mark_provider_key(user, ok)
+        return {**accts().provider_key_info(user), "test": {"ok": ok, "reason": reason, "model": cheapest}}
 
     @api.get("/admin/users")
     def users(_: User = Depends(admin)) -> list[dict[str, Any]]:
@@ -318,32 +364,100 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
         lam = meta.get("lambda")
         if lam is not None and (not isinstance(lam, int | float) or lam < 0):
             raise HTTPException(422, "metadata.lambda must be a number >= 0")
-        gate = spend_gate(user)
+        own = own_key(user)
+        gate = spend_gate(user, own)
         if gate is not None:
             return gate
         req = ChatRequest(body.messages, body.model, x_metis_chatbot or meta.get("chatbot", "default"), x_metis_session or meta.get("session"),
                           has_image=any(isinstance(m.get("content"), list) and any(p.get("type") == "image_url" for p in m["content"] if isinstance(p, dict)) for m in body.messages),
                           wants_json=(body.response_format or {}).get("type") == "json_object", widget_click=bool(meta.get("widget_click")),
                           uses_rag=bool(meta.get("uses_rag")), context_hash=meta.get("context_hash"), lam=lam,
-                          user_id=user.id if user else None)
+                          user_id=user.id if user else None, api_key=own)
+        if body.stream:
+            return stream_chat(req, meta, user)
         try:
             result = gw().handle(req)
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from None
+        code, payload = chat_result(result, meta, user)
+        return JSONResponse(payload, code)
+
+    def chat_result(result, meta: dict[str, Any], user: User | None) -> tuple[int, dict[str, Any]]:
+        """The answer, or the error, of one chat request (shared by the normal and the streamed reply)."""
+        def err(code: int, kind: str, message: str, **extra) -> tuple[int, dict[str, Any]]:
+            return code, {"error": {"message": message, "type": kind, **extra}}
+
         status = result.trace["status"]
         if status == "all_failed" and any(a.get("reason") == "budget" for a in result.attempts):
-            return error(402, "budget_exhausted", "the spending limit of this service is reached")
-        if status in ("all_failed", "no_model"):
-            return JSONResponse({"error": {"message": "no model is available", "type": "service_unavailable", "trace": result.trace["request_id"]}}, 503)
+            return err(402, "budget_exhausted", "the spending limit of this service is reached")
+        reasons = sorted({a.get("reason") for a in result.attempts if not a.get("ok") and a.get("reason")})
+        if status == "all_failed" and OWN_KEY_REJECTED in reasons:
+            accts().mark_provider_key(user, False)
+            return err(400, OWN_KEY_REJECTED, "your own provider key was refused (wrong key or no balance)")
+        if status in ("all_failed", "no_model"):  # reasons are short kinds (e.g. APIConnectionError), never content
+            return err(503, "service_unavailable", "no model is available", reasons=reasons, trace=result.trace["request_id"])
         out = openai_response(result)
         if meta.get("trace"):
             out["takrouter"]["trace"] = trace_view(result)
-        return JSONResponse(out)
+        return 200, out
+
+    def stream_chat(req: ChatRequest, meta: dict[str, Any], user: User | None) -> StreamingResponse:
+        """Server-sent events in the OpenAI chunk format. Routing, budget, checks, failover and the
+        trace are the same as for a normal reply; a retry or backup model sends a `reset` event."""
+        import json as _json
+        import queue
+        import uuid
+
+        sid, events_q = "chatcmpl-" + uuid.uuid4().hex, queue.Queue()
+
+        def chunk(delta: dict[str, Any], finish: str | None = None, model: str = "takrouter", **extra) -> str:
+            body = {"id": sid, "object": "chat.completion.chunk", "created": int(time.time()), "model": model,
+                    "choices": [{"index": 0, "delta": delta, "finish_reason": finish}], **extra}
+            return "data: " + _json.dumps(body, ensure_ascii=False) + "\n\n"
+
+        req.on_delta = lambda piece: events_q.put(("reset", None) if piece is None else ("delta", piece))
+        sent = []
+
+        def work() -> None:
+            try:
+                events_q.put(("done", gw().handle(req)))
+            except Exception as exc:  # noqa: BLE001  (the class only; messages can carry content)
+                events_q.put(("fail", type(exc).__name__))
+
+        threading.Thread(target=work, daemon=True).start()
+
+        def events():
+            yield chunk({"role": "assistant"})
+            while True:
+                kind, value = events_q.get()
+                if kind == "delta":
+                    sent.append(1)
+                    yield chunk({"content": value})
+                elif kind == "reset":
+                    yield chunk({}, takrouter={"event": "reset"})
+                elif kind == "fail":
+                    yield "data: " + _json.dumps({"error": {"message": "request failed", "type": "bad_request", "status": 400}}) + "\n\n"
+                    break
+                else:
+                    code, payload = chat_result(value, meta, user)
+                    if code != 200:
+                        payload["error"]["status"] = code
+                        yield "data: " + _json.dumps(payload, ensure_ascii=False) + "\n\n"
+                    else:
+                        if not sent:  # an answer from the semantic cache: no model call, so send it whole
+                            yield chunk({"content": payload["choices"][0]["message"]["content"]})
+                        yield chunk({}, "stop", model=payload["model"], usage=payload["usage"], takrouter=payload["takrouter"])
+                    break
+            yield "data: [DONE]\n\n"
+
+        return StreamingResponse(events(), media_type="text/event-stream",
+                                 headers={"cache-control": "no-cache", "x-accel-buffering": "no"})
 
     @api.post("/v1/compare")
     def compare(body: Completion, user: User | None = Depends(chat_user)) -> JSONResponse:
         """Every model answers the same messages, side by side, and TakRouter's pick is marked."""
-        gate = spend_gate(user)
+        own = own_key(user)
+        gate = spend_gate(user, own)
         if gate is not None:
             return gate
         g = gw()
@@ -355,7 +469,7 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
         def one(model: str) -> dict[str, Any]:
             t0 = time.perf_counter()
             try:
-                reply = g.provider.call(model, body.messages, {"compare": True})
+                reply = g.provider.call(model, body.messages, {"compare": True, **({"api_key": own} if own else {})})
             except ProviderError as exc:
                 return {"model": model, "ok": False, "reason": exc.kind}
             return {"model": model, "ok": True, "text": reply.text, "cost_usd": g.cost(model, reply),
@@ -367,7 +481,8 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
         g.traces.add({"request_id": f"compare-{time.time()}", "ts": time.time(), "chatbot": "compare", "status": "ok",
                       "served_by": "compare", "cost_usd": cost, "user_id": user.id if user else None,
                       "tokens_in": sum(a.get("tokens_in", 0) for a in answers),
-                      "tokens_out": sum(a.get("tokens_out", 0) for a in answers), "cluster": decision.cluster})
+                      "tokens_out": sum(a.get("tokens_out", 0) for a in answers), "cluster": decision.cluster,
+                      "billing": "own_key" if own else "service"})
         return JSONResponse({"pick": decision.model, "cluster": decision.cluster, "lam": lam,
                              "cluster_name": g.artifact.meta.cluster_names[decision.cluster],
                              "scores": decision.scores, "answers": answers, "cost_usd": cost})

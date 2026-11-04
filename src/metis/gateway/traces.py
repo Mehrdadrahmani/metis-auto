@@ -11,7 +11,7 @@ from typing import Any
 
 COLUMNS = ("request_id", "ts", "session_id", "chatbot", "lang", "cluster", "scores", "chosen", "served_by", "tried",
            "escalations", "reasons", "cache", "tokens_in", "tokens_out", "cost_usd", "latency_ms", "stage_ms",
-           "artifact", "status", "user_id")
+           "artifact", "status", "user_id", "billing")  # billing: service | own_key (the user's own provider key)
 
 
 class TraceStore:
@@ -84,7 +84,8 @@ class TraceStore:
 
     def spent(self, user_id: int) -> float:
         with self.lock:
-            return float(self.db.execute("SELECT COALESCE(SUM(cost_usd), 0) FROM traces WHERE user_id = ?", (user_id,)).fetchone()[0])
+            return float(self.db.execute("SELECT COALESCE(SUM(cost_usd), 0) FROM traces WHERE user_id = ? "
+                                         "AND COALESCE(billing, 'service') != 'own_key'", (user_id,)).fetchone()[0])
 
     def summary(self) -> dict[str, Any]:
         rows = self.rows()

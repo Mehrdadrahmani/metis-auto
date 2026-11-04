@@ -2,6 +2,11 @@
 
 SQLite under runs/gateway/ (git-ignored). Passwords: scrypt with a per-user salt. Sessions and
 API keys: random tokens; only their SHA-256 is stored. The first account becomes the admin.
+
+Own provider key ("bring your own key"): a user may store their own Metis AI key. It is kept
+encrypted (Fernet) with the server secret: env ``TAKROUTER_SECRET`` or a key file next to the
+database (``provider.secret``, created on first use, git-ignored with runs/). Only the last 4
+characters are ever shown again; the key itself never leaves the server.
 """
 
 from __future__ import annotations
@@ -9,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import os
 import re
 import secrets
 import sqlite3
@@ -21,7 +27,8 @@ from typing import Any
 SESSION_DAYS = 14
 DEFAULT_CREDIT_USD = 0.50  # a new user's credit; the admin changes it
 EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
-DEFAULT_PREFS = {"show_trace": False, "lang": "fa", "theme": None}
+DEFAULT_PREFS = {"show_trace": False, "lang": "fa", "theme": None, "use_own_key": True}
+PROVIDER_KEY = re.compile(r"^[\x21-\x7e]{16,400}$")  # printable, no spaces
 
 
 class AuthError(ValueError):
@@ -56,9 +63,12 @@ class User:
 
 
 class Accounts:
-    def __init__(self, path: str | Path = ":memory:", clock=time.time):
+    def __init__(self, path: str | Path = ":memory:", clock=time.time, secret: bytes | None = None):
         if str(path) != ":memory:":
             Path(path).parent.mkdir(parents=True, exist_ok=True)
+        self.path = path
+        self._secret = secret
+        self._fernet = None
         self.db = sqlite3.connect(str(path), check_same_thread=False)
         self.lock = threading.Lock()
         self.clock = clock
@@ -70,6 +80,8 @@ class Accounts:
                 CREATE TABLE IF NOT EXISTS sessions (digest TEXT PRIMARY KEY, user_id INTEGER NOT NULL, expires REAL NOT NULL);
                 CREATE TABLE IF NOT EXISTS api_keys (digest TEXT PRIMARY KEY, user_id INTEGER NOT NULL, name TEXT,
                     prefix TEXT NOT NULL, created REAL NOT NULL, last_used REAL);
+                CREATE TABLE IF NOT EXISTS provider_keys (user_id INTEGER PRIMARY KEY, enc BLOB NOT NULL, tail TEXT NOT NULL,
+                    created REAL NOT NULL, checked REAL, ok INTEGER);
             """)
             self.db.commit()
 
@@ -187,3 +199,75 @@ class Accounts:
                 self.db.execute("UPDATE api_keys SET last_used = ? WHERE digest = ?", (self.clock(), d))
                 self.db.commit()
         return self.get(row[0]) if row else None
+
+    # ------------------------------------------------- own provider key
+    def _cipher(self):
+        if self._fernet is None:
+            from cryptography.fernet import Fernet
+
+            secret = self._secret or os.environ.get("TAKROUTER_SECRET", "").encode() or None
+            if secret is None and str(self.path) != ":memory:":
+                file = Path(self.path).parent / "provider.secret"
+                if not file.exists():
+                    file.write_bytes(Fernet.generate_key())
+                    file.chmod(0o600)
+                secret = file.read_bytes().strip()
+            if secret is None:
+                secret = Fernet.generate_key()  # in-memory accounts (tests): a fresh secret
+                self._secret = secret
+            if len(secret) != 44:  # a passphrase, not a Fernet key: derive one
+                import base64
+
+                secret = base64.urlsafe_b64encode(hashlib.sha256(secret).digest())
+            self._fernet = Fernet(secret)
+        return self._fernet
+
+    def set_provider_key(self, user: User, key: str) -> dict[str, Any]:
+        key = (key or "").strip()
+        if key.lower().startswith("bearer "):
+            key = key[7:].strip()
+        if not PROVIDER_KEY.match(key):
+            raise AuthError("bad_provider_key")
+        if key.startswith("tk-"):
+            raise AuthError("takrouter_key_not_provider_key")
+        enc = self._cipher().encrypt(key.encode())
+        with self.lock:
+            self.db.execute("INSERT OR REPLACE INTO provider_keys VALUES (?, ?, ?, ?, NULL, NULL)",
+                            (user.id, enc, key[-4:], self.clock()))
+            self.db.commit()
+        return self.provider_key_info(user)
+
+    def provider_key(self, user: User | None) -> str | None:
+        """The decrypted key, for the outgoing call only. Never log or return it."""
+        if user is None:
+            return None
+        with self.lock:
+            row = self.db.execute("SELECT enc FROM provider_keys WHERE user_id = ?", (user.id,)).fetchone()
+        if row is None:
+            return None
+        from cryptography.fernet import InvalidToken
+
+        try:
+            return self._cipher().decrypt(row[0]).decode()
+        except InvalidToken:  # the server secret changed: the user must enter the key again
+            return None
+
+    def provider_key_info(self, user: User) -> dict[str, Any]:
+        with self.lock:
+            row = self.db.execute("SELECT tail, created, checked, ok FROM provider_keys WHERE user_id = ?", (user.id,)).fetchone()
+        if row is None:
+            return {"set": False}
+        tail, created, checked, ok = row
+        return {"set": True, "tail": tail, "created": created, "checked": checked, "ok": None if ok is None else bool(ok),
+                "readable": self.provider_key(user) is not None}
+
+    def mark_provider_key(self, user: User, ok: bool) -> None:
+        with self.lock:
+            self.db.execute("UPDATE provider_keys SET checked = ?, ok = ? WHERE user_id = ?", (self.clock(), int(ok), user.id))
+            self.db.commit()
+
+    def delete_provider_key(self, user: User) -> bool:
+        with self.lock:
+            cur = self.db.execute("DELETE FROM provider_keys WHERE user_id = ?", (user.id,))
+            self.db.commit()
+        return cur.rowcount > 0

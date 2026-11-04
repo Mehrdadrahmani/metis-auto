@@ -13,6 +13,7 @@ import json
 import math
 import os
 import random
+import re
 import threading
 import time
 from dataclasses import asdict, dataclass, field
@@ -176,7 +177,8 @@ def _is_retryable(exc: BaseException) -> bool:
 
 
 def _send(
-    api_name: str, api_path: str, messages: list[dict[str, Any]], gen: dict[str, Any]
+    api_name: str, api_path: str, messages: list[dict[str, Any]], gen: dict[str, Any], api_key: str | None = None,
+    stream: bool = False,
 ) -> Any:
     """Real request through LiteLLM to Metis AI, assumed OpenAI-compatible (checked in step 9)."""
     os.environ.setdefault("LITELLM_LOCAL_MODEL_COST_MAP", "True")  # no price download at import
@@ -197,13 +199,53 @@ def _send(
             model=f"openai/{api_name}",
             messages=messages,
             api_base=os.environ["METIS_BASE_URL"].rstrip("/") + api_path,
-            api_key=os.environ["METIS_API_KEY"],
+            api_key=api_key or os.environ["METIS_API_KEY"],
             timeout=httpx.Timeout(TOTAL_TIMEOUT_S, connect=CONNECT_TIMEOUT_S),
             num_retries=0,
+            **({"stream": True, "stream_options": {"include_usage": True}} if stream else {}),
             **gen,
         )
 
     return call()
+
+
+class _Streamed:
+    """A streamed reply put back together, shaped like a normal response for ``_parse``."""
+
+    def __init__(self, chunks: Any, on_delta: Any):
+        parts, self.usage, self.model, finish = [], None, None, None
+        for chunk in chunks:
+            self.model = getattr(chunk, "model", None) or self.model
+            if getattr(chunk, "usage", None) is not None:
+                self.usage = chunk.usage
+            for choice in getattr(chunk, "choices", None) or []:
+                piece = getattr(getattr(choice, "delta", None), "content", None)
+                if piece:
+                    parts.append(piece)
+                    on_delta(piece)
+                finish = getattr(choice, "finish_reason", None) or finish
+        message = type("M", (), {"content": "".join(parts)})()
+        self.choices = [type("C", (), {"message": message, "finish_reason": finish or "stop"})()]
+
+
+def _stream_or_plain(api_name, api_path, messages, gen, api_key, on_delta) -> Any:
+    """Stream if the provider can; if the streamed request fails before any text arrived (a provider
+    without streaming), send it once as a normal request and hand the text out whole."""
+    got = []
+    try:
+        return _Streamed(_send(api_name, api_path, messages, gen, api_key, stream=True),
+                         lambda piece: (got.append(1), on_delta(piece)))
+    except Exception as exc:
+        if got or _is_account_problem(exc):
+            raise
+    raw = _send(api_name, api_path, messages, gen, api_key)
+    _mock_stream(raw.choices[0].message.content or "", on_delta)
+    return raw
+
+
+def _mock_stream(text: str, on_delta: Any) -> None:
+    for piece in re.findall(r"\S+\s*|\s+", text):
+        on_delta(piece)
 
 
 def _detail(usage: Any, group: str, name: str) -> int | None:
@@ -235,26 +277,38 @@ def complete(
     gen_params: dict[str, Any] | None = None,
     permit: Permit | None = None,
     prompt_id: str | None = None,
+    api_key: str | None = None,
+    on_delta: Any = None,
 ) -> Response:
-    """Send one request. Raises ``CallFailed`` after retries; never logs content."""
+    """Send one request. Raises ``CallFailed`` after retries; never logs content.
+
+    ``api_key``: a website user's own Metis key. The user pays the provider, so no budget
+    ``Permit`` is needed; the outgoing secret guard still applies to the messages.
+    ``on_delta``: called with each piece of text as it arrives (streaming); the full response is
+    still returned at the end, so budget, ledger and checks work as for a normal call."""
     gen = dict(gen_params or {})
     check_outgoing(messages, prompt_id)
     with tracking.call_span(model_id, messages) as finish:
         if is_mock():
             response = _mock_response(model_id, messages, gen)
+            if on_delta:
+                _mock_stream(response.text, on_delta)
         else:
-            if not isinstance(permit, Permit):
+            if not isinstance(permit, Permit) and not api_key:
                 raise NoPermitError(f"model={model_id} prompt_id={prompt_id}")
             model = load_models()[model_id]
             api_name, api_path = model.get("api_name"), model.get("api_path")
             if not api_name or api_path is None or model.get("provider") == "typesafe":
                 raise ModelNotReadyError(model_id)
             load_dotenv()
-            if not (os.environ.get("METIS_BASE_URL") and os.environ.get("METIS_API_KEY")):
+            if not (os.environ.get("METIS_BASE_URL") and (api_key or os.environ.get("METIS_API_KEY"))):
                 raise ModelNotReadyError("METIS_BASE_URL or METIS_API_KEY is not set")
             start = time.perf_counter()
             try:
-                raw = _send(api_name, api_path, messages, gen)
+                if on_delta:
+                    raw = _stream_or_plain(api_name, api_path, messages, gen, api_key, on_delta)
+                else:
+                    raw = _send(api_name, api_path, messages, gen, api_key)
             # Provider errors can echo the prompt: keep the class only.
             except Exception as exc:  # noqa: BLE001
                 if _is_account_problem(exc):

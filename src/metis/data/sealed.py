@@ -19,7 +19,7 @@ LOG = Path("runs/final/sealed_opens.jsonl")
 
 
 def _tag_commit() -> str | None:
-    done = subprocess.run(["git", "rev-parse", "-q", "--verify", "pre-test^{commit}"], capture_output=True, text=True)
+    done = subprocess.run(["git", "rev-parse", "-q", "--verify", "pre-test^{commit}"], check=False, capture_output=True, text=True)
     return done.stdout.strip() if done.returncode == 0 else None
 
 
