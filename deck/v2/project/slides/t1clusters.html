@@ -1,14 +1,16 @@
-<section id="t1clusters" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 120px;display:flex;flex-direction:column;gap:24px">
+<section id="t1clusters" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:24px">
 <p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T1 · Clustering</p>
-<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Topics are learned from meaning, with no labels</h2>
-<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:16px 20px">
-<img src="/_blob/ef24e73b455ab589e375d8c3c208edaa" alt="Clustering concept: messages, embedding, K-means into 8 named topics, and a fingerprint per topic; a new model answers the 800 validation questions once to get one new column" style="width:1624px;height:470px;object-fit:contain">
+<h2 style="font-size:60px;font-weight:800;line-height:1.12;letter-spacing:-1px">Questions group into topics by meaning</h2>
+<div style="display:flex;flex-direction:row;gap:36px;align-items:center">
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:12px">
+<img src="/_blob/b1dc226d95b0fc688f34ed4b9b9a7fd4" alt="Map of 798 validation prompts (t-SNE of their embeddings), each dot coloured by one of 8 topics: short fragments, account and tech support, relationships and emotions, humanities and religion, science and maths, payments and finance, general short chat, health and medicine; circles mark each topic's centre; a new message (star) is assigned to its nearest centre, health and medicine." style="width:1080px;height:600px;object-fit:contain">
 </div>
-<div style="display:flex;flex-direction:row;gap:16px;flex-wrap:wrap">
-<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">209,109 unlabeled train prompts</p>
-<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">Embeddings of the user’s text only</p>
-<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">K-means, K = 8</p>
-<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">Topic sizes on validation: 58 to 187 prompts</p>
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<img src="/_blob/8b98279b0cf61bc0e137b46eb646bcab" alt="k of x equals the argmin over k of the distance between phi of x and mu k" style="width:500px;height:80px;object-fit:contain">
+<p style="font-size:28px;line-height:1.4">K-means on 209,109 unlabeled prompts, user text only <span style="color:#7a22e0">[7]</span></p>
+<p style="font-size:28px;line-height:1.4">K = 8 topics</p>
 </div>
-<aside>Step one of UniRoute. We embed only the user’s own text, not the chatbot’s system prompt, so topics reflect what people ask. K-means groups 209,109 unlabeled train prompts into 8 topics; the names were given afterwards by reading the clusters. On validation the topics hold between 58 and 187 prompts: General short chat 187, Short fragments 113, Account and tech support 106, Science and maths 105, Relationships 86, Humanities 78, Health 65, Payments 58. The K-selection rule on validation preferred K = 4; we shipped K = 8 and report K = 4 results too.</aside>
+</div>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[7] Our validation set, n = 798 (map: t-SNE of embeddings, no text shown) · φ = embedding, μ = topic centre</p>
+<aside>Step one of UniRoute. Each question becomes a vector phi of x, its embedding. K-means groups 209,109 unlabeled train prompts into 8 topics, each with a centre mu k. The map shows our 798 validation prompts: similar questions sit together. A new message simply joins its nearest centre. We use only the user’s own text, not the chatbot’s instructions. The K-selection rule preferred 4; we shipped 8.</aside>
 </section>

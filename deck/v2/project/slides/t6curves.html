@@ -1,0 +1,15 @@
+<section id="t6curves" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:24px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T6 · How we measure a router</p>
+<h2 style="font-size:60px;font-weight:800;line-height:1.12;letter-spacing:-1px">Quality you get at every budget</h2>
+<div style="display:flex;flex-direction:row;gap:36px;align-items:center">
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:12px">
+<img src="/_blob/5b30d15bf683254ae8673d957a02497c" alt="Deferral curves on validation: pass rate against cost relative to always-Sonnet, log scale, for UniRoute K = 8 and K = 4, ZeroRouter, K-NN and logistic, with single models as dots." style="width:1000px;height:580px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:22px">
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:20px;padding:18px 22px"><img src="/_blob/1fb829a1dce79e74d1dd1aa2288b17ea" alt="AUDC equals one over c max minus c min times the integral from c min to c max of Q tilde of b, d b" style="width:540px;height:110px;object-fit:contain"><p style="font-size:26px;font-weight:600;color:#514c6b">Area under the curve: higher is better</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:20px;padding:18px 22px"><img src="/_blob/6383f7bdf0eca9a2176ff7d3c0324ec2" alt="QNC equals the smallest budget b where Q tilde of b reaches the quality of the best single model h dagger, divided by its cost" style="width:540px;height:110px;object-fit:contain"><p style="font-size:26px;font-weight:600;color:#514c6b">Cost to match the best model: lower is better</p></div>
+</div>
+</div>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[7] Validation, n = 798, held out by conversation (curves). Q̃(b) = best quality reachable at budget b; h† = best single model</p>
+<aside>A deferral curve shows the quality a router reaches at every budget, as we sweep lambda from cheap to expensive. Higher and further left is better. AUDC sums the whole curve into one number; QNC asks how much we must spend to match the best single model. The curves here are from validation; the sealed test gives the numbers on the next slide.</aside>
+</section>

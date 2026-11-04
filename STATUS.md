@@ -12,7 +12,7 @@ Updated: 2026-11-04 · pitch deck v2 session (handoff 9)
 - Sources in `deck/v2/`: `project/` (deck.json + slides/*.html), `charts/` (charts.py, charts2.py,
   val_curves.py, cluster_drawio.py; run from repo root with `uv run python …`), `diagrams/` (updated
   copies of ref/diagrams 01/03/05: val 800, train 209,109, pointwise τ=7, K=8, λ=0.515), `img/` (all PNGs)
-- Local deck.json `order` already = new plan (cover, team, problem, insight, solution, product, proof,
+- Deck v2 rebuilt and published (version 14): 20 main slides + 6 backup, story-first, refs [1]–[8], provider iceberg, typeset formulas, updated diagrams. Next: owner review of the published deck
   market, competition, roadmap, techdiv, t1clusters, t2psi, t3rule, t4newmodel, t5pipeline, t6curves,
   t7results, t8data, thanks, boverview, bonline, bstats, bcache, bjudge, brefs). Written so far in new
   style: team, problem (provider iceberg, SVG), insight. Not yet: solution (draft lost), product…brefs;
