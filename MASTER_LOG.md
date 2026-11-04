@@ -135,6 +135,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-131 | 2026-11-04 | Streaming (owner "go"): `stream: true` → SSE in the OpenAI chunk format; routing, budget, secret guard, ledger, checks, failover and trace unchanged; `reset` chunk on a new attempt; whole answer for cache hits; if the provider cannot stream, one normal call. Real test: Metis streams, $0.000065 | O | Product |
 | D-132 | 2026-11-04 | GitHub (owner): professional README with screenshots (example conversations, no user data, no Khayyam text) and diagrams, CI (ruff + pytest mock + Next build). PR #1 TakRoute → main merged with a merge commit; `main` is the working branch | O | Repo |
 | D-133 | 2026-11-04 | Team repo (owner): PR #17 `takrouter-full` → develop keeps only the Node site under takrouter/ (team toggle carried over); PR #18 `develop-into-main` → main (conflict-free #14) for contributor credit. All merges are done by Farzaneh with merge commits; owner sends her the step list | O | Team |
+| D-138 | 2026-11-04 | Pitch part reworked many rounds; owner froze tech part; final = 12-slide Sequoia-order pitch (artifact v42 = git 04398be); workshop rebuild rejected | O | Deck |
 | D-137 | 2026-11-04 | Owner rejected deck v3 ("previous much better; main problem not understood"); artifact restored to the v2 slides (version 18). v3 generator kept in git history (9392768) only | O | Deck |
 | D-136 | 2026-11-04 | Deck v3 ask (owner): no budget/money amount; ask for cleaner, more classifiable data and resources to build the product. Financial forecast and capital slides dropped | O | outline_v3 |
 | D-135 | 2026-11-04 | Deck v2 rejected by owner (too little context, diagrams too large, weak story, Antler/JPMorgan tips missing). Rebuild as v3 from the full tips in local `deck/v2/sources/pitch_tips.md`; outline first | O | STATUS |
@@ -512,3 +513,6 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ### 2026-11-04 · WP-21 (deck feedback, handoff 10)
 - Owner rejected deck v2; pasted JPMorgan tips (saved as local git-ignored checklist `deck/v2/sources/pitch_tips.md`). Antler page refused automated fetch; owner to paste. D-135. Cost $0.
+
+### 2026-11-04 · WP-21 (pitch rework, handoff 11)
+- Tech part: full pipeline diagram walked in parts, clustering slides first, LaTeX simple formulas (exact in backup), soft heatmaps, Jina v5 nano + Qdrant on clustering image. Pitch: public-benchmark insight, Sequoia/Kawasaki/YC/DocSend restructure (kept); v3, workshop and enrichment versions rejected. Research briefs saved locally (deck/v2/sources). Cost $0.
