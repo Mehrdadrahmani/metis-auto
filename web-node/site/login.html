@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.auth{min-height:calc(100vh - 64px);display:grid;grid-template-columns:1fr 1fr}
+.auth .side{background:var(--brand);color:#fff;padding:64px 56px;display:flex;flex-direction:column;justify-content:center}
+.auth .side h2{font-size:34px;line-height:1.3;margin:0 0 14px;letter-spacing:-.4px}
+.auth .side p{opacity:.9;margin:0 0 8px}
+.auth .side ul{padding-inline-start:20px;opacity:.92}
+.auth .form{display:grid;place-items:center;padding:40px 20px}
+.box{width:100%;max-width:400px}
+.tabs{display:flex;background:var(--chip);border-radius:12px;padding:3px;margin-bottom:22px}
+.tabs button{flex:1;border:0;background:none;padding:8px;border-radius:9px;font-weight:600;color:var(--ink2)}
+.tabs button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.box h1{font-size:24px;margin:0 0 4px}
+.box .btn{width:100%;margin-top:6px}
+@media (max-width:860px){.auth{grid-template-columns:1fr}.auth .side{display:none}}
+</style>
+</head>
+<body data-footer="0">
+<main class="auth">
+  <div class="form"><div class="box">
+    <div class="tabs"><button id="t-in" class="on" data-i18n="login"></button><button id="t-up" data-i18n="signup"></button></div>
+    <h1 id="title"></h1>
+    <p class="muted" id="sub" style="margin:0 0 20px"></p>
+    <div class="notice info hide" id="first" style="margin-bottom:16px" data-i18n="first"></div>
+    <form id="f">
+      <div class="field hide" id="namef"><label for="name" data-i18n="name"></label><input class="input" id="name" autocomplete="name"></div>
+      <div class="field"><label for="email" data-i18n="email"></label><input class="input ltr" id="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="pw" data-i18n="pw"></label><input class="input ltr" id="pw" type="password" autocomplete="current-password" required minlength="8"></div>
+      <div class="notice err hide" id="err" style="margin-bottom:12px"></div>
+      <button class="btn primary" id="go" type="submit"></button>
+    </form>
+  </div></div>
+  <div class="side">
+    <h2 data-i18n="side_t"></h2>
+    <p data-i18n="side_p"></p>
+    <ul><li data-i18n="side_1"></li><li data-i18n="side_2"></li><li data-i18n="side_3"></li></ul>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { t_in: "ورود به TakRouter", t_up: "ساخت حساب", s_in: "خوش برگشتید.", s_up: "در یک دقیقه شروع کنید؛ اعتبار اولیه برای امتحان دارید.",
+        name: "نام", email: "ایمیل", pw: "رمز عبور (حداقل ۸ نویسه)", go_in: "ورود", go_up: "ساخت حساب",
+        first: "هنوز هیچ حسابی ساخته نشده است. اولین حساب، مدیر سامانه می‌شود.",
+        bad_login: "ایمیل یا رمز عبور درست نیست.", email_taken: "با این ایمیل قبلاً حساب ساخته شده است.",
+        bad_email: "ایمیل معتبر نیست.", short_password: "رمز عبور باید حداقل ۸ نویسه باشد.",
+        side_t: "هر پیام به مناسب‌ترین مدل.", side_p: "با یک حساب:", side_1: "گفتگو با DeepSeek، GPT، Gemini و Claude در یک جا",
+        side_2: "کلید API برای برنامه‌ی خودتان", side_3: "داشبورد مصرف و صرفه‌جویی" },
+  en: { t_in: "Sign in to TakRouter", t_up: "Create your account", s_in: "Welcome back.", s_up: "Start in a minute; you get starter credit to try it.",
+        name: "Name", email: "Email", pw: "Password (at least 8 characters)", go_in: "Sign in", go_up: "Create account",
+        first: "No account exists yet. The first account becomes the administrator.",
+        bad_login: "Wrong email or password.", email_taken: "An account with this email already exists.",
+        bad_email: "This email is not valid.", short_password: "The password needs at least 8 characters.",
+        side_t: "Every message to the right model.", side_p: "With one account:", side_1: "Chat with DeepSeek, GPT, Gemini and Claude in one place",
+        side_2: "API keys for your own app", side_3: "A dashboard of usage and savings" },
+});
+let mode = new URLSearchParams(location.search).get("mode") === "signup" ? "up" : "in";
+const next = new URLSearchParams(location.search).get("next") || "/chat";
+const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/chat";
+function draw() {
+  document.getElementById("t-in").classList.toggle("on", mode === "in");
+  document.getElementById("t-up").classList.toggle("on", mode === "up");
+  document.getElementById("namef").classList.toggle("hide", mode === "in");
+  document.getElementById("title").textContent = TR.t(mode === "in" ? "t_in" : "t_up");
+  document.getElementById("sub").textContent = TR.t(mode === "in" ? "s_in" : "s_up");
+  document.getElementById("go").textContent = TR.t(mode === "in" ? "go_in" : "go_up");
+  document.getElementById("pw").autocomplete = mode === "in" ? "current-password" : "new-password";
+}
+TR.onLang(draw);
+document.getElementById("t-in").onclick = () => { mode = "in"; draw(); };
+document.getElementById("t-up").onclick = () => { mode = "up"; draw(); };
+TR.ready.then(() => {
+  if (TR.me) location.href = safeNext;
+  if (TR.session && TR.session.has_users === false) { mode = "up"; document.getElementById("first").classList.remove("hide"); draw(); }
+});
+document.getElementById("f").onsubmit = async (e) => {
+  e.preventDefault();
+  const err = document.getElementById("err"); err.classList.add("hide");
+  const body = {email: document.getElementById("email").value, password: document.getElementById("pw").value, name: document.getElementById("name").value};
+  document.getElementById("go").disabled = true;
+  try {
+    await TR.api(mode === "in" ? "/auth/login" : "/auth/signup", {method: "POST", body});
+    location.href = safeNext;
+  } catch (x) {
+    err.textContent = TR.t(x.message) !== x.message ? TR.t(x.message) : (x.status ? x.message : TR.t("err_net"));
+    err.classList.remove("hide");
+  } finally { document.getElementById("go").disabled = false; }
+};
+</script>
+</body>
+</html>

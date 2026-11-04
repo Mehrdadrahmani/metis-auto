@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin:8px 0 6px}
+.node{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 12px;position:relative}
+.node .n{font-size:11px;font-weight:800;color:var(--violet-ink)}
+.node b{display:block;font-size:14px;margin:2px 0 4px}
+.node p{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.6}
+.node.key{border:2px solid var(--violet);background:var(--soft)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;margin-top:44px}
+.split h2{font-size:26px;margin:0 0 10px;letter-spacing:-.3px}
+.split p{color:var(--ink2)}
+.topics{display:flex;flex-wrap:wrap;gap:8px}
+.topics span{padding:8px 12px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:13.5px}
+.formula{font-size:20px;font-weight:700;text-align:center;padding:22px;border-radius:16px;background:var(--bg2);border:1px solid var(--line);direction:ltr}
+.honest{margin-top:44px}
+@media (max-width:960px){.flow{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+  <div class="flow" id="flow"></div>
+  <p class="muted" style="font-size:13px" data-i18n="flow_n"></p>
+
+  <div class="split">
+    <div><h2 data-i18n="t1"></h2><p data-i18n="p1"></p></div>
+    <div class="topics" id="topics"></div>
+  </div>
+  <div class="split">
+    <div class="formula">score = fail rate on the topic + λ × price</div>
+    <div><h2 data-i18n="t2"></h2><p data-i18n="p2"></p></div>
+  </div>
+  <div class="split">
+    <div><h2 data-i18n="t3"></h2><p data-i18n="p3"></p></div>
+    <div class="card"><b data-i18n="t3b"></b><p class="muted" style="margin:6px 0 0" data-i18n="p3b"></p></div>
+  </div>
+  <div class="card honest">
+    <h3 data-i18n="t4"></h3>
+    <p style="color:var(--ink2)" data-i18n="p4"></p>
+    <a class="btn ghost small" href="/results" data-i18n="more"></a>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "چطور کار می‌کند", title: "از پیام شما تا بهترین پاسخ", lead: "هر پیام از هفت مرحله‌ی کوتاه می‌گذرد. کل کار TakRouter کمتر از یک‌دهم ثانیه طول می‌کشد؛ بقیه‌ی زمان، فکر کردن خود مدل است.",
+        flow_n: "قطعه‌ی بنفش قلب مسیریاب است. اگر بخواهید، در صفحه‌ی گفتگو «نمایش مسیر تصمیم» همین مراحل را برای هر پیام نشان می‌دهد.",
+        steps: [["قوانین", "مدل‌هایی که این پیام را می‌توانند بگیرند"], ["درک پیام", "تبدیل پیام به بردار معنایی"], ["حافظه", "اگر همین سؤال قبلاً جواب درست گرفته"],
+                ["انتخاب مدل", "موضوع + کیفیت + قیمت"], ["پاسخ", "با جایگزین خودکار اگر مدلی قطع باشد"], ["بررسی", "خالی، ناقص یا زبان اشتباه؟ ترمیم یا مدل قوی‌تر"], ["گزارش", "فقط عدد، بدون متن"]],
+        t1: "هشت موضوع", p1: "TakRouter پیام‌های واقعی را به هشت گروه موضوعی تقسیم کرده است. هر مدل روی ۷۹۸ پرسش واقعی آزموده شد و یک داور مستقل هر پاسخ را نمره داد؛ پس می‌دانیم هر مدل در هر موضوع چقدر خوب است.",
+        t2: "یک امتیاز ساده", p2: "برای هر پیام، امتیاز هر مدل از نرخ رد آن در همان موضوع و قیمتش ساخته می‌شود. λ وزن قیمت است: «بهترین کیفیت» λ را صفر می‌کند و «اقتصادی» آن را بالا می‌برد. کمترین امتیاز برنده است.",
+        t3: "همیشه پاسخ", p3: "اگر مدلی خطا بدهد یا دیر کند، پیام به مدل بعدی در همان رتبه‌بندی می‌رود. اگر پاسخ خالی، نیمه‌کاره یا به زبان اشتباه باشد، یک بار ترمیم و در صورت نیاز به مدل قوی‌تر سپرده می‌شود.",
+        t3b: "مدل تازه، بدون آموزش دوباره", p3b: "مدل جدید فقط روی همان ۷۹۸ پرسش آزموده می‌شود و یک ستون به جدول کیفیت اضافه می‌کند؛ بقیه‌ی سیستم دست نمی‌خورد.",
+        t4: "صادقانه", p4: "در آزمون مهرشده (۲۹۹ پیام)، TakRouter با ۴٪ قیمت Claude Sonnet کیفیتی برابر یا بهتر داشت (۶۶٫۹٪ در برابر ۶۴٫۹٪). روی همین داده، فرستادن همه‌چیز به DeepSeek هم به همین اندازه خوب بود؛ بیشتر صرفه‌جویی از این است که DeepSeek ارزان و خوب است.",
+        more: "نتایج کامل پژوهش" },
+  en: { kick: "How it works", title: "From your message to the best answer", lead: "Every message passes seven short steps. TakRouter's own work takes under a tenth of a second; the rest is the model thinking.",
+        flow_n: "The purple step is the heart of the router. In Chat, \"Show decision trace\" shows these steps for each message.",
+        steps: [["Rules", "Models that can take this message"], ["Understand", "The message becomes a meaning vector"], ["Cache", "Was this exact question answered well before?"],
+                ["Choose", "Topic + quality + price"], ["Answer", "With automatic backup if a model is down"], ["Check", "Empty, cut off, wrong language? Repair or a stronger model"], ["Log", "Numbers only, no text"]],
+        t1: "Eight topics", p1: "TakRouter splits real messages into eight topic groups. Every model was tested on 798 real questions and an independent judge scored each answer, so we know how good each model is on each topic.",
+        t2: "One simple score", p2: "For each message, a model's score is its fail rate on that topic plus its price. λ is the weight of price: \"Best quality\" sets it to zero, \"Economy\" raises it. The lowest score wins.",
+        t3: "Always an answer", p3: "If a model fails or is slow, the message moves to the next model in the same ranking. An empty, cut-off or wrong-language answer is repaired once and, if needed, handed to a stronger model.",
+        t3b: "New models, no retraining", p3b: "A new model is tested on the same 798 questions and adds one column to the quality table; nothing else changes.",
+        t4: "Honestly", p4: "In the sealed test (299 messages) TakRouter matched or beat Claude Sonnet's quality (66.9% vs 64.9%) at 4% of the price. On this data, sending everything to DeepSeek did about as well; most of the saving comes from DeepSeek being cheap and good.",
+        more: "Full research results" },
+});
+function draw() {
+  document.getElementById("flow").innerHTML = TR.t("steps").map(([b, p], i) => `<div class="node ${i === 3 ? "key" : ""}"><div class="n">G${i + 1}</div><b></b><p></p></div>`).join("");
+  document.querySelectorAll("#flow .node").forEach((n, i) => { n.querySelector("b").textContent = TR.t("steps")[i][0]; n.querySelector("p").textContent = TR.t("steps")[i][1]; });
+  document.getElementById("topics").innerHTML = TR.TOPICS[TR.lang].map((x) => `<span>${x}</span>`).join("");
+}
+TR.onLang(draw);
+</script>
+</body>
+</html>

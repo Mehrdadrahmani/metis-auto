@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutorials · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.layout{display:grid;grid-template-columns:250px 1fr;gap:36px;align-items:start}
+.toc{position:sticky;top:84px;display:grid;gap:4px}
+.toc a{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:11px;text-decoration:none;color:var(--ink2);font-size:14px}
+.toc a:hover{background:var(--chip)}
+.toc a.on{background:var(--soft);color:var(--violet-ink);font-weight:700}
+.toc .n{width:24px;height:24px;border-radius:8px;background:var(--chip);display:grid;place-items:center;font-size:12px;font-weight:800;flex:none}
+.toc a.on .n{background:var(--brand);color:#fff}
+article{scroll-margin-top:84px;padding-bottom:36px;margin-bottom:36px;border-bottom:1px solid var(--line)}
+article:last-child{border-bottom:0}
+article h2{font-size:24px;margin:0 0 6px;letter-spacing:-.3px}
+article .meta{display:flex;gap:8px;margin-bottom:16px}
+article p{color:var(--ink2)}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:16px 0;display:grid;gap:12px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:10px;background:var(--soft);color:var(--violet-ink);display:grid;place-items:center;font-weight:800;font-size:14px}
+html[lang="fa"] ol.steps li::before{content:counter(s, persian)}
+ol.steps b{display:block;margin-bottom:2px}
+.mock{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:14px;margin:14px 0;font-size:13px}
+.mock .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px}
+.seg span{padding:4px 12px;border-radius:8px;font-weight:600;color:var(--ink2)}
+.seg span.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+.tbl td,.tbl th{border-bottom:1px solid var(--line);padding:8px;text-align:start}
+.tip{border-inline-start:3px solid var(--violet);background:var(--soft);padding:10px 14px;border-radius:0 12px 12px 0;margin:14px 0;font-size:14px}
+html[dir="rtl"] .tip{border-radius:12px 0 0 12px}
+@media (max-width:860px){.layout{grid-template-columns:1fr}.toc{position:static;grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+  <div class="layout">
+    <nav class="toc" id="toc"></nav>
+    <div>
+
+<article id="first-chat">
+  <h2><span data-only="fa">اولین گفتگو</span><span data-only="en">Your first chat</span></h2>
+  <div class="meta"><span class="tag" data-i18n="m3"></span><span class="tag ok" data-i18n="lvl1"></span></div>
+  <p data-only="fa">در این آموزش یک پیام می‌فرستید و یاد می‌گیرید خط زیر هر پاسخ چه می‌گوید.</p>
+  <p data-only="en">You send one message and learn what the line under each answer tells you.</p>
+  <ol class="steps">
+    <li><div><b data-only="fa">وارد شوید</b><b data-only="en">Sign in</b>
+      <span data-only="fa">از دکمه‌ی «ورود» بالای صفحه وارد شوید یا حساب بسازید.</span><span data-only="en">Use "Sign in" at the top, or create an account.</span></div></li>
+    <li><div><b data-only="fa">پیام بنویسید</b><b data-only="en">Write a message</b>
+      <span data-only="fa">به صفحه‌ی «گفتگو» بروید، پیام را بنویسید و Enter بزنید. برای خط جدید Shift+Enter.</span><span data-only="en">Open Chat, type your message and press Enter. Shift+Enter makes a new line.</span></div></li>
+    <li><div><b data-only="fa">خط زیر پاسخ را بخوانید</b><b data-only="en">Read the line under the answer</b>
+      <span data-only="fa">مدلی که جواب داد، هزینه، زمان و صرفه‌جویی نسبت به Claude Sonnet.</span><span data-only="en">The model that answered, the cost, the time and the saving against Claude Sonnet.</span>
+      <div class="mock"><div class="row"><span class="tag"><i class="sw" style="background:#10a37f"></i>GPT-5.6 Luna</span><span class="tag">$0.0003</span><span class="tag" data-only="fa">۴٫۵ ثانیه</span><span class="tag" data-only="en">4.5 s</span><span class="tag ok" data-only="fa">۸۸٪ ارزان‌تر از Claude Sonnet</span><span class="tag ok" data-only="en">88% cheaper than Claude Sonnet</span></div></div></div></li>
+    <li><div><b data-only="fa">کپی، تکرار یا بهترین کیفیت</b><b data-only="en">Copy, regenerate or best quality</b>
+      <span data-only="fa">زیر هر پاسخ می‌توانید آن را کپی کنید، دوباره بگیرید، یا با «بهترین کیفیت» دوباره بپرسید.</span><span data-only="en">Under each answer you can copy it, regenerate it, or ask again with "Best quality".</span></div></li>
+  </ol>
+  <a class="btn primary small" href="/chat?q=%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%DB%8C%DA%A9%20%D8%AC%D9%85%D9%84%D9%87%20%D8%AF%D8%B1%D8%A8%D8%A7%D8%B1%D9%87%20%D8%AE%D9%88%D8%AF%D8%AA%20%D8%A8%DA%AF%D9%88" data-i18n="try"></a>
+</article>
+
+<article id="save-money">
+  <h2><span data-only="fa">صرفه‌جویی: اقتصادی، متعادل، بهترین کیفیت</span><span data-only="en">Save money: Economy, Balanced, Best quality</span></h2>
+  <div class="meta"><span class="tag" data-i18n="m4"></span><span class="tag ok" data-i18n="lvl1"></span></div>
+  <div class="mock"><div class="seg"><span data-i18n="eco"></span><span class="on" data-i18n="bal"></span><span data-i18n="best"></span></div></div>
+  <table class="tbl">
+    <tr><th data-i18n="mode"></th><th data-i18n="when"></th><th data-i18n="what"></th></tr>
+    <tr><td data-i18n="eco"></td><td><span data-only="fa">پیام‌های ساده، حجم زیاد</span><span data-only="en">Simple messages, high volume</span></td><td><span data-only="fa">بیشتر به ارزان‌ترین مدل‌ها می‌رود</span><span data-only="en">Mostly the cheapest models</span></td></tr>
+    <tr><td data-i18n="bal"></td><td><span data-only="fa">بیشتر کارها (پیشنهادی)</span><span data-only="en">Most work (recommended)</span></td><td><span data-only="fa">کیفیت هم‌سطح Sonnet با حدود ۴٪ قیمت</span><span data-only="en">Sonnet-level quality at about 4% of the price</span></td></tr>
+    <tr><td data-i18n="best"></td><td><span data-only="fa">سؤال مهم یا دشوار</span><span data-only="en">Important or hard questions</span></td><td><span data-only="fa">در هر موضوع بهترین مدل، هر قیمتی داشته باشد</span><span data-only="en">The best model of each topic, whatever it costs</span></td></tr>
+  </table>
+  <div class="tip"><span data-only="fa">برای کنترل دقیق‌تر، دکمه‌ی تنظیمات کنار حالت‌ها نواری دارد که هر نقطه‌اش یک تغییر واقعی در انتخاب مدل است.</span><span data-only="en">For finer control, the settings button next to the modes opens a slider; every stop on it is a real change in model choice.</span></div>
+  <a class="btn primary small" href="/chat" data-i18n="try"></a>
+</article>
+
+<article id="why-model">
+  <h2><span data-only="fa">«چرا این مدل؟» و مسیر تصمیم</span><span data-only="en">"Why this model?" and the decision trace</span></h2>
+  <div class="meta"><span class="tag" data-i18n="m4"></span><span class="tag warn" data-i18n="lvl2"></span></div>
+  <p data-only="fa">زیر هر پاسخ دکمه‌ی «چرا این مدل؟» موضوعی را که TakRouter تشخیص داد و کیفیت هر مدل در همان موضوع را نشان می‌دهد. کیفیت یعنی سهم پاسخ‌هایی که داور ما در ۷۹۸ پرسش آزمون قبول کرد.</p>
+  <p data-only="en">Under each answer, "Why this model?" shows the topic TakRouter detected and each model's quality on it: the share of answers our judge passed on 798 evaluation questions.</p>
+  <ol class="steps">
+    <li><div><b data-only="fa">مسیر تصمیم را روشن کنید</b><b data-only="en">Turn on the decision trace</b>
+      <span data-only="fa">کلید «نمایش مسیر تصمیم» بالای صفحه‌ی گفتگو. انتخاب شما ذخیره می‌شود.</span><span data-only="en">The "Show decision trace" switch at the top of Chat. Your choice is saved.</span></div></li>
+    <li><div><b data-only="fa">مراحل را بخوانید</b><b data-only="en">Read the steps</b>
+      <span data-only="fa">مدل‌های مجاز → درک پیام → حافظه (کش) → منابع (RAG) → انتخاب مدل با امتیاز هر مدل → فراخوانی → بررسی پاسخ → جمع هزینه و زمان.</span><span data-only="en">Allowed models → understanding → cache → retrieved context (RAG) → model choice with every score → call → answer checks → total cost and time.</span></div></li>
+    <li><div><b data-only="fa">امتیاز را بفهمید</b><b data-only="en">Understand the score</b>
+      <span data-only="fa">امتیاز = نرخ رد در این موضوع + λ × قیمت نسبی. کمترین امتیاز برنده است. حالت‌ها فقط λ را عوض می‌کنند.</span><span data-only="en">Score = fail rate on this topic + λ × relative price. The lowest score wins. The modes only change λ.</span></div></li>
+  </ol>
+  <a class="btn primary small" href="/chat" data-i18n="try"></a>
+</article>
+
+<article id="assistant">
+  <h2><span data-only="fa">دستیار کسب‌وکار خود را بسازید</span><span data-only="en">Build your business assistant</span></h2>
+  <div class="meta"><span class="tag" data-i18n="m5"></span><span class="tag warn" data-i18n="lvl2"></span></div>
+  <p data-only="fa">با «دستور سیستمی» به دستیار شخصیت و قانون می‌دهید. در گفتگو: تنظیمات ← «دستور سیستمی».</p>
+  <p data-only="en">A system prompt gives the assistant a persona and rules. In Chat: settings → "System prompt".</p>
+  <div class="tip"><b data-only="fa">نمونه: پشتیبانی فروشگاه</b><b data-only="en">Example: shop support</b><br>
+    <span data-only="fa">«تو دستیار پشتیبانی فروشگاه کتاب‌آنلاین هستی. کوتاه، مودبانه و فارسی جواب بده. اگر سؤال درباره‌ی سفارش است، شماره‌ی سفارش را بپرس. درباره‌ی موضوعات دیگر صحبت نکن.»</span>
+    <span data-only="en">"You are the support assistant of an online bookshop. Answer briefly and politely. If the question is about an order, ask for the order number. Do not discuss other topics."</span></div>
+  <ol class="steps">
+    <li><div><b data-only="fa">نقش را بگویید</b><b data-only="en">Say the role</b><span data-only="fa">«تو ... هستی».</span><span data-only="en">"You are …".</span></div></li>
+    <li><div><b data-only="fa">لحن و طول را مشخص کنید</b><b data-only="en">Set tone and length</b><span data-only="fa">«کوتاه»، «رسمی»، «با فهرست».</span><span data-only="en">"Brief", "formal", "use lists".</span></div></li>
+    <li><div><b data-only="fa">مرزها را بگذارید</b><b data-only="en">Set the limits</b><span data-only="fa">چه کاری نکند، و وقتی نمی‌داند چه بگوید.</span><span data-only="en">What it must not do, and what to say when it does not know.</span></div></li>
+  </ol>
+  <div class="tip"><span data-only="fa">مسیریابی بر اساس پیام کاربر است، نه دستور سیستمی؛ پس هر پیام همچنان به مدل مناسب خودش می‌رود.</span><span data-only="en">Routing uses the user's message, not the system prompt, so each message still goes to its own best model.</span></div>
+  <a class="btn primary small" href="/chat" data-i18n="try"></a>
+</article>
+
+<article id="connect">
+  <h2><span data-only="fa">ربات خود را در ۵ دقیقه وصل کنید</span><span data-only="en">Connect your chatbot in 5 minutes</span></h2>
+  <div class="meta"><span class="tag" data-i18n="m5"></span><span class="tag err" data-i18n="lvl3"></span></div>
+  <ol class="steps">
+    <li><div><b data-only="fa">کلید API بسازید</b><b data-only="en">Create an API key</b><span data-only="fa">حساب کاربری ← کلیدهای API ← «کلید تازه». کلید فقط یک بار نشان داده می‌شود.</span><span data-only="en">Account → API keys → "New key". The key is shown only once.</span></div></li>
+    <li><div><b data-only="fa">آدرس را عوض کنید</b><b data-only="en">Change the address</b><span data-only="fa">هر کتابخانه‌ی OpenAI کار می‌کند؛ فقط آدرس پایه و نام مدل را عوض کنید.</span><span data-only="en">Any OpenAI library works; change only the base URL and the model name.</span></div></li>
+  </ol>
+<pre class="code"><button class="copy" data-i18n="copy"></button>from openai import OpenAI
+
+client = OpenAI(base_url="<span class="origin"></span>/v1", api_key="tk-...")
+reply = client.chat.completions.create(
+    model="takrouter",
+    messages=[{"role": "user", "content": "سلام"}],
+    extra_body={"metadata": {"lambda": 0.515}},   # optional
+)
+print(reply.choices[0].message.content)
+print(reply.model)  # the model TakRouter chose</pre>
+  <p></p>
+<pre class="code"><button class="copy" data-i18n="copy"></button>const r = await fetch("<span class="origin"></span>/v1/chat/completions", {
+  method: "POST",
+  headers: {"Content-Type": "application/json", "Authorization": "Bearer tk-..."},
+  body: JSON.stringify({model: "takrouter", messages: [{role: "user", content: "سلام"}]}),
+});
+const data = await r.json();
+console.log(data.choices[0].message.content, data.takrouter);</pre>
+  <p></p>
+  <a class="btn primary small" href="/docs" data-i18n="todocs"></a>
+</article>
+
+<article id="self-host">
+  <h2><span data-only="fa">اجرای TakRouter روی سرور خودتان</span><span data-only="en">Run TakRouter on your own server</span></h2>
+  <div class="meta"><span class="tag" data-i18n="m10"></span><span class="tag err" data-i18n="lvl3"></span></div>
+  <ol class="steps">
+    <li><div><b data-only="fa">نصب</b><b data-only="en">Install</b><pre class="code"><button class="copy" data-i18n="copy"></button>uv sync
+uv run python scripts/fetch_model.py   # the routing embedder, once</pre></div></li>
+    <li><div><b data-only="fa">کلید Metis</b><b data-only="en">Metis key</b><span data-only="fa">در فایل <code>.env</code> مقدار <code>METIS_BASE_URL</code> و <code>METIS_API_KEY</code> را بگذارید. این فایل هرگز در git نمی‌رود.</span><span data-only="en">Put <code>METIS_BASE_URL</code> and <code>METIS_API_KEY</code> in <code>.env</code>. That file never goes into git.</span></div></li>
+    <li><div><b data-only="fa">سقف هزینه</b><b data-only="en">Spending limit</b><span data-only="fa">در <code>configs/budget.yaml</code> مقدار <code>product</code> سقف کل وب‌سایت است.</span><span data-only="en">In <code>configs/budget.yaml</code>, <code>product</code> is the whole site's limit.</span></div></li>
+    <li><div><b data-only="fa">اجرا</b><b data-only="en">Run</b><pre class="code"><button class="copy" data-i18n="copy"></button>TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000</pre>
+      <span data-only="fa">اولین حسابی که ثبت‌نام کند، مدیر است.</span><span data-only="en">The first account to sign up is the administrator.</span></div></li>
+  </ol>
+</article>
+
+    </div>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "آموزش", title: "یاد بگیرید، قدم به قدم", lead: "شش آموزش کوتاه، از اولین پیام تا وصل کردن برنامه‌ی خودتان.", try: "همین حالا امتحان کنید", todocs: "راهنمای کامل API",
+        m3: "۳ دقیقه", m4: "۴ دقیقه", m5: "۵ دقیقه", m10: "۱۰ دقیقه", lvl1: "مبتدی", lvl2: "متوسط", lvl3: "توسعه‌دهنده",
+        eco: "اقتصادی", bal: "متعادل", best: "بهترین کیفیت", mode: "حالت", when: "کی", what: "چه می‌شود",
+        t1: "اولین گفتگو", t2: "صرفه‌جویی", t3: "چرا این مدل؟", t4: "دستیار کسب‌وکار", t5: "اتصال ربات", t6: "اجرا روی سرور" },
+  en: { kick: "Tutorials", title: "Learn it step by step", lead: "Six short tutorials, from your first message to connecting your own app.", try: "Try it now", todocs: "Full API guide",
+        m3: "3 min", m4: "4 min", m5: "5 min", m10: "10 min", lvl1: "Beginner", lvl2: "Intermediate", lvl3: "Developer",
+        eco: "Economy", bal: "Balanced", best: "Best quality", mode: "Mode", when: "When", what: "What happens",
+        t1: "Your first chat", t2: "Save money", t3: "Why this model?", t4: "Business assistant", t5: "Connect a bot", t6: "Self-hosting" },
+});
+const IDS = ["first-chat", "save-money", "why-model", "assistant", "connect", "self-host"];
+function toc() {
+  const here = location.hash.slice(1) || IDS[0];
+  document.getElementById("toc").innerHTML = IDS.map((id, i) => `<a href="#${id}" class="${id === here ? "on" : ""}"><span class="n">${TR.num(i + 1)}</span><span>${TR.t("t" + (i + 1))}</span></a>`).join("");
+}
+TR.onLang(toc);
+addEventListener("hashchange", toc);
+for (const o of document.querySelectorAll(".origin")) o.textContent = location.origin;
+for (const b of document.querySelectorAll("pre .copy")) b.onclick = () => TR.copy(b.parentElement.innerText.replace(b.innerText, "").trim());
+</script>
+</body>
+</html>

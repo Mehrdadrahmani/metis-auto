@@ -115,6 +115,21 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-112 | 2026-11-02 | Validation labels: score < 7 is a loss, failed answer keeps score 1, the one prompt Jev refused (400) has no labels | A | WP-13 |
 | D-113 | 2026-11-02 | Team branch `TakRoute` with README and `.env.example` (owner) | O | – |
 | D-114 | 2026-11-02 | WP-14 updated: free validation check first, protocol must state refused prompts, failed and cut-off answers before the freeze. Test judged and sealed, no choice used it | A | WP-14 |
+| D-115 | 2026-11-03 | **Val grows to 800 (owner "go", reverses D-108, DEV-15).** 400 new prompts drawn at random from train sessions, cap 3 per session, seed 20261103 (`scripts/s2_grow_val.py`, `results/split_grow_manifest.json`). Train is the only safe pool: split `none` is mostly leftovers of test sessions. Moved sessions (391) leave train; 8,519 train rows went to `none`. Centroids not refit, so these sessions took part in K-means at 0.2% of train. Old split kept as `runs/s2/split_val400.parquet`. Limits raised: gen_main $21.50, judge_main $3 | O | WP-14 |
+| D-116 | 2026-11-03 | Pairwise jev run on all 800 val prompts as a second view (owner "go pairwise"; D-106 stays for the main method). Test has no pairwise labels | O | WP-14 |
+| D-117 | 2026-11-03 | **Owner chose K = 8 as main router, K = 4 kept as comparison.** The D-064 rule on val 800 gives K = 4 (area 0.6634; K = 3 0.6629; K = 8 0.6522). Set aside on purpose; report must state it, and that K = 8 lost to DeepSeek by 2.0 points on the new 400 when fitted on the old 400. Final approval at Gate 3 | O | WP-14 |
+| D-118 | 2026-11-03 | **Proposed, needs owner at Gate 3 (DEV-16):** λ chosen on unseen folds as the largest λ not below always-DeepSeek, because S10's in-sample rule missed its target on unseen prompts (K = 8: 63.7% vs 64.2%). Protocol draft also adds always-DeepSeek as a main comparison. Used as defaults overnight | A | WP-14 |
+| D-119 | 2026-11-03 | **Owner overnight consent ("i consent all"):** continue through all WPs in one session, handoffs included; wait out the 5-hour limit and resume; Gate 3 freeze, `pre-test` tag and the one test opening; WP-17 labels (≤ $1), WP-19 live run (~$1.50); Khayyam after the main work ("go khayyam", limit $5). Owner did not read the protocol before the freeze, so the agent commits it for later audit. UniRoute stays the shipped router; no faked results | O | WP-14..21 |
+| D-120 | 2026-11-03 | D-118 applied: λ = 0.5151 (K = 8), λ = 0.04954 (K = 4). Protocol adds always-DeepSeek as second main comparison. Gate 3 passed by consent D-119 (DEV-16) | O | WP-14 |
+| D-121 | 2026-11-03 | Cache: AI-grader method (agent choice under D-119). No θ met ≤ 2% wrong hits; WP-17 fallback θ = 0.97, 10.0% wrong hits (5.5% to 17.4%), report it. One routing vector reused, text-matching gain too small | A | WP-17 |
+| D-122 | 2026-11-03 | Replay settings pinned before test: K = 8, cache on, checks on, stickiness off (no change on val), per `configs/gateway.yaml` | A | WP-18 |
+| D-123 | 2026-11-03 | Product name **TakRouter** (owner). Internal package stays `metis`; both `takrouter` and `metis-auto` route | O | all |
+| D-124 | 2026-11-03 | Khayyam run done (owner go, D-119): UniRoute K = 7 beats ZeroRouter on area +0.020 (0.001 to 0.044), not the best single model at chosen λ. Metis key ran out mid-run; owner spare key used | O | Khayyam |
+| D-125 | 2026-11-03 | Customer chat app on live models (owner: "use my api token", "a real product", "both English and Persian"): `/` is the chat app, `/results` the evaluation page; new budget stage `product` $3; per-request λ; 402 when the stage is used up | O | Product |
+| D-126 | 2026-11-03 | Website with 11 pages (home, chat, compare, tutorials, developers, dashboard, pricing, how, login, account, models) in Persian and English; accounts (first sign-up is admin, scrypt passwords, per-user credit $0.50 default), API keys, optional decision trace, admin page to add a model the UniRoute way (798 val prompts + jev, stage `add_model` approved per run; activation writes artifacts/router_live) | O | Product |
+| D-127 | 2026-11-03 | Khayyam exam demo kept separate from the chatbot router (owner: "different tab… dont merge it with the real data"): own artifact `artifacts/router_khayyam` (K = 7, λ 21, from stored answers, $0), own replay gateway and traces, page /khayyam. Two more models (gpt-5.2, gemini-2.5-flash) proposed, waiting for go | O | Khayyam |
+| D-128 | 2026-11-03 | Khayyam gets its own sub-menu (overview, Khayyam chat, subjects) and a live chat page /khayyam/chat (owner: "khayyam test should have a chat option too"): `POST /v1/khayyam/ask`, question + 4 options → Khayyam router → live model (stage `product`) or mock; vector = jina of the question body[:2000], not normalized (as khayyam_run.py); sign-in required; spend counts against user credit. Typed questions never used in evaluation | O | Khayyam |
+| D-128b | 2026-11-03 | Team merge: our project goes into the team repo as PR #16 (`takrouter-full` → `develop`, merge commit, history kept), team router becomes a decide-only service (`POST /route`, port 8100) behind TakRouter's gateway, one website with a TakRouter / Team toggle; live merge done by Farzaneh via `MERGE_LIVE_PROMPT.md` | O | Team |
 | D-100 | 2026-11-02 | Real pilot spend **$6.29** (owner, Metis dashboard), ledger $5.87, gap $0.42 (7%). Cause not proven; likely prompt-cache writes (1.15M tokens, not in the cost formula). Budget uses the dashboard figure | O | MASTER_LOG §4 |
 | D-101 | 2026-11-02 | **Terra dropped for the main run (owner).** Jev keeps both pointwise and pairwise. Replaces D-083's choice between judges. Gate 2 still applies; Jev is 70% and kappa 0.36 pointwise, position consistency 0.755 pairwise, against Opus labels | O | WP-11, WP-13 |
 | D-102 | 2026-11-02 | **Chat history goes to the judge from now on (owner, replaces D-046, DEV-9).** All judging after the pilot uses it, val and test. Pilot 100 re-judged too if money allows: Jev only, estimate $0.25. Needs a `{history}` slot in the templates and Jev form. Mixed inputs until then: pilot judgments have no history | O | WP-13 |
@@ -162,9 +177,67 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 | 2026-11-02 | judge_main | WP-13 | $1 | $0.28 | 1,251 | Validation only, Jev, 80 repeat calls included. 8 failed tries, all the one refused prompt |
 | 2026-11-02 | gen_main | WP-12 | $14 | $6.12 | 1,253 | Test set, owner "go", estimate $5.90. Sonnet $5.49, luna $0.27, flash $0.22, gemini $0.14. 0 failed |
 | 2026-11-02 | judge_main | WP-13 | $1 | $0.30 | 1,240 | Test set, sealed, owner "go". 60 repeats included. 8 failed tries, all one refused prompt |
-| | **Total** | | | **about $19.06** | | Ledger $18.62 + dashboard gap (D-100) |
+| 2026-11-03 | gen_main | WP-14 | $21.50 | $7.54 | 1,600 | Val +400, owner "go" (D-115), estimate $7.86. Sonnet about $6.74. Key ran out once (402), resumed with spare key. Stopped once at the old $20 limit |
+| 2026-11-03 | judge_main | WP-14 | $3 | $0.42 | 1,717 | Val +400 pointwise jev + repeats. 2x cost stop after 52 calls was a few long prompts; final about $0.00024 per call |
+| 2026-11-03 | cache_labels | WP-17 | $1 | $0.06 | 700 | Cache pairs, consent D-119 |
+| 2026-11-03 | live | WP-19 | $1.50 | $0.99 | 300 | Consent D-119 |
+| 2026-11-03 | khayyam | Q-023 | $5 | $0.47 | 6,000 | Owner go, D-119 |
+| 2026-11-03 | judge_main | WP-14 | $3 | $1.05 | 4,092 | Pairwise jev on val 800 (D-116), estimate $1.15 to $1.50 |
+| 2026-11-03 | product | D-125 | $3 | $0.0134 | ~10 | Chat app smoke test (3 calls by the agent) and the owner's own chats |
+| | **Total** | | | **about $28.07** | | Ledger + dashboard gap (D-100) |
 
 ## 5. Log (newest first)
+
+### 2026-11-03 · Handoff 7
+- PR #16 now holds the preview (3fbc212) and MERGE_LIVE_PROMPT.md (f6f07ee). Preview runs live on 8001; preview demo-cache served fake answers after the switch to live, fixed by clearing runs/preview/cache.sqlite and restarting. Main site restarted live on 8000. Tests 319 pass. Product spend $0.0139 total.
+
+### 2026-11-03 · Demo answers removed from the live cache
+- Owner: "delete them". 635 mock answers (`پاسخ نمایشی…`, space `default|…`) deleted from runs/gateway/cache.sqlite; 4 real entries kept; backup kept locally. Preview switched to live on 8001 after its own demo cache served fake answers (same bug). Cost $0.
+
+### 2026-11-03 · Merge preview + live merge prompt
+- Local repo ../takrouter-merged (both routers, toggle, mock/replay, $0). Wrote work/MERGE_LIVE_PROMPT.md. Found 636 demo answers in the real cache (owner decision pending). Removed my own test account, 2 trace rows and 1 cache row from the real files. Cost $0.
+
+### 2026-11-03 · Team PR #16: whole project into the team repo
+- Owner asked to put the whole project into Farzaneh's repo as a PR and write one merge prompt. Branch `takrouter-full` on `team` = `team/develop` + our history under `takrouter/` (unrelated-history subtree merge, 71 owner commits kept) + `TAKROUTER_MERGE_PROMPT.md`. Added-files secret scan 0 hits. PR https://github.com/farzanenadem/Metis/pull/16. Cost $0.
+
+### 2026-11-03 · WP-21 start: replay guard, history secret scan
+- Owner: "just go for wp21" (WP-20 left open). Added `METIS_ASSERT_NO_NEW_CALLS` guard (`NewCallRefused`) + test; tests 319 pass.
+- Secret scan, own branches' full history: 0 hits. Team repo history has live keys in data files (commits f430621, 732eb91, 1bcb798, by teammates): reported to owner.
+- Next: WP-21 step 2 reproduction in a fresh clone. Cost $0.
+
+### 2026-11-03 · Khayyam chat page (D-128)
+- New: `POST /v1/khayyam/ask` (`src/metis/gateway/app.py`, `kh_live()`), `metis.khayyam.build_gateway(provider=…)`, page `web/khayyam_chat.html` (/khayyam/chat), shared `TR.subnav` in `web/assets/site.js` + `.subnav` CSS, sub-menu on /khayyam (subjects anchor `#subjects`), main nav stays on "Khayyam" for /khayyam/*. "Example question" fills the form from `/v1/khayyam/sample` ($0).
+- Test `test_khayyam_chat_asks_own_question` (mock). Tests 318 pass. Not yet tried live or in a browser. Cost $0.
+
+### 2026-11-03 · Website, accounts, add-a-model, Khayyam demo (D-126, D-127)
+- 12-page bilingual site on shared `web/assets/site.{css,js}`; accounts (`metis.gateway.auth`), API keys, credit, optional trace (`pipeline.trace_view`), usage (`TraceStore.usage`), compare (`/v1/compare`), `/docs` freed from FastAPI (now `/api-docs`).
+- `metis.onboard`: add a model the UniRoute way (798 val + jev, stage `add_model` approved per run, `artifacts/router_live`). Reproduces the shipped fingerprints and costs exactly; mock run on 10 prompts OK. Bug found and fixed: lock re-entry deadlock on /v1/models.
+- `metis.khayyam` + `scripts/khayyam_build.py` ($0): separate Khayyam router, replay gateway, page /khayyam. Per-subject test accuracy: DeepSeek flash best at maths/physics, Luna at biology/humanities, Gemini at literature. Gateway replay 55.5%, 0 failed; Luna outage 54.3%, 0 failed.
+- Tests 317 pass. No new paid stage; product spend $0.0134 in total.
+
+### 2026-11-03 · TakRouter chat app (D-125), team PR #15
+- Chat app `web/app.html` at `/`: Persian and English (switch, `?lang=`), Economy / Balanced / Best quality (λ 3 / 0.515 / 0), slider over the λ breakpoints, fixed-model option, system prompt, per-answer model, cost, time, saving vs Sonnet, "Why this model?". Results page moved to `/results`.
+- Backend: `TAKROUTER_PROVIDER=live` uses `LiveProvider("product")`; `metadata.lambda`; `GET /v1/router`, `GET /v1/budget`; budget refusal is a 402. New `metis.router.explain`. Tests 305 pass.
+- Live smoke test with the real jina embedder: 3 calls, $0.0056. Screenshots seen in Persian and English.
+- Team repo PR #15 (`uniroute-fix-lambda` into `develop`): UniRoute on the vector it was fitted on (100% same cluster vs 36%), peft, Luna and Sonnet 5.5 as uniroute-only, λ slider. Out-of-fold: cache vector routes as well as the clustering vector when refitted (area 0.6547 vs 0.6535).
+
+### 2026-11-03 · Overnight: WP-15 to WP-19, site, deck, Khayyam (Opus)
+- Gateway, cache, replay, final test (n = 299), live run, site, README, report draft, Persian deck, Khayyam. Test opened once. First live router row redone (cached calls). WP-20 review, draw.io figures and WP-21 fresh-clone rerun not done; no `v1.0` tag. Site not seen in a browser. Spent $1.52 tonight, total about $29.59.
+
+### 2026-11-03 · WP-14 close (Opus, overnight)
+- Sealed guard, artifacts v1 (K = 8, K = 4), frozen λ, protocol, report; tag `pre-test`. Tests 276 passed. $0.
+
+### 2026-11-03 · WP-14 handoff 3 before overnight run (Opus)
+- /start, owner gave overnight consent (D-119). No code changed. Tests: 273 passed. Keys: 3 Metis keys in total, original ran out, 1 spare in `.env`, 1 spare unused and not on disk. $0.
+
+### 2026-11-03 · WP-14: signal tests
+- `scripts/s11_signal_tests.py`, `results/signal_tests.md`: bot groups (D-078) and simple features show no clear gain, $0. `scripts/s12_input_test.py`, `results/representation_test.md`: previous-message input gives small area changes, no gain over DeepSeek at low cost, $0. Committed test fix after a commit that had one failing test.
+
+### 2026-11-03 · WP-14: val 800, K = 8 luck exposed, pairwise
+- Free router check first: on val 400, K = 8 looked +1.3 points over ZeroRouter (CI -1.0 to +3.6). Owner grew val to 800 (D-115). Cost $9.01 this session.
+- Val 800: pass DeepSeek 65.4%, Sonnet 66.2%, Luna 61.5%, Gemini 53.5%, ceiling 79.4%. K* = 4. K = 8 fitted on old 400 lost to DeepSeek on new 400 by 2.0 points (-4.2 to 0.0); shuffle test p = 0.44.
+- Pairwise (0.5 = equal to Sonnet): DeepSeek 0.403, Luna 0.409, Gemini 0.176. Position consistency 0.753, later answer favored. Topic routing adds nothing on pairwise labels either.
+- New: `scripts/router_check.py`, `s9_router_val.py`, `s10_lambda_holdout.py`, `s2_grow_val.py`; `s7_judge.py --est-usd`. Results: `fingerprints`, `select_k`, `ladder_val`, `router_check_val`, `lambda_val`, `holdout_demo`.
 
 ### 2026-11-02 · Handoff, both remotes
 - WP-12 and WP-13 closed. `TakRoute` pushed to the team repo and the owner's repo; owner's `main` moved to the same commit. Team `main` untouched. Tests 273 pass.

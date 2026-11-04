@@ -1,0 +1,54 @@
+{
+  "anchor": null,
+  "build_date": "2026-11-03",
+  "cluster_names": [
+    "Cluster 0",
+    "Cluster 1",
+    "Cluster 2",
+    "Cluster 3"
+  ],
+  "embedder_id": "nano",
+  "files": {
+    "c_hat": "2c8023c494d677365619ef171dd0d06947abd3a49ba21db637c12412a7d87d32",
+    "centroids": "1bacf71811b67a1349727025e01e99cf33b7d240758565bee8ec01c5fe74bc43",
+    "counts": "acee2a388a51365ae50531024cd2dfbd41db315820b4bd1352256bf1b4b7053c",
+    "psi": "3a40c112b9db8b785b5809d05650392dec9bc4f75bca1c67326ed7518907a8bc"
+  },
+  "hashes": {
+    "gen_config": "fca2b649cc8d",
+    "judge_config": "356e63e52245",
+    "val_set": "26a02d6a429b"
+  },
+  "k_star": 4,
+  "lam": 0.0495353520895917,
+  "lambda_mode": "quality-out-of-fold",
+  "lambda_target": 0.6541353383458647,
+  "method": "point",
+  "models": [
+    "deepseek-v4-flash",
+    "gpt-5.6-luna",
+    "gemini-2.5-flash-lite",
+    "claude-sonnet-5-5"
+  ],
+  "prices": {
+    "claude-sonnet-5-5": {
+      "in": 2.2,
+      "out": 11.0
+    },
+    "deepseek-v4-flash": {
+      "in": 0.165,
+      "out": 0.66
+    },
+    "gemini-2.5-flash-lite": {
+      "in": 0.11,
+      "out": 0.44
+    },
+    "gpt-5.6-luna": {
+      "in": 0.22,
+      "out": 1.32
+    }
+  },
+  "router_type": "uniroute",
+  "schema_version": 1,
+  "tau": 7.0
+}

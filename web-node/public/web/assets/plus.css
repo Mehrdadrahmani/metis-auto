@@ -1,0 +1,28 @@
+/* Fixes on top of the original site.css (Node site only). The original file stays unchanged. */
+
+/* Header: nine menu items + language, theme and account did not fit at laptop widths (the
+   "Sign in" button was cut off at 1280 px in English). Tighter items first, the menu button below 1180 px. */
+@media (max-width:1320px){
+  .site-head .bar{gap:12px}
+  .nav a{padding:7px 9px;font-size:13.5px}
+}
+@media (max-width:1180px){
+  .nav{display:none;position:absolute;top:64px;inset-inline:0;background:var(--panel);border-bottom:1px solid var(--line);flex-direction:column;padding:10px 16px;box-shadow:var(--shadow)}
+  .nav.open{display:flex}
+  .nav a{padding:10px 12px;font-size:15px}
+  .burger{display:grid}
+  .head-tools{margin-inline-start:auto}
+}
+
+/* Keyboard users can see where they are */
+a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+/* (text boxes keep their own focus style; the chat box gets no extra frame) */
+
+/* The chat page's score-bar style (.bar) also matched the header bar: the header got a lavender pill
+   background and overflow:hidden, which cut off the account menu. The header keeps its own look. */
+.site-head .bar{background:none;border-radius:0;overflow:visible;min-width:0}
+
+/* Smooth page changes: the new page fades in instead of flashing (Chrome, Edge, Safari 18+) */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}

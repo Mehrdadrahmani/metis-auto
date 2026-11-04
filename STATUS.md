@@ -1,60 +1,59 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-02 · WP-13 close
+Updated: 2026-11-03 · WP-21 + team merge (handoff 7)
 
 ## Now
-- Current WP: **WP-14 Fingerprints, settings, freeze**. WP-12 and WP-13 done. Test answers and labels sealed, unread. Gate 2 failed by one item, owner went ahead (D-105). About $19.06 spent
-- Branch `TakRoute` holds this work, in the team repo `farzanenadem/Metis` and the owner's repo. Owner's `main` matches it
-- Judge: pointwise jev with history, τ = 7, `configs/judge_choice.yaml`. Val stays 400 (D-108). K limit 9 (D-089). K = 8 names from Qwen3-8B (D-092)
-- Model: default (Opus 5.5)
+- Current WP: **WP-21 Release** (owner: "just go for wp21"; WP-20 report review still open, skipped by owner choice). Test opened once (n = 299)
+- Team PR #16 open (`farzanenadem/Metis`, branch `takrouter-full` → `develop`): whole project under `takrouter/` with history + `TAKROUTER_MERGE_PROMPT.md` (Farzaneh merges with a merge commit, then runs the prompt: one site, Router TakRouter | Team toggle)
+- Branch `TakRoute`, remotes `origin` (owner) and `team`. Team PR #15 open (`farzanenadem/Metis`, branch `uniroute-fix-lambda` into `develop`)
+- Router: K = 8 λ 0.5151 (`artifacts/router_v1`). Judge jev pointwise τ = 7. Model: default (Opus 5.5)
+
+## Product (D-125..D-128): site, accounts, add-a-model, Khayyam + Khayyam chat; tests 319 pass
+- Site, 12 pages, Persian/English (`web/*.html`, shared `web/assets/site.{css,js}`): / home, /chat, /compare, /khayyam, /learn, /docs, /dashboard, /pricing, /how, /login, /account, /models (admin), /results
+- Run live: `TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000` (real jina embedder, LiveProvider stage `product` $3)
+- Accounts `metis.gateway.auth` (runs/gateway/users.sqlite): first sign-up = admin (the owner signed up); user credit $0.50 default; API keys `tk-…`
+- Optional decision trace (`metadata.trace`, per-user pref). Per-request λ (`metadata.lambda`). 402 on credit/budget
+- Add a model (`metis.onboard`, /models): register → test call → estimate → admin approves → 798 val + jev → Psi column → activate (`artifacts/router_live`). Mock run on 10 prompts OK; fingerprints of the 4 shipped models reproduce exactly. No live add yet
+- Khayyam demo (`metis.khayyam`, `scripts/khayyam_build.py`, $0 from stored answers): own artifact `artifacts/router_khayyam` (K = 7, λ 21), own gateway (replay of stored answers) and traces. Gateway replay: 55.5% acc, 0 failed; Luna outage 54.3%, 0 failed
+
+## WP-21 progress
+- Step 1 OK (owner). Step 3 done: secret scan of all history of TakRoute, main, origin/* = 0 hits (one `password={tail}` is a fake test value); results/ and report/ hold no message text
+- Guard for step 2 done: `METIS_ASSERT_NO_NEW_CALLS=1` makes `get_or_call` (`src/metis/llm/callcache.py`) raise `NewCallRefused` on a cache miss; test `test_replay_mode_refuses_new_calls`. Tests 319 pass
+- ⚠ TEAM repo `farzanenadem/Metis` (not ours) has chatbot data with live `Bearer` keys in history: commits f430621 (develop, `evaluation/data/sample_golden_set.jsonl`), 732eb91 + 1bcb798 (branch add-evaluation-test, `data/goldenset/*`). Owner to tell the team: rotate those keys, purge history
+
+## Merge preview (this session)
+- Local-only repo `../takrouter-merged` (no remote, commit 3fbc212): team router `POST /route` (port 8100, replay rule) + TakRouter gateway `metadata.router` toggle (port 8001, mock). Tested: TakRouter→deepseek, Team→gemini-2.5-flash
+- Live merge prompt `MERGE_LIVE_PROMPT.md` + preview code are IN PR #16 (head f6f07ee, mergeable); owner sends Farzaneh the message: merge `takrouter-full` → `develop` with a merge commit, then run the prompt
+- Running now: main live site :8000, live merge preview :8001 (`../takrouter-merged/takrouter`), team router :8100 (`../takrouter-merged`). Both live sites share one budget ledger
+- Real cache cleaned (owner OK): 635 demo answers deleted, 4 real kept; backup `runs/gateway/cache.before-demo-cleanup.sqlite`. Still to do in code: mock mode must never write the live cache. Live site on 8000 is OFF; live preview runs on 8001 (team router 8100)
 
 ## Exact next step
-`/start`, `work/WP-14-fingerprints-freeze.md`, section "Added by WP-12, WP-13": the free router check on validation against ZeroRouter and single models, new script using `runs/s7/labels_val.parquet`. Never open `*.sealed*`.
+0. WP-21 step 2: fresh clone to scratchpad, copy data/ + cache/, `uv sync`, re-run the stages that make the reported numbers with `METIS_ASSERT_NO_NEW_CALLS=1` (s6/s7 replay from cache, s9, s10, s12, eval_test) and compare result hashes; then steps 4 (README), 5 (budget close, archive log), 6 (tag v1.0, push). Khayyam-chat upgrade plan (merge into chat.html, optional options) waits after that
+2. Wait for owner "go": add **gpt-5.2 + gemini-2.5-flash** to Khayyam (1,500 answers each; ~$4.60 expected, $8.70 max; one test call each first). Needs entries in `configs/models.yaml` + `configs/gen_config.yaml` (gpt-5.2: rename max_tokens→max_completion_tokens, reasoning_effort none), stage `khayyam` approved +$9, then `scripts/khayyam_run.py`-style answering and `scripts/khayyam_build.py --models gpt-5.2,gemini-2.5-flash`
 
-## Validation results (`results/s6_stats.md`, `results/s7_stats.md`; n = 400)
-- Pass at 7: Sonnet 65.2%, DeepSeek 64.9%, Luna 61.2%, Gemini 53.9%. All pass 41%, all fail 21%, best possible 79%
-- 1 Sonnet answer failed, 1 prompt refused by Jev. Repeat check n = 80, mean gap 0.147
-
-## Models (D-080, D-082, D-107; `configs/models.yaml`)
-- Candidates: deepseek-v4-flash, gpt-5.6-luna, gemini-2.5-flash-lite (holdout), claude-sonnet-5-5 (anchor)
-- Judge: jev-latest (returned jev-1.14.0), pointwise only (D-106). Keep judge config id 356e63e52245: do not edit `judge_config.yaml` or the templates
-
-## Gate 2 numbers (`results/pilot_decision.md`; n = 100, Opus labels, not human)
-- Pointwise: agreement 0.74 (line 0.75), kappa 0.431, AUC 0.79. Pairwise: kappa 0.285, position consistency 0.738
-- Separability 0.333 at K = 1, 0.111 at K = 3. No length bias. Gemini over-passed 8 to 3
-- Report must state the miss, the Opus labels, and that the wrong-prompt test and 20 re-labels were not done
+## Owner discussions (not decided)
+- Validation 2,000 (+1,200 prompts) with Sonnet replaced: proposed gpt-5.2 (~$27 total) or gpt-4.1; Luna may beat gemini-2.5-flash. A new sealed test would be needed for a clean score
+- More clusters: val area falls after K = 4 (`results/select_k.md`); more labels first
 
 ## Waiting on the owner
-- Replace the Metis key again when possible: the new one was pasted in chat too (D-104). Replace the Hugging Face token too
-- Share with colleagues: `qdrant/share/*.snapshot` (948 MB) + `docker-compose.yml`, `configs/pipeline.yaml`, `embed_full.json`. Never `runs/s1`, `runs/cluster_view`, `runs/bots`, sealed ids
-- Chunking long messages over ~2,048 tokens: owner says no new token limit yet (2026-11-02); revisit later
-- D-071 defaults to confirm: 11 long messages cut; hidden memory block left in place
+- Read `results/eval_protocol.md` (frozen by consent D-119)
+- Rotate the Metis key pasted in chat (`METIS_API_KEY_SPARE`) and the Hugging Face token
+- Check in a browser: /account and /models in English (headless screenshots timed out there; Persian versions fine)
+- Team PR #15 review/merge by Farzaneh (credits the owner as contributor once on `main`)
 
 ## Blockers / open issues
 - `graphify update .` refuses to overwrite (saved semantic nodes missing): graph is behind the code
-- The exact Metis error for an empty balance is unknown; generic failure stop is the backup (D-110)
-- Reasoning tokens are not reported for Sonnet, DeepSeek and Gemini, so the guard cannot see them; Sonnet's chars per token fit its input ratio
+- Qdrant still has the old train/val payload for 391 moved sessions
 - Failed calls book $0, but a provider may bill them. Run one paid process at a time
-- Val vs test differ on Persian share (0.132) and no-description bots (0.115), over the 0.1 limit: judged chance; no redraw
-- Silhouette 0.05 to 0.12, clusters mixed; message-only routing may gain little (paper's Headlines case)
-- Almost no code in the data (292 messages, 0.09%); router not tested on code
-- New test prompts may have been in old train pages or samples; no labels used
-- Pilot separability is weak (0.111 at K = 3): compare with ZeroRouter early in WP-14; report the negative case plainly if needed (P6)
-- Dry run did not really exercise routing by cluster: sample train is 56 prompts, all val in one K = 3 cluster
-- Docker Hub refused access. GPU runs out of memory on the longest messages: use `--device cpu`
-- GitHub secret scanning not available (Q-022); HF "xet" stalls, use `scripts/fetch_model.py`
+- Router on chatbot data shows no gain over DeepSeek at low cost: report plainly (P6)
+- Site runs only on this Mac; no hosting, no payments. Khayyam licence: academic only (no question text in git)
+- Team worktree at the scratchpad (`git worktree list`): remove with `git worktree remove` when PR #15 is merged
 
 ## Money
-- Spent about $19.06 of cap $60.00. Approved: pilot $10, gen_main $14, judge_main $1
-- Rest: about $2.50 (cache labels and live run). Total about $21.60. Each stage needs a "go"
+- Spent about $30.06 of cap $60 (product stage $0.0139 so far, incl. live preview tests)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
-- D-114 WP-14 protocol notes
-- D-113 Team branch `TakRoute`
-- D-112 Val labels, refused prompt unlabeled
-- D-111 Sonnet estimate from measured price
-- D-110 Account stop and resume
-- D-109 Validation first, test waits
-- D-108 Val stays 400
-- D-107 Sonnet stays; no deepseek-v4-pro, no Qwen
-- D-106 Main judging pointwise only; terra out
-- D-105 Gate 2 failed by one item, owner went ahead on record
+- D-128b Team merge via PR #16 + MERGE_LIVE_PROMPT.md
+- D-128 Khayyam chat page
+- D-127 Khayyam demo: separate router, gateway and page
+- D-126 Website with accounts, trace, add-a-model
+- D-125 Live chat app, stage `product` $3

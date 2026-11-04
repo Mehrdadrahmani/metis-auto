@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main, TakRoute]
+  pull_request:
+
+jobs:
+  gateway:
+    name: Gateway (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv sync --frozen
+      - run: uv run ruff check src tests
+      - run: uv run pytest -q   # mock provider and fake embedder: no keys, data or model files
+
+  website:
+    name: Website (Node.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-node
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web-node/package-lock.json
+      - run: npm ci
+      - run: npm run build

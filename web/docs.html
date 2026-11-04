@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Developers · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.layout{display:grid;grid-template-columns:220px 1fr;gap:36px;align-items:start}
+.toc{position:sticky;top:84px;display:grid;gap:2px;font-size:14px}
+.toc a{padding:7px 12px;border-radius:10px;text-decoration:none;color:var(--ink2)}
+.toc a:hover{background:var(--chip)}
+.toc h6{margin:14px 12px 4px;font-size:12px;color:var(--muted)}
+.doc h2{font-size:22px;margin:34px 0 8px;scroll-margin-top:84px}
+.doc h2:first-child{margin-top:0}
+.doc h3{font-size:16px;margin:20px 0 6px}
+.doc p,.doc li{color:var(--ink2)}
+.ep{display:flex;gap:8px;align-items:center;font-family:ui-monospace,Menlo,monospace;font-size:14px;direction:ltr;justify-content:flex-start;margin:6px 0 10px}
+.verb{padding:2px 8px;border-radius:7px;font-weight:700;font-size:12px}
+.verb.post{background:var(--okbg);color:var(--ok)}.verb.get{background:var(--soft);color:var(--violet-ink)}
+.tabs{display:flex;gap:4px;margin-bottom:-1px}
+.tabs button{border:1px solid var(--line);border-bottom:0;background:var(--bg2);padding:6px 14px;border-radius:10px 10px 0 0;font-size:13px;font-weight:600;color:var(--ink2)}
+.tabs button.on{background:#16132a;color:#fff;border-color:#16132a}
+.play textarea{font-family:ui-monospace,Menlo,monospace;font-size:13px;min-height:190px;direction:ltr;text-align:left}
+.play pre{min-height:120px;max-height:420px}
+.params td:first-child{font-family:ui-monospace,Menlo,monospace;direction:ltr;white-space:nowrap}
+@media (max-width:860px){.layout{grid-template-columns:1fr}.toc{display:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+  <div class="layout">
+    <nav class="toc">
+      <h6 data-i18n="g1"></h6><a href="#quick" data-i18n="s_quick"></a><a href="#auth" data-i18n="s_auth"></a>
+      <h6 data-i18n="g2"></h6><a href="#chat" data-i18n="s_chat"></a><a href="#router" data-i18n="s_router"></a><a href="#compare" data-i18n="s_compare"></a><a href="#usage" data-i18n="s_usage"></a>
+      <h6 data-i18n="g3"></h6><a href="#errors" data-i18n="s_errors"></a><a href="#play" data-i18n="s_play"></a>
+    </nav>
+    <div class="doc">
+      <h2 id="quick" data-i18n="s_quick"></h2>
+      <p data-only="fa">TakRouter با OpenAI سازگار است. هر برنامه‌ای که با OpenAI کار می‌کند، با عوض کردن آدرس پایه و نام مدل به TakRouter وصل می‌شود.</p>
+      <p data-only="en">TakRouter is OpenAI-compatible. Any app that works with OpenAI connects by changing the base URL and the model name.</p>
+      <div class="tabs" id="langtabs"><button data-k="curl" class="on">curl</button><button data-k="py">Python</button><button data-k="js">JavaScript</button></div>
+      <pre class="code" id="sample"></pre>
+
+      <h2 id="auth" data-i18n="s_auth"></h2>
+      <p data-only="fa">از <a href="/account">حساب کاربری</a> یک کلید بسازید و در سربرگ <code>Authorization: Bearer tk-...</code> بفرستید. کلید فقط یک بار نشان داده می‌شود؛ ما فقط اثر انگشت آن را نگه می‌داریم. مصرف هر کلید از اعتبار صاحب آن کم می‌شود.</p>
+      <p data-only="en">Create a key on your <a href="/account">account</a> page and send it as <code>Authorization: Bearer tk-...</code>. The key is shown once; we keep only its fingerprint. Usage counts against its owner's credit.</p>
+
+      <h2 id="chat" data-i18n="s_chat"></h2>
+      <div class="ep"><span class="verb post">POST</span>/v1/chat/completions</div>
+      <table class="t params"><tr><th data-i18n="field"></th><th data-i18n="desc"></th></tr>
+        <tr><td>model</td><td><span data-only="fa"><code>takrouter</code> برای مسیریابی خودکار، یا نام یک مدل (مثلاً <code>deepseek-v4-flash</code>) برای ثابت کردن آن.</span><span data-only="en"><code>takrouter</code> to route, or a model id (e.g. <code>deepseek-v4-flash</code>) to pin it.</span></td></tr>
+        <tr><td>messages</td><td><span data-only="fa">مثل OpenAI: system، user، assistant. مسیریابی فقط با آخرین پیام کاربر انجام می‌شود.</span><span data-only="en">As in OpenAI: system, user, assistant. Routing uses the last user message only.</span></td></tr>
+        <tr><td>metadata.lambda</td><td><span data-only="fa">وزن قیمت، ۰ یا بیشتر. ۰ = بهترین کیفیت، ۰٫۵۱۵ = متعادل (پیش‌فرض)، ۳ = اقتصادی.</span><span data-only="en">Price weight, 0 or more. 0 = best quality, 0.515 = balanced (default), 3 = economy.</span></td></tr>
+        <tr><td>metadata.trace</td><td><span data-only="fa"><code>true</code>: مسیر کامل تصمیم در <code>takrouter.trace</code> برمی‌گردد.</span><span data-only="en"><code>true</code> returns every step of the decision in <code>takrouter.trace</code>.</span></td></tr>
+        <tr><td>response_format</td><td><span data-only="fa"><code>{"type":"json_object"}</code>: پاسخ باید JSON معتبر باشد، وگرنه یک بار ترمیم و سپس مدل قوی‌تر.</span><span data-only="en"><code>{"type":"json_object"}</code>: the answer must be valid JSON, else one repair, then a stronger model.</span></td></tr>
+        <tr><td>X-Metis-Session</td><td><span data-only="fa">سربرگ اختیاری: شناسه‌ی گفتگو، برای گزارش.</span><span data-only="en">Optional header: a conversation id, for reports.</span></td></tr>
+      </table>
+      <h3 data-i18n="resp"></h3>
+      <pre class="code">{
+  "model": "gpt-5.6-luna",
+  "choices": [{"message": {"role": "assistant", "content": "…"}}],
+  "usage": {"prompt_tokens": 22, "completion_tokens": 199},
+  "takrouter": {
+    "cluster": 3, "cluster_name": "Humanities and religion", "lam": 0.515,
+    "scores": {"gpt-5.6-luna": 0.476, "deepseek-v4-flash": 0.521, "…": "…"},
+    "chosen": "gpt-5.6-luna", "served_by": "gpt-5.6-luna", "tried": ["gpt-5.6-luna"],
+    "cache": "miss", "escalations": 0, "cost_usd": 0.00027, "latency_ms": 4512
+  }
+}</pre>
+
+      <h2 id="router" data-i18n="s_router"></h2>
+      <div class="ep"><span class="verb get">GET</span>/v1/router?lam=0.515</div>
+      <p data-only="fa">برای هر موضوع، کیفیت هر مدل و مدلی که با این λ انتخاب می‌شود؛ به‌علاوه‌ی نقاطی از λ که انتخاب عوض می‌شود. بدون ورود.</p>
+      <p data-only="en">For each topic, each model's quality and the model this λ picks; plus the λ values where a pick changes. No sign-in needed.</p>
+
+      <h2 id="compare" data-i18n="s_compare"></h2>
+      <div class="ep"><span class="verb post">POST</span>/v1/compare</div>
+      <p data-only="fa">همان بدنه‌ی گفتگو؛ همه‌ی مدل‌ها پاسخ می‌دهند و انتخاب TakRouter مشخص است. هزینه‌ی همه‌ی مدل‌ها حساب می‌شود.</p>
+      <p data-only="en">Same body as chat; every model answers and TakRouter's pick is marked. You pay for every model.</p>
+
+      <h2 id="usage" data-i18n="s_usage"></h2>
+      <div class="ep"><span class="verb get">GET</span>/v1/usage?days=30</div>
+      <p data-only="fa">مصرف شما در روزهای اخیر: تعداد، هزینه، هزینه‌ی معادل با Claude Sonnet، مدل‌ها و زمان پاسخ.</p>
+      <p data-only="en">Your recent usage: requests, cost, the Claude Sonnet equivalent, the model mix and response times.</p>
+
+      <h2 id="errors" data-i18n="s_errors"></h2>
+      <table class="t"><tr><th data-i18n="code"></th><th data-i18n="desc"></th></tr>
+        <tr><td>401</td><td><span data-only="fa">وارد نشده‌اید یا کلید نادرست است.</span><span data-only="en">Not signed in, or a wrong key.</span></td></tr>
+        <tr><td>402</td><td><span data-only="fa"><code>credit_exhausted</code>: اعتبار شما تمام شده. <code>budget_exhausted</code>: سقف کل سرویس پر شده.</span><span data-only="en"><code>credit_exhausted</code>: your credit is used up. <code>budget_exhausted</code>: the service's limit is reached.</span></td></tr>
+        <tr><td>422</td><td><span data-only="fa">ورودی نادرست، مثلاً λ منفی.</span><span data-only="en">Bad input, for example a negative λ.</span></td></tr>
+        <tr><td>503</td><td><span data-only="fa">هیچ مدلی پاسخ نداد (پس از جایگزینی خودکار).</span><span data-only="en">No model answered, after automatic failover.</span></td></tr>
+      </table>
+
+      <h2 id="play" data-i18n="s_play"></h2>
+      <p data-only="fa">درخواست را ویرایش کنید و بفرستید. با حساب فعلی شما اجرا و از اعتبارتان کم می‌شود.</p>
+      <p data-only="en">Edit the request and send it. It runs as your signed-in account and uses your credit.</p>
+      <div class="play grid g2">
+        <div><textarea class="input" id="pbody"></textarea><div style="margin-top:8px;display:flex;gap:8px"><button class="btn primary small" id="psend" data-i18n="send"></button><span class="muted" id="pstat" style="font-size:13px;align-self:center"></span></div></div>
+        <pre class="code" id="pout">{}</pre>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "توسعه‌دهندگان", title: "راهنمای API", lead: "TakRouter را با چند خط کد به برنامه‌ی خودتان وصل کنید.",
+        g1: "شروع", g2: "نقاط دسترسی", g3: "بیشتر", s_quick: "شروع سریع", s_auth: "کلید API", s_chat: "گفتگو", s_router: "اطلاعات مسیریاب",
+        s_compare: "مقایسه", s_usage: "مصرف", s_errors: "کدهای خطا", s_play: "آزمایش زنده", field: "فیلد", desc: "توضیح", code: "کد", resp: "پاسخ",
+        send: "ارسال", login_first: "برای آزمایش، اول وارد شوید." },
+  en: { kick: "Developers", title: "API guide", lead: "Connect TakRouter to your own app with a few lines of code.",
+        g1: "Start", g2: "Endpoints", g3: "More", s_quick: "Quick start", s_auth: "API keys", s_chat: "Chat", s_router: "Router info",
+        s_compare: "Compare", s_usage: "Usage", s_errors: "Error codes", s_play: "Live playground", field: "Field", desc: "Description", code: "Code", resp: "Response",
+        send: "Send", login_first: "Sign in first to use the playground." },
+});
+const O = location.origin;
+const SAMPLES = {
+  curl: `curl ${O}/v1/chat/completions \\\n  -H "Authorization: Bearer tk-..." \\\n  -H "Content-Type: application/json" \\\n  -d '{"model": "takrouter", "messages": [{"role": "user", "content": "سلام"}]}'`,
+  py: `from openai import OpenAI\n\nclient = OpenAI(base_url="${O}/v1", api_key="tk-...")\nreply = client.chat.completions.create(\n    model="takrouter",\n    messages=[{"role": "user", "content": "سلام"}],\n)\nprint(reply.model, reply.choices[0].message.content)`,
+  js: `const r = await fetch("${O}/v1/chat/completions", {\n  method: "POST",\n  headers: {"Content-Type": "application/json", "Authorization": "Bearer tk-..."},\n  body: JSON.stringify({model: "takrouter", messages: [{role: "user", content: "سلام"}]}),\n});\nconsole.log(await r.json());`,
+};
+function showSample(k) {
+  for (const b of document.querySelectorAll("#langtabs button")) b.classList.toggle("on", b.dataset.k === k);
+  const pre = document.getElementById("sample"); pre.textContent = SAMPLES[k];
+  const c = document.createElement("button"); c.className = "copy"; c.textContent = TR.t("copy"); c.onclick = () => TR.copy(SAMPLES[k]); pre.append(c);
+}
+for (const b of document.querySelectorAll("#langtabs button")) b.onclick = () => showSample(b.dataset.k);
+TR.onLang(() => showSample(document.querySelector("#langtabs .on").dataset.k));
+document.getElementById("pbody").value = JSON.stringify({model: "takrouter", messages: [{role: "user", content: "پایتخت ژاپن کجاست؟ یک کلمه."}], metadata: {lambda: 0.515, trace: true}}, null, 2);
+document.getElementById("psend").onclick = async () => {
+  const out = document.getElementById("pout"), st = document.getElementById("pstat");
+  await TR.ready; if (!TR.me) { st.textContent = TR.t("login_first"); return; }
+  let body; try { body = JSON.parse(document.getElementById("pbody").value); } catch (e) { out.textContent = String(e); return; }
+  st.textContent = "…"; const t0 = performance.now();
+  const r = await fetch("/v1/chat/completions", {method: "POST", credentials: "same-origin", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  out.textContent = JSON.stringify(await r.json().catch(() => ({})), null, 2);
+  st.textContent = `${r.status} · ${TR.num((performance.now() - t0) / 1000, 1)} s`;
+};
+</script>
+</body>
+</html>

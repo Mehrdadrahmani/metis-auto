@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="/web/assets/site.js"></script>
+<style>
+.ask{display:flex;gap:10px;align-items:flex-end}
+.ask textarea{flex:1;min-height:52px;resize:vertical}
+.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:18px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;min-height:200px}
+.col.pick{border:2px solid var(--violet);box-shadow:0 8px 26px rgba(153,51,255,.14)}
+.col .h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);font-weight:700;font-size:14px}
+.col .h .tag{margin-inline-start:auto}
+.col .b{padding:12px 14px;font-size:14px;flex:1;overflow:auto;max-height:440px}
+.col .b p{margin:0 0 8px}
+.col .b pre{background:#16132a;color:#ecebf5;padding:10px;border-radius:10px;overflow:auto;direction:ltr;text-align:left;font-size:12.5px}
+.col .f{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line)}
+.pickline{margin-top:16px}
+.cost-note{font-size:13px}
+.skel{height:12px;border-radius:6px;background:var(--chip);margin:8px 0;animation:p 1.2s infinite}
+@keyframes p{50%{opacity:.5}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p></div>
+  <div class="card">
+    <form class="ask" id="f">
+      <textarea class="input" id="q" data-i18n-placeholder="ph"></textarea>
+      <button class="btn primary" id="go" type="submit" data-i18n="go"></button>
+    </form>
+    <p class="muted cost-note" style="margin:10px 0 0" data-i18n="note"></p>
+  </div>
+  <div id="pickline" class="pickline"></div>
+  <div class="cols" id="cols"></div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "مقایسه", title: "یک سؤال، همه‌ی مدل‌ها، کنار هم", lead: "ببینید هر مدل چه جوابی می‌دهد، چقدر طول می‌کشد و چقدر هزینه دارد؛ و TakRouter کدام را انتخاب می‌کرد.",
+        ph: "سؤال خود را بنویسید…", go: "مقایسه کن", note: "این صفحه همه‌ی مدل‌ها را صدا می‌زند، پس هزینه‌اش حدود چهار برابر یک پیام عادی است.",
+        pick: "انتخاب TakRouter", picked: (m, t) => `TakRouter برای این پیام ${m} را انتخاب می‌کرد (موضوع: ${t}).`,
+        total: (c) => `هزینه‌ی کل این مقایسه: ${c}`, failed: "پاسخی نیامد", seconds: (s) => s + " ثانیه",
+        err402: "اعتبار شما برای این کار کافی نیست.", err: "خطا: " },
+  en: { kick: "Compare", title: "One question, every model, side by side", lead: "See what each model answers, how long it takes and what it costs, and which one TakRouter would pick.",
+        ph: "Write your question…", go: "Compare", note: "This page calls every model, so it costs about four times a normal message.",
+        pick: "TakRouter's pick", picked: (m, t) => `For this message TakRouter would pick ${m} (topic: ${t}).`,
+        total: (c) => `Total cost of this comparison: ${c}`, failed: "No answer", seconds: (s) => s + " s",
+        err402: "Your credit is not enough for this.", err: "Error: " },
+});
+const $ = (id) => document.getElementById(id);
+let last = null;
+function md(s) { return window.marked && window.DOMPurify ? DOMPurify.sanitize(marked.parse(s || "", {breaks: true})) : (s || "").replace(/[&<>]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"}[c])); }
+function draw() {
+  if (!last) return;
+  const m = TR.model(last.pick);
+  $("pickline").innerHTML = `<div class="notice info"></div>`;
+  $("pickline").firstChild.textContent = TR.t("picked", m.name, TR.topic(last.cluster, last.cluster_name)) + "  ·  " + TR.t("total", TR.usd(last.cost_usd));
+  $("cols").innerHTML = "";
+  const order = [...last.answers].sort((a, b) => (b.model === last.pick) - (a.model === last.pick));
+  for (const a of order) {
+    const info = TR.model(a.model);
+    const c = document.createElement("div"); c.className = "col" + (a.model === last.pick ? " pick" : "");
+    c.innerHTML = `<div class="h"><i class="sw" style="background:${info.color}"></i><span class="ltr"></span>${a.model === last.pick ? `<span class="tag brand"></span>` : ""}</div><div class="b"></div><div class="f"></div>`;
+    c.querySelector(".h .ltr").textContent = info.name;
+    if (a.model === last.pick) c.querySelector(".h .tag").textContent = TR.t("pick");
+    c.querySelector(".b").innerHTML = a.ok ? md(a.text) : `<span class="muted">${TR.t("failed")}</span>`;
+    if (a.ok) for (const s of [TR.usd(a.cost_usd), TR.t("seconds", TR.num(a.seconds, 1))]) { const tg = document.createElement("span"); tg.className = "tag"; tg.textContent = s; c.querySelector(".f").append(tg); }
+    $("cols").append(c);
+  }
+}
+TR.onLang(draw);
+$("f").onsubmit = async (e) => {
+  e.preventDefault();
+  const q = $("q").value.trim(); if (!q) return;
+  $("go").disabled = true; $("pickline").innerHTML = "";
+  $("cols").innerHTML = Object.keys(TR.MODELS).map(() => `<div class="col"><div class="b"><div class="skel"></div><div class="skel" style="width:80%"></div><div class="skel" style="width:60%"></div></div></div>`).join("");
+  try { last = await TR.api("/v1/compare", {method: "POST", body: {messages: [{role: "user", content: q}]}}); draw(); }
+  catch (x) { $("cols").innerHTML = ""; $("pickline").innerHTML = `<div class="notice err"></div>`; $("pickline").firstChild.textContent = x.status === 402 ? TR.t("err402") : TR.t("err") + x.message; }
+  finally { $("go").disabled = false; }
+};
+TR.requireLogin().then(() => { const p = new URLSearchParams(location.search).get("q"); if (p) $("q").value = p; });
+</script>
+</body>
+</html>

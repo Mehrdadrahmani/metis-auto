@@ -1,0 +1,21 @@
+{
+  "stage": "s2_grow_val",
+  "decision": "D-115",
+  "deviation": "DEV-15",
+  "seed": 20261103,
+  "added": 400,
+  "sessions_moved": 391,
+  "max_per_session": 3,
+  "train_prompts_left_train": 8519,
+  "old_val_sha256": "e18ac4d23d1085753fc461cdaa2ae4f28039593bfdcd7151e0a74ebf6d48d600",
+  "new_prompts_sha256": "a12967ee6825ed51caed7f22f3e38038c323796c150a5e0025a2bbfb26caf6cb",
+  "val_sha256": "163faa6a4f766df8eb9f3837a2b7de8300fad5ff65fedbd313127ede674e28f5",
+  "counts_by_split": {
+    "train": 170666,
+    "none": 166559,
+    "val": 800
+  },
+  "centroids_refit": false,
+  "sealed_files_opened": false,
+  "seconds": 1.09
+}

@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="/web/assets/site.js"></script>
+<style>
+html,body{height:100%}
+html{overflow:hidden}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+.site-head{flex:none}
+.app{flex:1;display:grid;grid-template-columns:270px 1fr;min-height:0}
+.side{background:var(--bg2);border-inline-end:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.newchat{margin:14px;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--panel);font-weight:600}
+.newchat:hover{border-color:var(--violet);color:var(--violet-ink)}
+.list{flex:1;overflow:auto;padding:0 10px}
+.list h6{margin:6px 8px;font-size:12px;color:var(--muted);font-weight:600}
+.conv{display:flex;align-items:center;gap:4px;width:100%;padding:8px 10px;border-radius:10px;color:var(--ink2);font-size:14px;cursor:pointer}
+.conv span{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.conv:hover{background:var(--chip)}
+.conv.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.conv button{opacity:0;border:0;background:none;color:var(--muted);padding:0 3px;font-size:13px}
+.conv:hover button{opacity:1}
+.sidefoot{padding:12px 14px 14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.save{border-radius:14px;padding:12px 14px;background:var(--panel);border:1px solid var(--line)}
+.save small{display:block;color:var(--muted);font-size:12px}
+.save strong{font-size:22px;font-weight:800;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.save .sub{font-size:12px;color:var(--ink2)}
+.credit{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between}
+
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.top{display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.modes{display:flex;background:var(--chip);border-radius:12px;padding:3px;gap:2px;position:relative}
+.modes button{border:0;background:none;padding:6px 14px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink2);white-space:nowrap;position:relative;z-index:1;transition:color .25s}
+.modes button.on{color:var(--ink)}
+.modes .pill{position:absolute;top:3px;bottom:3px;left:0;width:0;border-radius:9px;background:var(--panel);box-shadow:var(--shadow);transition:transform .32s cubic-bezier(.3,1.3,.5,1),width .32s cubic-bezier(.3,1.3,.5,1)}
+.modes:not(.ready) .pill{transition:none}
+.owntag{font-size:12px;font-weight:600;color:var(--ok);background:var(--okbg);padding:3px 9px;border-radius:99px;white-space:nowrap}
+.answer[data-typing] .caret{display:inline-block;width:.5em;height:1.05em;margin-inline-start:2px;vertical-align:-.15em;border-radius:2px;background:linear-gradient(180deg,#3d6bff,#c13cff);animation:caret .8s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.spacer{flex:1}
+.status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2);padding:5px 10px;border-radius:99px;background:var(--chip);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.live{background:#1fbf75;box-shadow:0 0 0 3px rgba(31,191,117,.2)}.dot.demo{background:#f0a020}
+.adv{position:relative}
+.pop{position:absolute;top:42px;inset-inline-start:0;width:330px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px;z-index:20;display:none}
+.pop.open{display:block}
+.pop h4{margin:0 0 4px;font-size:14px}
+.pop p{margin:0 0 10px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.pop label.l{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+.range{width:100%;accent-color:var(--violet)}
+.rangeends{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+.scroll{flex:1;overflow:auto}
+.thread{max-width:800px;margin:0 auto;padding:26px 20px 12px}
+.empty{max-width:720px;margin:7vh auto 0;padding:0 20px;text-align:center}
+.empty .mark{width:56px;height:56px;border-radius:18px;margin:0 auto 18px}
+.empty .mark svg{width:30px;height:30px}
+.empty h1{margin:0 0 6px;font-size:30px;font-weight:800;letter-spacing:-.4px}
+.empty p{margin:0 auto 26px;color:var(--ink2);max-width:520px}
+.sugs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sug{text-align:start;border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.sug:hover{border-color:var(--violet)}
+.sug b{font-size:14px;font-weight:600}.sug span{font-size:12.5px;color:var(--muted)}
+
+.msg{display:flex;margin:0 0 22px}
+.bubble{background:var(--userq);padding:10px 18px;border-radius:22px;max-width:75%;white-space:pre-wrap;word-wrap:break-word}
+.msg.bot{gap:12px;align-items:flex-start}
+.avatar{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;margin-top:2px}
+.body{flex:1;min-width:0}
+.answer{word-wrap:break-word}
+.answer p{margin:0 0 10px}
+.answer :is(ul,ol){margin:0 0 10px;padding-inline-start:22px}
+.answer h1,.answer h2,.answer h3{font-size:16px;margin:14px 0 6px}
+.answer pre{background:#16132a;color:#ecebf5;padding:12px 14px;border-radius:12px;overflow:auto;direction:ltr;text-align:left;font-size:13px}
+.answer pre code{background:none;padding:0;color:inherit}
+.answer table{border-collapse:collapse;margin:0 0 10px;font-size:14px}
+.answer th,.answer td{border:1px solid var(--line2);padding:4px 10px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:99px;background:var(--chip);color:var(--ink2);border:0}
+.chip.good{background:var(--okbg);color:var(--ok);font-weight:600}.chip.warn{background:var(--warnbg);color:var(--warn)}
+button.chip:hover{color:var(--violet-ink)}
+.acts{display:flex;gap:2px;margin-top:6px}
+.acts button{border:0;background:none;color:var(--muted);font-size:12.5px;padding:3px 7px;border-radius:7px}
+.acts button:hover{background:var(--chip);color:var(--violet-ink)}
+.panel{margin-top:10px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--panel);font-size:13px}
+.panel table{width:100%;border-collapse:collapse}
+.panel td{padding:5px 4px;border-top:1px solid var(--line);vertical-align:middle}
+.panel tr.pick td{font-weight:700}
+.bar{height:6px;border-radius:99px;background:var(--chip);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;border-radius:99px}
+.note{color:var(--muted);font-size:12px;margin-top:8px;line-height:1.6}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;padding:7px 0;border-top:1px solid var(--line);align-items:start}
+.tl li:first-child{border-top:0}
+.tl .n{width:24px;height:24px;border-radius:8px;background:var(--soft);color:var(--violet-ink);display:grid;place-items:center;font-size:11px;font-weight:800}
+.tl b{display:block;font-size:13px}
+.tl span.d{color:var(--ink2);font-size:12.5px}
+.tl .ms{color:var(--muted);font-size:12px;white-space:nowrap}
+.errbox{background:var(--errbg);color:var(--err);padding:10px 14px;border-radius:12px;font-size:14px}
+.typing{display:inline-flex;gap:4px;padding:10px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:b 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-6px);background:#9933ff}}
+@media (prefers-reduced-motion:reduce){.typing i,.answer[data-typing] .caret{animation:none}.modes .pill{transition:none}}
+
+.composer{padding:10px 20px 16px}
+:root{--userq:#f2f1f5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--userq:#2a2838}}
+:root[data-theme="dark"]{--userq:#2a2838}
+.sys{max-width:800px;margin:0 auto 8px}
+.sys textarea{width:100%;border:1px dashed var(--line2);border-radius:12px;background:var(--bg2);padding:8px 12px;font-size:13px;resize:vertical;min-height:44px}
+.box{max-width:800px;margin:0 auto;border:1px solid var(--line2);border-radius:26px;background:var(--panel);box-shadow:0 1px 6px rgba(20,16,40,.06);padding:10px 10px 10px 12px;display:flex;align-items:flex-end;gap:8px;transition:box-shadow .2s,border-color .2s}
+.box:focus-within{border-color:color-mix(in srgb,var(--ink) 18%,var(--line2));box-shadow:0 4px 22px rgba(20,16,40,.10)}
+.box textarea:focus,.box textarea:focus-visible{outline:0}
+.box textarea{flex:1;border:0;outline:0;resize:none;background:none;max-height:200px;min-height:26px;padding:4px 6px;line-height:1.7}
+.send{width:38px;height:38px;border-radius:12px;border:0;background:var(--brand);color:#fff;display:grid;place-items:center;flex:none}
+.send:disabled{opacity:.35;cursor:default}
+.send svg{width:18px;height:18px}
+html[dir="rtl"] .send.go svg{transform:scaleX(-1)}
+.hint{max-width:800px;margin:8px auto 0;text-align:center;font-size:12px;color:var(--muted)}
+/* ---- friendlier chat (ideas from ChatGPT / Claude) ---- */
+.main{position:relative}
+.sidebtn{display:none}
+/* ---- Claude-like shell: no site header on this page; the sidebar carries logo, account, language, theme ---- */
+.app{transition:grid-template-columns .28s cubic-bezier(.4,0,.2,1)}
+.side{overflow:hidden}
+.side-top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 12px 0 14px}
+.side-logo{font-size:16px;white-space:nowrap}
+.side-logo .mark{width:28px;height:28px;border-radius:9px}.side-logo .mark svg{width:16px;height:16px}
+.side .newchat{margin:12px 14px}
+.side-bottom{display:flex;align-items:center;gap:6px;padding:10px 12px 12px;border-top:1px solid var(--line)}
+.side-bottom .acct{flex:1;min-width:0}
+.side-bottom .acct-btn{width:100%;border-radius:12px;justify-content:flex-start;height:40px;border-color:transparent;background:none}
+.side-bottom .acct-btn:hover{background:var(--chip)}
+.side-bottom .acct-btn .nm{max-width:none!important}
+.side .menu{top:auto;bottom:48px;inset-inline-start:0;inset-inline-end:auto;min-width:230px}
+.side .menu .sitelinks{border-top:1px solid var(--line);margin-top:4px;padding-top:4px}
+.side .menu .sitelinks a{font-size:13.5px;color:var(--ink2)}
+.side .menu #logoutbtn{border-top:1px solid var(--line);margin-top:4px;border-radius:0 0 9px 9px}
+.side-bottom .langbtn{height:34px;padding:0 9px}
+.side-bottom .iconbtn{width:34px;height:34px}
+.railbtn{display:none;margin:0 auto 8px}
+@media (min-width:861px){
+/* collapsed = a thin rail of icons */
+.app.collapsed{grid-template-columns:60px 1fr}
+.app.collapsed .side-top{justify-content:center;padding:12px 0 0}
+.app.collapsed .side-logo,.app.collapsed .search,.app.collapsed .list,.app.collapsed .sidefoot,
+.app.collapsed .side-bottom .langbtn,.app.collapsed .side-bottom #themebtn,.app.collapsed .newchat span,.app.collapsed .acct-btn .nm{display:none}
+.app.collapsed .newchat{width:40px;height:40px;padding:0;margin:12px auto 8px}
+.app.collapsed .railbtn{display:grid}
+.app.collapsed .list-spacer{display:block;flex:1}
+.list-spacer{display:none}
+.app.collapsed .side-bottom{justify-content:center;border-top:0;padding:10px 0 14px}
+.app.collapsed .side-bottom .acct{flex:none}
+.app.collapsed .acct-btn{width:auto;padding:3px}
+}
+.top{border-bottom:0}
+/* ---- motion: everything reacts, nothing jumps ---- */
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.msg.enter{animation:msgIn .32s cubic-bezier(.2,.8,.2,1) both}
+.thread.swap{animation:fadeIn .22s ease-out}
+.empty,.main.fresh #sugbox{animation:msgIn .4s cubic-bezier(.2,.8,.2,1) both}
+.main.fresh #sugbox{animation-delay:.08s}
+.pop{display:block;opacity:0;visibility:hidden;transform:translateY(-6px) scale(.98);transform-origin:top;transition:opacity .16s,transform .16s,visibility .16s}
+.pop.open{opacity:1;visibility:visible;transform:none}
+.side .menu{display:block;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .16s,transform .16s,visibility .16s}
+.side .menu.open{opacity:1;visibility:visible;transform:none}
+.main button,.side button,.sug{transition:transform .12s,background-color .15s,border-color .15s,color .15s,box-shadow .15s}
+.main button:active:not(:disabled),.side button:active{transform:scale(.95)}
+.sug:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.conv{transition:background-color .15s,color .15s}
+.send:not(:disabled):hover{transform:scale(1.06)}
+.shimmer{background:linear-gradient(90deg,var(--muted) 35%,var(--ink) 50%,var(--muted) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 1.6s linear infinite}
+@keyframes sh{from{background-position:100% 0}to{background-position:-150% 0}}
+.dot.live{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(31,191,117,0)}}
+.backdrop{position:fixed;inset:0;background:rgba(10,8,25,.35);z-index:39;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.backdrop.show{opacity:1;visibility:visible}
+@media (prefers-reduced-motion:reduce){
+  .app,.msg.enter,.thread.swap,.empty,#sugbox,.pop,.side .menu,.side,.shimmer,.dot.live{animation:none!important;transition:none!important}
+}
+.search{margin:0 14px 10px;position:relative}
+.search input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--line);border-radius:11px;background:var(--panel);font-size:13.5px;outline:0}
+html[dir="rtl"] .search input{padding:8px 32px 8px 12px}
+.search input:focus{border-color:var(--line2)}
+.search svg{position:absolute;top:50%;transform:translateY(-50%);inset-inline-start:10px;color:var(--muted)}
+.conv span{unicode-bidi:plaintext;text-align:start}
+.list .none{padding:8px;color:var(--muted);font-size:13px}
+.conv input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:7px;padding:2px 6px;font:inherit;background:var(--bg);outline:0}
+.undo{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 10px 9px 16px;border-radius:12px;font-size:14px;z-index:100;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center}
+.undo button{border:0;background:var(--panel);color:var(--ink);font-weight:700;border-radius:8px;padding:5px 10px;font-size:13px}
+/* the new-chat screen: greeting and input in the middle */
+.main.fresh{justify-content:center;padding-bottom:10vh}
+.main.fresh .scroll{flex:none;overflow:visible}
+.main.fresh .empty{margin-top:0}
+.main.fresh .hint{display:none}
+.main.fresh .top{position:absolute;top:0;inset-inline:0}
+#sugbox{max-width:800px;margin:12px auto 0;display:none}
+.main.fresh #sugbox{display:grid}
+/* messages */
+.msg.user{flex-direction:column;align-items:flex-start}
+.msg .acts{opacity:0;transition:opacity .15s}
+.msg:hover .acts,.msg.last .acts,.msg:focus-within .acts{opacity:1}
+@media (hover:none){.msg .acts{opacity:1}}
+.acts button{display:inline-flex;align-items:center;gap:5px}
+.acts svg{width:15px;height:15px}
+.acts button.done{color:var(--ok)}
+.editbox{width:min(100%,640px);background:var(--userq);border-radius:22px;padding:10px 12px}
+.editbox textarea{width:100%;border:0;background:none;resize:none;outline:0;font:inherit;line-height:1.7;min-height:52px}
+.editbox .row{display:flex;gap:8px;justify-content:flex-end}
+.answer pre{position:relative;padding-top:38px}
+.codehead{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:6px 10px 6px 14px;font-size:12px;color:#a9a5c4;border-bottom:1px solid #2a2645;direction:ltr;font-family:var(--sans,"Vazirmatn","Inter",system-ui,sans-serif)}
+.codehead button span{font-family:"Vazirmatn","Inter",system-ui,sans-serif}
+.stopnote{color:var(--muted);font-size:13.5px;font-style:italic;padding:4px 0}
+.codehead button{border:0;background:none;color:#cfcbe6;font-size:12px;display:inline-flex;gap:5px;align-items:center;padding:2px 6px;border-radius:6px}
+.codehead button:hover{background:#2a2645}
+.tobottom{position:absolute;left:50%;transform:translateX(-50%);bottom:118px;width:36px;height:36px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);box-shadow:var(--shadow);display:none;place-items:center;color:var(--ink2);z-index:5}
+.tobottom.show{display:grid}
+.tobottom:hover{color:var(--ink)}
+.pop .switch{margin-top:12px}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;inset-block:0;inset-inline-start:0;width:290px;z-index:40;display:flex;box-shadow:var(--shadow);transform:translateX(-105%);transition:transform .28s cubic-bezier(.4,0,.2,1)}
+  html[dir="rtl"] .side{transform:translateX(105%)}
+  .side.open,html[dir="rtl"] .side.open{transform:none}
+  .app.collapsed{grid-template-columns:1fr}
+  .sidebtn{display:grid}
+  .sugs,#sugbox{grid-template-columns:1fr}
+  .main.fresh #sugbox .sug:nth-child(n+3){display:none}
+  .main.fresh{justify-content:flex-start;padding-bottom:0}
+  .main.fresh .top{position:static}
+  .main.fresh .empty{margin-top:5vh}
+  .status .txt{display:none}
+  .status{padding:8px}
+}
+@media (max-width:600px){
+  .top .status{display:none}  /* one row on phones */
+  .modes button{padding:6px 11px}
+  .thread,.composer{padding-inline:14px}
+  .pop{width:min(330px,calc(100vw - 28px))}
+}
+</style>
+</head>
+<body data-bare="1">
+<div class="app">
+  <aside class="side" id="side">
+    <div class="side-top">
+      <a class="logo side-logo" href="/"><span class="mark" id="sidemark"></span>TakRouter</a>
+      <button class="iconbtn" id="sidetoggle" type="button" data-i18n-title="hideSide"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button>
+    </div>
+    <button class="newchat" id="newchat" data-i18n-title="newChatKey"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="newChat"></span></button>
+    <button class="iconbtn railbtn" id="searchbtn" type="button" data-i18n-title="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="search" type="search" data-i18n-placeholder="search" autocomplete="off"></div>
+    <div class="list" id="list"></div>
+    <div class="sidefoot">
+      <div class="save"><small data-i18n="savedTitle"></small><strong id="saved">—</strong><div class="sub" id="savedsub"></div></div>
+      <div class="credit"><span data-i18n="credit"></span><b id="credit">—</b></div>
+    </div>
+    <div class="list-spacer"></div>
+    <div class="side-bottom">
+      <div class="acct" id="acct"></div>
+      <button class="langbtn" id="langbtn" type="button" aria-label="Language / زبان"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span class="lt" id="langtxt"></span></button>
+      <button class="iconbtn" id="themebtn" type="button" data-i18n-title="theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+  </aside>
+  <div class="backdrop" id="backdrop"></div>
+  <main class="main" id="main">
+    <div class="top">
+      <button class="iconbtn sidebtn" id="sidebtn" data-i18n-title="chats"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg></button>
+      <div class="modes" id="modes"><button data-mode="eco" data-i18n="eco"></button><button data-mode="bal" class="on" data-i18n="bal"></button><button data-mode="best" data-i18n="best"></button></div>
+      <div class="adv">
+        <button class="iconbtn" id="advbtn" data-i18n-title="advanced"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></button>
+        <div class="pop" id="pop">
+          <h4 data-i18n="routingTitle"></h4><p data-i18n="routingHelp"></p>
+          <label class="l" for="lam" data-i18n="slider"></label>
+          <input class="range" type="range" id="lam" min="0" max="10" step="1">
+          <div class="rangeends"><span data-i18n="best"></span><span id="lamval"></span><span data-i18n="cheapest"></span></div>
+          <label class="l" for="force" data-i18n="model"></label>
+          <select id="force" class="input"></select>
+          <label class="l"><span class="switch"><input type="checkbox" id="sysbox"><span data-i18n="system"></span></span></label>
+          <label class="switch" title=""><input type="checkbox" id="tracebox"><span data-i18n="traceToggle"></span></label>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="status" id="status"><span class="dot"></span><span class="txt"></span></div>
+    </div>
+    <div class="scroll" id="scroll"><div id="thread"></div></div>
+    <button class="tobottom" id="tobottom" type="button" data-i18n-title="toBottom"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+    <div class="composer">
+      <div class="sys hide" id="sys"><textarea id="systext" data-i18n-placeholder="sysPlaceholder"></textarea></div>
+      <form class="box" id="form">
+        <textarea id="input" rows="1" data-i18n-placeholder="placeholder"></textarea>
+        <button class="send go" id="send" type="submit" data-i18n-title="send" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+      <div class="sugs" id="sugbox"></div>
+      <div class="hint" data-i18n="hint"></div>
+    </div>
+  </main>
+</div>
+<script>
+TR.dict({
+  fa: {
+    newChat: "گفتگوی جدید", chats: "گفتگوها", untitled: "گفتگوی جدید", del: "حذف", rename: "تغییر نام", renameAsk: "نام تازه‌ی گفتگو:",
+    savedTitle: "صرفه‌جویی شما در این گفتگو", savedVs: "نسبت به ارسال همه‌چیز به Claude Sonnet",
+    savedSub: (n, c, p) => `${n} پاسخ، هزینه ${c} به‌جای ${p}`, credit: "اعتبار باقی‌مانده", unlimited: "نامحدود",
+    advanced: "تنظیمات پیشرفته", send: "ارسال", stop: "توقف",
+    eco: "اقتصادی", bal: "متعادل", best: "بهترین کیفیت", cheapest: "کمترین هزینه",
+    routingTitle: "تنظیمات مسیریابی",
+    routingHelp: "TakRouter برای هر پیام موضوعش را تشخیص می‌دهد و مدلی را انتخاب می‌کند که در آن موضوع بهترین تعادل کیفیت و قیمت را داشته است.",
+    slider: "کیفیت یا صرفه‌جویی", model: "مدل", auto: "خودکار (TakRouter)", only: (m) => "فقط " + m,
+    system: "دستور سیستمی (شخصیت دستیار)", sysPlaceholder: "مثلاً: تو دستیار پشتیبانی یک فروشگاه اینترنتی هستی. کوتاه و مودبانه جواب بده.",
+    traceToggle: "نمایش مسیر تصمیم",
+    placeholder: "پیام خود را بنویسید…", hint: "TakRouter هر پیام را به مناسب‌ترین مدل می‌فرستد. پاسخ‌ها ممکن است خطا داشته باشند.",
+    connecting: "در حال اتصال…", live: "متصل به مدل‌های واقعی", demo: "حالت نمایشی", offline: "سرور در دسترس نیست",
+    hello: (n) => n ? `سلام ${n}، چه کمکی از دستم برمی‌آید؟` : "چه کمکی از دستم برمی‌آید؟",
+    intro: "هر پیام شما به مدلی می‌رود که در آن موضوع بهترین نتیجه را با کمترین هزینه داده است.",
+    suggestions: [["برنامه سفر", "یک برنامه سه روزه برای سفر به شیراز پیشنهاد بده"], ["کد", "یک تابع پایتون بنویس که اول بودن یک عدد را بررسی کند"],
+                  ["پشتیبانی", "پولم از کارت کم شده ولی سفارشم ثبت نشده، چه کار کنم؟"], ["ادبیات", "این بیت حافظ را ساده توضیح بده: «دوش دیدم که ملائک در میخانه زدند»"]],
+    choosing: "در حال انتخاب بهترین مدل…", seconds: (s) => s + " ثانیه",
+    cached: "از حافظه، فوری", cheaper: (p) => p + " ارزان‌تر از Claude Sonnet",
+    escalated: "برای کیفیت بهتر به مدل قوی‌تر سپرده شد", failover: "مدل اول در دسترس نبود؛ جایگزین پاسخ داد",
+    why: "چرا این مدل؟", trace: "مسیر تصمیم", copy: "کپی", regen: "دوباره", better: "دوباره با بهترین کیفیت",
+    whyTopic: (t) => `موضوع تشخیص‌داده‌شده: ${t}. کیفیت هر مدل در این موضوع (سهم پاسخ‌های قبول‌شده در آزمون ما) و قیمت نسبی آن:`,
+    ofPrice: (p) => p + " قیمت", whyNote: "قیمت نسبت به Claude Sonnet است. «بهترین کیفیت» قیمت را تقریباً نادیده می‌گیرد.",
+    tr_rules: "مدل‌های مجاز", tr_rules_d: (a, d) => `${a} مدل مجاز` + (d ? `؛ کنار گذاشته: ${d}` : ""),
+    tr_embed: "درک پیام", tr_embed_d: "پیام به بردار معنایی تبدیل شد (فقط پیام فعلی).",
+    tr_cache: "حافظه (کش)", tr_rag: "منابع بازیابی‌شده (RAG)", tr_rag_d: (r) => r ? "این درخواست متن بازیابی‌شده داشت." : "این درخواست متن بازیابی‌شده نداشت.",
+    tr_route: "انتخاب مدل", tr_route_d: (t, l, m) => `موضوع: ${t} · λ = ${l} · انتخاب: ${m}`,
+    tr_call: "فراخوانی مدل", tr_check: "بررسی پاسخ", tr_check_ok: "پاسخ همه‌ی بررسی‌ها را گذراند.",
+    tr_check_bad: (r) => "مشکل: " + r, tr_total: "جمع",
+    cache_hit: "پاسخ از حافظه آمد.", cache_miss: "در حافظه نبود؛ مدل پاسخ داد.", cache_skip: (w) => "حافظه استفاده نشد: " + w,
+    why_skip: {personal: "اطلاعات شخصی", time: "وابسته به زمان", history: "به پیام قبلی اشاره دارد", image: "تصویر دارد", rag: "منابع دارد", ok: "—"},
+    drop: {no_vision: "تصویر نمی‌خواند", too_long: "پیام طولانی است", breaker_open: "موقتاً قطع"},
+    ok_call: (m, s, c) => `${m} · ${s} · ${c}`, fail_call: (m, r) => `${m} · ناموفق (${r})`,
+    err402: "اعتبار شما تمام شده است. از مدیر بخواهید اعتبار را افزایش دهد.", err402b: "سقف هزینه‌ی سرویس پر شده است.",
+    err503: "هیچ مدلی در این لحظه پاسخ نداد. چند لحظه بعد دوباره امتحان کنید.", err: "خطا: ", stopped: "متوقف شد.",
+    err503net: "سرور به سرویس مدل‌ها (Metis AI) دسترسی ندارد. اتصال اینترنت یا VPN سرور را بررسی کنید.",
+    errOwnKey: "کلید شخصی شما پذیرفته نشد (کلید اشتباه است یا موجودی ندارد). آن را در صفحه‌ی حساب کاربری عوض یا خاموش کنید.",
+    search: "جستجو در گفتگوها", noResults: "گفتگویی پیدا نشد.", today: "امروز", yesterday: "دیروز", week: "۷ روز گذشته", older: "قدیمی‌تر",
+    deleted: "گفتگو حذف شد", undo: "برگرداندن", copied: "کپی شد", edit: "ویرایش", cancel: "انصراف", resend: "ارسال",
+    toBottom: "رفتن به آخرین پیام", copyCode: "کپی کد", newChatKey: "گفتگوی جدید (Ctrl+Shift+O)", hideSide: "نمایش/پنهان کردن فهرست گفتگوها",
+    ownKey: "با کلید خودتان", ownKeyTitle: "پاسخ‌ها با کلید Metis خودتان گرفته می‌شود و از اعتبار شما کم نمی‌شود.",
+  },
+  en: {
+    newChat: "New chat", chats: "Chats", untitled: "New chat", del: "Delete", rename: "Rename", renameAsk: "New name for this chat:",
+    savedTitle: "You saved in this chat", savedVs: "compared with sending everything to Claude Sonnet",
+    savedSub: (n, c, p) => `${n} ${n === "1" ? "answer" : "answers"}, ${c} instead of ${p}`, credit: "Credit left", unlimited: "unlimited",
+    advanced: "Advanced settings", send: "Send", stop: "Stop",
+    eco: "Economy", bal: "Balanced", best: "Best quality", cheapest: "Lowest cost",
+    routingTitle: "Routing settings",
+    routingHelp: "TakRouter detects the topic of each message and picks the model with the best balance of quality and price on that topic.",
+    slider: "Quality or savings", model: "Model", auto: "Automatic (TakRouter)", only: (m) => m + " only",
+    system: "System prompt (assistant persona)", sysPlaceholder: "e.g. You are the support assistant of an online shop. Answer briefly and politely.",
+    traceToggle: "Show decision trace",
+    placeholder: "Write a message…", hint: "TakRouter sends each message to the most suitable model. Answers can contain mistakes.",
+    connecting: "Connecting…", live: "Connected to live models", demo: "Demo mode", offline: "Server not reachable",
+    hello: (n) => n ? `Hi ${n}, how can I help?` : "How can I help you today?",
+    intro: "Each message goes to the model that gave the best results on its topic for the lowest cost.",
+    suggestions: [["Trip plan", "Suggest a three-day itinerary for a trip to Shiraz"], ["Code", "Write a Python function that checks whether a number is prime"],
+                  ["Support", "Money left my card but my order was not placed. What should I do?"], ["Explain", "Explain the difference between weather and climate in simple words"]],
+    choosing: "Picking the best model…", seconds: (s) => s + " s",
+    cached: "From memory, instant", cheaper: (p) => p + " cheaper than Claude Sonnet",
+    escalated: "Handed to a stronger model for quality", failover: "First model unavailable; a backup answered",
+    why: "Why this model?", trace: "Decision trace", copy: "Copy", regen: "Regenerate", better: "Retry with best quality",
+    whyTopic: (t) => `Detected topic: ${t}. Each model's quality on this topic (share of answers that passed in our evaluation) and its relative price:`,
+    ofPrice: (p) => p + " of the price", whyNote: "Prices are relative to Claude Sonnet. \"Best quality\" almost ignores price.",
+    tr_rules: "Allowed models", tr_rules_d: (a, d) => `${a} models allowed` + (d ? `; left out: ${d}` : ""),
+    tr_embed: "Understanding", tr_embed_d: "The message was turned into a meaning vector (current message only).",
+    tr_cache: "Cache", tr_rag: "Retrieved context (RAG)", tr_rag_d: (r) => r ? "This request carried retrieved context." : "This request carried no retrieved context.",
+    tr_route: "Model choice", tr_route_d: (t, l, m) => `Topic: ${t} · λ = ${l} · chosen: ${m}`,
+    tr_call: "Model call", tr_check: "Answer checks", tr_check_ok: "The answer passed every check.",
+    tr_check_bad: (r) => "Problem: " + r, tr_total: "Total",
+    cache_hit: "The answer came from the cache.", cache_miss: "Not in the cache; a model answered.", cache_skip: (w) => "Cache not used: " + w,
+    why_skip: {personal: "personal data", time: "time-sensitive", history: "refers to an earlier message", image: "has an image", rag: "has retrieved context", ok: "—"},
+    drop: {no_vision: "cannot read images", too_long: "message too long", breaker_open: "temporarily down"},
+    ok_call: (m, s, c) => `${m} · ${s} · ${c}`, fail_call: (m, r) => `${m} · failed (${r})`,
+    err402: "Your credit is used up. Ask the administrator for more.", err402b: "This service has reached its spending limit.",
+    err503: "No model answered right now. Please try again in a moment.", err: "Error: ", stopped: "Stopped.",
+    err503net: "The server cannot reach the model service (Metis AI). Check the server's internet connection or VPN.",
+    errOwnKey: "Your own key was refused (wrong key or no balance). Change it or switch it off on the Account page.",
+    search: "Search chats", noResults: "No chats found.", today: "Today", yesterday: "Yesterday", week: "Previous 7 days", older: "Older",
+    deleted: "Chat deleted", undo: "Undo", copied: "Copied", edit: "Edit", cancel: "Cancel", resend: "Send",
+    toBottom: "Jump to the latest message", copyCode: "Copy code", newChatKey: "New chat (Ctrl+Shift+O)", hideSide: "Show/hide the chat list",
+    ownKey: "Your own key", ownKeyTitle: "Answers use your own Metis key and do not use your credit.",
+  },
+});
+const $ = (id) => document.getElementById(id);
+const t = TR.t;
+const PREMIUM = "claude-sonnet-5-5";
+let me = null, convs = [], current = null, router = null, stops = [], lam = null, busy = null, health;
+const key = (k) => `${k}.${me?.id ?? "anon"}`;
+const conv = () => convs.find((c) => c.id === current);
+const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
+function save() { TR.store.set(key("convs"), convs.slice(0, 60)); TR.store.set(key("current"), current); }
+function md(text) {
+  if (window.marked && window.DOMPurify) return DOMPurify.sanitize(marked.parse(text, {breaks: true}));
+  const d = document.createElement("div"); d.textContent = text; return d.innerHTML.replace(/\n/g, "<br>");
+}
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function text(tag, cls, s) { const e = el(tag, cls); e.textContent = s; return e; }
+
+function dayGroup(ts) {
+  if (!ts) return "older";
+  const d0 = new Date(); d0.setHours(0, 0, 0, 0); const day = 86400000;
+  return ts >= d0 ? "today" : ts >= d0 - day ? "yesterday" : ts >= d0 - 7 * day ? "week" : "older";
+}
+function renderList() {
+  const list = $("list"); list.innerHTML = "";
+  const q = $("search").value.trim().toLowerCase();
+  const shown = convs.filter((c) => !q || (c.title || "").toLowerCase().includes(q) || c.messages.some((m) => (m.content || "").toLowerCase().includes(q)));
+  if (q && !shown.length) { list.append(text("div", "none", t("noResults"))); return; }
+  let last = null;
+  for (const c of shown) {
+    const g = dayGroup(c.ts);
+    if (g !== last) { list.append(text("h6", null, t(g))); last = g; }
+    const b = el("div", "conv" + (c.id === current ? " on" : ""));
+    const label = text("span", null, c.title || t("untitled"));
+    b.append(label);
+    const rn = el("button", null, ICON.edit); rn.title = t("rename"); rn.type = "button";
+    rn.onclick = (e) => {  // rename in place: Enter saves, Esc cancels
+      e.stopPropagation();
+      const inp = el("input"); inp.value = c.title || ""; label.replaceWith(inp); inp.focus(); inp.select();
+      const done = (keep) => { if (keep) { c.title = inp.value.trim().slice(0, 60); save(); } renderList(); };
+      inp.onkeydown = (k) => { if (k.key === "Enter") done(true); if (k.key === "Escape") done(false); };
+      inp.onblur = () => done(true); inp.onclick = (k) => k.stopPropagation();
+    };
+    const x = el("button", null, ICON.trash); x.title = t("del"); x.type = "button";
+    x.onclick = (e) => { e.stopPropagation(); removeConv(c); };
+    b.append(rn, x);
+    b.onclick = () => { current = c.id; save(); renderAll(); sideOpen(false); };
+    list.append(b);
+  }
+}
+function removeConv(c) {  // delete with Undo, no confirm dialog
+  const at = convs.indexOf(c), wasCurrent = current === c.id;
+  convs = convs.filter((k) => k !== c); if (wasCurrent) current = null; save(); renderAll();
+  document.querySelector(".undo")?.remove();
+  const bar = el("div", "undo"); bar.append(text("span", null, t("deleted")));
+  const u = text("button", null, t("undo")); u.type = "button";
+  u.onclick = () => { convs.splice(at, 0, c); if (wasCurrent) current = c.id; save(); renderAll(); bar.remove(); };
+  bar.append(u); document.body.append(bar); setTimeout(() => bar.remove(), 6000);
+}
+const ICON = {
+  copy: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>`,
+  trash: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>`,
+  regen: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>`,
+  best: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>`,
+};
+function copyBtn(btn, getText, label) {  // icon turns into a check for a moment, like ChatGPT/Claude
+  btn.onclick = () => {
+    navigator.clipboard?.writeText(getText()).catch(() => {});
+    btn.classList.add("done"); btn.innerHTML = ICON.check + (label ? `<span>${t("copied")}</span>` : "");
+    setTimeout(() => { btn.classList.remove("done"); btn.innerHTML = ICON.copy + (label ? `<span>${label}</span>` : ""); }, 1500);
+  };
+  btn.innerHTML = ICON.copy + (label ? `<span>${label}</span>` : "");
+  return btn;
+}
+function decorateCode(box) {  // language label + copy button on every code block
+  for (const pre of box.querySelectorAll("pre")) {
+    const code = pre.querySelector("code"); const lang = (code?.className.match(/language-([\w+#-]+)/) || [])[1] || "code";
+    const head = el("div", "codehead"); head.append(text("span", null, lang));
+    const b = el("button"); b.type = "button"; copyBtn(b, () => (code || pre).textContent, t("copyCode")); head.append(b);
+    pre.prepend(head);
+  }
+}
+// Live typing: the answer's words appear one after another (about 2 s for a long answer), with a caret.
+// The finished answer is then drawn normally (links, code, meta row). Off with "reduce motion"; a click skips.
+let typingAt = null;
+function typeOut(box, done) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) { done(); return; }
+  window.TRbidi?.(box);  // prices and English inside Persian are isolated before the text is hidden
+  box.dataset.typing = "1";
+  const nodes = [], walker = document.createTreeWalker(box, NodeFilter.SHOW_TEXT);
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const parts = nodes.map((n) => { const w = n.nodeValue.match(/\s*\S+\s*/g) || [n.nodeValue]; n.nodeValue = ""; return w; });
+  const total = parts.reduce((a, p) => a + p.length, 0), step = Math.max(1, Math.ceil(total / 70));
+  const caret = el("span", "caret"); let ni = 0, wi = 0, finished = false;
+  const finish = () => { if (finished) return; finished = true; clearInterval(timer); box.removeEventListener("click", finish); done(); };
+  box.addEventListener("click", finish);
+  const timer = setInterval(() => {
+    for (let k = 0; k < step && ni < nodes.length; k++) {
+      nodes[ni].nodeValue += parts[ni][wi++];
+      if (wi >= parts[ni].length) { ni++; wi = 0; }
+    }
+    const at = nodes[Math.min(ni, nodes.length - 1)];
+    if (at) at.parentNode.insertBefore(caret, at.nextSibling);
+    const sc = $("scroll"); if (sc.scrollHeight - sc.scrollTop - sc.clientHeight < 160) sc.scrollTop = sc.scrollHeight;
+    if (ni >= nodes.length) setTimeout(finish, 120);
+  }, 28);
+}
+const seen = {}; let shownId = null;  // which messages were already on screen (only new ones animate)
+function renderThread() {
+  const th = $("thread"); th.innerHTML = "";
+  const c = conv();
+  const fresh = !c || !c.messages.length;
+  if (fresh) shownId = c?.id ?? null;
+  $("main").classList.toggle("fresh", fresh);
+  renderSugs(fresh);
+  if (fresh) { th.append(emptyState()); return; }
+  const wrap = el("div", "thread" + (c.id !== shownId ? " swap" : ""));
+  const from = c.id === shownId ? Math.min(seen[c.id] ?? c.messages.length, c.messages.length) : c.messages.length;
+  c.messages.forEach((m, i) => { const node = m.role === "user" ? userMsg(m, i) : botMsg(m, i); if (i >= from) node.classList.add("enter"); wrap.append(node); });
+  seen[c.id] = c.messages.length; shownId = c.id;
+  wrap.lastElementChild?.classList.add("last");
+  th.append(wrap);
+  $("scroll").scrollTop = $("scroll").scrollHeight;
+  toBottomBtn();
+}
+function emptyState() {
+  const e = el("div", "empty", `<div class="mark">${TR.MARK}</div>`);
+  e.append(text("h1", null, t("hello", me?.name)), text("p", null, t("intro")));
+  return e;
+}
+function renderSugs(show) {  // suggestions sit under the input on the new-chat screen
+  const g = $("sugbox"); g.innerHTML = ""; if (!show) return;
+  for (const [title, q] of t("suggestions")) {
+    const s = el("button", "sug"); s.type = "button"; s.append(text("b", null, title), text("span", null, q));
+    s.onclick = () => { $("input").value = q; send(); }; g.append(s);
+  }
+}
+function userMsg(m, i) {
+  const w = el("div", "msg user"); w.dataset.i = i;
+  w.append(text("div", "bubble", m.content));
+  const acts = el("div", "acts");
+  const cp = el("button"); cp.type = "button"; cp.title = t("copy"); copyBtn(cp, () => m.content);
+  const ed = el("button", null, ICON.edit); ed.type = "button"; ed.title = t("edit"); ed.onclick = () => startEdit(i);
+  acts.append(cp, ed); w.append(acts); return w;
+}
+function startEdit(i) {  // edit a sent message: the conversation continues from there
+  const c = conv(); if (!c || busy) return;
+  const w = document.querySelector(`.msg.user[data-i="${i}"]`); if (!w) return;
+  const box = el("div", "editbox"), ta = el("textarea"); ta.value = c.messages[i].content;
+  const row = el("div", "row");
+  const no = text("button", "btn ghost small", t("cancel")); no.type = "button"; no.onclick = () => renderThread();
+  const go = text("button", "btn primary small", t("resend")); go.type = "button";
+  go.onclick = () => { const v = ta.value.trim(); if (!v) return; c.messages = c.messages.slice(0, i); save(); send(v); };
+  ta.onkeydown = (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); go.click(); } if (e.key === "Escape") no.click(); };
+  row.append(no, go); box.append(ta, row); w.replaceChildren(box);
+  const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(300, ta.scrollHeight) + "px"; };
+  ta.oninput = fit; fit(); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+function toBottomBtn() { const s = $("scroll"); $("tobottom").classList.toggle("show", s.scrollHeight - s.scrollTop - s.clientHeight > 240); }
+function avatar(model) { const m = TR.model(model); const a = text("div", "avatar", model ? m.short : "TR"); a.style.background = model ? m.color : "#9933ff"; return a; }
+function botMsg(m, i) {
+  const w = el("div", "msg bot"); w.append(avatar(m.meta?.model));
+  const body = el("div", "body");
+  if (m.stopped) { body.append(text("div", "stopnote", t("stopped"))); w.append(body); return w; }
+  if (m.stoppedPartial) { const a = el("div", "answer", md(m.content)); decorateCode(a); body.append(a, text("div", "stopnote", t("stopped"))); w.append(body); return w; }
+  if (m.error) { body.append(text("div", "errbox", m.error)); w.append(body); return w; }
+  const ans = el("div", "answer", md(m.content));
+  body.append(ans);
+  if (i === typingAt) { typingAt = null; typeOut(ans, () => renderThread()); w.append(body); return w; }
+  decorateCode(ans);
+  if (m.meta) {
+    body.append(metaRow(m.meta, body));
+    const acts = el("div", "acts");
+    const cp = el("button"); cp.type = "button"; cp.title = t("copy"); copyBtn(cp, () => m.content);
+    const rg = el("button", null, ICON.regen); rg.type = "button"; rg.title = t("regen"); rg.onclick = () => regenerate(i, null);
+    const bq = el("button", null, ICON.best + `<span>${t("better")}</span>`); bq.type = "button"; bq.title = t("better"); bq.onclick = () => regenerate(i, 0);
+    acts.append(cp, rg, bq); body.append(acts);
+  }
+  w.append(body); return w;
+}
+function metaRow(meta, body) {
+  const row = el("div", "meta");
+  const info = TR.model(meta.model);
+  const mc = el("span", "chip", `<i class="sw" style="background:${info.color}"></i>`); mc.append(text("span", "ltr", info.name)); row.append(mc);
+  if (String(meta.cache || "").startsWith("hit")) row.append(text("span", "chip good", t("cached")));
+  row.append(text("span", "chip", TR.usd(meta.cost)));
+  if (meta.seconds != null) row.append(text("span", "chip", t("seconds", TR.num(meta.seconds, 1))));
+  if (meta.saved != null && meta.saved > 0.005) row.append(text("span", "chip good", t("cheaper", TR.pct(meta.saved))));
+  if (meta.escalations) row.append(text("span", "chip warn", t("escalated")));
+  else if (meta.tried && meta.tried.length > 1) row.append(text("span", "chip warn", t("failover")));
+  if (meta.cluster != null) {
+    const why = text("button", "chip", t("why")); why.type = "button";
+    why.onclick = () => togglePanel(body, "why", () => whyPanel(meta)); row.append(why);
+  }
+  if (meta.trace && $("tracebox").checked) {  // the trace is an option: nothing of it shows while it is off
+    const tb = text("button", "chip", t("trace")); tb.type = "button";
+    tb.onclick = () => togglePanel(body, "trace", () => tracePanel(meta.trace)); row.append(tb);
+    queueMicrotask(() => togglePanel(body, "trace", () => tracePanel(meta.trace), true));
+  }
+  return row;
+}
+function togglePanel(body, kind, make, open) {
+  const old = body.querySelector(`.panel[data-k="${kind}"]`);
+  if (old) { if (!open) old.remove(); return; }
+  const p = make(); p.dataset.k = kind; body.append(p);
+}
+function whyPanel(meta) {
+  const box = el("div", "panel");
+  const cl = router?.clusters?.[meta.cluster]; if (!cl) return box;
+  box.append(text("div", "muted", t("whyTopic", TR.topic(meta.cluster, cl.name))));
+  const tbl = el("table");
+  for (const [id, q] of Object.entries(cl.pass_rate).sort((a, b) => b[1] - a[1])) {
+    const info = TR.model(id), rel = router.models.find((m) => m.id === id)?.relative_cost;
+    const tr = el("tr", id === meta.chosen ? "pick" : "");
+    tr.innerHTML = `<td></td><td style="width:38%"><div class="bar"><i style="width:${Math.round(q * 100)}%;background:${info.color}"></i></div></td><td>${TR.pct(q)}</td><td>${rel == null ? "" : t("ofPrice", TR.pct(Math.max(.01, rel)))}</td>`;
+    tr.firstChild.textContent = (id === meta.chosen ? "✓ " : "") + info.name; tr.firstChild.className = "ltr";
+    tbl.append(tr);
+  }
+  box.append(tbl, text("div", "note", t("whyNote"))); return box;
+}
+function tracePanel(tr) {
+  const box = el("div", "panel"); const ol = el("ol", "tl");
+  const ms = (k) => tr.stage_ms?.[k] != null ? TR.num(tr.stage_ms[k], 1) + " ms" : "";
+  const add = (title, desc, right) => { const li = el("li"); li.append(text("span", "n", TR.num(ol.children.length + 1)));
+    const mid = el("div"); mid.append(text("b", null, title), text("span", "d", desc)); li.append(mid, text("span", "ms", right || "")); ol.append(li); };
+  const dropped = Object.entries(tr.dropped || {}).map(([m, w]) => `${TR.model(m).name} (${t("drop")[w] || w})`).join("، ");
+  add(t("tr_rules"), t("tr_rules_d", TR.num((tr.available || []).length), dropped), ms("rules"));
+  add(t("tr_embed"), t("tr_embed_d"), ms("embed"));
+  const c = String(tr.cache || "");
+  add(t("tr_cache"), c.startsWith("hit") ? t("cache_hit") : c === "miss" ? t("cache_miss") : t("cache_skip", t("why_skip")[c.replace("skip_", "")] || c), ms("cache"));
+  add(t("tr_rag"), t("tr_rag_d", tr.rag));
+  if (tr.cluster != null) {
+    const scores = Object.entries(tr.scores || {}).sort((a, b) => a[1] - b[1]).map(([m, s]) => `${TR.model(m).name} ${TR.num(s, 3)}`).join(" · ");
+    add(t("tr_route"), t("tr_route_d", TR.topic(tr.cluster, tr.cluster_name), TR.num(tr.lam, 4), TR.model(tr.chosen).name) + "\n" + scores, ms("route"));
+  }
+  for (const a of tr.attempts || []) add(t("tr_call"), a.ok ? t("ok_call", TR.model(a.model).name, t("seconds", TR.num((a.latency_ms || 0) / 1000, 1)), TR.usd(a.cost)) : t("fail_call", TR.model(a.model).name, a.reason), "");
+  add(t("tr_check"), (tr.reasons || []).length ? t("tr_check_bad", tr.reasons.join(", ")) : t("tr_check_ok"), "");
+  add(t("tr_total"), `${TR.usd(tr.cost_usd)} · ${t("seconds", TR.num((tr.latency_ms || 0) / 1000, 1))}`, ms("call"));
+  for (const d of ol.querySelectorAll(".d")) d.style.whiteSpace = "pre-line";
+  box.append(ol); return box;
+}
+function renderSavings() {
+  let cost = 0, premium = 0, n = 0;
+  for (const m of conv()?.messages || []) if (m.meta) { cost += m.meta.cost || 0; premium += m.meta.premium || 0; n++; }
+  if (!n || premium <= 0) { $("saved").textContent = "—"; $("savedsub").textContent = t("savedVs"); return; }
+  $("saved").textContent = TR.pct(Math.max(0, 1 - cost / premium));
+  $("savedsub").textContent = t("savedSub", TR.num(n), TR.usd(cost), TR.usd(premium));
+}
+async function refreshCredit() {
+  try {
+    const r = await TR.api("/auth/me");
+    const own = r.own_key?.set && r.user?.prefs?.use_own_key !== false;
+    $("credit").textContent = r.credit_left_usd == null ? t("unlimited") : TR.usd(Math.max(0, r.credit_left_usd));
+    let tag = document.getElementById("owntag");
+    if (own && !tag) { tag = text("a", "owntag", ""); tag.id = "owntag"; tag.href = "/account#ownkey"; $("status").before(tag); }
+    if (tag) { tag.classList.toggle("hide", !own); tag.textContent = t("ownKey"); tag.title = t("ownKeyTitle"); }
+  } catch {}
+}
+function renderStatus() {
+  const [cls, k] = health === undefined ? ["", "connecting"] : health === null ? ["", "offline"] : health.live ? ["live", "live"] : ["demo", "demo"];
+  $("status").innerHTML = `<span class="dot ${cls}"></span><span class="txt"></span>`; $("status").lastChild.textContent = t(k);
+}
+function renderAll() { renderList(); renderThread(); renderSavings(); }
+
+const MODE_LAMBDA = {best: 0, eco: 3};
+function movePill() {  // the highlight slides to the chosen mode
+  const box = $("modes"); let pill = box.querySelector(".pill");
+  if (!pill) { pill = el("span", "pill"); box.prepend(pill); }
+  const on = box.querySelector("button.on"); if (!on) return;
+  pill.style.width = on.offsetWidth + "px"; pill.style.transform = `translateX(${on.offsetLeft}px)`;
+  requestAnimationFrame(() => box.classList.add("ready"));
+}
+addEventListener("resize", () => { $("modes").classList.remove("ready"); movePill(); });
+function setMode(mode) {
+  for (const b of $("modes").querySelectorAll("button")) b.classList.toggle("on", b.dataset.mode === mode);
+  movePill();
+  lam = mode === "bal" ? router?.default_lambda ?? null : MODE_LAMBDA[mode]; syncSlider(); TR.store.set("mode", mode);
+}
+function syncSlider() {
+  if (!stops.length) return;
+  let i = stops.findIndex((s) => s >= (lam ?? 0) - 1e-9); if (i < 0) i = stops.length - 1;
+  $("lam").value = i; $("lamval").textContent = "λ = " + (lam ?? 0);
+}
+function fillForce() {
+  const f = $("force"), keep = f.value || "takrouter"; f.innerHTML = "";
+  const o = el("option"); o.value = "takrouter"; o.textContent = t("auto"); f.append(o);
+  for (const m of router?.models || []) { const x = el("option"); x.value = m.id; x.textContent = t("only", TR.model(m.id).name); f.append(x); }
+  f.value = keep;
+}
+
+async function send(textIn, opts = {}) {
+  const q = (textIn ?? $("input").value).trim();
+  if (!q || busy) return;
+  if (!conv()) { const c = {id: uid(), title: "", messages: []}; convs.unshift(c); current = c.id; seen[c.id] = 0; shownId = c.id; }
+  const c = conv();
+  c.ts = Date.now(); convs = [c, ...convs.filter((k) => k !== c)];  // latest chat first, grouped by day
+  if (!c.title) c.title = q.slice(0, 40);
+  if (!opts.again) c.messages.push({role: "user", content: q});
+  if (textIn == null) $("input").value = "";
+  autosize(); save(); renderAll();
+  const wrap = $("thread").querySelector(".thread");
+  const pending = el("div", "msg bot enter"); pending.append(avatar(null));
+  const pb = el("div", "body", `<div class="typing"><i></i><i></i><i></i></div>`); pb.append(text("div", "shimmer", t("choosing")));
+  pending.append(pb); wrap.append(pending); $("scroll").scrollTop = $("scroll").scrollHeight;
+  const messages = [];
+  const sys = $("sysbox").checked ? $("systext").value.trim() : "";
+  if (sys) messages.push({role: "system", content: sys});
+  for (const m of c.messages) if (!m.error) messages.push({role: m.role, content: m.content});
+  const forced = $("force").value;
+  const useLam = opts.lam !== undefined ? opts.lam : lam;
+  const ctrl = new AbortController(); busy = ctrl; updateSend();
+  const t0 = performance.now();
+  const live = {text: "", pieces: 0};
+  try {
+    const data = await streamChat({model: forced, messages, stream: true,
+      metadata: {...(forced === "takrouter" && useLam != null ? {lambda: useLam} : {}), trace: true}},
+      {"x-metis-session": c.id, "x-metis-chatbot": "takrouter-web"}, ctrl.signal, pb, live);
+    const tr = data.takrouter || {}, usage = data.usage || {};
+    const p = router?.models?.find((m) => m.id === PREMIUM);
+    const premium = p ? ((usage.prompt_tokens || 0) * p.price_in + (usage.completion_tokens || 0) * p.price_out) / 1e6 : null;
+    const cost = tr.cost_usd ?? 0;
+    c.messages.push({role: "assistant", content: data.choices?.[0]?.message?.content || "", meta: {
+      model: data.model, chosen: tr.chosen, cluster: tr.cluster, cost, premium, saved: premium ? 1 - cost / premium : null,
+      seconds: (performance.now() - t0) / 1000, cache: tr.cache, escalations: tr.escalations, tried: tr.tried, trace: tr.trace}});
+    if (live.pieces) seen[c.id] = c.messages.length;  // already on screen: no second entrance
+    else typingAt = c.messages.length - 1;  // a whole answer (memory/cache) types itself out
+  } catch (e) {
+    if (e.name === "AbortError" && live.text.trim()) {  // stopped halfway: keep what was written, like ChatGPT
+      c.messages.push({role: "assistant", content: live.text, stoppedPartial: true});
+      seen[c.id] = c.messages.length;
+      busy = null; save(); renderAll(); updateSend(); refreshCredit(); return;
+    }
+    const msg = e.name === "AbortError" ? t("stopped") : e.status === 402 ? (e.data?.error?.type === "credit_exhausted" ? t("err402") : t("err402b"))
+              : e.data?.error?.type === "own_key_rejected" ? t("errOwnKey")
+              : e.status === 503 ? ((e.data?.error?.reasons || []).some((r) => /Connection|Timeout|connect/i.test(r)) ? t("err503net") : t("err503"))
+              : e.status ? t("err") + e.message : t("err_net");
+    c.messages.push({role: "assistant", content: "", error: msg, stopped: e.name === "AbortError"});
+  }
+  busy = null; save(); renderAll(); updateSend(); refreshCredit();
+  if (matchMedia("(hover:hover)").matches) $("input").focus();
+}
+// Streaming: read the server-sent events and draw the answer as it is written. A `reset` event (a backup
+// model or a repair) clears what is shown. The last event carries the full result (model, cost, trace).
+async function streamChat(body, headers, signal, box, live) {
+  const r = await fetch("/v1/chat/completions", {method: "POST", credentials: "same-origin", signal,
+    headers: {"Content-Type": "application/json", Accept: "text/event-stream", ...headers}, body: JSON.stringify(body)});
+  const fail = (status, data) => { const e = new Error(data?.error?.message || data?.detail || String(status)); e.status = status; e.data = data; return e; };
+  if (!r.ok) throw fail(r.status, await r.json().catch(() => ({})));
+  if (!(r.headers.get("content-type") || "").includes("event-stream")) return r.json();  // a server without streaming
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let buf = "", final = null, ans = null, queued = false;
+  const draw = () => {
+    queued = false; if (!ans) return;
+    ans.innerHTML = md(live.text);
+    delete ans.dataset.typing; window.TRbidi?.(ans); ans.dataset.typing = "1";  // prices/English in order, every frame
+    ans.append(el("span", "caret"));
+    const sc = $("scroll"); if (sc.scrollHeight - sc.scrollTop - sc.clientHeight < 200) sc.scrollTop = sc.scrollHeight;
+  };
+  const later = () => { if (!queued) { queued = true; requestAnimationFrame(draw); } };
+  for (;;) {
+    const {value, done} = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, {stream: true});
+    let cut;
+    while ((cut = buf.indexOf("\n\n")) >= 0) {
+      const line = buf.slice(0, cut).trim(); buf = buf.slice(cut + 2);
+      if (!line.startsWith("data: ")) continue;
+      const raw = line.slice(6); if (raw === "[DONE]") continue;
+      const ev = JSON.parse(raw);
+      if (ev.error) throw fail(ev.error.status || 500, {error: ev.error});
+      if (ev.takrouter?.event === "reset") { live.text = ""; later(); continue; }
+      const piece = ev.choices?.[0]?.delta?.content;
+      if (piece) {
+        if (!ans) { box.innerHTML = ""; ans = el("div", "answer"); ans.dataset.typing = "1"; box.append(ans); }
+        live.text += piece; live.pieces++; later();
+      }
+      if (ev.choices?.[0]?.finish_reason === "stop") final = ev;
+    }
+  }
+  if (!final) throw fail(0, {});
+  return {model: final.model, usage: final.usage, takrouter: final.takrouter, choices: [{message: {content: live.text}}]};
+}
+function regenerate(i, lamOverride) {
+  const c = conv(); if (!c || busy) return;
+  c.messages.splice(i, 1); save(); renderAll();
+  send(c.messages[i - 1]?.content, {again: true, lam: lamOverride === null ? undefined : lamOverride});
+}
+function autosize() { const i = $("input"); i.style.height = "auto"; i.style.height = Math.min(200, i.scrollHeight) + "px"; window.TRfields?.(i.parentNode); }
+function updateSend() {
+  const s = $("send");
+  if (busy) { s.disabled = false; s.classList.remove("go"); s.title = t("stop"); s.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>`; }
+  else { s.classList.add("go"); s.title = t("send"); s.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`; s.disabled = !$("input").value.trim(); }
+}
+$("input").addEventListener("input", () => { autosize(); updateSend(); });
+$("input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); }
+  if (e.key === "ArrowUp" && !$("input").value) {  // ↑ in an empty box edits your last message
+    const c = conv(); const i = c ? c.messages.map((m) => m.role).lastIndexOf("user") : -1;
+    if (i >= 0) { e.preventDefault(); startEdit(i); }
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && busy) busy.abort();
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "o") { e.preventDefault(); $("newchat").click(); }
+});
+$("search").addEventListener("input", renderList);
+$("scroll").addEventListener("scroll", toBottomBtn);
+$("tobottom").onclick = () => $("scroll").scrollTo({top: $("scroll").scrollHeight, behavior: "smooth"});
+$("form").addEventListener("submit", (e) => { e.preventDefault(); if (busy) busy.abort(); else send(); });
+$("newchat").onclick = () => { current = null; save(); renderAll(); sideOpen(false); $("input").focus(); };
+for (const b of $("modes").querySelectorAll("button")) b.onclick = () => setMode(b.dataset.mode);
+document.fonts?.ready.then(movePill);
+$("lam").addEventListener("input", (e) => {
+  lam = stops[+e.target.value]; $("lamval").textContent = "λ = " + lam;
+  const named = lam === 0 ? "best" : lam === router?.default_lambda ? "bal" : lam === 3 ? "eco" : null;
+  for (const b of $("modes").querySelectorAll("button")) b.classList.toggle("on", b.dataset.mode === named);
+  movePill();
+});
+$("advbtn").onclick = (e) => { e.stopPropagation(); $("pop").classList.toggle("open"); };
+$("pop").onclick = (e) => e.stopPropagation();
+document.addEventListener("click", () => $("pop").classList.remove("open"));
+$("sysbox").onchange = () => $("sys").classList.toggle("hide", !$("sysbox").checked);
+$("force").onchange = () => { $("modes").style.opacity = $("force").value === "takrouter" ? 1 : .4; };
+// Sidebar like Claude: desktop collapses to a rail of icons (remembered); phone slides it in over a backdrop.
+const phone = () => matchMedia("(max-width:860px)").matches;
+function sideOpen(open) { $("side").classList.toggle("open", open); $("backdrop").classList.toggle("show", open); }
+$("sidebtn").onclick = () => sideOpen(true);
+$("backdrop").onclick = () => sideOpen(false);
+$("sidetoggle").onclick = () => {
+  if (phone()) { sideOpen(false); return; }
+  TR.store.set("side_off", document.querySelector(".app").classList.toggle("collapsed"));
+};
+$("searchbtn").onclick = () => { document.querySelector(".app").classList.remove("collapsed"); TR.store.set("side_off", false); setTimeout(() => $("search").focus(), 280); };
+if (TR.store.get("side_off", false)) document.querySelector(".app").classList.add("collapsed");
+$("sidemark").innerHTML = TR.MARK;
+// the site links that lived in the top header now sit in the account menu
+TR.onLang(() => {
+  const menu = document.getElementById("acctmenu"); if (!menu || menu.querySelector(".sitelinks")) return;
+  const box = el("div", "sitelinks");
+  for (const [href, k] of [["/", "nav_home"], ["/compare", "nav_compare"], ["/khayyam", "nav_khayyam"], ["/learn", "nav_learn"], ["/docs", "nav_docs"], ["/pricing", "nav_pricing"], ["/how", "nav_how"]]) {
+    const a = text("a", null, t(k)); a.href = href; box.append(a);
+  }
+  menu.insertBefore(box, menu.querySelector("#logoutbtn"));  // sign-out stays last
+});
+// live status: checked every 30 s and when the network comes back
+async function pollHealth() { try { health = await TR.api("/health"); } catch { health = null; } renderStatus(); }
+setInterval(() => { if (!document.hidden) pollHealth(); }, 30000);
+addEventListener("online", pollHealth); addEventListener("offline", () => { health = null; renderStatus(); });
+$("tracebox").onchange = async () => {
+  try { await TR.api("/auth/me", {method: "PATCH", body: {prefs: {show_trace: $("tracebox").checked}}}); } catch {}
+  renderThread();
+};
+TR.onLang(() => { renderAll(); renderStatus(); fillForce(); updateSend(); refreshCredit(); movePill(); });
+
+(async () => {
+  me = await TR.requireLogin();
+  convs = TR.store.get(key("convs"), []); current = TR.store.get(key("current"), null);
+  $("tracebox").checked = !!me.prefs?.show_trace;
+  try { health = await TR.api("/health"); } catch { health = null; }
+  try {
+    router = await TR.api("/v1/router");
+    const s = new Set([0, router.default_lambda, 3, ...router.breakpoints.filter((b) => b < 20)]);
+    for (const b of router.breakpoints) if (b < 20) s.add(+(b * 1.02).toFixed(4));
+    stops = [...s].map((x) => +(+x).toFixed(4)).sort((a, b) => a - b); $("lam").max = stops.length - 1;
+  } catch {}
+  setMode(TR.store.get("mode", "bal")); fillForce(); renderAll(); renderStatus(); updateSend(); refreshCredit();
+  const pre = new URLSearchParams(location.search).get("q");
+  if (pre) { $("input").value = pre; autosize(); updateSend(); }
+  if (matchMedia("(hover:hover)").matches) $("input").focus();
+})();
+</script>
+</body>
+</html>

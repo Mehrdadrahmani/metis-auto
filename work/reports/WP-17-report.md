@@ -1,0 +1,3 @@
+# WP-17 report: semantic cache
+
+Exact then meaning match per namespace, in-memory numpy backed by SQLite; TTL 7 days; policy in `cache_policy.py`. AI-grader method on 350 train pairs, $0.06. **No θ met the target.** Fallback θ = 0.97: 10.0% wrong hits (95% CI 5.5% to 17.4%). Text-matching vectors barely help (AUC 0.660 vs 0.643). Train split is already deduplicated, so exact repeats could not be measured from it; meaning hits at 0.97 are about 2.7% of eligible train prompts (upper estimate, no TTL). Risk: about 1 meaning hit in 10 may be worse than a fresh answer; lowering this needs a better check, not a tighter θ. The 5 ms lookup target at 10k entries was not benchmarked at that size; measured p95 1.55 ms with 1,000 entries.

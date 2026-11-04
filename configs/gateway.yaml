@@ -1,0 +1,21 @@
+# TakRouter gateway (WP-15..17). id = hash of this file (load_config).
+artifact: artifacts/router_v1
+mode: quality
+provider: mock            # mock | live | replay
+model_alias: takrouter    # request `model` that routes; "metis-auto" also works
+timeouts: {connect_s: 5, total_s: 60}
+breaker: {failures: 3, window_s: 60, open_s: 30}
+concurrency_per_model: 8
+checks: {enabled: true, max_escalations: 2, min_lang_chars: 20}
+stickiness: {enabled: false, delta: 0.02}
+cache: {enabled: true, theta: 0.97, ttl_days: 7, semantic: true, path: runs/gateway/cache.sqlite}   # D-121
+traces: {path: runs/gateway/traces.sqlite, store_text: false}
+auth: {required: true, path: runs/gateway/users.sqlite}   # D-126: accounts; the first sign-up is the admin
+use_live_artifact: true   # artifacts/router_live (shipped router + models added on /models) when it exists
+mock:
+  latency_ms:             # filled from results/s6_stats.md medians by scripts when measured
+    deepseek-v4-flash: 1500
+    gpt-5.6-luna: 2000
+    gemini-2.5-flash-lite: 1000
+    claude-sonnet-5-5: 4000
+  sleep: false            # true waits for real; false only reports the latency

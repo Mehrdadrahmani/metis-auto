@@ -3,10 +3,12 @@
 hard_cap_usd: 60
 approved_usd:
   pilot: 10            # Gate 1, D-094; other stages wait for Gate 2
-  gen_main: 14         # owner "go" 2026-11-02: val $5.76 spent, test estimate $5.90
-  judge_main: 1        # owner "judge" 2026-11-02, val only, estimate $0.30
-  cache_labels: 0
-  live: 0
+  gen_main: 21.5       # owner "go" 2026-11-03 (D-115): Sonnet measured $0.0204 per call on new prompts, run about $9.20
+  judge_main: 3        # owner "go pairwise" 2026-11-03 (D-116): pairwise on val 800, estimate $1.15 to $1.50
+  cache_labels: 0      # done, $0.06 of $1 (D-119); locked again
+  live: 0              # done, $0.99 of $1.50 (D-119); locked again
+  khayyam: 0           # done, $0.47 of $5 (D-119); locked again
+  product: 3           # chat app on live models (owner 2026-11-03, D-125: "use my api token")
 # Automatic stops in run_batch (AGENTS.md §5).
 anomalies:
   min_calls: 20            # rate checks start after this many new calls

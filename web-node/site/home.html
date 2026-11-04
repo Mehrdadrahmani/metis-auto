@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TakRouter</title>
+<meta name="description" content="TakRouter sends every message to the right AI model at the lowest cost.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.hero{position:relative;overflow:hidden;padding:72px 0 56px}
+.hero::before{content:"";position:absolute;inset:-40% -10% auto auto;width:720px;height:720px;background:radial-gradient(closest-side,rgba(153,51,255,.16),transparent 70%);pointer-events:none}
+html[dir="rtl"] .hero::before{inset:-40% auto auto -10%}
+.hero .in{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero h1{font-size:50px;line-height:1.2;letter-spacing:-1px;margin:10px 0 14px;font-weight:800}
+.hero h1 em{font-style:normal;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:18px;color:var(--ink2);margin:0 0 26px;max-width:540px}
+.ctas{display:flex;gap:10px;flex-wrap:wrap}
+.demo{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:18px}
+.demo .q{background:var(--user);border-radius:14px;padding:10px 14px;margin-bottom:12px;font-size:14px}
+.route{display:grid;gap:8px;margin:6px 0 12px}
+.route .r{display:grid;grid-template-columns:150px 1fr 54px;gap:10px;align-items:center;font-size:13px}
+.route .bar{height:8px;border-radius:99px;background:var(--chip);overflow:hidden}
+.route .bar i{display:block;height:100%;border-radius:99px}
+.route .r.win{font-weight:800}
+.demo .a{border-top:1px solid var(--line);padding-top:12px;font-size:14px;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:-10px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.stat b{display:block;font-size:30px;font-weight:800;letter-spacing:-.5px}
+.stat span{color:var(--muted);font-size:13px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{padding:22px;border-radius:18px;background:var(--bg2);border:1px solid var(--line)}
+.step .n{width:34px;height:34px;border-radius:11px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:12px}
+.step h3{margin:0 0 6px;font-size:17px}
+.step p{margin:0;color:var(--ink2);font-size:14px}
+h2.sec{font-size:28px;letter-spacing:-.4px;margin:56px 0 18px}
+.logos{display:flex;flex-wrap:wrap;gap:10px}
+.logos span{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel);font-weight:600;font-size:14px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat .card p{margin:0;color:var(--ink2);font-size:14px}
+.ico{width:38px;height:38px;border-radius:12px;background:var(--soft);color:var(--violet-ink);display:grid;place-items:center;margin-bottom:10px}
+details.faq{border-bottom:1px solid var(--line);padding:14px 0}
+details.faq summary{cursor:pointer;font-weight:700;list-style:none}
+details.faq summary::-webkit-details-marker{display:none}
+details.faq p{margin:8px 0 0;color:var(--ink2)}
+.cta-band{margin-top:56px;border-radius:24px;padding:40px;background:var(--brand);color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.cta-band h2{margin:0;font-size:26px}
+.cta-band .btn{background:#fff;color:#16132a}
+@media (max-width:960px){.hero .in{grid-template-columns:1fr}.hero h1{font-size:38px}.steps,.feat,.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <section class="hero"><div class="wrap in">
+    <div>
+      <span class="tag brand" data-i18n="h_kicker"></span>
+      <h1><span data-only="fa">هر پیام، <em>مدل درست</em>، با کمترین هزینه.</span><span data-only="en">Every message. <em>The right model.</em> The lowest cost.</span></h1>
+      <p class="lead" data-i18n="h_lead"></p>
+      <div class="ctas"><a class="btn primary" href="/chat" data-i18n="h_cta"></a><a class="btn ghost" href="/docs" data-i18n="h_cta2"></a></div>
+    </div>
+    <div class="demo" aria-hidden="true">
+      <div class="q" data-i18n="d_q"></div>
+      <div class="muted" style="font-size:12.5px" data-i18n="d_topic"></div>
+      <div class="route" id="demoroute"></div>
+      <div class="a" data-i18n="d_a"></div>
+    </div>
+  </div></section>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b id="s1">۹۶٪</b><span data-i18n="s1"></span></div>
+      <div class="stat"><b id="s2">۶۶٫۹٪</b><span data-i18n="s2"></span></div>
+      <div class="stat"><b id="s3">—</b><span data-i18n="s3"></span></div>
+    </div>
+
+    <h2 class="sec" data-i18n="how_t"></h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3 data-i18n="st1"></h3><p data-i18n="st1p"></p></div>
+      <div class="step"><div class="n">2</div><h3 data-i18n="st2"></h3><p data-i18n="st2p"></p></div>
+      <div class="step"><div class="n">3</div><h3 data-i18n="st3"></h3><p data-i18n="st3p"></p></div>
+    </div>
+
+    <h2 class="sec" data-i18n="models_t"></h2>
+    <div class="logos" id="logos"></div>
+
+    <h2 class="sec" data-i18n="feat_t"></h2>
+    <div class="feat">
+      <div class="card"><div class="ico">⚡</div><h3 data-i18n="f1"></h3><p data-i18n="f1p"></p></div>
+      <div class="card"><div class="ico">🛟</div><h3 data-i18n="f2"></h3><p data-i18n="f2p"></p></div>
+      <div class="card"><div class="ico">🔍</div><h3 data-i18n="f3"></h3><p data-i18n="f3p"></p></div>
+      <div class="card"><div class="ico">🔌</div><h3 data-i18n="f4"></h3><p data-i18n="f4p"></p></div>
+      <div class="card"><div class="ico">🌐</div><h3 data-i18n="f5"></h3><p data-i18n="f5p"></p></div>
+      <div class="card"><div class="ico">🔒</div><h3 data-i18n="f6"></h3><p data-i18n="f6p"></p></div>
+    </div>
+
+    <h2 class="sec" data-i18n="faq_t"></h2>
+    <details class="faq"><summary data-i18n="q1"></summary><p data-i18n="a1"></p></details>
+    <details class="faq"><summary data-i18n="q2"></summary><p data-i18n="a2"></p></details>
+    <details class="faq"><summary data-i18n="q3"></summary><p data-i18n="a3"></p></details>
+    <details class="faq"><summary data-i18n="q4"></summary><p data-i18n="a4"></p></details>
+
+    <div class="cta-band"><h2 data-i18n="band"></h2><a class="btn" href="/login" data-i18n="band_btn"></a></div>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: {
+    h_kicker: "مسیریاب هوشمند مدل‌های هوش مصنوعی",
+    h_lead: "TakRouter موضوع هر پیام را تشخیص می‌دهد و آن را به مدلی می‌فرستد که در همان موضوع بهترین کیفیت را با کمترین قیمت داده است. شما فقط می‌پرسید.",
+    h_cta: "شروع گفتگو", h_cta2: "برای توسعه‌دهندگان",
+    d_q: "این بیت حافظ را ساده توضیح بده", d_topic: "موضوع: علوم انسانی و دین · امتیاز هر مدل", d_a: "← پاسخ از GPT-5.6 Luna · ۸۸٪ ارزان‌تر از Claude Sonnet",
+    s1: "ارزان‌تر از ارسال همه‌چیز به Claude Sonnet", s2: "پاسخ قبول‌شده در آزمون مهرشده (Sonnet: ۶۴٫۹٪)", s3: "پیام پاسخ‌داده‌شده تا امروز",
+    how_t: "چطور کار می‌کند", st1: "شما می‌پرسید", st1p: "در گفتگو یا از طریق API، مثل هر سرویس OpenAI.",
+    st2: "TakRouter انتخاب می‌کند", st2p: "موضوع پیام را تشخیص می‌دهد و کیفیت و قیمت هر مدل را در همان موضوع مقایسه می‌کند.",
+    st3: "پاسخ و صرفه‌جویی", st3p: "پاسخ می‌رسد، همراه با مدل انتخاب‌شده، هزینه و مقدار صرفه‌جویی.",
+    models_t: "مدل‌هایی که پشت TakRouter کار می‌کنند",
+    feat_t: "چرا TakRouter",
+    f1: "کیفیت با قیمت کمتر", f1p: "در آزمون ما با ۴٪ قیمت Claude Sonnet، کیفیت برابر یا بهتر گرفت.",
+    f2: "همیشه در دسترس", f2p: "اگر مدلی قطع شود، پیام خودکار به مدل بعدی می‌رود؛ در قطعی ده‌دقیقه‌ای هیچ پیامی بی‌پاسخ نماند.",
+    f3: "شفاف", f3p: "زیر هر پاسخ می‌بینید کدام مدل جواب داد و چرا. اگر بخواهید، مسیر کامل تصمیم را هم ببینید.",
+    f4: "سازگار با OpenAI", f4p: "برنامه‌ی فعلی‌تان را فقط با عوض کردن آدرس و نام مدل وصل کنید.",
+    f5: "فارسی و انگلیسی", f5p: "برای پیام‌های فارسی ساخته و آزموده شده است.",
+    f6: "متن شما ذخیره نمی‌شود", f6p: "گزارش‌ها فقط عدد دارند: مدل، هزینه و زمان. متن پیام‌ها در سرور نگه داشته نمی‌شود.",
+    faq_t: "پرسش‌های رایج",
+    q1: "پیام‌های من کجا ذخیره می‌شوند؟", a1: "گفتگوها فقط در مرورگر خود شما می‌مانند. سرور برای هر درخواست فقط عدد ثبت می‌کند: مدل، هزینه، زمان و موضوع.",
+    q2: "از کجا بدانم مدل درست انتخاب شده؟", a2: "زیر هر پاسخ دکمه‌ی «چرا این مدل؟» کیفیت و قیمت هر مدل را در همان موضوع نشان می‌دهد. در صفحه‌ی مقایسه می‌توانید پاسخ همه‌ی مدل‌ها را کنار هم ببینید.",
+    q3: "اگر بهترین کیفیت را بخواهم چه؟", a3: "حالت «بهترین کیفیت» را انتخاب کنید؛ TakRouter قیمت را تقریباً نادیده می‌گیرد. یا یک مدل مشخص را ثابت کنید.",
+    q4: "هزینه چطور حساب می‌شود؟", a4: "فقط قیمت خود مدل‌ها را می‌پردازید. صفحه‌ی قیمت‌ها نشان می‌دهد برای حجم کار شما چقدر خرج می‌شود.",
+    band: "همین حالا امتحان کنید.", band_btn: "ساخت حساب رایگان",
+  },
+  en: {
+    h_kicker: "Smart routing for AI models",
+    h_lead: "TakRouter detects the topic of every message and sends it to the model that gave the best quality for the lowest price on that topic. You just ask.",
+    h_cta: "Start chatting", h_cta2: "For developers",
+    d_q: "Explain this Hafez verse in simple words", d_topic: "Topic: humanities and religion · each model's score", d_a: "→ Answered by GPT-5.6 Luna · 88% cheaper than Claude Sonnet",
+    s1: "cheaper than sending everything to Claude Sonnet", s2: "answers passed in our sealed test (Sonnet: 64.9%)", s3: "messages answered so far",
+    how_t: "How it works", st1: "You ask", st1p: "In the chat or through the API, like any OpenAI service.",
+    st2: "TakRouter chooses", st2p: "It detects the topic and compares each model's quality and price on that topic.",
+    st3: "Answer and savings", st3p: "You get the answer with the model used, its cost and how much you saved.",
+    models_t: "Models behind TakRouter",
+    feat_t: "Why TakRouter",
+    f1: "Quality for less", f1p: "In our test it matched or beat Claude Sonnet's quality at 4% of the price.",
+    f2: "Always available", f2p: "If a model goes down, the message moves to the next one; in a ten-minute outage no message went unanswered.",
+    f3: "Transparent", f3p: "Every answer shows which model replied and why. Turn on the trace to see every step of the decision.",
+    f4: "OpenAI-compatible", f4p: "Connect your existing app by changing only the address and the model name.",
+    f5: "Persian and English", f5p: "Built and tested on Persian messages.",
+    f6: "Your text is not stored", f6p: "Logs hold numbers only: model, cost and time. Message text is not kept on the server.",
+    faq_t: "Frequently asked questions",
+    q1: "Where are my messages stored?", a1: "Chats stay in your own browser. For each request the server records numbers only: model, cost, time and topic.",
+    q2: "How do I know the right model was picked?", a2: "Under each answer, \"Why this model?\" shows each model's quality and price on that topic. The Compare page shows every model's answer side by side.",
+    q3: "What if I want the best quality?", a3: "Choose \"Best quality\" and TakRouter almost ignores price. Or pin one model.",
+    q4: "How is the cost calculated?", a4: "You pay only the models' own prices. The Pricing page shows what your volume would cost.",
+    band: "Try it now.", band_btn: "Create a free account",
+  },
+});
+const DEMO = [["gpt-5.6-luna", .476, true], ["deepseek-v4-flash", .521], ["gemini-2.5-flash-lite", .539], ["claude-sonnet-5-5", .938]];
+function drawDemo() {
+  document.getElementById("demoroute").innerHTML = DEMO.map(([id, s, win]) => {
+    const m = TR.model(id);
+    return `<div class="r ${win ? "win" : ""}"><span class="ltr">${win ? "✓ " : ""}${m.name}</span><span class="bar"><i style="width:${Math.round((1 - s) * 100) + 10}%;background:${m.color}"></i></span><span>${TR.num(s, 2)}</span></div>`;
+  }).join("");
+  document.getElementById("logos").innerHTML = Object.keys(TR.MODELS).map((id) => `<span><i class="sw" style="background:${TR.model(id).color}"></i><span class="ltr">${TR.model(id).name}</span></span>`).join("");
+  document.getElementById("s1").textContent = TR.pct(.958);
+  document.getElementById("s2").textContent = TR.lang === "fa" ? "۶۶٫۹٪" : "66.9%";
+}
+TR.onLang(() => { drawDemo(); stats(); });
+async function stats() {
+  try { const s = await TR.api("/v1/stats"); document.getElementById("s3").textContent = TR.num(s.requests); } catch {}
+}
+</script>
+</body>
+</html>

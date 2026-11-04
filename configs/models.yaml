@@ -12,6 +12,7 @@ models:
     api_name: deepseek-v4-flash
     price_in: 0.165
     price_out: 0.66
+    price_cached: 0.0033
     context_window: 128000
     vision: false
     is_anchor: false
@@ -23,6 +24,7 @@ models:
     api_name: gpt-5.6-luna
     price_in: 0.22
     price_out: 1.32
+    price_cached: 0.022
     context_window: 128000
     vision: true
     is_anchor: false
@@ -46,6 +48,7 @@ models:
     api_name: claude-sonnet-5-5
     price_in: 2.2
     price_out: 11.0
+    price_cached: 0.22
     context_window: 1000000
     vision: true
     is_anchor: true      # premium baseline / pairwise anchor

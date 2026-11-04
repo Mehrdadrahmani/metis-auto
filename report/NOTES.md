@@ -183,3 +183,19 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - Val repeat n = 80: mean gap 0.147, all within 1 point.
 - Generation $11.88, judging $0.58. Test answers 1,200, 0 failed, 3 left cut off. Failed val answer: Sonnet error 500 on 3 tries. Jev refused 1 prompt on each set (error 400, cause not confirmed).
 - What didn't work: cost estimate counted 500 new prompts, real 600. Guard estimate ignored Sonnet's larger input, so a false stop at 42 of 400. Stored failures blocked resume until fixed. A failed answer read back as NaN and would have crashed the judge; the pilot had none to show it.
+
+## WP-14 validation 800 (measured, val only)
+- 400 to 800 removed a false gain: K = 8 area +0.013 over ZeroRouter became -0.002. K* moved from 8 to 4. Worth stating as a lesson: choice of K on 400 was noise.
+- Old 400 to new 400, K = 8, cheap setting: -2.0 points vs DeepSeek (-4.2 to 0.0). Shuffle test p = 0.44.
+- Cheap setting out of fold, K = 8: 65.4% at 0.042 cost share, DeepSeek 65.4% at 0.041. K = 4 at λ 0.03: 66.9% at 0.417, +1.4 vs ZeroRouter (0.0 to +2.8).
+- K-NN ties (0.6636). Area gain over ZeroRouter +0.009, near Headlines in the paper (+0.009).
+- Pairwise on 797 prompts: Sonnet beats DeepSeek 40% to 21% both-orders. Pass-rate parity does not mean quality parity. Length not controlled (471 vs 254 tokens out).
+- Train was the only safe pool for more val: `none` holds test-session leftovers.
+
+## Product session (2026-11-03, D-125 to D-127)
+- Live chat app routes real traffic: 3 smoke calls, $0.0056; balanced λ sends 7 of 8 clusters to DeepSeek because Sonnet's lead (≤ 8 points, 2 clusters) is worth less than its 25× price.
+- Adding a model needs only its Psi column on the 798 val prompts (UniRoute); the onboarding code reproduces the 4 shipped columns and c_hat exactly. Estimate for a DeepSeek-priced model: ~$0.85.
+- Khayyam per subject (test n = 1,100, true answers): DeepSeek flash best on maths (49%) and physics (59%), Luna on biology (68%) and humanities mix (65%), Gemini on Persian literature (53%). Small clusters mislead (chemistry, 24 val prompts: Gemini picked, 35% on test vs 55%).
+- Khayyam through its gateway (replay): 55.5% (offline 55.0%; checks escalated cut answers), 0 failed; Luna down: 54.3%, 0 failed.
+- Khayyam chat (D-128): users can type their own exam question; the Khayyam router picks the model live. Demo only, not part of any measured number.
+- Team merge (D-128b): both routers on one site via a decide-only team service; demo answers leaking into a live semantic cache was a real bug (635 rows), fix pending in code.

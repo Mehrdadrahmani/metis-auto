@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.cols{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;align-items:start}
+.newkey{background:var(--okbg);border-radius:12px;padding:12px;margin:10px 0;display:none}
+.newkey.show{display:block}
+.newkey code{display:block;word-break:break-all;margin:6px 0;font-size:13px;background:var(--panel)}
+.row-inline{display:flex;gap:8px}
+td input.input{padding:5px 8px;width:110px}
+td select.input{padding:5px 8px;width:auto}
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 id="hello"></h1><p id="who" class="muted"></p></div>
+  <div class="cols">
+    <div class="grid">
+      <div class="card"><h3 data-i18n="profile"></h3>
+        <div class="field"><label for="name" data-i18n="name"></label><div class="row-inline"><input class="input" id="name"><button class="btn ghost small" id="savename" data-i18n="save"></button></div></div>
+        <div class="field"><label data-i18n="credit"></label><b id="credit">—</b><span class="muted" id="spent" style="font-size:13px"></span></div>
+      </div>
+      <div class="card"><h3 data-i18n="prefs"></h3>
+        <label class="switch" style="margin:6px 0 14px"><input type="checkbox" id="trace"><span data-i18n="trace"></span></label>
+        <p class="muted" style="font-size:13px;margin:0 0 14px" data-i18n="trace_p"></p>
+        <div class="field"><label for="plang" data-i18n="lang"></label><select class="input" id="plang"><option value="fa">فارسی</option><option value="en">English</option></select></div>
+      </div>
+    </div>
+    <div class="card"><h3 data-i18n="keys"></h3>
+      <p class="muted" style="font-size:13px;margin:0 0 12px" data-i18n="keys_p"></p>
+      <div class="row-inline"><input class="input" id="keyname" data-i18n-placeholder="keyname"><button class="btn primary small" id="mkkey" data-i18n="newkey"></button></div>
+      <div class="newkey" id="newkey"><b data-i18n="once"></b><code class="ltr" id="keyval"></code><button class="btn ghost small" id="copykey" data-i18n="copy"></button></div>
+      <div class="scroll-x"><table class="t" id="keys" style="margin-top:10px"></table></div>
+    </div>
+  </div>
+  <div class="card hide" id="admin" style="margin-top:16px"><h3 data-i18n="users"></h3>
+    <p class="muted" style="font-size:13px;margin:0 0 12px" data-i18n="users_p"></p>
+    <div class="scroll-x"><table class="t" id="users"></table></div>
+  </div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "حساب کاربری", hi: (n) => `سلام ${n}`, profile: "مشخصات", name: "نام", save: "ذخیره", saved: "ذخیره شد",
+        credit: "اعتبار باقی‌مانده", unlimited: "نامحدود (مدیر)", spent: (s) => ` · تا امروز ${s} مصرف شده`,
+        prefs: "ترجیحات", trace: "نمایش مسیر تصمیم در گفتگو", trace_p: "زیر هر پاسخ، مراحل انتخاب مدل را نشان می‌دهد: مدل‌های مجاز، حافظه، منابع، امتیازها، فراخوانی و بررسی.",
+        lang: "زبان", keys: "کلیدهای API", keys_p: "برای وصل کردن برنامه‌ی خودتان. هر کلید فقط یک بار نشان داده می‌شود و مصرفش از اعتبار شما کم می‌شود.",
+        keyname: "نام کلید (مثلاً ربات تلگرام)", newkey: "کلید تازه", once: "این کلید فقط همین یک بار نشان داده می‌شود:",
+        k_name: "نام", k_pre: "شروع", k_made: "ساخته شده", k_used: "آخرین استفاده", del: "حذف", never: "هرگز", none: "هنوز کلیدی نساخته‌اید.",
+        users: "کاربران", users_p: "اعتبار و نقش هر کاربر. مدیران سقف شخصی ندارند؛ سقف کل سرویس در configs/budget.yaml است.",
+        u_email: "ایمیل", u_name: "نام", u_role: "نقش", u_credit: "اعتبار ($)", u_spent: "مصرف", admin: "مدیر", user: "کاربر" },
+  en: { kick: "Account", hi: (n) => `Hi ${n}`, profile: "Profile", name: "Name", save: "Save", saved: "Saved",
+        credit: "Credit left", unlimited: "unlimited (admin)", spent: (s) => ` · ${s} used so far`,
+        prefs: "Preferences", trace: "Show the decision trace in chat", trace_p: "Under each answer, shows how the model was chosen: allowed models, cache, retrieved context, scores, call and checks.",
+        lang: "Language", keys: "API keys", keys_p: "To connect your own app. Each key is shown once, and its usage counts against your credit.",
+        keyname: "Key name (e.g. Telegram bot)", newkey: "New key", once: "This key is shown only this once:",
+        k_name: "Name", k_pre: "Starts with", k_made: "Created", k_used: "Last used", del: "Delete", never: "never", none: "No keys yet.",
+        users: "Users", users_p: "Each user's credit and role. Admins have no personal limit; the service limit is in configs/budget.yaml.",
+        u_email: "Email", u_name: "Name", u_role: "Role", u_credit: "Credit ($)", u_spent: "Used", admin: "admin", user: "user" },
+});
+const $ = (id) => document.getElementById(id);
+let me = null, info = null;
+const date = (ts) => ts ? new Date(ts * 1000).toLocaleDateString(TR.lang === "fa" ? "fa-IR" : "en-US") : TR.t("never");
+async function loadMe() { info = await TR.api("/auth/me"); me = info.user; draw(); }
+function draw() {
+  if (!me) return;
+  $("hello").textContent = TR.t("hi", me.name || me.email.split("@")[0]);
+  $("who").textContent = me.email + (me.role === "admin" ? " · " + TR.t("admin") : "");
+  $("name").value = $("name").value || me.name;
+  $("credit").textContent = info.credit_left_usd == null ? TR.t("unlimited") : TR.usd(Math.max(0, info.credit_left_usd));
+  $("spent").textContent = TR.t("spent", TR.usd(info.spent_usd));
+  $("trace").checked = !!me.prefs.show_trace; $("plang").value = TR.lang;
+}
+async function loadKeys(list) {
+  list = list || await TR.api("/auth/keys");
+  $("keys").innerHTML = list.length ? `<tr><th>${TR.t("k_name")}</th><th>${TR.t("k_pre")}</th><th>${TR.t("k_made")}</th><th>${TR.t("k_used")}</th><th></th></tr>` : `<tr><td class="muted">${TR.t("none")}</td></tr>`;
+  for (const k of list) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td></td><td class="ltr"><code></code></td><td>${date(k.created)}</td><td>${date(k.last_used)}</td><td><button class="btn danger small">${TR.t("del")}</button></td>`;
+    tr.children[0].textContent = k.name || "—"; tr.querySelector("code").textContent = k.prefix + "…";
+    tr.querySelector("button").onclick = async () => { await TR.api("/auth/keys/" + k.id, {method: "DELETE"}); loadKeys(); };
+    $("keys").append(tr);
+  }
+}
+async function loadUsers() {
+  const list = await TR.api("/admin/users");
+  $("users").innerHTML = `<tr><th>${TR.t("u_email")}</th><th>${TR.t("u_name")}</th><th>${TR.t("u_role")}</th><th>${TR.t("u_credit")}</th><th>${TR.t("u_spent")}</th></tr>`;
+  for (const u of list) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="ltr"></td><td></td><td><select class="input"><option value="user">${TR.t("user")}</option><option value="admin">${TR.t("admin")}</option></select></td>
+      <td><input class="input ltr" type="number" min="0" step="0.1"></td><td>${TR.usd(u.spent_usd)}</td>`;
+    tr.children[0].textContent = u.email; tr.children[1].textContent = u.name || "—";
+    const sel = tr.querySelector("select"), inp = tr.querySelector("input");
+    sel.value = u.role; inp.value = u.credit_usd; sel.disabled = u.id === me.id;
+    sel.onchange = async () => { await TR.api(`/admin/users/${u.id}`, {method: "PATCH", body: {role: sel.value}}); TR.toast(TR.t("saved")); };
+    inp.onchange = async () => { await TR.api(`/admin/users/${u.id}`, {method: "PATCH", body: {credit_usd: +inp.value}}); TR.toast(TR.t("saved")); };
+    $("users").append(tr);
+  }
+}
+$("savename").onclick = async () => { const r = await TR.api("/auth/me", {method: "PATCH", body: {name: $("name").value}}); me = r.user; TR.me = me; TR.apply(); TR.toast(TR.t("saved")); };
+$("trace").onchange = async () => { const r = await TR.api("/auth/me", {method: "PATCH", body: {prefs: {show_trace: $("trace").checked}}}); me = r.user; TR.toast(TR.t("saved")); };
+$("plang").onchange = async () => { await TR.api("/auth/me", {method: "PATCH", body: {prefs: {lang: $("plang").value}}}); TR.setLang($("plang").value); };
+$("mkkey").onclick = async () => {
+  const r = await TR.api("/auth/keys", {method: "POST", body: {name: $("keyname").value}});
+  $("keyval").textContent = r.key; $("newkey").classList.add("show"); $("keyname").value = ""; loadKeys(r.keys);
+};
+$("copykey").onclick = () => TR.copy($("keyval").textContent);
+TR.onLang(() => { draw(); if (me) { loadKeys(); if (me.role === "admin") loadUsers(); } });
+TR.requireLogin().then(async () => { await loadMe(); loadKeys(); if (me.role === "admin") { $("admin").classList.remove("hide"); loadUsers(); } });
+</script>
+</body>
+</html>

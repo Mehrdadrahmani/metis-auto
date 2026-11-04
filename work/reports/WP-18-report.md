@@ -1,0 +1,3 @@
+# WP-18 report: replay and site
+
+`sim/replay.py`, `eval/report.py`, `scripts/s18_replay.py`. Replay of K = 8 equals the offline router on the same set. Validation outage: 0 failed requests. 0 cache hits, because 800 sampled prompts rarely repeat: replay cannot show cache value. Checks raised cost 43% ($0.70 to $0.99 per 1k) with no quality gain in replay; replay repair returns the same stored answer, so this is pessimistic. Site: `web/index.html`, served by the gateway at `/`. **It was never viewed in a browser:** Chrome hung in every automated mode. Its JS ran without errors on real data under a stub DOM.

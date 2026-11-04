@@ -1,0 +1,56 @@
+{
+  "anchor": null,
+  "build_date": "2026-11-03",
+  "cluster_names": [
+    "Chemistry",
+    "Maths and logic",
+    "History",
+    "Persian literature",
+    "Physics",
+    "Biology and geology",
+    "Mixed (Maths and logic, Psychology)"
+  ],
+  "embedder_id": "nano",
+  "files": {
+    "c_hat": "5d7e4126858117f0cf3de77d936a4ab800c050d4dba63cf6ffe79113e29bb095",
+    "centroids": "8944932561fb8001d3687dbcd41b501d0c8c164e929605961c74866fcf718e90",
+    "counts": "659b9709248ab0161dcb8523f0c56bdef62f222f2a8458794181aed26008f3f8",
+    "psi": "0014dc2e5c06e722a41784532ded77cd21fe8703377647eee389eb8e519cf3ac"
+  },
+  "hashes": {
+    "dataset": "khayyam",
+    "val_set": "642840139726"
+  },
+  "k_star": 7,
+  "lam": 20.991037201085547,
+  "lambda_mode": "quality-val",
+  "lambda_target": 0.56,
+  "method": "point",
+  "models": [
+    "gemini-2.5-flash-lite",
+    "deepseek-v4-flash",
+    "gpt-5.6-luna",
+    "deepseek-v4-pro"
+  ],
+  "prices": {
+    "deepseek-v4-flash": {
+      "in": 0.165,
+      "out": 0.66
+    },
+    "deepseek-v4-pro": {
+      "in": 0.726,
+      "out": 2.178
+    },
+    "gemini-2.5-flash-lite": {
+      "in": 0.11,
+      "out": 0.44
+    },
+    "gpt-5.6-luna": {
+      "in": 0.22,
+      "out": 1.32
+    }
+  },
+  "router_type": "uniroute",
+  "schema_version": 1,
+  "tau": 0.5
+}

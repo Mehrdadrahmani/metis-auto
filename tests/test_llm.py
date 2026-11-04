@@ -97,6 +97,18 @@ def test_key_is_stable_and_sensitive():
     assert a != cache_key("m", "n", msgs(), {"a": 1, "b": 2}, "c2")
 
 
+def test_replay_mode_refuses_new_calls(cache, monkeypatch):
+    from metis.llm.callcache import NewCallRefused
+
+    budget, send = Budget(cache, config(1), MODELS), Sender()
+    call(cache, budget, send)  # stored before replay mode
+    monkeypatch.setenv("METIS_ASSERT_NO_NEW_CALLS", "1")
+    assert call(cache, budget, send).from_cache  # stored answers still come back
+    with pytest.raises(NewCallRefused):
+        call(cache, budget, send, text="never asked before")
+    assert send.calls == 1
+
+
 def test_mock_and_real_keys_differ(monkeypatch):
     real = cache_key("m", "n", msgs(), {}, "c")
     monkeypatch.setenv("METIS_MOCK", "1")
@@ -135,19 +147,19 @@ def test_shipped_config_allows_only_approved_stages(cache):
     """Pilot (D-094) and generation (owner "go", WP-12) have limits; the rest are refused."""
     cfg = load_config("budget")
     assert cfg["hard_cap_usd"] == 60
-    assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live"}
+    assert set(cfg["approved_usd"]) == {"pilot", "gen_main", "judge_main", "cache_labels", "live", "khayyam", "product"}
     assert cfg["approved_usd"]["pilot"] == 10
-    assert cfg["approved_usd"]["gen_main"] == 14
-    assert cfg["approved_usd"]["judge_main"] == 1
+    assert cfg["approved_usd"]["gen_main"] == 21.5
+    assert cfg["approved_usd"]["judge_main"] == 3
     budget = Budget(cache, cfg, MODELS)
     budget.guard("pilot", 0.0001)
     with pytest.raises(BudgetRefused):
         budget.guard("pilot", 10.01)
     with pytest.raises(BudgetRefused):
-        budget.guard("gen_main", 14.01)
+        budget.guard("gen_main", 21.51)
     with pytest.raises(BudgetRefused):
-        budget.guard("judge_main", 1.01)
-    for locked in ("cache_labels", "live"):
+        budget.guard("judge_main", 3.01)
+    for locked in ("cache_labels", "live", "khayyam"):
         with pytest.raises(BudgetRefused):
             budget.guard(locked, 0.0001)
 

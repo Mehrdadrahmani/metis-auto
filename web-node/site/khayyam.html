@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Khayyam exams · TakRouter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/web/assets/site.css">
+<script src="/web/assets/site.js"></script>
+<style>
+.facts{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.bar-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0 14px}
+.seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:3px}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:8px;font-weight:600;font-size:13px;color:var(--ink2)}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.range{accent-color:var(--violet);width:220px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.tile small{color:var(--muted);font-size:12.5px}.tile b{display:block;font-size:26px;font-weight:800;margin-top:2px}.tile span{font-size:12.5px;color:var(--ink2)}
+.two{display:grid;grid-template-columns:1.1fr 1fr;gap:14px;margin-top:14px}
+.chart{position:relative}
+.chart svg{width:100%;height:280px;display:block;direction:ltr}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:9px;white-space:nowrap;opacity:0;z-index:5}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
+table.subj td.best{font-weight:800}
+table.subj td.pick{background:var(--soft);border-radius:8px}
+table.subj td,table.subj th{text-align:center}
+table.subj td:first-child,table.subj th:first-child{text-align:start}
+.q{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:15px}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.opt .n{width:24px;height:24px;border-radius:8px;background:var(--chip);display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.opt.key{border-color:var(--ok);background:var(--okbg)}
+.opt.key .n{background:var(--ok);color:#fff}
+.opt .who{margin-inline-start:auto;display:flex;gap:4px;flex-wrap:wrap}
+.verdict{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+.mrow{display:grid;grid-template-columns:180px 70px 1fr;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.mrow:first-child{border-top:0}
+.tl{list-style:none;margin:0;padding:0;font-size:13px}
+.tl li{padding:6px 0;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:0}
+@media (max-width:960px){.tiles{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="page-head"><div class="kicker" data-i18n="kick"></div><h1 data-i18n="title"></h1><p data-i18n="lead"></p>
+    <div class="facts" id="facts"></div></div>
+
+  <div class="bar-top">
+    <div class="seg" id="modes"><button data-m="best" data-i18n="m_best"></button><button data-m="chosen" class="on" data-i18n="m_chosen"></button><button data-m="cheap" data-i18n="m_cheap"></button></div>
+    <input class="range" type="range" id="lam" min="0" max="10" step="1"><span class="muted" id="lamval" style="font-size:13px"></span>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><small data-i18n="t_acc"></small><b id="v_acc">—</b><span id="v_acc2"></span></div>
+    <div class="tile"><small data-i18n="t_best"></small><b id="v_best">—</b><span id="v_best2"></span></div>
+    <div class="tile"><small data-i18n="t_cost"></small><b id="v_cost">—</b><span id="v_cost2"></span></div>
+    <div class="tile"><small data-i18n="t_gw"></small><b id="v_gw">—</b><span id="v_gw2"></span></div>
+  </div>
+
+  <div class="two">
+    <div class="card chart" id="chartcard"><h3 data-i18n="c_curve"></h3><p class="muted" style="font-size:12.5px;margin:0 0 6px" data-i18n="c_curve_p"></p>
+      <div class="legend" id="legend"></div><svg id="curve" role="img"></svg><div class="tip" id="tip"></div></div>
+    <div class="card" id="subjects"><h3 data-i18n="c_subj"></h3><p class="muted" style="font-size:12.5px;margin:0 0 8px" data-i18n="c_subj_p"></p>
+      <div class="scroll-x"><table class="t subj" id="subj"></table></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between">
+      <h3 style="margin:0" data-i18n="try_t"></h3>
+      <div style="display:flex;gap:8px;align-items:center"><select class="input" id="subjsel" style="width:auto"></select><button class="btn primary small" id="draw" data-i18n="try_btn"></button>
+        <label class="switch"><input type="checkbox" id="tracebox"><span data-i18n="trace"></span></label></div>
+    </div>
+    <p class="muted" style="font-size:12.5px;margin:6px 0 14px" data-i18n="try_p"></p>
+    <div id="sample"></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h3 data-i18n="honest_t"></h3><p style="color:var(--ink2);margin:0" id="honest"></p></div>
+</main>
+<script>
+TR.dict({
+  fa: { kick: "دموی آزمون خیام", title: "TakRouter روی سؤال‌های کنکور و امتحان", lead: "یک مسیریاب جدا، با خوشه‌ها و اثر انگشت‌های خودش، روی پرسش‌های چهارگزینه‌ای مجموعه‌ی «چالش خیام» که جواب درستشان معلوم است. هیچ داوری در کار نیست: پاسخ هر مدل با کلید سؤال مقایسه می‌شود.",
+        f_q: (n) => `${n} پرسش`, f_c: (n) => `${n} پرسش بدون برچسب برای ساختن خوشه‌ها`, f_v: (n) => `${n} پرسش اعتبارسنجی`, f_t: (n) => `${n} پرسش آزمون`, f_k: (k) => `${k} خوشه‌ی موضوعی`,
+        m_best: "بهترین دقت", m_chosen: "انتخاب اعتبارسنجی", m_cheap: "کمترین هزینه",
+        t_acc: "دقت مسیریاب", t_best: "بهترین مدل تکی", t_cost: "هزینه‌ی نسبی", t_gw: "از مسیر درگاه",
+        acc2: (n) => `روی ${n} پرسش آزمون`, best2: (m) => m, cost2: "نسبت به گران‌ترین مدل", gw2: (f) => `${f} درخواست ناموفق؛ با بررسی پاسخ و جایگزین خودکار`,
+        c_curve: "دقت در برابر هزینه", c_curve_p: "هر نقطه‌ی خط یک مقدار λ است؛ نقطه‌ها مدل‌های تکی‌اند. بالا و چپ بهتر است.",
+        router: "TakRouter (خیام)", now: "تنظیم فعلی",
+        c_subj: "دقت هر مدل در هر موضوع", c_subj_p: "روی پرسش‌های آزمون. خانه‌ی رنگی مدلی است که مسیریاب با تنظیم فعلی انتخاب می‌کند؛ عدد پررنگ بهترین مدل همان موضوع است.",
+        s_name: "موضوع", s_n: "n", try_t: "یک سؤال واقعی امتحان کنید", try_btn: "سؤال تصادفی", trace: "نمایش مسیر",
+        try_p: "سؤال از پرسش‌های آزمون انتخاب می‌شود و از درگاه خیام می‌گذرد. پاسخ‌ها همان پاسخ‌هایی است که هر مدل واقعاً داده است؛ هزینه‌ای ندارد.",
+        all_subj: "همه‌ی موضوع‌ها", course: "درس", picked: (m) => `TakRouter این سؤال را به ${m} داد`, right: "درست", wrong: "نادرست", noans: "بی‌پاسخ",
+        cut: "نیمه‌کاره", each: "پاسخ هر مدل", correct_is: (k) => `گزینه‌ی درست: ${k}`,
+        tr_topic: (t) => `موضوع تشخیص‌داده‌شده: ${t}`, tr_scores: "امتیاز هر مدل (کمتر بهتر)", tr_calls: "فراخوانی‌ها", tr_checks: "بررسی پاسخ",
+        honest_t: "صادقانه",
+        honest: (r, b, bm, g) => `با تنظیمی که روی پرسش‌های اعتبارسنجی انتخاب شد، دقت مسیریاب ${r} است و بهترین مدل تکی (${bm}) ${b}. روی کل منحنی هزینه و دقت، خوشه‌بندی ${g} بهتر از مسیریاب بدون خوشه بود و بازه‌ی اطمینانش از صفر بالاتر است. موضوع‌ها واقعاً با هم فرق دارند: DeepSeek در ریاضی و فیزیک بهتر است، Luna در زیست و علوم انسانی، و Gemini در ادبیات فارسی. خوشه‌های کوچک (مثلاً شیمی با ۲۴ پرسش اعتبارسنجی) هنوز ممکن است انتخاب اشتباه بدهند؛ مجموعه‌ی اعتبارسنجی بزرگ‌تر این را بهتر می‌کند. مجوز داده‌ی خیام فقط علمی است.` },
+  en: { kick: "Khayyam exam demo", title: "TakRouter on school-exam questions", lead: "A separate router, with its own clusters and fingerprints, on four-option questions from the Khayyam Challenge, where the right answer is known. No judge: each model's answer is checked against the key.",
+        f_q: (n) => `${n} questions`, f_c: (n) => `${n} unlabeled questions to build the clusters`, f_v: (n) => `${n} validation questions`, f_t: (n) => `${n} test questions`, f_k: (k) => `${k} subject clusters`,
+        m_best: "Best accuracy", m_chosen: "Chosen on validation", m_cheap: "Lowest cost",
+        t_acc: "Router accuracy", t_best: "Best single model", t_cost: "Relative cost", t_gw: "Through the gateway",
+        acc2: (n) => `on ${n} test questions`, best2: (m) => m, cost2: "relative to the dearest model", gw2: (f) => `${f} failed requests; with answer checks and failover`,
+        c_curve: "Accuracy against cost", c_curve_p: "Each point on the line is one λ; dots are single models. Up and left is better.",
+        router: "TakRouter (Khayyam)", now: "current setting",
+        c_subj: "Each model's accuracy per subject", c_subj_p: "On the test questions. The shaded cell is the model the router picks at the current setting; bold is the best model on that subject.",
+        s_name: "Subject", s_n: "n", try_t: "Try a real question", try_btn: "Random question", trace: "Show trace",
+        try_p: "The question comes from the test questions and goes through the Khayyam gateway. The answers are the ones each model really gave; it costs nothing.",
+        all_subj: "All subjects", course: "Course", picked: (m) => `TakRouter sent this question to ${m}`, right: "correct", wrong: "wrong", noans: "no answer",
+        cut: "cut off", each: "Each model's answer", correct_is: (k) => `Correct option: ${k}`,
+        tr_topic: (t) => `Detected subject: ${t}`, tr_scores: "Each model's score (lower is better)", tr_calls: "Calls", tr_checks: "Answer checks",
+        honest_t: "Honestly",
+        honest: (r, b, bm, g) => `At the setting chosen on the validation questions the router scores ${r} and the best single model (${bm}) ${b}. Over the whole cost-accuracy curve, clustering beat the router without clusters by ${g}, with a confidence range above zero. The subjects really differ: DeepSeek is better at maths and physics, Luna at biology and humanities, Gemini at Persian literature. Small clusters (chemistry has 24 validation questions) can still lead to a wrong pick; a bigger validation set fixes that. Khayyam's licence is academic only.` },
+});
+const $ = (id) => document.getElementById(id);
+TR.subnav([["/khayyam", "kh_over"], ["/khayyam/chat", "kh_chat"], ["/khayyam#subjects", "kh_subj"]]);
+let info = null, stops = [], lam = null, mode = "chosen", last = null;
+const COLORS = ["#c98500", "#4d6bfe", "#10a37f", "#1d3fb8", "#d97757", "#8a5cf6", "#e05297"];
+const color = (m, i) => TR.MODELS[m]?.color || (m === "deepseek-v4-pro" ? "#1d3fb8" : COLORS[(i + 4) % COLORS.length]);
+const name = (m) => m === "deepseek-v4-pro" ? "DeepSeek V4 Pro" : TR.model(m).name;
+const subj = (c) => TR.lang === "fa" ? c.name_fa : c.name_en;
+function setStops() {
+  const s = new Set([0, info.default_lambda, 100, ...info.breakpoints.filter((b) => b < 100), ...info.breakpoints.filter((b) => b < 100).map((b) => b * 1.02)]);
+  stops = [...s].map((x) => +x.toFixed(4)).sort((a, b) => a - b); $("lam").max = stops.length - 1;
+}
+async function load() {
+  info = await TR.api("/v1/khayyam/info" + (lam == null ? "" : `?lam=${lam}`));
+  if (!stops.length) setStops();
+  if (lam == null) lam = +info.default_lambda.toFixed(4);
+  draw();
+}
+function draw() {
+  if (!info) return;
+  const n = info.n;
+  $("facts").innerHTML = "";
+  for (const s of [TR.t("f_c", TR.num(n.clusters)), TR.t("f_v", TR.num(n.val)), TR.t("f_t", TR.num(n.test)), TR.t("f_k", TR.num(info.clusters.length))]) { const t = document.createElement("span"); t.className = "tag brand"; t.textContent = s; $("facts").append(t); }
+  let i = stops.findIndex((s) => s >= lam - 1e-9); if (i < 0) i = stops.length - 1; $("lam").value = i; $("lamval").textContent = "λ = " + TR.num(lam, lam < 1 ? 3 : 1);
+  const best = Object.entries(info.single).sort((a, b) => b[1] - a[1])[0];
+  $("v_acc").textContent = TR.pct(info.router.accuracy); $("v_acc2").textContent = TR.t("acc2", TR.num(n.test));
+  $("v_best").textContent = TR.pct(best[1]); $("v_best2").textContent = name(best[0]);
+  $("v_cost").textContent = TR.pct(info.router.cost); $("v_cost2").textContent = TR.t("cost2");
+  const g = info.gateway_replay.normal; $("v_gw").textContent = TR.pct(g.accuracy); $("v_gw2").textContent = TR.t("gw2", TR.pct(g.failed));
+  curve(); table(); subjSelect();
+  $("honest").textContent = TR.t("honest", TR.pct(info.router.accuracy), TR.pct(best[1]), name(best[0]), "+" + TR.num(info.area.area_gain, 3));
+}
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, a) { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); return e; }
+function curve() {
+  const svg = $("curve"); svg.innerHTML = "";
+  const W = svg.clientWidth || 560, H = 280, L = 44, R = 14, T = 10, B = 30;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const pts = info.curve, singles = info.models.map((m, j) => ({m, cost: info.c_hat[j], acc: info.single[m]}));
+  const accs = [...pts.map((p) => p.acc), ...singles.map((s) => s.acc)];
+  const y0 = Math.floor(Math.min(...accs) * 20) / 20, y1 = Math.ceil(Math.max(...accs) * 20) / 20;
+  const x = (c) => L + (W - L - R) * c, y = (a) => T + (H - T - B) * (1 - (a - y0) / (y1 - y0 || 1));
+  for (let v = y0; v <= y1 + 1e-9; v += .05) {
+    svg.append(el("line", {x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: "var(--line)"}));
+    const t = el("text", {x: L - 6, y: y(v) + 4, "font-size": 11, fill: "var(--muted)", "text-anchor": "end"}); t.textContent = Math.round(v * 100) + "%"; svg.append(t);
+  }
+  for (const c of [0, .25, .5, .75, 1]) { const t = el("text", {x: x(c), y: H - 10, "font-size": 11, fill: "var(--muted)", "text-anchor": "middle"}); t.textContent = c.toFixed(2); svg.append(t); }
+  const sorted = [...pts].sort((a, b) => a.cost - b.cost);
+  svg.append(el("path", {d: sorted.map((p, i) => (i ? "L" : "M") + x(p.cost) + "," + y(p.acc)).join(""), fill: "none", stroke: "#9933ff", "stroke-width": 2}));
+  singles.forEach((s, j) => {
+    const c = el("circle", {cx: x(s.cost), cy: y(s.acc), r: 6, fill: color(s.m, j), stroke: "var(--panel)", "stroke-width": 2});
+    c.addEventListener("mousemove", (e) => tip(e, `${name(s.m)} · ${TR.pct(s.acc)} · ${TR.num(s.cost, 2)}`)); c.addEventListener("mouseleave", hideTip); svg.append(c);
+  });
+  const now = el("circle", {cx: x(info.router.cost), cy: y(info.router.accuracy), r: 7, fill: "#9933ff", stroke: "var(--panel)", "stroke-width": 3});
+  now.addEventListener("mousemove", (e) => tip(e, `${TR.t("router")} · ${TR.pct(info.router.accuracy)} · ${TR.num(info.router.cost, 2)}`)); now.addEventListener("mouseleave", hideTip); svg.append(now);
+  $("legend").innerHTML = `<span><span class="sw" style="background:#9933ff"></span> ${TR.t("router")}</span>` + singles.map((s, j) => `<span><span class="sw" style="background:${color(s.m, j)}"></span> <span class="ltr">${name(s.m)}</span></span>`).join("");
+}
+function tip(e, s) { const t = $("tip"), b = $("chartcard").getBoundingClientRect(); t.textContent = s; t.style.left = (e.clientX - b.left + 12) + "px"; t.style.top = (e.clientY - b.top - 28) + "px"; t.style.opacity = 1; }
+function hideTip() { $("tip").style.opacity = 0; }
+function table() {
+  const ms = info.models;
+  let h = `<tr><th>${TR.t("s_name")}</th><th>${TR.t("s_n")}</th>${ms.map((m) => `<th class="ltr">${name(m).replace(/ V4| 2\.5| Flash Lite| GPT-5\.6/g, (x) => x)}</th>`).join("")}</tr>`;
+  for (const c of info.clusters) {
+    const best = Math.max(...ms.map((m) => c.test[m]));
+    h += `<tr><td>${subj(c)}</td><td>${TR.num(c.n_test)}</td>${ms.map((m) => `<td class="${c.test[m] === best ? "best" : ""} ${m === c.pick ? "pick" : ""}">${TR.pct(c.test[m])}</td>`).join("")}</tr>`;
+  }
+  $("subj").innerHTML = h;
+}
+function subjSelect() {
+  const s = $("subjsel"), keep = s.value; s.innerHTML = `<option value="">${TR.t("all_subj")}</option>` + info.clusters.map((c) => `<option value="${c.cluster}">${subj(c)}</option>`).join(""); s.value = keep;
+}
+async function sample() {
+  const c = $("subjsel").value;
+  last = await TR.api(`/v1/khayyam/sample?lam=${lam}` + (c ? `&cluster=${c}` : ""));
+  drawSample();
+}
+function drawSample() {
+  const s = last; if (!s) return;
+  const box = $("sample"); box.innerHTML = "";
+  const q = document.createElement("div"); q.className = "q";
+  const meta = document.createElement("div"); meta.className = "muted"; meta.style.fontSize = "12.5px"; meta.textContent = `${TR.t("course")}: ${s.course} · ${subj(info.clusters[s.cluster])}`;
+  const body = document.createElement("div"); body.style.cssText = "white-space:pre-wrap;margin-top:6px;direction:rtl;text-align:right"; body.textContent = s.question;
+  q.append(meta, body);
+  const opts = document.createElement("div"); opts.className = "opts";
+  s.choices.forEach((t, i) => {
+    const n = String(i + 1), o = document.createElement("div"); o.className = "opt" + (n === s.key ? " key" : "");
+    o.innerHTML = `<span class="n">${TR.num(i + 1)}</span><span style="direction:rtl;text-align:right"></span><span class="who"></span>`; o.children[1].textContent = t;
+    for (const m of s.models.filter((x) => x.answer === n)) { const tg = document.createElement("span"); tg.className = "tag"; tg.innerHTML = `<span class="sw" style="background:${color(m.model, 0)}"></span>`; tg.append(name(m.model).split(" ")[0] + (m.model === s.router.model ? " ★" : "")); o.querySelector(".who").append(tg); }
+    opts.append(o);
+  });
+  q.append(opts); box.append(q);
+  const v = document.createElement("div"); v.className = "verdict";
+  const p = document.createElement("span"); p.style.fontWeight = "700"; p.textContent = TR.t("picked", name(s.router.model || "?"));
+  const r = document.createElement("span"); r.className = "tag " + (s.router.correct ? "ok" : "err"); r.textContent = s.router.correct ? "✓ " + TR.t("right") : "✗ " + TR.t("wrong");
+  const k = document.createElement("span"); k.className = "tag"; k.textContent = TR.t("correct_is", TR.num(+s.key));
+  v.append(p, r, k); box.append(v);
+  const list = document.createElement("div"); list.innerHTML = `<b style="font-size:13px">${TR.t("each")}</b>`;
+  for (const m of s.models) {
+    const row = document.createElement("div"); row.className = "mrow";
+    row.innerHTML = `<span class="ltr"><span class="sw" style="background:${color(m.model, 0)}"></span> </span><span class="tag ${m.correct ? "ok" : "err"}"></span><span class="muted"></span>`;
+    row.children[0].append(name(m.model) + (m.model === s.router.model ? " ★" : ""));
+    row.children[1].textContent = m.correct ? "✓" : "✗";
+    row.children[2].textContent = (m.answer ? TR.num(+m.answer) : TR.t("noans")) + (m.cut ? " · " + TR.t("cut") : "") + " · " + TR.usd(m.usd);
+    list.append(row);
+  }
+  box.append(list);
+  if ($("tracebox").checked) {
+    const tr = s.router.trace, d = document.createElement("div"); d.className = "card"; d.style.marginTop = "12px";
+    const sc = Object.entries(tr.scores || {}).sort((a, b) => a[1] - b[1]).map(([m, v]) => `${name(m)} ${TR.num(v, 3)}`).join(" · ");
+    const calls = (tr.attempts || []).map((a) => `${name(a.model)}: ${a.ok ? TR.usd(a.cost) : a.reason}`).join(" → ");
+    d.innerHTML = `<ul class="tl"><li></li><li></li><li></li><li></li></ul>`;
+    const li = d.querySelectorAll("li");
+    li[0].textContent = TR.t("tr_topic", subj(info.clusters[tr.cluster])) + " · λ = " + TR.num(tr.lam ?? lam, 3);
+    li[1].textContent = TR.t("tr_scores") + ": " + sc; li[2].textContent = TR.t("tr_calls") + ": " + calls;
+    li[3].textContent = TR.t("tr_checks") + ": " + ((tr.reasons || []).join(", ") || "✓");
+    box.append(d);
+  }
+}
+for (const b of $("modes").children) b.onclick = () => {
+  mode = b.dataset.m; for (const x of $("modes").children) x.classList.toggle("on", x === b);
+  lam = mode === "best" ? 0 : mode === "cheap" ? 100 : +info.default_lambda.toFixed(4); load();
+};
+$("lam").addEventListener("change", (e) => { lam = stops[+e.target.value]; for (const x of $("modes").children) x.classList.remove("on"); load(); });
+$("lam").addEventListener("input", (e) => { $("lamval").textContent = "λ = " + TR.num(stops[+e.target.value], 3); });
+$("draw").onclick = sample;
+$("tracebox").onchange = drawSample;
+TR.onLang(() => { draw(); drawSample(); });
+addEventListener("resize", () => info && curve());
+load().then(sample).catch((e) => { $("sample").innerHTML = `<div class="notice err"></div>`; $("sample").firstChild.textContent = e.message; });
+</script>
+</body>
+</html>
