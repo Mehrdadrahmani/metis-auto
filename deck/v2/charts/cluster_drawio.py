@@ -37,12 +37,12 @@ for _ in range(60):
 box(30, 385, 280, 60, "209,109 train prompts<br>user text only, no labels", TXT)
 
 # Panel 2: embedding
-g2 = box(380, 20, 300, 440, "2  Embedding", GROUP)
+g2 = box(380, 20, 300, 440, "2  Embedding · Jina v5 nano", GROUP)
 centers2 = [(470, 120), (600, 110), (450, 230), (590, 220), (500, 330), (630, 320), (420, 340), (540, 170)]
 for cx, cy in centers2:
     for _ in range(7):
         box(cx + random.gauss(0, 14), cy + random.gauss(0, 12), 13, 13, "", DOT + BLUE)
-box(390, 385, 280, 60, "each message → a vector;<br>similar meaning lands close", TXT)
+box(390, 372, 280, 80, "<b>jina-embeddings-v5-text-nano</b>, run locally;<br>similar meaning lands close;<br>vectors kept in <b>Qdrant</b>", TXT + "fontSize=14;")
 
 # Panel 3: 8 topic clusters
 g3 = box(740, 20, 520, 440, "3  K-means → 8 topics", GROUP)

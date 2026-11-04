@@ -2,13 +2,14 @@
 <p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T1 · The clustering idea</p>
 <h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Topics are learned from meaning, with no labels</h2>
 <div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:16px 20px">
-<img src="/_blob/ef24e73b455ab589e375d8c3c208edaa" alt="Clustering concept: messages, embedding, K-means into 8 named topics, and a fingerprint per topic; a new model answers the 800 validation questions once to get one new column" style="width:1624px;height:470px;object-fit:contain">
+<img src="/_blob/d3fd09e92796802a89932a6f0a3b7772" alt="Clustering concept: messages, embedding with jina-embeddings-v5-text-nano run locally and vectors kept in Qdrant, K-means into 8 named topics, and a fingerprint per topic; a new model answers the 800 validation questions once to get one new column" style="width:1624px;height:470px;object-fit:contain">
 </div>
 <div style="display:flex;flex-direction:row;gap:16px;flex-wrap:wrap">
 <p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">209,109 unlabeled train prompts</p>
-<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">Embeddings of the user’s text only</p>
+<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">Jina v5 nano embeddings, user text only</p>
 <p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">K-means, K = 8</p>
+<p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">Vectors stored in Qdrant</p>
 <p style="font-size:24px;font-weight:600;background:#ffffff;border:1px solid #e8e6f2;padding:10px 20px;border-radius:999px">Topic sizes on validation: 58 to 187 prompts</p>
 </div>
-<aside>Step one of UniRoute. We embed only the user’s own text, not the chatbot’s system prompt, so topics reflect what people ask. K-means groups 209,109 unlabeled train prompts into 8 topics; the names were given afterwards by reading the clusters. On validation the topics hold between 58 and 187 prompts: General short chat 187, Short fragments 113, Account and tech support 106, Science and maths 105, Relationships 86, Humanities 78, Health 65, Payments 58. The K-selection rule on validation preferred K = 4; we shipped K = 8 and report K = 4 results too.</aside>
+<aside>Step one of UniRoute. We embed only the user’s own text, not the chatbot’s system prompt, so topics reflect what people ask. The embedding model is jina-embeddings-v5-text-nano, run locally, and all vectors are kept in a Qdrant vector database. K-means groups 209,109 unlabeled train prompts into 8 topics; the names were given afterwards by reading the clusters. On validation the topics hold between 58 and 187 prompts: General short chat 187, Short fragments 113, Account and tech support 106, Science and maths 105, Relationships 86, Humanities 78, Health 65, Payments 58. The K-selection rule on validation preferred K = 4; we shipped K = 8 and report K = 4 results too.</aside>
 </section>
