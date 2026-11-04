@@ -1,59 +1,53 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-03 · WP-21 + team merge (handoff 7)
+Updated: 2026-11-04 · product session 2 + GitHub (handoff 8)
 
 ## Now
 - Current WP: **WP-21 Release** (owner: "just go for wp21"; WP-20 report review still open, skipped by owner choice). Test opened once (n = 299)
-- Team PR #16 open (`farzanenadem/Metis`, branch `takrouter-full` → `develop`): whole project under `takrouter/` with history + `TAKROUTER_MERGE_PROMPT.md` (Farzaneh merges with a merge commit, then runs the prompt: one site, Router TakRouter | Team toggle)
-- Branch `TakRoute`, remotes `origin` (owner) and `team`. Team PR #15 open (`farzanenadem/Metis`, branch `uniroute-fix-lambda` into `develop`)
+- Branch **`main`** (TakRoute merged into main via PR #1, merge commit 5e1d134; CI green on main). Remote branch `TakRoute` still exists (deleting it was blocked by the permission system; owner to confirm). Remotes `origin` (owner), `team`
 - Router: K = 8 λ 0.5151 (`artifacts/router_v1`). Judge jev pointwise τ = 7. Model: default (Opus 5.5)
 
-## Product (D-125..D-128): site, accounts, add-a-model, Khayyam + Khayyam chat; tests 319 pass
-- Site, 12 pages, Persian/English (`web/*.html`, shared `web/assets/site.{css,js}`): / home, /chat, /compare, /khayyam, /learn, /docs, /dashboard, /pricing, /how, /login, /account, /models (admin), /results
-- Run live: `TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000` (real jina embedder, LiveProvider stage `product` $3)
-- Accounts `metis.gateway.auth` (runs/gateway/users.sqlite): first sign-up = admin (the owner signed up); user credit $0.50 default; API keys `tk-…`
-- Optional decision trace (`metadata.trace`, per-user pref). Per-request λ (`metadata.lambda`). 402 on credit/budget
-- Add a model (`metis.onboard`, /models): register → test call → estimate → admin approves → 798 val + jev → Psi column → activate (`artifacts/router_live`). Mock run on 10 prompts OK; fingerprints of the 4 shipped models reproduce exactly. No live add yet
-- Khayyam demo (`metis.khayyam`, `scripts/khayyam_build.py`, $0 from stored answers): own artifact `artifacts/router_khayyam` (K = 7, λ 21), own gateway (replay of stored answers) and traces. Gateway replay: 55.5% acc, 0 failed; Luna outage 54.3%, 0 failed
+## Product (D-125..D-131); tests 332 pass, ruff clean, CI (`.github/workflows/ci.yml`) green
+- Gateway: own provider key (D-130), streaming SSE (D-131), 503 names failure kinds, traces `billing` column
+- Website: **`web-node/`** (Node.js, Next.js 16, D-129) = the site with RTL fixes, Claude-style chat (collapsible sidebar, edit/copy/retry, code copy, streaming, stop keeps partial), own-key section. `web/` kept unchanged (served by the gateway)
+- Run: `TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000`; site: `cd web-node && npm ci && npm run build && npx next start -p 3001`
+- Running now: live gateway :8000; Node site :3001 from **`../takrouter-node`** (older copy with the same site files; switch the server to `web-node/` next time); `../takrouter-next` experiment :3000
+- Browser tests ($0) in `web-node/scripts/`: check 26/26, chat-ux 36/36, byok-ui 23/23, stream-ui 7/7, typing-dir 14/14; README shots: `readme-shots.mjs`
+- Real streaming test (owner "test"): Metis streams (46 chunks, no fallback), usage reported, $0.000065 booked
+
+## GitHub (D-132, D-133)
+- Own repo: README with 9 screenshots + diagrams, CI. PR #1 merged
+- Team repo `farzanenadem/Metis`: PR #16 merged into `develop` earlier. **PR #17** (`takrouter-full` → develop): takrouter/ = Node site only (`takrouter/web/` removed, Team toggle carried over), own key, streaming, README, `make site`. **PR #18** (`develop-into-main` → main): conflict-free version of #14 (Makefile .PHONY), 72 commits linked to Mehrdadrahmani. Review requested from farzanenadem on both
+- Contributor credit on the team repo comes only when develop reaches `main` with a merge commit. Owner sends Farzaneh the exact steps (given in chat 2026-11-04): #18 merge commit → close #14 → test + merge #17 → PR develop→main, Makefile line `.PHONY: help install test lint steps ask route eval dashboard graph doctor phoenix web site team api ui clean build up`
+- Team `main` CI already red: Roham's `tests/test_safety_regressions.py` imports missing `agent.utilities.judge` (not ours)
 
 ## WP-21 progress
-- Step 1 OK (owner). Step 3 done: secret scan of all history of TakRoute, main, origin/* = 0 hits (one `password={tail}` is a fake test value); results/ and report/ hold no message text
-- Guard for step 2 done: `METIS_ASSERT_NO_NEW_CALLS=1` makes `get_or_call` (`src/metis/llm/callcache.py`) raise `NewCallRefused` on a cache miss; test `test_replay_mode_refuses_new_calls`. Tests 319 pass
-- ⚠ TEAM repo `farzanenadem/Metis` (not ours) has chatbot data with live `Bearer` keys in history: commits f430621 (develop, `evaluation/data/sample_golden_set.jsonl`), 732eb91 + 1bcb798 (branch add-evaluation-test, `data/goldenset/*`). Owner to tell the team: rotate those keys, purge history
-
-## Merge preview (this session)
-- Local-only repo `../takrouter-merged` (no remote, commit 3fbc212): team router `POST /route` (port 8100, replay rule) + TakRouter gateway `metadata.router` toggle (port 8001, mock). Tested: TakRouter→deepseek, Team→gemini-2.5-flash
-- Live merge prompt `MERGE_LIVE_PROMPT.md` + preview code are IN PR #16 (head f6f07ee, mergeable); owner sends Farzaneh the message: merge `takrouter-full` → `develop` with a merge commit, then run the prompt
-- Running now: main live site :8000, live merge preview :8001 (`../takrouter-merged/takrouter`), team router :8100 (`../takrouter-merged`). Both live sites share one budget ledger
-- Real cache cleaned (owner OK): 635 demo answers deleted, 4 real kept; backup `runs/gateway/cache.before-demo-cleanup.sqlite`. Still to do in code: mock mode must never write the live cache. Live site on 8000 is OFF; live preview runs on 8001 (team router 8100)
+- Step 1 OK (owner). Step 3 done: secret scan of all history = 0 hits. Step 4 (README) largely done in D-132
+- Guard for step 2 done: `METIS_ASSERT_NO_NEW_CALLS=1` makes `get_or_call` raise `NewCallRefused` on a cache miss
+- ⚠ TEAM repo has chatbot data with live `Bearer` keys in history (f430621, 732eb91, 1bcb798). Owner to tell the team: rotate keys, purge history
 
 ## Exact next step
-0. WP-21 step 2: fresh clone to scratchpad, copy data/ + cache/, `uv sync`, re-run the stages that make the reported numbers with `METIS_ASSERT_NO_NEW_CALLS=1` (s6/s7 replay from cache, s9, s10, s12, eval_test) and compare result hashes; then steps 4 (README), 5 (budget close, archive log), 6 (tag v1.0, push). Khayyam-chat upgrade plan (merge into chat.html, optional options) waits after that
-2. Wait for owner "go": add **gpt-5.2 + gemini-2.5-flash** to Khayyam (1,500 answers each; ~$4.60 expected, $8.70 max; one test call each first). Needs entries in `configs/models.yaml` + `configs/gen_config.yaml` (gpt-5.2: rename max_tokens→max_completion_tokens, reasoning_effort none), stage `khayyam` approved +$9, then `scripts/khayyam_run.py`-style answering and `scripts/khayyam_build.py --models gpt-5.2,gemini-2.5-flash`
-
-## Owner discussions (not decided)
-- Validation 2,000 (+1,200 prompts) with Sonnet replaced: proposed gpt-5.2 (~$27 total) or gpt-4.1; Luna may beat gemini-2.5-flash. A new sealed test would be needed for a clean score
-- More clusters: val area falls after K = 4 (`results/select_k.md`); more labels first
+0. WP-21 step 2: fresh clone to scratchpad, copy data/ + cache/, `uv sync`, re-run the stages behind the reported numbers with `METIS_ASSERT_NO_NEW_CALLS=1` (s6/s7 replay from cache, s9, s10, s12, eval_test), compare result hashes; then step 5 (budget close, archive log), step 6 (tag v1.0 on `main`, push)
+1. Housekeeping: delete remote `TakRoute` (owner OK), point the :3001 server at `web-node/`, retire `../takrouter-node` and `../takrouter-next`; code fix still open: mock mode must never write the live semantic cache
+2. Wait for owner "go": Khayyam + gpt-5.2 + gemini-2.5-flash (~$4.60, max $8.70), see MASTER_LOG Q-items
+3. Live product (owner asked; not started): Docker compose (gateway CPU + web-node + Caddy), Iranian VPS recommended; embedder `device: mps` → cpu on Linux; `TAKROUTER_SECRET` env for own-key encryption
 
 ## Waiting on the owner
-- Read `results/eval_protocol.md` (frozen by consent D-119)
+- Send Farzaneh the step list (PR #18 → #17 → develop→main, merge commits); confirm deleting `TakRoute`
 - Rotate the Metis key pasted in chat (`METIS_API_KEY_SPARE`) and the Hugging Face token
-- Check in a browser: /account and /models in English (headless screenshots timed out there; Persian versions fine)
-- Team PR #15 review/merge by Farzaneh (credits the owner as contributor once on `main`)
+- Read `results/eval_protocol.md`; check Safari typing in Persian on :3001 (fix verified in Chrome only)
 
 ## Blockers / open issues
-- `graphify update .` refuses to overwrite (saved semantic nodes missing): graph is behind the code
 - Qdrant still has the old train/val payload for 391 moved sessions
 - Failed calls book $0, but a provider may bill them. Run one paid process at a time
 - Router on chatbot data shows no gain over DeepSeek at low cost: report plainly (P6)
-- Site runs only on this Mac; no hosting, no payments. Khayyam licence: academic only (no question text in git)
-- Team worktree at the scratchpad (`git worktree list`): remove with `git worktree remove` when PR #15 is merged
+- Site runs only on this Mac; no hosting, no payments. Khayyam licence: academic only (no question text in git or screenshots)
+- `runs/gateway/provider.secret` (git-ignored) encrypts users' own keys; losing it = users re-enter keys
+- Team worktree `uniroute-fix-lambda` at an old scratchpad (`git worktree list`): remove when PR #15 is settled
 
 ## Money
-- Spent about $30.06 of cap $60 (product stage $0.0139 so far, incl. live preview tests)
+- Spent about $30.06 of cap $60 (product stage $0.0148 so far)
 
 ## Recent decisions (full list in MASTER_LOG.md §2)
-- D-128b Team merge via PR #16 + MERGE_LIVE_PROMPT.md
-- D-128 Khayyam chat page
-- D-127 Khayyam demo: separate router, gateway and page
-- D-126 Website with accounts, trace, add-a-model
-- D-125 Live chat app, stage `product` $3
+- D-133 Team PRs #17/#18; Farzaneh merges with merge commits
+- D-132 GitHub: README/screenshots/CI, TakRoute → main
+- D-131 Streaming; D-130 own provider key; D-129 Node site web-node/
