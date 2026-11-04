@@ -6,8 +6,8 @@
 <img src="/_blob/5b30d15bf683254ae8673d957a02497c" alt="Deferral curves on validation: pass rate against cost relative to always-Sonnet, log scale, for UniRoute K = 8 and K = 4, ZeroRouter, K-NN and logistic, with single models as dots." style="width:1000px;height:580px;object-fit:contain">
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:22px">
-<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:20px;padding:18px 22px"><p style="font-size:32px;font-weight:800;line-height:1.35">AUDC = <span style="color:#0f9d6e">average quality</span> over <span style="color:#3366ff">all budgets</span></p><p style="font-size:26px;font-weight:600;color:#514c6b">Area under the curve: higher is better</p></div>
-<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:20px;padding:18px 22px"><p style="font-size:32px;font-weight:800;line-height:1.35">QNC = <span style="color:#3366ff">cost to match the best model</span> ÷ <span style="color:#d77a00">its cost</span></p><p style="font-size:26px;font-weight:600;color:#514c6b">Lower is better: our routers need about 4% of Sonnet's cost</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:20px;padding:18px 22px"><p style="font-family:Georgia, 'Times New Roman', serif;font-size:40px;line-height:1.3">AUDC = mean <i>Q</i>(<i>b</i>)</p><p style="font-size:26px;font-weight:600;color:#514c6b"><i>Q</i>(<i>b</i>) = best quality at budget <i>b</i>, averaged over all budgets · higher is better</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:20px;padding:18px 22px"><p style="font-family:Georgia, 'Times New Roman', serif;font-size:40px;line-height:1.3">QNC = <i>b</i>* ÷ <i>c</i>(<i>h</i>†)</p><p style="font-size:26px;font-weight:600;color:#514c6b"><i>b</i>* = smallest budget that matches the best model <i>h</i>† · lower is better (ours ≈ 4%)</p></div>
 </div>
 </div>
 <p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">[7] Validation, n = 798, held out by conversation (curves). Q̃(b) = best quality reachable at budget b; h† = best single model</p>
