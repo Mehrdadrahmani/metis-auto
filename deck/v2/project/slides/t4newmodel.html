@@ -1,0 +1,19 @@
+<section id="t4newmodel" data-transition="fade" style="background:radial-gradient(circle at 88% 12%, #efe4ff, #fbfaff 45%);color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:30px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T4 · Our main advantage</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">A new model joins in one step, with no retraining</h2>
+<div style="display:flex;flex-direction:row;gap:16px;align-items:center">
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:10px"><p style="font-size:48px;font-weight:800;color:#3366ff">1</p><h3 style="font-size:30px;font-weight:800">Answer</h3><p style="font-size:25px;line-height:1.4;color:#514c6b">the same 800 validation questions</p></div>
+<x-shape kind="arrow-right" style="width:56px;height:28px;background:#c9bfe8"></x-shape>
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:10px"><p style="font-size:48px;font-weight:800;color:#7a33ff">2</p><h3 style="font-size:30px;font-weight:800">Judge</h3><p style="font-size:25px;line-height:1.4;color:#514c6b">the AI judge scores each answer</p></div>
+<x-shape kind="arrow-right" style="width:56px;height:28px;background:#c9bfe8"></x-shape>
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:10px"><p style="font-size:48px;font-weight:800;color:#b333e6">3</p><h3 style="font-size:30px;font-weight:800">Fingerprint</h3><p style="font-size:25px;line-height:1.4;color:#514c6b">its error rate per topic = one new Ψ column</p></div>
+<x-shape kind="arrow-right" style="width:56px;height:28px;background:#c9bfe8"></x-shape>
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:10px"><p style="font-size:48px;font-weight:800;color:#ff3366">4</p><h3 style="font-size:30px;font-weight:800">Route</h3><p style="font-size:25px;line-height:1.4;color:#514c6b">used at once; topics stay the same</p></div>
+</div>
+<div style="display:flex;flex-direction:row;gap:24px">
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-left:6px solid #0f9d6e;border-radius:16px;padding:24px 30px"><p style="font-size:26px;font-weight:700">Tested: we hid Gemini, then added it back from its answers alone</p><p style="font-size:25px;line-height:1.4;color:#514c6b">area under the curve 0.648 → 0.652 (K = 8) and 0.656 → 0.663 (K = 4)</p></div>
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-left:6px solid #9933ff;border-radius:16px;padding:24px 30px"><p style="font-size:26px;font-weight:700">In the product: an add-model flow</p><p style="font-size:25px;line-height:1.4;color:#514c6b">register → test → estimate cost → approve → it joins the router</p></div>
+</div>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">Holdout demo on validation, n = 798 (results/holdout_demo.md)</p>
+<aside>This is our biggest technical advantage. Other routers often need retraining when a model changes. With UniRoute, a new model only answers our 800 validation questions once, the judge scores them, and its error rate in every topic becomes one new column. The topics and everything else stay the same. We tested this: we hid Gemini, then added it back using only its validation answers, and the router improved without retraining. The website already has an admin flow to add a model this way.</aside>
+</section>

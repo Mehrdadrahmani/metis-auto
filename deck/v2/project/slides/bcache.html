@@ -1,0 +1,12 @@
+<section id="bcache" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:30px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#514c6b;background:#eeecf5;padding:8px 20px;border-radius:999px">Backup · Semantic cache</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Built, but not yet safe enough to rely on</h2>
+<div style="display:flex;flex-direction:row;gap:24px">
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:32px"><p style="font-size:80px;font-weight:800;color:#e0336e">10.0%</p><p style="font-size:26px;line-height:1.4;color:#514c6b">wrong hits at similarity 0.97; target 2% (CI 5.5% to 17.4%)</p></div>
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:32px"><p style="font-size:80px;font-weight:800;color:#3366ff">2.7%</p><p style="font-size:26px;line-height:1.4;color:#514c6b">of eligible prompts would hit; an upper estimate</p></div>
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:32px"><p style="font-size:80px;font-weight:800;color:#0f9d6e">0</p><p style="font-size:26px;line-height:1.4;color:#514c6b">hits in 299 sampled test prompts in replay</p></div>
+</div>
+<p style="font-size:30px;font-weight:600;line-height:1.4">A stricter threshold is not enough. Next: check that the cached answer fits the new prompt.</p>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">350 labeled pairs from train; per-chatbot safety rules apply. Cache savings are not demonstrated on this data</p>
+<aside>No threshold reached the 2% wrong-hit target, so by the pre-set rule we kept 0.97. The cache works technically, with per-chatbot safety rules, but on this data it saves almost nothing and still makes too many wrong matches. A fit check between the cached answer and the new prompt is the planned fix.</aside>
+</section>

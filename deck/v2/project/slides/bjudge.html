@@ -1,0 +1,13 @@
+<section id="bjudge" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:30px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#514c6b;background:#eeecf5;padding:8px 20px;border-radius:999px">Backup · Labels</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">An AI judge scores each answer 1–10; 7+ passes</h2>
+<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:20px">
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:30px"><p style="font-size:72px;font-weight:800;color:#7a22e0">0.74</p><p style="font-size:26px;line-height:1.4;color:#514c6b">agreement with reference labels</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:30px"><p style="font-size:72px;font-weight:800;color:#7a22e0">0.43</p><p style="font-size:26px;line-height:1.4;color:#514c6b">Cohen’s kappa, moderate</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:30px"><p style="font-size:72px;font-weight:800;color:#7a22e0">0.79</p><p style="font-size:26px;line-height:1.4;color:#514c6b">AUC of the judge’s score</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:30px"><p style="font-size:72px;font-weight:800;color:#7a22e0">5%</p><p style="font-size:26px;line-height:1.4;color:#514c6b">pass/fail flips when re-judged</p></div>
+</div>
+<p style="font-size:30px;font-weight:600;line-height:1.4">Useful but noisy labels: small gaps between models sit inside this noise.</p>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">Judge: Jev, pointwise, τ = 7. Reference labels from Claude Opus, not humans. Re-judged on test: n = 60, mean score gap 0.137</p>
+<aside>One AI judge, pointwise, pass at 7 or more. In the pilot it agreed with reference labels 74% of the time, kappa 0.43, AUC 0.79. The reference labels came from Claude Opus, not humans; human labels are on the roadmap. On 60 re-judged test answers, 5% flipped between pass and fail.</aside>
+</section>

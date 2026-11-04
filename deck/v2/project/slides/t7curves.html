@@ -1,0 +1,16 @@
+<section id="t7curves" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:28px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T7 · Deferral curves</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Quality you get for each level of spending</h2>
+<div style="display:flex;flex-direction:row;gap:36px;align-items:center">
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:16px">
+<img src="/_blob/5b30d15bf683254ae8673d957a02497c" alt="Deferral curves on validation: pass rate against average cost relative to always-Sonnet on a log scale. UniRoute K = 8 area 0.650, UniRoute K = 4 area 0.663, ZeroRouter 0.653, K-NN 0.657, logistic 0.649. Single models as dots: Gemini cheapest at about 53.5%, DeepSeek about 65.4%, Luna about 61.5%, Sonnet about 66.2% at full cost." style="width:1010px;height:578px;object-fit:contain">
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:16px;padding:20px 24px"><p style="font-size:27px;font-weight:800;color:#7a22e0">How to read it</p><p style="font-size:24px;line-height:1.4;color:#514c6b">Each line sweeps λ from cheap to expensive. Higher and further left is better.</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:16px;padding:20px 24px"><p style="font-size:27px;font-weight:800;color:#3366ff">AUDC</p><p style="font-size:24px;line-height:1.4;color:#514c6b">Area under the curve: average quality over all budgets.</p></div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:16px;padding:20px 24px"><p style="font-size:27px;font-weight:800;color:#e0336e">QNC</p><p style="font-size:24px;line-height:1.4;color:#514c6b">Cheapest spend that reaches the best single model’s quality.</p></div>
+</div>
+</div>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">Validation, n = 798, held out (2-fold split by conversation). Test-set curves are not drawn: the test set stays sealed</p>
+<aside>The deferral curve is the main measure in the UniRoute paper. Each router is run at many values of lambda; each point is the average cost and pass rate at that setting. A curve that rises fast on the left gives good quality cheaply. All learned routers climb to DeepSeek’s level at about 4% of Sonnet’s cost, and K = 4 keeps rising towards Sonnet’s quality. The differences between routers are small on this data. Only validation curves are shown; the sealed test gives the summary numbers on the next slide.</aside>
+</section>

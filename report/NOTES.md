@@ -205,3 +205,8 @@ file, the WP reports and `MASTER_LOG.md §2`.
 - RTL: `unicode-bidi: plaintext` on text boxes froze the caret in Safari when typing Persian; per-box `dir` from the first strong letter fixes it. Mixed text (prices, English in Persian) needs `<bdi dir=ltr>` isolation, also while streaming.
 - Own provider key: a refused user key must not trip the circuit breakers all users share; handled as its own error kind.
 - GitHub's Contributors list counts only the default branch; work merged into a team `develop` does not credit the author until it reaches `main` with a merge (not squash) commit.
+
+## Pitch deck v2 (2026-11-04, D-134)
+- Per-cluster winners (validation, n = 798, judge labels): lowest error is DeepSeek or Sonnet in all 8 clusters (ties in 3); with cost, the router picks DeepSeek in 7 and Luna in 1. Khayyam (true answers, n = 1,100): best model differs by subject (DeepSeek maths/physics, Luna biology, Gemini Persian literature). Supports "chatbot data too general/easy, no code" as the reason routing did not beat DeepSeek.
+- Held-out validation deferral curves (one 2-fold split by conversation): areas K = 8 0.650, K = 4 0.663, ZeroRouter 0.653, K-NN 0.657, logistic 0.649 (measured, val only, no CI).
+- Public context used in the deck: awareness ChatGPT 90% vs DeepSeek 31% (Verasight, June 2026, US, n = 1,690); 86% of enterprise LLM API spend to two providers (Menlo Ventures, Nov 2026).

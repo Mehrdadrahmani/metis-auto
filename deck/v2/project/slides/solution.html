@@ -1,0 +1,14 @@
+<section id="solution" data-transition="fade" style="background:radial-gradient(circle at 90% 10%, #efe4ff, #fbfaff 45%);color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 120px;display:flex;flex-direction:column;gap:26px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">The solution</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">TakRouter learns the best model for each topic</h2>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:16px 20px">
+<img src="/_blob/ef24e73b455ab589e375d8c3c208edaa" alt="Clustering concept in four steps: 1 messages, 209,109 train prompts, user text only; 2 embedding, each message becomes a vector and similar meaning lands close; 3 K-means makes 8 topics: short fragments, account and tech support, relationships and emotions, humanities and religion, science and maths, payments and finance, general short chat, health and medicine; 4 fingerprint per topic, for health and medicine DeepSeek 22% error best value, Sonnet 22% at 24 times the price, Luna 28%, Gemini 32%; a new message goes to the nearest topic and the lowest error plus lambda times cost wins. Note: a new model answers the same 800 validation questions once, giving one new column for every topic, no retraining." style="width:1624px;height:500px;object-fit:contain">
+</div>
+<div style="display:flex;flex-direction:row;gap:16px">
+<p style="flex:1;font-size:26px;font-weight:700;text-align:center;color:#ffffff;background:linear-gradient(90deg,#3366ff,#9933ff);padding:16px 0px;border-radius:999px">Automatic model choice</p>
+<p style="flex:1;font-size:26px;font-weight:700;text-align:center;color:#ffffff;background:linear-gradient(90deg,#7a33ff,#b333e6);padding:16px 0px;border-radius:999px">Same quality, lower cost</p>
+<p style="flex:1;font-size:26px;font-weight:700;text-align:center;color:#ffffff;background:linear-gradient(90deg,#b333e6,#e6337a);padding:16px 0px;border-radius:999px">Failover if a provider fails</p>
+<p style="flex:1;font-size:26px;font-weight:700;text-align:center;color:#ffffff;background:linear-gradient(90deg,#e6337a,#ff3366);padding:16px 0px;border-radius:999px">One OpenAI-style API</p>
+</div>
+<aside>The idea in one picture. We group real questions by meaning into topics, then measure how often each model fails in each topic. A new question goes to its nearest topic, and TakRouter picks the model with the best mix of quality and price there. Our biggest advantage: adding a new model is easy. It answers the same 800 questions once and gets its own score in every topic, with no retraining. The four benefits: you never have to know 500 models, same quality for less, the service keeps working if a provider goes down, and developers change only one address in their code.</aside>
+</section>

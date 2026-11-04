@@ -1,0 +1,20 @@
+<section id="t3rule" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:28px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T3 · Routing rule</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Lowest error plus weighted cost wins</h2>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:56px;font-weight:700;text-align:center;color:#7a22e0;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;padding:24px 0px">model = argmin  Ψₖ(h) + λ · cost(h)</p>
+<div style="display:flex;flex-direction:row;gap:40px;align-items:flex-start">
+<table style="flex:1;font-size:28px;font-family:'Inter', Arial, sans-serif;color:#17132b;background:#ffffff">
+<tr style="background:#f3eefe"><th style="width:34%">Health &amp; medicine</th><th style="width:22%;text-align:right">Error Ψ</th><th style="width:22%;text-align:right">λ · cost</th><th style="width:22%;text-align:right">Score</th></tr>
+<tr style="background:#e6f7ef"><td><b>DeepSeek</b> (picked)</td><td style="text-align:right">0.215</td><td style="text-align:right">0.021</td><td style="text-align:right"><b>0.236</b></td></tr>
+<tr><td>GPT-5.6 Luna</td><td style="text-align:right">0.277</td><td style="text-align:right">0.027</td><td style="text-align:right">0.304</td></tr>
+<tr><td>Gemini Lite</td><td style="text-align:right">0.323</td><td style="text-align:right">0.013</td><td style="text-align:right">0.336</td></tr>
+<tr><td>Claude Sonnet</td><td style="text-align:right">0.215</td><td style="text-align:right">0.515</td><td style="text-align:right">0.730</td></tr>
+</table>
+<div style="width:520px;display:flex;flex-direction:column;gap:18px">
+<p style="font-size:27px;line-height:1.45">Same error as Sonnet, but the cost term decides: DeepSeek wins.</p>
+<p style="font-size:27px;line-height:1.45;color:#514c6b">λ = 0.515, chosen on validation. The website’s Economy, Balanced and Best quality modes move λ.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;right:128px;bottom:56px;font-size:24px;color:#7d7893">Cost normalized so always-Sonnet = 1. Shipped router: K = 8, λ = 0.515, from validation only</p>
+<aside>Step three, the online rule from the UniRoute paper. A message is embedded, assigned to its nearest topic k, and for every model h we add its error rate in that topic to lambda times its cost. The smallest score wins. In the health example, DeepSeek and Sonnet have the same error, 21.5%, but Sonnet’s cost term is 0.515 against 0.021, so DeepSeek wins clearly. Lambda is the dial between quality and cost; the website modes change it. It was chosen out of fold on validation so the router does not fall below always-DeepSeek.</aside>
+</section>

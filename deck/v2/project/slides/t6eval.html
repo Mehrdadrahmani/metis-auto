@@ -1,0 +1,8 @@
+<section id="t6eval" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 120px;display:flex;flex-direction:column;gap:26px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">T6 · Evaluation protocol</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Router frozen first; test set opened once</h2>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:20px;display:flex;justify-content:center">
+<img src="/_blob/24839155b8b82ca2aa63903396313b71" alt="Evaluation: 338,325 prompts split by conversation into train 209,109 without labels forming 8 K-means topic clusters; validation 800, 798 scored, where 4 models answer and an AI judge scores 1 to 10 with pass at 7 or more; and test 300, 299 scored, sealed. The router with K = 8 and lambda 0.52 is frozen first, then the same models and judge run on test once, giving results against baselines with 95% confidence intervals; 3 criteria met." style="width:1400px;height:600px;object-fit:contain">
+</div>
+<aside>The golden rules: the test set is never used for any choice; train stays unlabeled; fingerprints come only from validation; every model and judge call is cached; seeds are recorded. Splits are by conversation, so no chat leaks across sets. The router and the protocol were frozen with a git tag before the test set was opened, once, by one script.</aside>
+</section>
