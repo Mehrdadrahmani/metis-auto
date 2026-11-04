@@ -1,37 +1,29 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-04 · pitch deck v2 session (handoff 9)
+Updated: 2026-11-04 · deck feedback session (handoff 10)
 
 ## Now
 - Current WP: **WP-21 Release** (paused for the pitch deck, owner request). Test opened once (n = 299)
 - Branch **`main`**. Remotes `origin` (owner), `team`. Router: K = 8 λ 0.5151 (`artifacts/router_v1`)
-- This session: pitch deck v2 (D-134), $0. WP-21 step 2 not started
+- This session: owner feedback on deck v2, tips saved (D-135), $0. WP-21 step 2 not started
 
-## Pitch deck v2 (D-134): exact next step
-- Artifact (Slides type, private): https://claude.ai/artifact/SpvxYs5pMU9j6cia75kknM. Light website style
-  (Inter, gradient #3366ff→#9933ff→#ff3366, white cards). Published version = earlier 31-slide light deck
-- Sources in `deck/v2/`: `project/` (deck.json + slides/*.html), `charts/` (charts.py, charts2.py,
-  val_curves.py, cluster_drawio.py; run from repo root with `uv run python …`), `diagrams/` (updated
-  copies of ref/diagrams 01/03/05: val 800, train 209,109, pointwise τ=7, K=8, λ=0.515), `img/` (all PNGs)
-- Deck v2 rebuilt and published (version 14): 20 main slides + 6 backup, story-first, refs [1]–[8], provider iceberg, typeset formulas, updated diagrams. Next: owner review of the published deck
-  market, competition, roadmap, techdiv, t1clusters, t2psi, t3rule, t4newmodel, t5pipeline, t6curves,
-  t7results, t8data, thanks, boverview, bonline, bstats, bcache, bjudge, brefs). Written so far in new
-  style: team, problem (provider iceberg, SVG), insight. Not yet: solution (draft lost), product…brefs;
-  old files to delete on publish (`null`): whynow, business, gtm, validation, ask, t5arch, t6eval,
-  t7curves, t8audc, t9results, t10data, bpath, bkhayyam, blimits
-- **Next session = start here.** Owner feedback to apply: (1) storytelling first, better slides; (2) far
-  less text per slide; (3) no repeated numbers; (4) every number gets a [n] reference at the bottom +
-  a references slide; (5) iceberg by **providers**, must look good (real image from the web allowed);
-  (6) typeset formulas (PNGs in img/: f_psi, f_route, f_cluster, f_audc, f_qnc); (7) original draw.io
-  diagrams, updated (img/05-uniroute.png etc.); (8) real t-SNE cluster map (img/cluster_map.png);
-  (9) fewer slides is fine. Web images allowed where they help the story. Propose outline first, then build
-- Assets already uploaded to the artifact: re-upload from `deck/v2/img/` if ids are lost (ids in the
-  slide files)
-- References: [1] Verasight AI survey June 2026 (n=1,690; ChatGPT 90, Gemini 83, Copilot 66, Claude 51,
-  DeepSeek 31) · [2] OpenRouter catalog 500+ models, 80+ providers · [3] Artificial Analysis Apr 30 2026
-  (best open models within 3–6 pts at ½–⅙ price) · [4] results/final/test_report.md · [5]
-  results/khayyam · [6] Menlo Ventures Nov 3 2026 ($176.8B, 86% of LLM API spend to 2 providers;
-  Menlo invests in Anthropic, OpenRouter) · [7] results/fingerprints.md, holdout_demo.md
-- Older decks: Persian `deck/project/` (artifacts PHP39n…, 1JAvu3…), English v1 SAJoJk1w… (keep)
+## Pitch deck v3 (D-135): exact next step, start here
+- Owner REJECTED deck v2 (artifact https://claude.ai/artifact/SpvxYs5pMU9j6cia75kknM, version 14):
+  needs more context per slide; draw.io diagrams too large to follow -> make NEW small slide diagrams
+  (one idea each); storytelling weak; misses many Antler + JPMorgan tips
+- Tips file (local, git-ignored): `deck/v2/sources/pitch_tips.md`. JPMorgan checklist saved. Antler
+  (https://www.antler.co/blog/pre-seed-pitch-deck) NOT saved: site refused automated reads -> ask owner
+  to paste it into that file (or into chat)
+- Next session: (1) read pitch_tips.md; (2) write a tip-by-tip checklist + slide-by-slide story outline
+  (problem+urgency/why now, product+UVP, market TAM/SAM/SOM, team/why us, traction/demand evidence,
+  competition matrix (no blue ocean), revenue model + GTM, milestones/timeline, clear ask + use of
+  funds; then technical part); ⏸ owner OK; (3) rebuild slides + new slide-sized diagrams; $0
+- Sources in `deck/v2/` (project/, charts/, diagrams/, img/); assets uploaded to the artifact (ids in
+  slide files; re-upload from img/ if lost). Style: Inter, gradient #3366ff→#9933ff→#ff3366, white cards
+- References: [1] Verasight AI survey June 2026 (n=1,690) · [2] OpenRouter catalog 500+ models, 80+
+  providers · [3] Artificial Analysis Apr 30 2026 · [4] results/final/test_report.md · [5]
+  results/khayyam · [6] Menlo Ventures Nov 3 2026 ($176.8B, 86% to 2 providers) · [7]
+  results/fingerprints.md, holdout_demo.md
+- Older decks: Persian `deck/project/` (PHP39n…, 1JAvu3…), English v1 SAJoJk1w… (keep)
 
 ## Product (D-125..D-131); tests 332 pass, ruff clean, CI green
 - Run: `TAKROUTER_PROVIDER=live uv run uvicorn metis.gateway.app:app --port 8000`; site `web-node/` :3001
@@ -60,5 +52,6 @@ Updated: 2026-11-04 · pitch deck v2 session (handoff 9)
 - Spent about $30.06 of cap $60 (this session $0)
 
 ## Recent decisions
+- D-135 Deck v3: rebuild to full JPMorgan + Antler structure, small slide diagrams, more context
 - D-134 Pitch deck v2: English, pitch (Antler + JPMorgan structure) + technical part, light website style
 - D-133 Team PRs #17/#18 · D-132 GitHub README/CI · D-131 Streaming
