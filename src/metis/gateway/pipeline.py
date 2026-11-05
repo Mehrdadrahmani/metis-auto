@@ -50,6 +50,7 @@ class ChatRequest:
     prompt_id: str | None = None  # replay only
     route_text: str | None = None  # replay only: text as it was embedded offline
     vector: np.ndarray | None = None  # replay only: stored vector
+    router: str = "takrouter"  # preview: "team" asks the team router (metis.team_router)
 
 
 @dataclass
@@ -88,7 +89,7 @@ class Gateway:
         self.cache_embed = cache_embed or embed
         self.clock = clock
         b = cfg.get("breaker", {})
-        self.breakers = {m: Breaker(b.get("failures", 3), b.get("window_s", 60), b.get("open_s", 30)) for m in artifact.meta.models}
+        self.breakers = {m: Breaker(b.get("failures", 3), b.get("window_s", 60), b.get("open_s", 30)) for m in {*artifact.meta.models, *models}}
         self.session_model: dict[str, str] = {}
 
     def swap(self, artifact: RouterArtifact, models: dict[str, dict[str, Any]]) -> None:
@@ -254,9 +255,24 @@ class Gateway:
 
         decision, order = self.choose(req, vec, available)
         mark = lap("route", mark)
+        team = None
+        if req.router == "team":  # preview: the team router decides, this gateway still calls
+            from metis.team_router import team_route
+
+            try:
+                team = team_route(text)
+                picks = [m for m in (team.get("model"), team.get("backup")) if m in self.models]
+                if picks:
+                    order = [*picks, *[m for m in order if m not in picks]]
+                else:
+                    team["note"] = "team pick not callable here; TakRouter's choice used"
+            except Exception as exc:  # noqa: BLE001  service down: fall back to TakRouter, say so in the trace
+                team = {"error": type(exc).__name__, "note": "team router unreachable; TakRouter's choice used"}
+            row["team"] = {k: team.get(k) for k in ("model", "backup", "reason", "source", "confidence", "mode", "events", "ms", "error", "note")}
         row.update(chosen=order[0], scores=decision.scores, lam=self.lam if req.lam is None else req.lam,
                    cluster_name=self.artifact.meta.cluster_names[decision.cluster])
-        psi = {m: float(self.router.psi[decision.cluster, self.router.models.index(m)]) for m in order}
+        psi = {m: (float(self.router.psi[decision.cluster, self.router.models.index(m)]) if m in self.router.models
+                   else 1.0 - 0.01 * i) for i, m in enumerate(order)}
         context = {"prompt_id": req.prompt_id, "psi": psi, "cluster": decision.cluster}
         if req.api_key:
             context["api_key"] = req.api_key
@@ -300,5 +316,5 @@ def trace_view(result: ChatResult) -> dict[str, Any]:
     t = result.trace
     keys = ("request_id", "available", "dropped", "rag", "image", "lang", "cache", "cluster", "cluster_name", "lam",
             "scores", "chosen", "served_by", "attempts", "reasons", "escalations", "stage_ms", "overhead_ms",
-            "latency_ms", "cost_usd", "status")
+            "latency_ms", "cost_usd", "status", "team")
     return json.loads(json.dumps({k: t.get(k) for k in keys}, default=float))

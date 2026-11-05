@@ -372,6 +372,7 @@ def create_app(gateway: Gateway | None = None, accounts: Accounts | None = None)
                           has_image=any(isinstance(m.get("content"), list) and any(p.get("type") == "image_url" for p in m["content"] if isinstance(p, dict)) for m in body.messages),
                           wants_json=(body.response_format or {}).get("type") == "json_object", widget_click=bool(meta.get("widget_click")),
                           uses_rag=bool(meta.get("uses_rag")), context_hash=meta.get("context_hash"), lam=lam,
+                          router="team" if meta.get("router") == "team" else "takrouter",
                           user_id=user.id if user else None, api_key=own)
         if body.stream:
             return stream_chat(req, meta, user)
