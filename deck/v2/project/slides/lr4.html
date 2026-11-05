@@ -1,0 +1,32 @@
+<section id="lr4" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 120px;display:flex;flex-direction:column;gap:24px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">L3 · When the LLM is called</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">The router runs only when it pays</h2>
+<div style="display:flex;flex-direction:row;gap:28px">
+<div style="flex:1;background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:32px;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:26px;font-weight:600;color:#514c6b">About 90% of messages</p>
+<p style="font-size:44px;font-weight:800;line-height:1.1">A rule decides</p>
+<p style="font-size:26px;line-height:1.35;color:#514c6b">Cheapest allowed model clearing the quality floor this request needs. No extra call, no added latency.</p>
+</div>
+<div style="flex:1;background:#f3eeff;border:1px solid #ded2fb;border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:26px;font-weight:600;color:#7a22e0">About 10%, hard or failure-prone</p>
+<p style="font-size:44px;font-weight:800;line-height:1.1">The LLM decides</p>
+<p style="font-size:26px;line-height:1.35;color:#514c6b">Reads the evidence and the per-request prices, returns model, backup and a reason. Cut off at 1.5 s, then the rule takes over.</p>
+</div>
+</div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:14px">
+<p style="font-size:24px;font-weight:700;color:#7a22e0">Why the split — the cost of deciding, not of answering</p>
+<div style="display:flex;flex-direction:row;align-items:center;gap:20px">
+<p style="font-size:26px;width:430px;flex:none;color:#514c6b">Median cost of answering one message</p>
+<div style="width:240px;height:26px;flex:none;background:#7a22e0;border-radius:0 4px 4px 0"></div>
+<p style="font-size:30px;font-weight:700">$0.00015</p>
+</div>
+<div style="display:flex;flex-direction:row;align-items:center;gap:20px">
+<p style="font-size:26px;width:430px;flex:none;color:#514c6b">One router call — 3.3× the median</p>
+<div style="width:800px;height:26px;flex:none;background:#7a22e0;border-radius:0 4px 4px 0"></div>
+<p style="font-size:30px;font-weight:700">$0.0005</p>
+</div>
+<p style="font-size:26px;line-height:1.35;color:#514c6b">Asking the LLM on every message would add about 36% to the whole spend. About 80% of messages are cheaper to answer than to deliberate over.</p>
+</div>
+<p style="font-size:26px;line-height:1.35;color:#514c6b">The gate is not complexity alone: if the retrieved evidence shows a failure rate above 10%, the LLM is called even for an easy-looking request.</p>
+<aside>This is the heart of the approach. The gate has three branches. Greetings, small talk and button payloads go to the rule. So does anything below the complexity threshold with no code, maths or attachment. Everything else goes to the LLM. And there is an override on top: if the retrieved evidence shows models failing more than one time in ten on requests like this, the LLM is called whatever the complexity says. The bars are about the cost of deciding, not the cost of answering — the evaluation section has the end-to-end totals. Finally the guard: if the LLM is slow, errors, returns broken JSON or names a model that is not allowed, the rule decides instead, so a router failure never drops a request.</aside>
+</section>

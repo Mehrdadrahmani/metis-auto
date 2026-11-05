@@ -1,0 +1,25 @@
+<section id="lr3" data-transition="fade" style="background:#fbfaff;color:#17132b;font-family:'Inter', Arial, sans-serif;padding:104px 128px 120px;display:flex;flex-direction:column;gap:24px">
+<p style="align-self:flex-start;font-size:24px;font-weight:600;color:#7a22e0;background:#f1e9ff;padding:8px 20px;border-radius:999px">L2 · Where the evidence comes from</p>
+<h2 style="font-size:56px;font-weight:800;line-height:1.12;letter-spacing:-1px">Cluster-based RAG over past requests</h2>
+<p style="font-size:32px;line-height:1.4;color:#514c6b">Not a knowledge graph and not GraphRAG: a two-stage retrieval over k-means clusters. What comes back is not knowledge to answer with — it is evidence about which model succeeded on requests like this one.</p>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:14px">
+<p style="font-size:24px;font-weight:700;color:#7a22e0">Offline · once over the train turns</p>
+<div style="display:flex;flex-direction:row;gap:16px">
+<p style="font-size:26px;font-weight:600;flex:1;background:#fbfaff;border:1px solid #e8e6f2;padding:14px 20px;border-radius:16px">Clean: drop button turns</p>
+<p style="font-size:26px;font-weight:600;flex:1;background:#fbfaff;border:1px solid #e8e6f2;padding:14px 20px;border-radius:16px">Sample card: model, cost, outcome</p>
+<p style="font-size:26px;font-weight:600;flex:1;background:#fbfaff;border:1px solid #e8e6f2;padding:14px 20px;border-radius:16px">Embed with Jina v5 nano</p>
+<p style="font-size:26px;font-weight:600;flex:1;background:#f3eeff;border:1px solid #ded2fb;padding:14px 20px;border-radius:16px">Bank of 40 clusters</p>
+</div>
+</div>
+<div style="background:#ffffff;border:1px solid #e8e6f2;border-radius:24px;box-shadow:0 10px 30px rgba(60,40,140,0.07);padding:28px;display:flex;flex-direction:column;gap:14px">
+<p style="font-size:24px;font-weight:700;color:#7a22e0">Online · for every request</p>
+<div style="display:flex;flex-direction:row;gap:16px">
+<p style="font-size:26px;font-weight:600;flex:1;background:#fbfaff;border:1px solid #e8e6f2;padding:14px 20px;border-radius:16px">Embed the request</p>
+<p style="font-size:26px;font-weight:600;flex:1;background:#fbfaff;border:1px solid #e8e6f2;padding:14px 20px;border-radius:16px">1 to 3 clusters, similarity 0.75+</p>
+<p style="font-size:26px;font-weight:600;flex:1;background:#fbfaff;border:1px solid #e8e6f2;padding:14px 20px;border-radius:16px">10 nearest per cluster, deduped</p>
+<p style="font-size:26px;font-weight:600;flex:1;background:#f3eeff;border:1px solid #ded2fb;padding:14px 20px;border-radius:16px">Per-model summary</p>
+</div>
+</div>
+<p style="font-size:30px;line-height:1.4;font-weight:600">What actually reaches the router: <span style="color:#7a22e0">“the cheap model answered 14 times, 3 were referred to an agent”</span></p>
+<aside>Two stages. Offline, once: the past turns are cleaned, each gets a sample card holding which model answered, what it cost and how it ended, the user text is embedded with Jina v5 nano, and k-means builds a bank of 40 clusters. Online, per request: embed, take the one to three clusters whose centre is at least zero point seven five similar, pull the ten nearest members of each, drop near duplicates, and summarise per model how often it answered and how often that went wrong. Failure means referred to an agent, a complaint, or the user asking again. If a judge asks whether this is GraphRAG, the answer is no. There is no knowledge graph. LangGraph in this project orchestrates the steps; it is not a retrieval graph.</aside>
+</section>
