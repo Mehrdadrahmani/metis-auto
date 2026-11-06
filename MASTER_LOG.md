@@ -135,6 +135,7 @@ Status: **F** = fixed by the owner (PLANNING-REQUEST §4) · **A** = agreed with
 | D-131 | 2026-11-04 | Streaming (owner "go"): `stream: true` → SSE in the OpenAI chunk format; routing, budget, secret guard, ledger, checks, failover and trace unchanged; `reset` chunk on a new attempt; whole answer for cache hits; if the provider cannot stream, one normal call. Real test: Metis streams, $0.000065 | O | Product |
 | D-132 | 2026-11-04 | GitHub (owner): professional README with screenshots (example conversations, no user data, no Khayyam text) and diagrams, CI (ruff + pytest mock + Next build). PR #1 TakRoute → main merged with a merge commit; `main` is the working branch | O | Repo |
 | D-133 | 2026-11-04 | Team repo (owner): PR #17 `takrouter-full` → develop keeps only the Node site under takrouter/ (team toggle carried over); PR #18 `develop-into-main` → main (conflict-free #14) for contributor credit. All merges are done by Farzaneh with merge commits; owner sends her the step list | O | Team |
+| D-139 | 2026-11-05 | TakRouter | Team toggle on our Next.js site: team commit 553a5b2 ported (chat.html, pipeline/app, team_router adapter, 5 unverified team models). Tests 332 pass | O | Product |
 | D-138 | 2026-11-04 | Pitch part reworked many rounds; owner froze tech part; final = 12-slide Sequoia-order pitch (artifact v42 = git 04398be); workshop rebuild rejected | O | Deck |
 | D-137 | 2026-11-04 | Owner rejected deck v3 ("previous much better; main problem not understood"); artifact restored to the v2 slides (version 18). v3 generator kept in git history (9392768) only | O | Deck |
 | D-136 | 2026-11-04 | Deck v3 ask (owner): no budget/money amount; ask for cleaner, more classifiable data and resources to build the product. Financial forecast and capital slides dropped | O | outline_v3 |
@@ -516,3 +517,6 @@ Hard cap: **$60.00**. Per-stage approvals are set at Gate 1 (WP-08) and stored i
 
 ### 2026-11-04 · WP-21 (pitch rework, handoff 11)
 - Tech part: full pipeline diagram walked in parts, clustering slides first, LaTeX simple formulas (exact in backup), soft heatmaps, Jina v5 nano + Qdrant on clustering image. Pitch: public-benchmark insight, Sequoia/Kawasaki/YC/DocSend restructure (kept); v3, workshop and enrichment versions rejected. Research briefs saved locally (deck/v2/sources). Cost $0.
+
+### 2026-11-05/06 · WP-21 (deck sections + toggle, handoff 12)
+- Deck: learn slide, λ slide, UniRoute-only curve on T5, LLM Router section (owner file), Evaluation section (owner file, renamed TakRouter), backup slides moved to separate deck, system overview before LLM Router; Persian bullet notes PDF; val-400 Excel in Downloads (local only). Product: Team toggle ported (D-139). GitHub push failing (network). Cost $0.
