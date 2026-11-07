@@ -1,10 +1,11 @@
 # STATUS (read first; ≤ 60 lines)
-Updated: 2026-11-06 · deck + toggle session (handoff 12)
+Updated: 2026-11-07 · repo public + CV prompt (handoff 13)
 
 ## Now
 - Current WP: **WP-21 Release** (paused for the pitch deck, owner request). Test opened once (n = 299)
 - Branch **`main`**. Remotes `origin` (owner), `team`. Router: K = 8 λ 0.5151 (`artifacts/router_v1`)
-- This session: deck sections, notes PDFs, val400 xlsx, Team toggle on site; $0 (only tiny live checks: none sent)
+- This session (D-140): origin repo made **public** after a history secret scan of origin/main +
+  origin/TakRoute (clean); wrote a CV + GitHub-page prompt for the owner (he runs it in another session). $0
 
 ## Pitch deck (D-135..D-139): exact next step, start here
 - Main deck https://claude.ai/artifact/SpvxYs5pMU9j6cia75kknM (v64, shared "anyone with link"), sources
@@ -43,7 +44,7 @@ Updated: 2026-11-06 · deck + toggle session (handoff 12)
 - Team repo has live `Bearer` keys in history (f430621, 732eb91, 1bcb798): tell team to rotate/purge
 
 ## Blockers / open issues
-- **GitHub unreachable (port 443 timeout):** local main is ahead of origin; run `git push` when online
+- Repo is PUBLIC: never push team branches (they hold 732eb91/1bcb798/f430621 with keys) to origin
 - Qdrant has old payload for 391 moved sessions; failed calls may be billed; site only on this Mac
 - Router shows no gain over DeepSeek at low cost on chatbot data; Khayyam shows a small gain
 
@@ -51,6 +52,7 @@ Updated: 2026-11-06 · deck + toggle session (handoff 12)
 - Spent about $30.06 of cap $60 (this session $0)
 
 ## Recent decisions
+- D-140 origin repo Mehrdadrahmani/metis-auto made public (owner request; history scan clean)
 - D-139 Team router toggle ported to our site (team commit 553a5b2); 5 unverified team models added
 - D-138 Pitch restored to v39 (12 slides, Sequoia order); tech part frozen by owner
 - D-135 Deck v3: rebuild to full JPMorgan + Antler structure, small slide diagrams, more context
