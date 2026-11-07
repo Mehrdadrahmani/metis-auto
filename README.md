@@ -9,11 +9,13 @@ and adds a semantic cache, answer checks with escalation, failover, streaming an
 
 [![CI](https://github.com/Mehrdadrahmani/metis-auto/actions/workflows/ci.yml/badge.svg)](https://github.com/Mehrdadrahmani/metis-auto/actions/workflows/ci.yml)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-3776ab)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 ![FastAPI](https://img.shields.io/badge/gateway-FastAPI-009688)
 ![Next.js 16](https://img.shields.io/badge/site-Next.js%2016-000000)
 ![OpenAI-compatible](https://img.shields.io/badge/API-OpenAI--compatible-412991)
 
-**96% cheaper than sending everything to Claude Sonnet, at the same quality** (sealed test, n = 299)
+**96% cheaper than sending everything to Claude Sonnet, at similar quality** (sealed test, n = 299).
+No clear gain over always using the best cheap model, DeepSeek v4 Flash; see [Results](#results).
 
 <img src="docs/screenshots/chat-en-dark.png" alt="TakRouter chat: the answer shows which model was chosen, its cost, the time and the saving against Claude Sonnet" width="900">
 
@@ -21,8 +23,66 @@ and adds a semantic cache, answer checks with escalation, failover, streaming an
 
 ---
 
+## In 30 seconds
+
+**TakRouter picks, for every user prompt, which of 4 LLMs should answer it, trading answer quality against cost.**
+
+- **The router.** Built on the UniRoute method: prompts are grouped into K = 8 clusters (embeddings of the user
+  text only). Each model gets a per-cluster quality "fingerprint" from a judged validation set, and a cost weight
+  λ sets the quality/cost trade-off. Models: DeepSeek v4 Flash, GPT-5.6 Luna, Gemini 2.5 Flash Lite, and Claude
+  Sonnet as the premium baseline.
+- **The gateway.** OpenAI-compatible API with a semantic cache, escalation to a stronger model, provider failover,
+  streaming and traces. A Next.js web chat can switch between this router and the team's router.
+- **The evaluation.** Quality labels from an LLM-as-judge (GPT-5.x class) on real chatbot data; separate
+  validation, calibration and test sets; the test set stayed sealed and was opened once for the final score.
+
+```mermaid
+flowchart LR
+    subgraph offline["Built once (offline)"]
+        A["Chatbot prompts"] --> B["Embed + k-means, K = 8"]
+        C["Validation prompts"] --> D["4 models answer, LLM judge scores"]
+        B --> E["Router file: quality per cluster and model"]
+        D --> E
+    end
+    subgraph online["Every message (online)"]
+        U["User / web chat"] --> G["FastAPI gateway: redact secrets"]
+        G --> H{"Semantic cache hit?"}
+        H -- yes --> R["Answer"]
+        H -- no --> I["Route: best quality minus λ x cost"]
+        I --> J["Call model, failover if down"]
+        J --> K{"Answer checks pass?"}
+        K -- no --> L["Escalate to a stronger model"] --> R
+        K -- yes --> R
+    end
+    E -.-> I
+```
+
+**Tech stack:** Python 3.12, uv, FastAPI, LiteLLM, scikit-learn, sentence-transformers (Jina embeddings), Qdrant,
+SQLite, Next.js 16, pytest (332 tests), ruff, GitHub Actions.
+
+**Run it** (no keys needed, mock provider; details in [Quick start](#quick-start)):
+
+```bash
+uv sync && uv run pytest -q
+TAKROUTER_FAKE_EMBED=1 uv run uvicorn metis.gateway.app:app --port 8000
+cd web-node && npm ci && npm run build && npx next start -p 3001   # web chat on http://localhost:3001
+```
+
+**Results, honestly.** On the sealed chatbot test the router cost about 96% less than always using Claude Sonnet at
+similar judged quality, but it showed **no clear gain over always using DeepSeek v4 Flash** at the same low cost.
+On a second dataset with true answers (Khayyam exams) the gain was small. Full numbers in [Results](#results),
+[`results/final/test_report.md`](results/final/test_report.md) and [`report/REPORT.md`](report/REPORT.md).
+
+**Engineering:** every LLM call is cached, a hard budget cap is enforced in code (the whole project used about $30
+of a $60 budget), and secrets are redacted before any API call.
+
+**Author:** Mehrdad Rahmani designed and built the routing pipeline, the evaluation and the gateway, integrated the
+team's router into the shared website, and made the pitch and technical deck. Team project, Rahnema College 2026
+(see [Team](#team)).
+
 ## Contents
 
+- [In 30 seconds](#in-30-seconds)
 - [What it does](#what-it-does)
 - [Screenshots](#screenshots)
 - [How it works](#how-it-works)
@@ -215,7 +275,8 @@ for chunk in client.chat.completions.create(model="takrouter", messages=[{"role"
 **Synapse**, Rahnema College 2026: Farzaneh Nademi · Kimia Komeili · Roham Ghlabi · Mehrdad Rahmani.
 Mentor: Peyman Naseri.
 
-TakRouter (this repository) was built by Mehrdad Rahmani.
+TakRouter (this repository) was built by Mehrdad Rahmani: the routing pipeline, the evaluation and the gateway,
+the integration of the team's router into the shared website, and the pitch and technical deck.
 
 ## Rules, data and secrets
 
